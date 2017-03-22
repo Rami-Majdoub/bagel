@@ -1,0 +1,40 @@
+Main_Menu.png
+size: 1744, 1032
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+menu_background
+  rotate: false
+  xy: 1, 1
+  size: 1500, 1025
+  orig: 1500, 1025
+  offset: 0, 0
+  index: -1
+rain_drops-01
+  rotate: true
+  xy: 1503, 1
+  size: 256, 240
+  orig: 256, 240
+  offset: 0, 0
+  index: -1
+rain_drops-02
+  rotate: true
+  xy: 1503, 259
+  size: 256, 240
+  orig: 256, 240
+  offset: 0, 0
+  index: -1
+rain_drops-03
+  rotate: true
+  xy: 1503, 517
+  size: 256, 240
+  orig: 256, 240
+  offset: 0, 0
+  index: -1
+rain_drops-04
+  rotate: true
+  xy: 1503, 775
+  size: 256, 240
+  orig: 256, 240
+  offset: 0, 0
+  index: -1
