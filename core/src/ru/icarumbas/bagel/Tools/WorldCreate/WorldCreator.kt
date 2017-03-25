@@ -16,9 +16,10 @@ import ru.icarumbas.bagel.Tools.B2dWorldCreator.B2DWorldCreator
 
 class WorldCreator(private val worldCreator: B2DWorldCreator, private val world: World, newWorld: Boolean, private val animationCreator: AnimationCreator, val gameScreen: GameScreen) {
 
-    var currentMap: Int = 0
-    var random: Int = 0
-    var zeroRoomChance: Int = 0
+    var currentMap = 0
+    var random = 0
+    var zeroRoomChance = 0
+    var universalRoomChance = 0
     var mapWidth = 7.68f
     var mapHeight = 5.12f
     var mapRoomWidth = 1
@@ -28,16 +29,17 @@ class WorldCreator(private val worldCreator: B2DWorldCreator, private val world:
     private val jsonMaps = ArrayList<String>()
     val bodyArrays = ArrayList<ArrayList<Body>>()
     val platformArrays = ArrayList<ArrayList<Body>>()
-    private var map = TiledMap()
+    private val tmxLoader = TmxMapLoader()
+    private var map = tmxLoader.load("Maps/up/up1.tmx")
     private var mapRenderer = OrthogonalTiledMapRenderer(map, 0.01f)
     private var mesh = Array(50) { IntArray(50) }
-    private val tmxLoader = TmxMapLoader()
     private val json = Json()
     private val mapsFile = Gdx.files.local("mapsFile.Json")
     private val mapLinksFile = Gdx.files.local("mapLinksFile.Json")
     private var randomMap: Int = 0
     val checkSides = ArrayList<IntArray>()
     val stringSides = arrayOf("Left", "Up", "Right", "Down", "Right", "Down", "Left", "Up")
+    var meshCheckSides = IntArray(6)
 
     init {
         if (newWorld) createNewWorld() else continueWorld()
@@ -46,8 +48,6 @@ class WorldCreator(private val worldCreator: B2DWorldCreator, private val world:
     }
 
     private fun createNewWorld() {
-
-        map = tmxLoader.load("Maps/up/up1.tmx")
         maps.add(map)
         jsonMaps.add("Maps/up/up1.tmx")
 
@@ -73,23 +73,24 @@ class WorldCreator(private val worldCreator: B2DWorldCreator, private val world:
         }
 
         mesh[25][25] = 1
-        checkSides.add(intArrayOf(-2, -1, -1, -1, 0, -1, 0, 1))
-        checkSides.add(intArrayOf(-1, 0, 1, 0, -1, -2, -1, -1))
-        checkSides.add(intArrayOf(1, 1, 2, 1, 0, -1, 0, 1))
-        checkSides.add(intArrayOf(-1, 0, 1, 0, 1, 1, 1, 2))
+        // intArrayOf(x0, x1, x2, x3, y0, y1, y2, y3)
+        checkSides.add(intArrayOf(-2, -1, 0, -1, 0, -1, 0, 1))   // Left
+        checkSides.add(intArrayOf(-1, 0, 1, 0, -1, -2, -1, 0))   // Up
+        checkSides.add(intArrayOf(0, 1, 2, 1, 0, -1, 0, 1))      // Right
+        checkSides.add(intArrayOf(-1, 0, 1, 0, 1, 0, 1, 2))      // Down
 
         for (i in 0..50) {
             if (i == maps.size) break
-            generateRooms("Maps/right/right", "Right", 0, 1, 2, 0, i)
-            generateRooms("Maps/left/left", "Left", 0, -1, 0, 2, i)
-            generateRooms("Maps/up/up", "Up", -1, 0, 1, 3, i)
-            generateRooms("Maps/down/down", "Down", 1, 0, 3, 1, i)
+            generateRoom("Maps/right/right", "Right", 2, 0, i, 1, 0)
+            generateRoom("Maps/left/left", "Left", 0, 2, i, -1, 0)
+            generateRoom("Maps/up/up", "Up", 1, 3, i, 0, -1)
+            generateRoom("Maps/down/down", "Down", 3, 1, i, 0, 1)
         }
         currentMap = 0
 
         json.setUsePrototypes(false)
-        mapsFile.writeString(json.toJson(jsonMaps), false)
-        mapLinksFile.writeString(json.toJson(mapLinks), false)
+        mapsFile.writeString(json.prettyPrint(jsonMaps), false)
+        mapLinksFile.writeString(json.prettyPrint(mapLinks), false)
     }
 
     private fun continueWorld() {
@@ -125,7 +126,7 @@ class WorldCreator(private val worldCreator: B2DWorldCreator, private val world:
 
         if (player.playerBody!!.position.x < 0) changeRoom(player, 0, 2, mapWidth - .3f, 2.5f)
 
-        if (player.playerBody!!.position.y > mapHeight) changeRoom(player, 1, 3, mapHeight / 2, 0f)
+        if (player.playerBody!!.position.y > mapHeight) changeRoom(player, 1, 3, mapWidth / 2, 0f)
 
         if (player.playerBody!!.position.y < 0) changeRoom(player, 3, 1, mapWidth / 2, mapHeight)
     }
@@ -134,8 +135,13 @@ class WorldCreator(private val worldCreator: B2DWorldCreator, private val world:
         random = MathUtils.random(1000)
         if (random < zeroRoomChance) {
             return 0
-        } else
-            return MathUtils.random(1, values)
+        }
+        if (random < universalRoomChance){
+            universalRoomChance = 0
+            return 1
+        }
+        else
+            return MathUtils.random(2, values)
     }
 
     private fun changeRoom(player: Player, link: Int, previousLink: Int, positionX: Float, positionY: Float) {
@@ -163,50 +169,89 @@ class WorldCreator(private val worldCreator: B2DWorldCreator, private val world:
 
     }
 
-    private fun generateMap(path: String, count: Int, side: Int): TiledMap {
+    private fun chooseMap(path: String, side: String, count: Int, previousMapLink: Int, meshX: Int, meshY: Int): TiledMap {
         randomMap = rand(6)
         map = tmxLoader.load(path + randomMap + ".tmx")
 
         mapRoomWidth = (map.properties["Width"].toString().toFloat() / 7.68f).toInt()
         mapRoomHeight = (map.properties["Height"].toString().toFloat() / 5.12f).toInt()
 
-        for (link in mapLinks) {
-            for (i in 0..3) {
-                if (mapLinks[count][4].plus(checkSides[side][i]) == link[4] && mapLinks[count][5].plus(checkSides[side][i + 4]) == link[5]) {
-                    if ((maps[mapLinks.indexOf(link)].properties.get(stringSides[i + 4]) == "No" && map.properties.get(stringSides[i]) == "Yes") ||
-                            (maps[mapLinks.indexOf(link)].properties.get(stringSides[i + 4]) == "Yes" && map.properties.get(stringSides[i]) == "No")) {
-                        generateMap(path, count, side)
+        val checkSides1 = when (side) {
+            "Left" -> intArrayOf()
+            "Up" -> intArrayOf()
+            "Right" -> intArrayOf()
+            "Down" -> intArrayOf()
+
+            "LeftUp" -> intArrayOf()
+            "UpRight" -> intArrayOf()
+            "RightUP" -> intArrayOf()
+            "DownRight" -> intArrayOf()
+            else -> IntArray(0)
+        }
+
+        meshCheckSides = when (side) {
+            "Left" -> intArrayOf(-1, 0, -1, -mapRoomHeight + 1, -mapRoomWidth, -mapRoomHeight + 1, -mapRoomWidth, -mapRoomHeight + 1)
+            "Up" -> intArrayOf(0, -1, mapRoomWidth - 1, -1, 0, -mapRoomHeight, mapRoomWidth - 1, -mapRoomHeight)
+            "Right" -> intArrayOf(1, 0, mapRoomWidth, -mapRoomHeight + 1, 1, -mapRoomHeight + 1, mapRoomWidth, -mapRoomHeight + 1)
+            "Down" -> intArrayOf(0, 1, mapRoomWidth - 1, 1, 0, mapRoomHeight, mapRoomWidth - 1, mapRoomHeight)
+
+            "LeftUp" -> intArrayOf(-1, -1, -mapRoomWidth, -mapRoomHeight, -1, -mapRoomHeight, -mapRoomWidth, -mapRoomHeight)
+            "UpRight" -> intArrayOf(1, -1, mapRoomWidth, -1, 1, -mapRoomHeight, mapRoomWidth, -mapRoomHeight)
+            "RightUP" -> intArrayOf(1, -1, mapRoomWidth, -mapRoomHeight, 1, -mapRoomHeight, -mapRoomWidth, -mapRoomHeight)
+            "DownRight" -> intArrayOf(1, 1, mapRoomWidth, 1, 1, mapRoomHeight, mapRoomWidth, mapRoomHeight)
+            else -> IntArray(0)
+        }
+
+        if ((mesh[meshY + meshCheckSides[1]][meshX + meshCheckSides[0]] == 0) &&
+            (mesh[meshY + meshCheckSides[3]][meshX + meshCheckSides[2]] == 0) &&
+            (mesh[meshY + meshCheckSides[5]][meshX + meshCheckSides[4]] == 0) &&
+            (mesh[meshY + meshCheckSides[7]][meshX + meshCheckSides[6]] == 0)) {
+
+            for (link in mapLinks) {
+                for (i in 0..3) {
+                    if (mapLinks[count][4].plus(checkSides[previousMapLink][i]) == link[4] && mapLinks[count][5].plus(checkSides[previousMapLink][i + 4]) == link[5]) {
+                        if ((maps[mapLinks.indexOf(link)].properties.get(stringSides[i + 4]) == "No" && map.properties.get(stringSides[i]) == "Yes") ||
+                                (maps[mapLinks.indexOf(link)].properties.get(stringSides[i + 4]) == "Yes" && map.properties.get(stringSides[i]) == "No")) {
+                            chooseMap(path, side, count, previousMapLink, meshX, meshY)
+                        }
                     }
                 }
             }
-        }
-        return map
+            return map
+        } else chooseMap(path, side, count, previousMapLink, meshX, meshY)
+
+        return TiledMap()
     }
 
-    private fun generateRooms(path: String, side: String, meshPosY: Int, meshPosX: Int, previousMapLink: Int, currentMapLink: Int, count: Int) {
+
+    private fun generateRoom(path: String, side: String, previousMapLink: Int, currentMapLink: Int, count: Int, closestX: Int, closestY: Int) {
 
         if (maps[count].properties.get(side) == "Yes") {
-            if (mesh[mapLinks[count][5] + meshPosY][mapLinks[count][4] + meshPosX] == 0) {
-                currentMap++
-                map = generateMap(path, count, previousMapLink)
-                maps.add(map)
-                jsonMaps.add(path + randomMap + ".tmx")
-                bodyArrays.add(ArrayList<Body>())
-                worldCreator.loadBodies(maps[currentMap].layers.get("ground"), world, bodyArrays[currentMap], gameScreen.GROUND_BIT)
-                platformArrays.add(ArrayList<Body>())
-                if (maps[currentMap].layers.get("platform") != null)
-                    worldCreator.loadBodies(maps[currentMap].layers.get("platform"), world, platformArrays[currentMap], gameScreen.PLATFORM_BIT)
-                val sides = Array<Int>()
-                sides.addAll(0, 0, 0, 0, mapLinks[count][4] + meshPosX, mapLinks[count][5] + meshPosY)
-                sides[currentMapLink] = count
-                mapLinks[count][previousMapLink] = currentMap
-                mapLinks.add(sides)
-                mesh[sides[5]][sides[4]] = 1
-                if (zeroRoomChance < 500) zeroRoomChance += 10
+            val meshY = mapLinks[count][5]
+            val meshX = mapLinks[count][4]
 
-            } else {
+            if (mesh[meshY + closestY][meshX + closestX] == 0) {
+                    if (zeroRoomChance < 500) zeroRoomChance += 10
+                    universalRoomChance += 50
+                    currentMap++
+                    map = chooseMap(path, side, count, previousMapLink, meshX, meshY)
+                    maps.add(map)
+                    jsonMaps.add(path + randomMap + ".tmx")
+                    bodyArrays.add(ArrayList<Body>())
+                    worldCreator.loadBodies(maps[currentMap].layers.get("ground"), world, bodyArrays[currentMap], gameScreen.GROUND_BIT)
+                    platformArrays.add(ArrayList<Body>())
+                    if (maps[currentMap].layers.get("platform") != null)
+                        worldCreator.loadBodies(maps[currentMap].layers.get("platform"), world, platformArrays[currentMap], gameScreen.PLATFORM_BIT)
+                    val sides = Array<Int>()
+                    sides.addAll(0, 0, 0, 0, meshX + closestX, meshY + closestY)
+                    sides[currentMapLink] = count
+                    mapLinks[count][previousMapLink] = currentMap
+                    mapLinks.add(sides)
+                    mesh[sides[5]][sides[4]] = 1
+            }
+            else {
                 for (map in maps) {
-                    if (mapLinks[count][4] + meshPosX == mapLinks[maps.indexOf(map)][4] && mapLinks[count][5] + meshPosY == mapLinks[maps.indexOf(map)][5]) {
+                    if (meshX + closestX == mapLinks[maps.indexOf(map)][4] && meshY + closestY == mapLinks[maps.indexOf(map)][5]) {
                         mapLinks[count][previousMapLink] = maps.indexOf(map)
                         mapLinks[maps.indexOf(map)][currentMapLink] = count
                         break

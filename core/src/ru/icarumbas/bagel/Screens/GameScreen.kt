@@ -44,12 +44,13 @@ class GameScreen (game: Bagel, newWorld: Boolean) : ScreenAdapter() {
         player.update(delta)
         logger.log()
         moveCamera()
-        debugRenderer.render(world, camera.combined)
+
         mapGenerator.render(camera, player)
         animationCreator.updateAnimations()
         worldContactListener.update()
         hud.update(player)
         hud.stage.draw()
+        debugRenderer.render(world, camera.combined)
 
     }
 
