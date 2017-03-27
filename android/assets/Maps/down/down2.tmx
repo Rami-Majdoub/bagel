@@ -6,10 +6,7 @@
   <property name="Left" value="No"/>
   <property name="Right" value="No"/>
   <property name="Up" value="Yes"/>
-  <property name="LeftUp" value="No"/>
-    <property name="UpRight" value="No"/>
-    <property name="RightUp" value="No"/>
-    <property name="DownLeft" value="No"/>
+
   <property name="Width" type="float" value="7.68"/>
 
  </properties>
