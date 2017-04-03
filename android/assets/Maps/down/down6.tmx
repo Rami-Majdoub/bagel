@@ -5,7 +5,6 @@
   <property name="Height" type="float" value="5.12"/>
   <property name="Left" value="Yes"/>
   <property name="Right" value="No"/>
-
   <property name="Up" value="Yes"/>
   <property name="Width" type="float" value="7.68"/>
  </properties>

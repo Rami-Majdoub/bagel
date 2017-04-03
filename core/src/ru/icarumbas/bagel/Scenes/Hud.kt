@@ -19,16 +19,16 @@ class Hud {
 
     var jumping: Boolean = false
     var touchedFirst: Boolean = false
-    val stage: Stage
+    val stage = Stage(StretchViewport(Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat()))
     var doubleJump = 0
     var touchpad: Touchpad
     private val screenPos: Vector2 = Vector2()
     private var localPos: Vector2 = Vector2()
     private val fakeTouchDownEvent: InputEvent
+    val l = Label("", Label.LabelStyle(BitmapFont(), Color.BLACK))
 
     init {
 
-        stage = Stage(StretchViewport(Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat()))
         Gdx.input.inputProcessor = stage
 
         val skin = Skin()
@@ -43,6 +43,10 @@ class Hud {
         touchpad = Touchpad(10f, touchpadStyle)
         touchpad.setBounds(0f, 0f, 150f, 150f)
         stage.addActor(touchpad)
+
+        l.setPosition(10f, 10f)
+        l.setSize(25f, 25f)
+        stage.addActor(l)
 
         fakeTouchDownEvent = InputEvent()
         fakeTouchDownEvent.type = InputEvent.Type.touchDown

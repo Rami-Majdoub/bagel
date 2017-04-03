@@ -18,7 +18,7 @@ import ru.icarumbas.Bagel
 class MainMenuScreen(private val game: Bagel) : ScreenAdapter() {
 
     private val stage = Stage(StretchViewport(1920f, 1080f))
-    private var font: BitmapFont? = BitmapFont()
+    private var font = BitmapFont()
     private var animation: Animation<Any>? = null
     private val batch = SpriteBatch()
     private var frame: Sprite = Sprite()

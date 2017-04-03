@@ -47,8 +47,8 @@ class B2DWorldCreator {
                 val shape = PolygonShape()
                 val rect = o.rectangle
 
-                def.position.x = (rect.x + rect.width / 2) / 100
-                def.position.y = (rect.y + rect.height / 2) / 100
+                def.position.x = (rect.x + rect.width / 2f) / 100f
+                def.position.y = (rect.y + rect.height / 2f) / 100f
                 def.type = BodyDef.BodyType.StaticBody
 
                 shape.setAsBox(rect.width / 2f / 100f, rect.height / 2f / 100f)
