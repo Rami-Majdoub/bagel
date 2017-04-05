@@ -30,13 +30,15 @@ class GameScreen (game: Bagel, newWorld: Boolean) : ScreenAdapter() {
     private val worldCreator = B2DWorldCreator()
     private val world = World(Vector2(0f, -9.8f), true)
     private val player = Player(world, hud, this)
-    private val mapGenerator = WorldCreator(worldCreator, world, newWorld, animationCreator, this)
+    private val mapGenerator = WorldCreator(worldCreator, world, animationCreator, this)
     private val worldContactListener = WorldContactListener(mapGenerator, hud, player, this)
 
-    override fun show() {
+    init {
+        if (newWorld) mapGenerator.createNewWorld() else mapGenerator.continueWorld()
+        animationCreator.createTileAnimation(0, mapGenerator.maps)
+
         world.setContactListener(worldContactListener)
         world.setContactFilter(worldContactListener)
-
     }
 
     override fun render(delta: Float) {
@@ -44,14 +46,17 @@ class GameScreen (game: Bagel, newWorld: Boolean) : ScreenAdapter() {
         player.update(delta)
         logger.log()
         moveCamera()
-
-        mapGenerator.render(camera, player)
+        debugRenderer.render(world, camera.combined)
+        mapGenerator.mapRenderer.setView(camera)
+        mapGenerator.mapRenderer.render()
+        mapGenerator.mapRenderer.batch.begin()
+        mapGenerator.checkRoomChange(player)
+        player.draw(mapGenerator.mapRenderer.batch)
+        mapGenerator.mapRenderer.batch.end()
         animationCreator.updateAnimations()
         worldContactListener.update()
         hud.update(player)
         hud.stage.draw()
-        debugRenderer.render(world, camera.combined)
-
         hud.l.setText("${mapGenerator.currentMap}")
     }
 
