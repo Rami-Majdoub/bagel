@@ -1,25 +1,23 @@
 package ru.icarumbas.bagel.Tools.B2dWorldCreator
 
 import com.badlogic.gdx.physics.box2d.*
-import ru.icarumbas.bagel.Characters.Player
-import ru.icarumbas.bagel.Scenes.Hud
 import ru.icarumbas.bagel.Screens.GameScreen
-import ru.icarumbas.bagel.Tools.WorldCreate.WorldCreator
 import kotlin.experimental.or
 
-class WorldContactListener(private val mapGenerator: WorldCreator, private val hud: Hud, private val player: Player, val gameScreen: GameScreen) : ContactListener, ContactFilter {
+class WorldContactListener(val gameScreen: GameScreen) : ContactListener, ContactFilter {
 
     var isContact: Boolean = false
 
     override fun shouldCollide(fixtureA: Fixture, fixtureB: Fixture): Boolean {
-        return player.playerBody!!.linearVelocity.y <= 0 || fixtureA.filterData.categoryBits != gameScreen.PLATFORM_BIT && fixtureB.filterData.categoryBits != gameScreen.PLATFORM_BIT
+        return  gameScreen.player.playerBody!!.linearVelocity.y < -3.5f ||
+                fixtureA.filterData.categoryBits != gameScreen.PLATFORM_BIT && fixtureB.filterData.categoryBits != gameScreen.PLATFORM_BIT
     }
 
-    override fun postSolve(contact: Contact, impulse: ContactImpulse?) {
+    override fun postSolve(contact: Contact, impulse: ContactImpulse) {
 
     }
 
-    override fun preSolve(contact: Contact?, oldManifold: Manifold?) {
+    override fun preSolve(contact: Contact, oldManifold: Manifold?) {
 
     }
 
@@ -41,11 +39,11 @@ class WorldContactListener(private val mapGenerator: WorldCreator, private val h
 
     fun update () {
 
-        if (isContact && hud.touchpad.knobY < hud.touchpad.height/2f - 20f) {
-            for (body in mapGenerator.platformArrays[mapGenerator.currentMap]) body.isActive = false
+        if (isContact && gameScreen.hud.touchpad.knobY < gameScreen.hud.touchpad.height/2f - 20f) {
+            for (body in gameScreen.mapGenerator.platformArrays[gameScreen.mapGenerator.currentMap]) body.isActive = false
         }
-        if (!isContact && player.playerBody!!.linearVelocity.y < -5f){
-            for (body in mapGenerator.platformArrays[mapGenerator.currentMap]) body.isActive = true
+        if (!isContact && gameScreen.player.playerBody!!.linearVelocity.y < -5f){
+            for (body in gameScreen.mapGenerator.platformArrays[gameScreen.mapGenerator.currentMap]) body.isActive = true
         }
     }
 

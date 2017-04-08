@@ -17,7 +17,7 @@ import com.badlogic.gdx.utils.Array
 import ru.icarumbas.bagel.Scenes.Hud
 import ru.icarumbas.bagel.Screens.GameScreen
 
-class Player(private val world: World, private val hud: Hud, val gameScreen: GameScreen) : Sprite() {
+class Player(val gameScreen: GameScreen) : Sprite() {
     var playerBody: Body? = null
     private val stateAnimation: Animation<*>
     private val runAnimation: Animation<*>
@@ -29,7 +29,7 @@ class Player(private val world: World, private val hud: Hud, val gameScreen: Gam
 
     private var runningRight = true
     var lastRight: Boolean = false
-    private var stateTimer: Float = 0.toFloat()
+    private var stateTimer = 0f
     var bodyDef: BodyDef
 
     init {
@@ -57,6 +57,7 @@ class Player(private val world: World, private val hud: Hud, val gameScreen: Gam
         runAnimation.playMode = Animation.PlayMode.LOOP
         frames.clear()
 
+
         for (i in 1..10) {
             frames.add(Sprite(atlas.findRegion("Jump ($i)")))
         }
@@ -69,7 +70,7 @@ class Player(private val world: World, private val hud: Hud, val gameScreen: Gam
 
     fun definePlayer() {
         bodyDef.type = BodyDef.BodyType.DynamicBody
-        playerBody = world.createBody(bodyDef)
+        playerBody = gameScreen.world.createBody(bodyDef)
 
         val shape = PolygonShape()
         shape.setAsBox(.23f, .49f)
@@ -111,9 +112,9 @@ class Player(private val world: World, private val hud: Hud, val gameScreen: Gam
         setPosition(playerBody!!.position.x - width / 2, playerBody!!.position.y - height / 2)
         rotation = playerBody!!.angle * MathUtils.radiansToDegrees
 
-        if (playerBody!!.linearVelocity.y == 0f && hud.touchpad.knobY < hud.touchpad.height - 45) {
-            hud.doubleJump = 0
-            hud.jumping = false
+        if (playerBody!!.linearVelocity.y == 0f && gameScreen.hud.touchpad.knobY < gameScreen.hud.touchpad.height - 45) {
+            gameScreen.hud.doubleJump = 0
+            gameScreen.hud.jumping = false
         }
     }
 
@@ -144,9 +145,12 @@ class Player(private val world: World, private val hud: Hud, val gameScreen: Gam
 
     private val state: State
         get() {
-            if (hud.jumping && playerBody!!.linearVelocity.y != 0f)
+            if (gameScreen.hud.jumping && playerBody!!.linearVelocity.y != 0f)
                 return State.Jumping
-            if ((hud.touchpad.knobX < hud.touchpad.width / 2 || hud.touchpad.knobX > hud.touchpad.width / 2) && !hud.jumping && hud.touchedFirst)
+            if ((gameScreen.hud.touchpad.knobX < gameScreen.hud.touchpad.width / 2 ||
+                    gameScreen.hud.touchpad.knobX > gameScreen.hud.touchpad.width / 2) &&
+                    !gameScreen.hud.jumping && gameScreen.hud.touchedFirst)
+
                 return State.Running
             else
                 return State.Standing

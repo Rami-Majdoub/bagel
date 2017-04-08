@@ -4,14 +4,13 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.ui.Touchpad
+import com.badlogic.gdx.scenes.scene2d.ui.*
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable
 import com.badlogic.gdx.utils.viewport.StretchViewport
-
 import ru.icarumbas.bagel.Characters.Player
 
 
@@ -19,11 +18,11 @@ class Hud {
 
     var jumping: Boolean = false
     var touchedFirst: Boolean = false
-    val stage = Stage(StretchViewport(Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat()))
+    val stage = Stage(StretchViewport(800f, 480f))
     var doubleJump = 0
     var touchpad: Touchpad
-    private val screenPos: Vector2 = Vector2()
-    private var localPos: Vector2 = Vector2()
+    private val screenPos = Vector2()
+    private var localPos = Vector2()
     private val fakeTouchDownEvent: InputEvent
     val l = Label("", Label.LabelStyle(BitmapFont(), Color.BLACK))
 
@@ -87,9 +86,9 @@ class Hud {
             if (screenPos.x < Gdx.graphics.width / 2) {
 
                 // Convert the touch point into local coordinates, place the touchpad and show it.
-                localPos!!.set(screenPos)
+                localPos.set(screenPos)
                 localPos = touchpad.parent.screenToLocalCoordinates(localPos)
-                touchpad.setPosition(localPos!!.x - touchpad.width / 2, localPos!!.y - touchpad.height / 2)
+                touchpad.setPosition(localPos.x - touchpad.width / 2, localPos.y - touchpad.height / 2)
                 touchpad.isVisible = true
 
                 // Fire a touch down event to get the touchpad working.

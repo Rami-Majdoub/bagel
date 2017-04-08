@@ -1,20 +1,17 @@
 package ru.icarumbas.bagel.Tools.WorldCreate
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.physics.box2d.Body
-import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Json
 import ru.icarumbas.bagel.Characters.Player
 import ru.icarumbas.bagel.Screens.GameScreen
-import ru.icarumbas.bagel.Tools.B2dWorldCreator.B2DWorldCreator
 
-class WorldCreator(private val worldCreator: B2DWorldCreator, private val world: World, private val animationCreator: AnimationCreator, val gameScreen: GameScreen) {
+class WorldCreator(val gameScreen: GameScreen) {
 
     var currentMap = 0
     var random = 0
@@ -41,29 +38,34 @@ class WorldCreator(private val worldCreator: B2DWorldCreator, private val world:
         maps.add(map)
         jsonMaps.add("Maps/up/up1.tmx")
 
+        // Generate ground for first map
         bodyArrays.add(ArrayList<Body>())
-        worldCreator.loadBodies(map.layers.get("ground"), world, bodyArrays.first(), gameScreen.GROUND_BIT)
-
+        gameScreen.worldCreator.loadBodies(map.layers.get("ground"), gameScreen.world, bodyArrays.first(), gameScreen.GROUND_BIT)
         for (body in bodyArrays[0]) body.isActive = true
 
+        // Generate platforms for first map
         platformArrays.add(ArrayList<Body>())
         if (map.layers.get("platform") != null)
-            worldCreator.loadBodies(map.layers.get("platform"), world, platformArrays.first(), gameScreen.PLATFORM_BIT)
-
+            gameScreen.worldCreator.loadBodies(map.layers.get("platform"), gameScreen.world, platformArrays.first(), gameScreen.PLATFORM_BIT)
         for (body in platformArrays[0]) body.isActive = true
 
+        // Add top of graph for first map
         val arr = Array<Int>()
         arr.addAll(0, 0, 0, 0, 0, 0, 0, 0, 25, 25, 25, 25)
         mapLinks.add(arr)
 
+        // Fill the mesh with nulls
         for (y in 0..49) {
             for (x in 0..49) {
                 mesh[y][x] = 0
             }
         }
 
+        // Set center of the mesh
         mesh[25][25] = 1
 
+
+        // Try to create map for each map[i] side
         for (i in 0..100) {
             if (i == maps.size) break
             generateRoom("Maps/up/up", "Up", 1, 3, i, 0, -1, 8, 11, 8, 9)
@@ -83,10 +85,14 @@ class WorldCreator(private val worldCreator: B2DWorldCreator, private val world:
         }
         currentMap = 0
 
+        // To write repetitive maps
         json.setUsePrototypes(false)
+
+        // Write String map names to continue
         mapsFile.writeString(json.prettyPrint(jsonMaps), false)
         mapLinksFile.writeString(json.prettyPrint(mapLinks), false)
 
+        // for a while
         for (y in 0..49) {
             for (x in 0..49) {
                 if (mesh[y][x] == 1) print("${mesh[y][x]} ") else print(" ")
@@ -96,45 +102,52 @@ class WorldCreator(private val worldCreator: B2DWorldCreator, private val world:
     }
 
     fun continueWorld() {
+        // Parse tops of graph from Json
         mapLinks = json.fromJson(ArrayList<Array<Int>>().javaClass, mapLinksFile)
 
+        // Parse String map names from Json and load maps
         json.fromJson(ArrayList<String>().javaClass, mapsFile).forEach { maps.add(tmxLoader.load(it)) }
 
+        // Generate platforms and ground for each map
         for (map in maps) {
             bodyArrays.add(ArrayList<Body>())
-            worldCreator.loadBodies(map.layers.get("ground"), world, bodyArrays[maps.indexOf(map)], gameScreen.GROUND_BIT)
+            gameScreen.worldCreator.loadBodies(map.layers.get("ground"), gameScreen.world, bodyArrays[maps.indexOf(map)], gameScreen.GROUND_BIT)
 
             platformArrays.add(ArrayList<Body>())
             if (map.layers.get("platform") != null)
-                worldCreator.loadBodies(map.layers.get("platform"), world, platformArrays[maps.indexOf(map)], gameScreen.PLATFORM_BIT)
+                gameScreen.worldCreator.loadBodies(map.layers.get("platform"), gameScreen.world, platformArrays[maps.indexOf(map)], gameScreen.PLATFORM_BIT)
         }
 
         mapRenderer = OrthogonalTiledMapRenderer(maps[0], 0.01f)
+
         for (body in bodyArrays.first()) body.isActive = true
         for (body in platformArrays.first()) body.isActive = true
-
-
     }
 
     fun checkRoomChange(player: Player){
         val posX = player.playerBody!!.position.x
         val posY = player.playerBody!!.position.y
 
-        if (posX > mapWidth && posY < 5.12f) changeRoom(player, 2, "Right", 10, 9) else
+        /* Check from which position of map has player came to other map
+         *                                43
+         *                                12
+         * This is positions for 2x2 map ^ ^ ^
+        */
+        if (posX > mapWidth && posY < 5.12f) changeRoom(player, 2, "Right", 10, 9) else // 2
 
-        if (posX < 0 && posY < 5.12f) changeRoom(player, 0, "Left", 8, 9) else
+        if (posX < 0 && posY < 5.12f) changeRoom(player, 0, "Left", 8, 9) else // 1
 
-        if (posY > mapHeight && posX < 7.68f) changeRoom(player, 1, "Up", 8, 11) else
+        if (posY > mapHeight && posX < 7.68f) changeRoom(player, 1, "Up", 8, 11) else // 4
 
-        if (posY < 0 && posX < 7.68f) changeRoom(player, 3, "Down", 8, 9) else
+        if (posY < 0 && posX < 7.68f) changeRoom(player, 3, "Down", 8, 9) else // 1
 
-        if (posX < 0 && posY > 5.12f) changeRoom(player, 4, "Left", 8, 11) else
+        if (posX < 0 && posY > 5.12f) changeRoom(player, 4, "Left", 8, 11) else // 4
 
-        if (posY < 0 && posX > 7.68f) changeRoom(player, 7, "Down", 10, 9) else
+        if (posY < 0 && posX > 7.68f) changeRoom(player, 7, "Down", 10, 9) else // 2
 
-        if (posX > mapWidth && posY > 5.12f) changeRoom(player, 6, "Right", 10, 11) else
+        if (posX > mapWidth && posY > 5.12f) changeRoom(player, 6, "Right", 10, 11) else // 3
 
-        if (posY > mapHeight && posX > 7.68f) changeRoom(player, 5, "Up", 10, 11)
+        if (posY > mapHeight && posX > 7.68f) changeRoom(player, 5, "Up", 10, 11) // 3
     }
 
     private fun rand(values: Int): Int {
@@ -149,6 +162,7 @@ class WorldCreator(private val worldCreator: B2DWorldCreator, private val world:
     private fun setPlayerPosition(side: String, player: Player, plX: Int, plY: Int, previousMapLink: Int) {
 
         if (side == "Up" || side == "Down"){
+            // Compare top-right parts of previous and current maps
             val X10 = mapLinks[currentMap][10]
             val prevX = mapLinks[previousMapLink][plX]
 
@@ -163,6 +177,7 @@ class WorldCreator(private val worldCreator: B2DWorldCreator, private val world:
         }
 
         if (side == "Left" || side == "Right"){
+            // Compare top parts of previous and current maps
             val Y11 = mapLinks[currentMap][11]
             val prevY = mapLinks[previousMapLink][plY]
 
@@ -181,27 +196,37 @@ class WorldCreator(private val worldCreator: B2DWorldCreator, private val world:
 
     private fun changeRoom(player: Player, link: Int, side: String, plX: Int, plY: Int) {
 
+        // Disable previous room ground
         for (body in bodyArrays[currentMap]) {
             body.isActive = false
         }
+        // Disable previous room platforms
         for (body in platformArrays[currentMap]) {
             body.isActive = false
         }
 
+        // Value to get top or top-right mesh position in setPlayerPosition method
         val previousMapLink = currentMap
+
+        // Change map
         currentMap = mapLinks[currentMap][link]
         mapRenderer.map = maps[currentMap]
 
+        // Load new width and height
         mapHeight = maps[currentMap].properties.get("Height").toString().toFloat()
         mapWidth = maps[currentMap].properties.get("Width").toString().toFloat()
 
+        // That says it all
         setPlayerPosition(side, player, plX, plY, previousMapLink)
 
-        animationCreator.createTileAnimation(currentMap, maps)
+        // Create animation for current room
+        gameScreen.animationCreator.createTileAnimation(currentMap, maps)
 
+        // Load ground for current room
         for (body in bodyArrays[currentMap]) {
             body.isActive = true
         }
+        // Load platforms for current room
         for (body in platformArrays[currentMap]) {
             body.isActive = true
         }
@@ -210,6 +235,13 @@ class WorldCreator(private val worldCreator: B2DWorldCreator, private val world:
 
     private fun checkMeshSides(side: String, meshX: Int, meshY: Int, mapRoomWidth: Int, mapRoomHeight: Int): Boolean{
 
+    /* Check positions on mesh to check if room fits
+                                                        13
+                                                        02
+     * Here's pairs(x, y) of parts of 2x2 map to check ^ ^ ^
+     */
+
+    // (x, y)
     meshCheckSides = when (side) {
         "Left" -> intArrayOf(-mapRoomWidth, 0, -mapRoomWidth, -mapRoomHeight + 1, -1, 0, -1, -mapRoomHeight + 1)
         "Up" -> intArrayOf(0, -1, mapRoomWidth - 1, -1, 0, -mapRoomHeight, mapRoomWidth - 1, -mapRoomHeight)
@@ -218,6 +250,7 @@ class WorldCreator(private val worldCreator: B2DWorldCreator, private val world:
         else -> IntArray(0)
     }
 
+        // Returns true if room fits
         return  (mesh[meshY + meshCheckSides[1]][meshX + meshCheckSides[0]] == 0) &&
                 (mesh[meshY + meshCheckSides[3]][meshX + meshCheckSides[2]] == 0) &&
                 (mesh[meshY + meshCheckSides[5]][meshX + meshCheckSides[4]] == 0) &&
@@ -225,17 +258,23 @@ class WorldCreator(private val worldCreator: B2DWorldCreator, private val world:
 }
 
     private fun chooseMap(path: String, side: String, count: Int, previousMapLink: Int, meshX: Int, meshY: Int): TiledMap {
-        randomMap = rand(10)
+        // Load room randomly
+        randomMap = rand(8)
         map = tmxLoader.load(path + randomMap + ".tmx")
 
+        // Set new width and height
         val mapRoomWidth = (map.properties["Width"].toString().toFloat() / 7.68f).toInt()
         val mapRoomHeight = (map.properties["Height"].toString().toFloat() / 5.12f).toInt()
 
+        // Check that new room fits
         if (checkMeshSides(side, meshX, meshY, mapRoomWidth, mapRoomHeight)){
+
+        /* (x0, x1, x2, x3
+            y0, y1, y2, y3) */
         val checkSides = when (side) {
 
-            "Left" -> intArrayOf(-mapRoomWidth-1, -mapRoomWidth-1, -mapRoomWidth, -1, -mapRoomWidth, -1, 0, 0,
-                                 0, -mapRoomHeight+1, -mapRoomHeight, -mapRoomHeight, 1, 1, 0, -mapRoomHeight+1)
+            "Left" -> intArrayOf(-mapRoomWidth-1, -mapRoomWidth-1, -mapRoomWidth, -1, -mapRoomWidth, -1, 0, 0,   // Xs
+                                 0, -mapRoomHeight+1, -mapRoomHeight, -mapRoomHeight, 1, 1, 0, -mapRoomHeight+1) // Ys
 
             "Up" -> intArrayOf(-1, -1, 0, mapRoomWidth-1, 0, mapRoomWidth-1, mapRoomWidth, mapRoomWidth,
                                 -1, -mapRoomHeight, -mapRoomHeight-1, -mapRoomHeight-1, 0, 0, -1, -mapRoomHeight)
@@ -248,6 +287,7 @@ class WorldCreator(private val worldCreator: B2DWorldCreator, private val world:
             else -> IntArray(0)
         }
 
+            // Check for collisions with other rooms on mesh. If gates match using checkSides
             var place = 0
             for (link in mapLinks) {
                 for (i in 0..7) {
@@ -263,7 +303,9 @@ class WorldCreator(private val worldCreator: B2DWorldCreator, private val world:
                 place = 0
             }
 
-        } else chooseMap(path, side, count, previousMapLink, meshX, meshY)
+        }
+        // Else recursion -__- Try to load another room
+        else chooseMap(path, side, count, previousMapLink, meshX, meshY)
 
         return map
     }
@@ -271,34 +313,53 @@ class WorldCreator(private val worldCreator: B2DWorldCreator, private val world:
     private fun generateRoom(path: String, side: String, previousMapLink: Int, currentMapLink: Int, count: Int,
                              closestX: Int, closestY: Int, placeX: Int, placeY: Int, linkX: Int, linkY: Int) {
 
+        // Check that room have gate to create specific map
         if (maps[count].properties.get(side) == "Yes") {
+            // X and y positions on mesh. For big maps part of it
             val meshX = mapLinks[count][placeX]
             val meshY = mapLinks[count][placeY]
 
+            // Check that mesh don't have another room with it's coordinates
             if (mesh[meshY + closestY][meshX + closestX] == 0) {
                 if (zeroRoomChance < 500) zeroRoomChance += 10
                 currentMap++
                 maps.add(chooseMap(path, side, count, previousMapLink, meshX, meshY))
                 jsonMaps.add(path + randomMap + ".tmx")
+
+                // Load ground for new room
                 bodyArrays.add(ArrayList<Body>())
-                worldCreator.loadBodies(maps[currentMap].layers.get("ground"), world, bodyArrays[currentMap], gameScreen.GROUND_BIT)
+                gameScreen.worldCreator.loadBodies(maps[currentMap].layers.get("ground"), gameScreen.world, bodyArrays[currentMap], gameScreen.GROUND_BIT)
+
+                // Load platforms for new room
                 platformArrays.add(ArrayList<Body>())
                 if (maps[currentMap].layers.get("platform") != null)
-                    worldCreator.loadBodies(maps[currentMap].layers.get("platform"), world, platformArrays[currentMap], gameScreen.PLATFORM_BIT)
+                    gameScreen.worldCreator.loadBodies(maps[currentMap].layers.get("platform"), gameScreen.world, platformArrays[currentMap], gameScreen.PLATFORM_BIT)
+
+                // Add new links array with coordinates on mesh
                 val sides = Array<Int>()
                 sides.addAll(0, 0, 0, 0,  0, 0, 0, 0,  meshX + meshCheckSides[0], meshY + meshCheckSides[1], meshX + meshCheckSides[6], meshY + meshCheckSides[7])
+
+                // Add link to new room
                 sides[currentMapLink] = count
+
+                // Add link to main room
                 mapLinks[count][previousMapLink] = currentMap
                 mapLinks.add(sides)
+
+                // Fill mesh on new room's coordinates
                 for (i in 0..7 step 2) mesh[meshY + meshCheckSides[i+1]][meshX + meshCheckSides[i]] = 1
             }
+
+            // Else add link to collided and main rooms
             else {
+                // Search in mapLinks room with collided coordinates
                 for (i in mapLinks) {
                     if (meshX + closestX == i[linkX] && meshY + closestY == i[linkY]) {
+                        // Add link to main room
+                        mapLinks[count][previousMapLink] = mapLinks.indexOf(i)
 
-                            mapLinks[count][previousMapLink] = mapLinks.indexOf(i)
-                            i[currentMapLink] = count
-
+                        // Add link to new room
+                        i[currentMapLink] = count
                         break
                     }
                 }

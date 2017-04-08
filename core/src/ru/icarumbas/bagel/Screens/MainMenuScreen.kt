@@ -88,7 +88,7 @@ class MainMenuScreen(private val game: Bagel) : ScreenAdapter() {
     }
 
     override fun dispose() {
-        font!!.dispose()
+        font.dispose()
         stage.dispose()
     }
 }
