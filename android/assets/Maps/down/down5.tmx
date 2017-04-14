@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="16" tilewidth="32" tileheight="32" nextobjectid="41">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="16" tilewidth="32" tileheight="32" nextobjectid="43">
  <properties>
   <property name="Down" value="No"/>
   <property name="Height" type="float" value="5.12"/>
@@ -7,7 +7,6 @@
   <property name="Right" value="No"/>
   <property name="Up" value="Yes"/>
   <property name="Width" type="float" value="7.68"/>
-
  </properties>
  <tileset firstgid="1" name="wall" tilewidth="32" tileheight="32" tilecount="1" columns="1">
   <image source="../Resources/wall.jpg" width="32" height="32"/>
@@ -259,8 +258,6 @@
   </object>
  </objectgroup>
  <objectgroup name="platform">
-  <object id="39" x="447.08" y="216.718">
-   <polyline points="0,0 -125.938,0.524742 -125.413,-11.0196 0,-10.4948 0.524742,-1.57422"/>
-  </object>
+  <object id="42" x="324" y="206" width="123" height="12"/>
  </objectgroup>
 </map>

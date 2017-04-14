@@ -1,17 +1,9 @@
 package ru.icarumbas.bagel.Tools.B2dWorldCreator
 
 import com.badlogic.gdx.maps.MapLayer
-import com.badlogic.gdx.maps.MapObject
 import com.badlogic.gdx.maps.objects.PolylineMapObject
 import com.badlogic.gdx.maps.objects.RectangleMapObject
-import com.badlogic.gdx.math.Rectangle
-import com.badlogic.gdx.physics.box2d.Body
-import com.badlogic.gdx.physics.box2d.BodyDef
-import com.badlogic.gdx.physics.box2d.ChainShape
-import com.badlogic.gdx.physics.box2d.FixtureDef
-import com.badlogic.gdx.physics.box2d.PolygonShape
-import com.badlogic.gdx.physics.box2d.World
-import com.badlogic.gdx.utils.Array
+import com.badlogic.gdx.physics.box2d.*
 
 class B2DWorldCreator {
 
@@ -30,15 +22,13 @@ class B2DWorldCreator {
 
                 val shape2 = ChainShape()
                 shape2.createChain(vertices)
-                def.position.set(0f, 0f)
                 fixtureDef.shape = shape2
                 fixtureDef.friction = 1f
                 fixtureDef.filter.categoryBits = bit
 
                 bodies.add(world.createBody(def))
-                bodies.get(bodies.size - 1).createFixture(fixtureDef)
-                bodies.get(bodies.size - 1).isActive = false
-
+                bodies[bodies.size - 1].createFixture(fixtureDef)
+                bodies[bodies.size - 1].isActive = false
 
             }
 
@@ -57,7 +47,8 @@ class B2DWorldCreator {
                 fixtureDef.filter.categoryBits = bit
 
                 bodies.add(world.createBody(def))
-                bodies.get(bodies.size - 1).createFixture(fixtureDef)
+                bodies[bodies.size - 1].createFixture(fixtureDef)
+                bodies[bodies.size - 1].isActive = false
 
             }
 

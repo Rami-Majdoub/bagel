@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="48" height="32" tilewidth="32" tileheight="32" nextobjectid="54">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="48" height="32" tilewidth="32" tileheight="32" nextobjectid="63">
  <properties>
   <property name="Down" value="Yes"/>
   <property name="Height" type="float" value="10.24"/>
@@ -292,36 +292,22 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,313,0,0,315,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,313,0,0,315,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,313,0,0,315,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
  <objectgroup name="platform">
-  <object id="41" x="576" y="320">
-   <polyline points="0,0 384,0"/>
-  </object>
-  <object id="46" x="320" y="928">
-   <polyline points="0,0 128,0"/>
-  </object>
   <object id="47" x="1088" y="928">
    <polyline points="0,0 128,0"/>
   </object>
-  <object id="49" x="446.563" y="184.66">
-   <polyline points="0,0 -125.822,0 -125.52,-11.7675 -0.301732,-11.1641 -0.301732,-0.905196"/>
-  </object>
-  <object id="50" x="1215.34" y="183.612">
-   <polyline points="0,0 -126.468,-0.312266 -125.843,-10.9293 -0.936797,-10.3048 -0.936797,-1.87359"/>
-  </object>
-  <object id="51" x="960" y="704">
-   <polyline points="0,0 -384,0"/>
-  </object>
-  <object id="52" x="960" y="576">
-   <polyline points="0,0 -384,0"/>
-  </object>
-  <object id="53" x="960" y="448">
-   <polyline points="0,0 -384,0"/>
-  </object>
+  <object id="54" x="321.543" y="172.644" width="125.649" height="11.3777"/>
+  <object id="55" x="1090.59" y="172.884" width="124.551" height="11.1538"/>
+  <object id="57" x="576" y="320" width="384"/>
+  <object id="58" x="576" y="448" width="384"/>
+  <object id="59" x="576" y="576" width="384"/>
+  <object id="60" x="576" y="704" width="384"/>
+  <object id="62" x="320" y="928" width="128"/>
  </objectgroup>
  <objectgroup name="ground">
   <object id="48" x="256" y="832">

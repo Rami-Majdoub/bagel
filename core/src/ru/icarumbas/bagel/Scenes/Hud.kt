@@ -4,36 +4,35 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.ui.*
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable
+import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad
 import com.badlogic.gdx.utils.viewport.StretchViewport
 import ru.icarumbas.bagel.Characters.Player
 
 
 class Hud {
 
-    var jumping: Boolean = false
-    var touchedFirst: Boolean = false
+    var jumping = false
+    var touchedFirst = false
     val stage = Stage(StretchViewport(800f, 480f))
     var doubleJump = 0
     var touchpad: Touchpad
     private val screenPos = Vector2()
     private var localPos = Vector2()
-    private val fakeTouchDownEvent: InputEvent
-    val l = Label("", Label.LabelStyle(BitmapFont(), Color.BLACK))
+    private val fakeTouchDownEvent = InputEvent()
+    private val lStyle = Label.LabelStyle(BitmapFont(), Color.RED)
+    val l = Label("", lStyle)
+    val fps = Label("", lStyle)
 
     init {
-
-        Gdx.input.inputProcessor = stage
 
         val skin = Skin()
         skin.add("touchBackground", Texture("touchBackground.png"))
         skin.add("touchKnob", Texture("touchKnob.png"))
-
 
         val touchpadStyle = Touchpad.TouchpadStyle()
         touchpadStyle.background = skin.getDrawable("touchBackground")
@@ -47,31 +46,34 @@ class Hud {
         l.setSize(25f, 25f)
         stage.addActor(l)
 
-        fakeTouchDownEvent = InputEvent()
+        fps.setPosition(770f, 460f)
+        stage.addActor(fps)
+
         fakeTouchDownEvent.type = InputEvent.Type.touchDown
 
     }
 
     fun update(player: Player) {
         getDirection()
+        fps.setText(Gdx.graphics.framesPerSecond.toString())
 
-        if (player.playerBody!!.linearVelocity.x < 3.5f && touchpad.knobX > touchpad.width / 2) {
-            player.playerBody!!.applyLinearImpulse(Vector2(touchpad.knobPercentX / 12, 0f), player.playerBody!!.worldCenter, true)
+        if (player.playerBody.linearVelocity.x < 3.5f && touchpad.knobX > touchpad.width / 2) {
+            player.playerBody.applyLinearImpulse(Vector2(touchpad.knobPercentX / 12, 0f), Vector2(100f, 100f), true)
             player.lastRight = true
         }
 
-        if (player.playerBody!!.linearVelocity.x > -3.5f && touchpad.knobX < touchpad.width / 2) {
-            player.playerBody!!.applyLinearImpulse(Vector2(-touchpad.knobPercentX / -12, 0f), player.playerBody!!.worldCenter, true)
+        if (player.playerBody.linearVelocity.x > -3.5f && touchpad.knobX < touchpad.width / 2) {
+            player.playerBody.applyLinearImpulse(Vector2(-touchpad.knobPercentX / -12, 0f), player.playerBody.worldCenter, true)
             player.lastRight = false
         }
 
-        if (touchpad.knobY > touchpad.height - 45 && doubleJump < 10 && player.playerBody!!.linearVelocity.y < 2f) {
+        if (touchpad.knobY > touchpad.height - 45 && doubleJump < 10 && player.playerBody.linearVelocity.y < 2f) {
             if (doubleJump == 1) {
-                player.playerBody!!.applyLinearImpulse(Vector2(0f, 1f), player.playerBody!!.worldCenter, true)
+                player.playerBody.applyLinearImpulse(Vector2(0f, 1f), player.playerBody.worldCenter, true)
                 doubleJump++
                 jumping = true
             } else {
-                player.playerBody!!.applyLinearImpulse(Vector2(0f, .15f), player.playerBody!!.worldCenter, true)
+                player.playerBody.applyLinearImpulse(Vector2(0f, .15f), player.playerBody.worldCenter, true)
                 doubleJump++
             }
         }

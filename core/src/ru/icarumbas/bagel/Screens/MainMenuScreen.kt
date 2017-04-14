@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.viewport.StretchViewport
 import ru.icarumbas.Bagel
@@ -19,7 +18,7 @@ class MainMenuScreen(private val game: Bagel) : ScreenAdapter() {
 
     private val stage = Stage(StretchViewport(1920f, 1080f))
     private var font = BitmapFont()
-    private var animation: Animation<Any>? = null
+    lateinit private var animation: Animation<Any>
     private val batch = SpriteBatch()
     private var frame: Sprite = Sprite()
     private var back: Sprite = Sprite()
@@ -40,7 +39,7 @@ class MainMenuScreen(private val game: Bagel) : ScreenAdapter() {
             frames.add(frame)
         }
         animation = Animation(.1f, frames)
-        animation!!.playMode = Animation.PlayMode.LOOP
+        animation.playMode = Animation.PlayMode.LOOP
         frames.clear()
 
         val generator = FreeTypeFontGenerator(Gdx.files.internal("dc_s.ttf"))
@@ -60,7 +59,7 @@ class MainMenuScreen(private val game: Bagel) : ScreenAdapter() {
 
         table.addListener(object : InputListener() {
             override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
-                when (event.target){
+                when (event.target) {
                     newGame -> game.screen = GameScreen(game, true)
                     continueGame -> game.screen = GameScreen(game, false)
                 }
@@ -72,7 +71,7 @@ class MainMenuScreen(private val game: Bagel) : ScreenAdapter() {
             }
         })
 
-        table.setPosition(stage.width/2 - table.width/2, stage.height/2)
+        table.setPosition(stage.width / 2 - table.width / 2, stage.height / 2)
         stage.addActor(table)
     }
 
@@ -80,7 +79,7 @@ class MainMenuScreen(private val game: Bagel) : ScreenAdapter() {
         stateTimer += delta
         batch.begin()
         back.draw(batch)
-        frame = animation!!.getKeyFrame(stateTimer) as Sprite
+        frame = animation.getKeyFrame(stateTimer) as Sprite
         frame.draw(batch)
         batch.end()
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="32" tilewidth="32" tileheight="32" nextobjectid="60">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="32" tilewidth="32" tileheight="32" nextobjectid="67">
  <properties>
   <property name="Down" value="Yes"/>
   <property name="Height" type="float" value="10.24"/>
@@ -298,21 +298,11 @@
 </data>
  </layer>
  <objectgroup name="platform">
-  <object id="55" x="320" y="928">
-   <polyline points="0,0 128,0"/>
-  </object>
-  <object id="56" x="288" y="416">
-   <polyline points="0,0 192,0"/>
-  </object>
-  <object id="57" x="322.402" y="749.043">
-   <polyline points="0,0 123.149,0.461233 123.149,9.22467 0.461233,9.6859"/>
-  </object>
-  <object id="58" x="446.935" y="589.456">
-   <polyline points="0,0 -126.839,0.461233 -126.839,9.22467 -1.3837,9.22467"/>
-  </object>
-  <object id="59" x="447.396" y="237.535">
-   <polyline points="0,0 -126.378,0.461233 -126.839,9.22467 -2.30617,8.76343"/>
-  </object>
+  <object id="60" x="321.372" y="235.865" width="125.859" height="12.4898"/>
+  <object id="62" x="288" y="416" width="192"/>
+  <object id="64" x="320.411" y="588.942" width="126.339" height="10.5683"/>
+  <object id="65" x="320.892" y="747.946" width="126.819" height="12.4898"/>
+  <object id="66" x="320" y="928" width="128"/>
  </objectgroup>
  <objectgroup name="ground">
   <object id="54" x="-128" y="320">
