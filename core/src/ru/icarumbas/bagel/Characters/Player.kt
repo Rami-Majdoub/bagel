@@ -141,30 +141,30 @@ class Player(val gameScreen: GameScreen) : Sprite() {
 
         if (side == "Up" || side == "Down") {
             // Compare top-right parts of previous and current maps
-            val X10 = gameScreen.worldCreator.mapLinks[gameScreen.worldCreator.currentMap][10]
-            val prevX = gameScreen.worldCreator.mapLinks[previousMapLink][plX]
+            val X10 = gameScreen.worldCreator.rooms[gameScreen.worldCreator.currentMap].meshVertices[2]
+            val prevX = gameScreen.worldCreator.rooms[previousMapLink].meshVertices[plX]
 
             if (side == "Up") {
-                if (prevX == X10) player.playerBody.setTransform(gameScreen.worldCreator.mapWidth - 3.84f, 0f, 0f)
+                if (prevX == X10) player.playerBody.setTransform(gameScreen.worldCreator.rooms[gameScreen.worldCreator.currentMap].mapWidth - 3.84f, 0f, 0f)
                 else player.playerBody.setTransform(3.84f, 0f, 0f)
             }
             if (side == "Down") {
-                if (prevX == X10) player.playerBody.setTransform(gameScreen.worldCreator.mapWidth - 3.84f,gameScreen.worldCreator.mapHeight, 0f)
-                else player.playerBody.setTransform(3.84f, gameScreen.worldCreator.mapHeight, 0f)
+                if (prevX == X10) player.playerBody.setTransform(gameScreen.worldCreator.rooms[gameScreen.worldCreator.currentMap].mapWidth - 3.84f, gameScreen.worldCreator.rooms[gameScreen.worldCreator.currentMap].mapHeight, 0f)
+                else player.playerBody.setTransform(3.84f, gameScreen.worldCreator.rooms[gameScreen.worldCreator.currentMap].mapHeight, 0f)
             }
         }
 
         if (side == "Left" || side == "Right") {
             // Compare top parts of previous and current maps
-            val Y11 = gameScreen.worldCreator.mapLinks[gameScreen.worldCreator.currentMap][11]
-            val prevY = gameScreen.worldCreator.mapLinks[previousMapLink][plY]
+            val Y11 = gameScreen.worldCreator.rooms[gameScreen.worldCreator.currentMap].meshVertices[3]
+            val prevY = gameScreen.worldCreator.rooms[previousMapLink].meshVertices[plY]
 
             if (side == "Left") {
-                if (prevY == Y11) player.playerBody.setTransform(gameScreen.worldCreator.mapWidth, gameScreen.worldCreator.mapHeight - 2.56f, 0f)
-                else player.playerBody.setTransform(gameScreen.worldCreator.mapWidth, 2.56f, 0f)
+                if (prevY == Y11) player.playerBody.setTransform(gameScreen.worldCreator.rooms[gameScreen.worldCreator.currentMap].mapWidth, gameScreen.worldCreator.rooms[gameScreen.worldCreator.currentMap].mapHeight - 2.56f, 0f)
+                else player.playerBody.setTransform(gameScreen.worldCreator.rooms[gameScreen.worldCreator.currentMap].mapWidth, 2.56f, 0f)
             }
             if (side == "Right") {
-                if (prevY == Y11) player.playerBody.setTransform(0f, gameScreen.worldCreator.mapHeight - 2.56f, 0f)
+                if (prevY == Y11) player.playerBody.setTransform(0f, gameScreen.worldCreator.rooms[gameScreen.worldCreator.currentMap].mapHeight - 2.56f, 0f)
                 else player.playerBody.setTransform(0f, 2.56f, 0f)
             }
         }

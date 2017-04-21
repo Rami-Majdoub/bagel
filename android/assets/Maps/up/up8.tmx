@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="32" tilewidth="32" tileheight="32" nextobjectid="67">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="32" tilewidth="32" tileheight="32" nextobjectid="72">
  <properties>
   <property name="Down" value="Yes"/>
   <property name="Height" type="float" value="10.24"/>
@@ -297,16 +297,16 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup name="platform">
-  <object id="60" x="321.372" y="235.865" width="125.859" height="12.4898"/>
-  <object id="62" x="288" y="416" width="192"/>
-  <object id="64" x="320.411" y="588.942" width="126.339" height="10.5683"/>
-  <object id="65" x="320.892" y="747.946" width="126.819" height="12.4898"/>
-  <object id="66" x="320" y="928" width="128"/>
- </objectgroup>
  <objectgroup name="ground">
   <object id="54" x="-128" y="320">
    <polyline points="0,0 288,0 288,96 416,96 416,288 288,288 288,384 0,384 0,512 320,512 320,608 448,608 448,800 576,800 576,608 704,608 704,512 1056,512 1056,384 736,384 736,288 608,288 608,96 736,96 736,0 1024,0 1024,-128 800,-128 800,-224 576,-224 576,-448 448,-448 448,-224 224,-224 224,-128 0,-128 0,0"/>
   </object>
+ </objectgroup>
+ <objectgroup name="platform">
+  <object id="67" x="323" y="240" width="125" height="9"/>
+  <object id="68" x="288" y="416" width="192" height="9"/>
+  <object id="69" x="321" y="592" width="129" height="8"/>
+  <object id="70" x="321" y="751" width="126" height="10"/>
+  <object id="71" x="320" y="928" width="128" height="6.96517"/>
  </objectgroup>
 </map>

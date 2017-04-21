@@ -47,10 +47,11 @@ class WorldContactListener(val gameScreen: GameScreen) : ContactListener, Contac
         println(isContact)
 
         if (isContact && gameScreen.hud.touchpad.knobY < gameScreen.hud.touchpad.height / 2f - 20f) {
-            for (body in gameScreen.worldCreator.platformArrays[gameScreen.worldCreator.currentMap]) body.isActive = false
+            gameScreen.worldCreator.rooms[gameScreen.worldCreator.currentMap].setPlatformsActivity(false)
         }
         if (!isContact && gameScreen.player.playerBody.linearVelocity.y < -5f) {
-            for (body in gameScreen.worldCreator.platformArrays[gameScreen.worldCreator.currentMap]) body.isActive = true
+            gameScreen.worldCreator.rooms[gameScreen.worldCreator.currentMap].setPlatformsActivity(true)
+
         }
     }
 

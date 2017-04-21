@@ -2,7 +2,6 @@ package ru.icarumbas.bagel.Screens
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ScreenAdapter
-import com.badlogic.gdx.graphics.FPSLogger
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
@@ -35,7 +34,7 @@ class GameScreen(game: Bagel, newWorld: Boolean) : ScreenAdapter() {
 
     init {
         if (newWorld) worldCreator.createNewWorld() else worldCreator.continueWorld()
-        animationCreator.createTileAnimation(0, worldCreator.maps)
+        animationCreator.createTileAnimation(0, worldCreator.rooms)
 
         Gdx.input.inputProcessor = hud.stage
 
@@ -47,6 +46,7 @@ class GameScreen(game: Bagel, newWorld: Boolean) : ScreenAdapter() {
         world.step(1 / 60f, 8, 3)
         player.update(delta)
         moveCamera()
+        debugRenderer.render(world, camera.combined)
         worldCreator.mapRenderer.setView(camera)
         worldCreator.mapRenderer.render()
         worldCreator.mapRenderer.batch.begin()
@@ -59,7 +59,6 @@ class GameScreen(game: Bagel, newWorld: Boolean) : ScreenAdapter() {
         hud.stage.draw()
         hud.l.setText("${worldCreator.currentMap}")
         miniMap.render()
-        debugRenderer.render(world, camera.combined)
     }
 
     private fun moveCamera() {
@@ -73,11 +72,11 @@ class GameScreen(game: Bagel, newWorld: Boolean) : ScreenAdapter() {
         if (camera.position.x - viewport.worldWidth / 2f < 0)
             camera.position.x = viewport.worldWidth / 2f
 
-        if (camera.position.x + viewport.worldWidth / 2f > worldCreator.mapWidth)
-            camera.position.x = worldCreator.mapWidth - viewport.worldWidth / 2f
+        if (camera.position.x + viewport.worldWidth / 2f > worldCreator.rooms[worldCreator.currentMap].mapWidth)
+            camera.position.x = worldCreator.rooms[worldCreator.currentMap].mapWidth - viewport.worldWidth / 2f
 
-        if (camera.position.y + viewport.worldHeight / 2f > worldCreator.mapHeight)
-            camera.position.y = worldCreator.mapHeight - viewport.worldHeight / 2f
+        if (camera.position.y + viewport.worldHeight / 2f > worldCreator.rooms[worldCreator.currentMap].mapHeight)
+            camera.position.y = worldCreator.rooms[worldCreator.currentMap].mapHeight - viewport.worldHeight / 2f
 
         camera.update()
     }

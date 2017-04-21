@@ -5,7 +5,43 @@
 }
 {
 	class: java.lang.String
-	value: Maps/up/up2.tmx
+	value: Maps/up/up4.tmx
+}
+{
+	class: java.lang.String
+	value: Maps/down/down1.tmx
+}
+{
+	class: java.lang.String
+	value: Maps/right/right3.tmx
+}
+{
+	class: java.lang.String
+	value: Maps/left/left4.tmx
+}
+{
+	class: java.lang.String
+	value: Maps/right/right5.tmx
+}
+{
+	class: java.lang.String
+	value: Maps/down/down1.tmx
+}
+{
+	class: java.lang.String
+	value: Maps/right/right0.tmx
+}
+{
+	class: java.lang.String
+	value: Maps/left/left6.tmx
+}
+{
+	class: java.lang.String
+	value: Maps/right/right5.tmx
+}
+{
+	class: java.lang.String
+	value: Maps/up/up0.tmx
 }
 {
 	class: java.lang.String
@@ -13,15 +49,27 @@
 }
 {
 	class: java.lang.String
+	value: Maps/right/right0.tmx
+}
+{
+	class: java.lang.String
+	value: Maps/left/left5.tmx
+}
+{
+	class: java.lang.String
+	value: Maps/up/up4.tmx
+}
+{
+	class: java.lang.String
 	value: Maps/right/right6.tmx
 }
 {
 	class: java.lang.String
-	value: Maps/left/left2.tmx
+	value: Maps/right/right4.tmx
 }
 {
 	class: java.lang.String
-	value: Maps/up/up2.tmx
+	value: Maps/down/down2.tmx
 }
 {
 	class: java.lang.String
@@ -29,11 +77,27 @@
 }
 {
 	class: java.lang.String
-	value: Maps/up/up2.tmx
+	value: Maps/right/right3.tmx
 }
 {
 	class: java.lang.String
-	value: Maps/down/down6.tmx
+	value: Maps/down/down4.tmx
+}
+{
+	class: java.lang.String
+	value: Maps/up/up6.tmx
+}
+{
+	class: java.lang.String
+	value: Maps/down/down3.tmx
+}
+{
+	class: java.lang.String
+	value: Maps/right/right0.tmx
+}
+{
+	class: java.lang.String
+	value: Maps/right/right0.tmx
 }
 {
 	class: java.lang.String
@@ -45,19 +109,11 @@
 }
 {
 	class: java.lang.String
-	value: Maps/down/down3.tmx
+	value: Maps/left/left0.tmx
 }
 {
 	class: java.lang.String
-	value: Maps/up/up2.tmx
-}
-{
-	class: java.lang.String
-	value: Maps/down/down0.tmx
-}
-{
-	class: java.lang.String
-	value: Maps/left/left4.tmx
+	value: Maps/right/right4.tmx
 }
 {
 	class: java.lang.String
@@ -65,7 +121,7 @@
 }
 {
 	class: java.lang.String
-	value: Maps/left/left1.tmx
+	value: Maps/left/left0.tmx
 }
 {
 	class: java.lang.String
@@ -73,19 +129,7 @@
 }
 {
 	class: java.lang.String
-	value: Maps/up/up2.tmx
-}
-{
-	class: java.lang.String
-	value: Maps/down/down0.tmx
-}
-{
-	class: java.lang.String
-	value: Maps/left/left0.tmx
-}
-{
-	class: java.lang.String
-	value: Maps/up/up2.tmx
+	value: Maps/left/left6.tmx
 }
 {
 	class: java.lang.String
@@ -93,7 +137,11 @@
 }
 {
 	class: java.lang.String
-	value: Maps/left/left2.tmx
+	value: Maps/right/right0.tmx
+}
+{
+	class: java.lang.String
+	value: Maps/up/up2.tmx
 }
 {
 	class: java.lang.String
@@ -101,43 +149,27 @@
 }
 {
 	class: java.lang.String
+	value: Maps/down/down0.tmx
+}
+{
+	class: java.lang.String
+	value: Maps/up/up1.tmx
+}
+{
+	class: java.lang.String
+	value: Maps/left/left0.tmx
+}
+{
+	class: java.lang.String
+	value: Maps/down/down6.tmx
+}
+{
+	class: java.lang.String
+	value: Maps/up/up4.tmx
+}
+{
+	class: java.lang.String
 	value: Maps/right/right0.tmx
-}
-{
-	class: java.lang.String
-	value: Maps/up/up3.tmx
-}
-{
-	class: java.lang.String
-	value: Maps/up/up0.tmx
-}
-{
-	class: java.lang.String
-	value: Maps/down/down0.tmx
-}
-{
-	class: java.lang.String
-	value: Maps/down/down0.tmx
-}
-{
-	class: java.lang.String
-	value: Maps/left/left3.tmx
-}
-{
-	class: java.lang.String
-	value: Maps/left/left3.tmx
-}
-{
-	class: java.lang.String
-	value: Maps/right/right2.tmx
-}
-{
-	class: java.lang.String
-	value: Maps/left/left0.tmx
-}
-{
-	class: java.lang.String
-	value: Maps/left/left0.tmx
 }
 {
 	class: java.lang.String
@@ -149,11 +181,15 @@
 }
 {
 	class: java.lang.String
+	value: Maps/left/left0.tmx
+}
+{
+	class: java.lang.String
 	value: Maps/right/right0.tmx
 }
 {
 	class: java.lang.String
-	value: Maps/down/down2.tmx
+	value: Maps/down/down0.tmx
 }
 {
 	class: java.lang.String
@@ -161,18 +197,6 @@
 }
 {
 	class: java.lang.String
-	value: Maps/down/down2.tmx
-}
-{
-	class: java.lang.String
 	value: Maps/left/left0.tmx
-}
-{
-	class: java.lang.String
-	value: Maps/down/down3.tmx
-}
-{
-	class: java.lang.String
-	value: Maps/right/right0.tmx
 }
 ]
