@@ -36,23 +36,30 @@ class WorldContactListener(val gameScreen: GameScreen) : ContactListener, Contac
         val fixB = contact.fixtureB.filterData.categoryBits
         when (fixA or fixB) {
             gameScreen.PLAYER_BIT or gameScreen.PLATFORM_BIT -> isContact = true
+
         }
     }
 
     override fun endContact(contact: Contact) {
-        isContact = false
+        val fixA = contact.fixtureA.filterData.categoryBits
+        val fixB = contact.fixtureB.filterData.categoryBits
+        when (fixA or fixB) {
+            gameScreen.PLAYER_BIT or gameScreen.PLATFORM_BIT -> isContact = false
+
+        }
     }
 
     fun update() {
-        println(isContact)
 
-        if (isContact && gameScreen.hud.touchpad.knobY < gameScreen.hud.touchpad.height / 2f - 20f) {
+        if (isContact && isTouchPadDown()) {
             gameScreen.worldCreator.rooms[gameScreen.worldCreator.currentMap].setPlatformsActivity(false)
         }
-        if (!isContact && gameScreen.player.playerBody.linearVelocity.y < -5f) {
+        if (!isContact && !isTouchPadDown()) {
             gameScreen.worldCreator.rooms[gameScreen.worldCreator.currentMap].setPlatformsActivity(true)
 
         }
     }
+
+    fun isTouchPadDown() = gameScreen.hud.touchpad.knobY < gameScreen.hud.touchpad.height / 2f - 20f
 
 }

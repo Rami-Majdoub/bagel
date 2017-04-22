@@ -29,7 +29,6 @@ class WorldCreator(val gameScreen: GameScreen) {
     val b2DWorldCreator = B2DWorldCreator()
     var newRoom = Room(this, gameScreen, "Maps/up/up1.tmx")
 
-
     fun createNewWorld() {
         rooms.add(Room(this, gameScreen, "Maps/up/up1.tmx"))
         mapRenderer.map = rooms[0].map
@@ -147,7 +146,7 @@ class WorldCreator(val gameScreen: GameScreen) {
     }
 
     private fun changeRoom(player: Player, link: Int, side: String, plX: Int, plY: Int) {
-
+        rooms[currentMap].setAllBodiesActivity(false)
 
         // Value to get top or top-right mesh position in setPlayerPosition method
         val previousMapLink = currentMap
@@ -260,6 +259,7 @@ class WorldCreator(val gameScreen: GameScreen) {
                 rooms.add(chooseMap(path, side, count, meshX, meshY))
                 rooms[currentMap].meshVertices = intArrayOf(meshX + meshCheckSides[0], meshY + meshCheckSides[1], meshX + meshCheckSides[6], meshY + meshCheckSides[7])
                 rooms[currentMap].roomLinks[currentMapLink] = count
+                rooms[currentMap].loadBodies()
 
                 rooms[count].roomLinks[previousMapLink] = currentMap
 

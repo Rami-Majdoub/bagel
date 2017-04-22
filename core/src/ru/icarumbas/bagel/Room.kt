@@ -1,12 +1,13 @@
 package ru.icarumbas.bagel
 
+import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.physics.box2d.Body
 import ru.icarumbas.bagel.Screens.GameScreen
 import ru.icarumbas.bagel.Tools.WorldCreate.WorldCreator
 
 
 class Room(val worldCreator: WorldCreator, val gameScreen: GameScreen, path: String) {
-    val map = worldCreator.tmxLoader.load(path)
+    var map: TiledMap = worldCreator.tmxLoader.load(path)
 
     val roomLinks = intArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
     lateinit var meshVertices: IntArray

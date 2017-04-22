@@ -66,6 +66,7 @@ class Player(val gameScreen: GameScreen) : Sprite() {
         bodyDef.type = BodyDef.BodyType.DynamicBody
         playerBody = gameScreen.world.createBody(bodyDef)
 
+
         val shape = PolygonShape()
         shape.setAsBox(.23f, .49f)
 
@@ -74,7 +75,6 @@ class Player(val gameScreen: GameScreen) : Sprite() {
         fixtureDef.restitution = 0f
         fixtureDef.friction = .2f
         fixtureDef.density = .2f
-
 
         playerBody.createFixture(fixtureDef)
 
