@@ -1,5 +1,6 @@
 package ru.icarumbas.bagel.Tools.WorldCreate
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
@@ -9,6 +10,7 @@ import ru.icarumbas.bagel.Characters.Player
 import ru.icarumbas.bagel.Room
 import ru.icarumbas.bagel.Screens.GameScreen
 import ru.icarumbas.bagel.Tools.B2dWorldCreator.B2DWorldCreator
+import kotlin.concurrent.thread
 
 class WorldCreator(val gameScreen: GameScreen) {
 
@@ -27,14 +29,13 @@ class WorldCreator(val gameScreen: GameScreen) {
     var meshCheckSides = IntArray(8)
     val stringSides = arrayOf("Left", "Up", "Down", "Right")
     val b2DWorldCreator = B2DWorldCreator()
-    var newRoom = Room(this, gameScreen, "Maps/up/up1.tmx")
+    var newRoom: Room? = null
 
     fun createNewWorld() {
         rooms.add(Room(this, gameScreen, "Maps/up/up1.tmx"))
+        rooms[0].loadTileMap()
         mapRenderer.map = rooms[0].map
         rooms[0].meshVertices = intArrayOf(25, 25, 25, 25)
-        rooms[0].loadBodies()
-        rooms[0].setAllBodiesActivity(true)
 
         // Fill the mesh with nulls
         for (y in 0..49) {
@@ -84,7 +85,10 @@ class WorldCreator(val gameScreen: GameScreen) {
             println()
         }
 
+        for (i in 5..rooms.size - 1) rooms[i].map.dispose()
 
+        (0..4).forEach { i -> rooms[i].loadBodies() }
+        rooms[0].setAllBodiesActivity(true)
 
     }
 
@@ -146,23 +150,41 @@ class WorldCreator(val gameScreen: GameScreen) {
     }
 
     private fun changeRoom(player: Player, link: Int, side: String, plX: Int, plY: Int) {
-        rooms[currentMap].setAllBodiesActivity(false)
 
         // Value to get top or top-right mesh position in setPlayerPosition method
         val previousMapLink = currentMap
 
         // Change map
         currentMap = rooms[currentMap].roomLinks[link]
+
         mapRenderer.map = rooms[currentMap].map
-
-        // That says it all
-        gameScreen.player.setPlayerPosition(side, player, plX, plY, previousMapLink)
-
-        // Create animation for current room
-        gameScreen.animationCreator.createTileAnimation(currentMap, rooms)
-
         rooms[currentMap].setAllBodiesActivity(true)
 
+        thread(start = true){
+            Gdx.app.postRunnable {
+                rooms[previousMapLink].setAllBodiesActivity(false)
+                rooms[previousMapLink].roomLinks.forEach {
+                    if (rooms[previousMapLink].roomLinks.indexOf(it) != link && it != 999){
+                        rooms[it].map.dispose()
+                        rooms[it].groundBodies!!.forEach { body -> body.fixtureList.forEach{ body.destroyFixture(it) } }
+                        rooms[it].platformBodies!!.forEach { body -> body.fixtureList.forEach{ body.destroyFixture(it) } }
+                    }
+                }
+
+                // That says it all
+                gameScreen.player.setPlayerPosition(side, player, plX, plY, previousMapLink)
+
+                rooms[currentMap].roomLinks.forEach {
+                    if (it != 999) {
+                        rooms[it].loadTileMap()
+                        rooms[it].loadBodies()
+                    }
+                }
+
+                // Create animation for current room
+                gameScreen.animationCreator.createTileAnimation(currentMap, rooms)
+            }
+        }
     }
 
     private fun checkMeshSides(side: String, meshX: Int, meshY: Int, mapRoomWidth: Int, mapRoomHeight: Int): Boolean {
@@ -191,12 +213,13 @@ class WorldCreator(val gameScreen: GameScreen) {
 
     private fun chooseMap(path: String, side: String, count: Int, meshX: Int, meshY: Int): Room {
         // Load room randomly
-        randomMap = rand(6)
+        randomMap = rand(8)
         newRoom = Room(this, gameScreen, path + randomMap + ".tmx")
+        newRoom!!.loadTileMap()
 
         // Set new width and height
-        val mapRoomWidth = (newRoom.mapWidth / 7.68f).toInt()
-        val mapRoomHeight = (newRoom.mapHeight / 5.12f).toInt()
+        val mapRoomWidth = (newRoom!!.mapWidth / 7.68f).toInt()
+        val mapRoomHeight = (newRoom!!.mapHeight / 5.12f).toInt()
 
         // Check that new room fits
         if (checkMeshSides(side, meshX, meshY, mapRoomWidth, mapRoomHeight)) {
@@ -225,8 +248,8 @@ class WorldCreator(val gameScreen: GameScreen) {
                 for (i in 0..7) {
                     if ((meshX.plus(checkSides[i]) == it.meshVertices[0] || meshX.plus(checkSides[i]) == it.meshVertices[2]) &&
                             (meshY.plus(checkSides[i + 8]) == it.meshVertices[1] || meshY.plus(checkSides[i + 8]) == it.meshVertices[3])) {
-                        if ((it.map.properties.get(stringSides[3 - place]) == "No" && newRoom.map.properties.get(stringSides[place]) == "Yes") ||
-                                (it.map.properties.get(stringSides[3 - place]) == "Yes" && newRoom.map.properties.get(stringSides[place]) == "No")) {
+                        if ((it.map.properties.get(stringSides[3 - place]) == "No" && newRoom!!.map.properties.get(stringSides[place]) == "Yes") ||
+                                (it.map.properties.get(stringSides[3 - place]) == "Yes" && newRoom!!.map.properties.get(stringSides[place]) == "No")) {
                             chooseMap(path, side, count, meshX, meshY)
                         }
                     }
@@ -239,7 +262,7 @@ class WorldCreator(val gameScreen: GameScreen) {
         // Else recursion -__- Try to load another room
         else chooseMap(path, side, count,  meshX, meshY)
 
-        return newRoom
+        return newRoom!!
     }
 
     private fun generateRoom(path: String, side: String, previousMapLink: Int, currentMapLink: Int, count: Int,
@@ -259,8 +282,6 @@ class WorldCreator(val gameScreen: GameScreen) {
                 rooms.add(chooseMap(path, side, count, meshX, meshY))
                 rooms[currentMap].meshVertices = intArrayOf(meshX + meshCheckSides[0], meshY + meshCheckSides[1], meshX + meshCheckSides[6], meshY + meshCheckSides[7])
                 rooms[currentMap].roomLinks[currentMapLink] = count
-                rooms[currentMap].loadBodies()
-
                 rooms[count].roomLinks[previousMapLink] = currentMap
 
                 // Fill mesh on new room's coordinates

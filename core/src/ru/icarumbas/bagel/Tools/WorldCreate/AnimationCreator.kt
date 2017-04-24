@@ -1,7 +1,6 @@
 package ru.icarumbas.bagel.Tools.WorldCreate
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.TiledMapTile
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer
 import ru.icarumbas.bagel.Room
