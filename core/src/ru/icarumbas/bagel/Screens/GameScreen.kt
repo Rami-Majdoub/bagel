@@ -15,7 +15,7 @@ import ru.icarumbas.bagel.Tools.B2dWorldCreator.WorldContactListener
 import ru.icarumbas.bagel.Tools.WorldCreate.AnimationCreator
 import ru.icarumbas.bagel.Tools.WorldCreate.WorldCreator
 
-class GameScreen(game: Bagel, newWorld: Boolean) : ScreenAdapter() {
+class GameScreen(game: Bagel, newWorld: Boolean): ScreenAdapter() {
 
     val GROUND_BIT: Short = 2
     val PLATFORM_BIT: Short = 4
@@ -46,7 +46,6 @@ class GameScreen(game: Bagel, newWorld: Boolean) : ScreenAdapter() {
         world.step(1 / 60f, 8, 3)
         player.update(delta)
         moveCamera()
-        debugRenderer.render(world, camera.combined)
         worldCreator.mapRenderer.setView(camera)
         worldCreator.mapRenderer.render()
         worldCreator.mapRenderer.batch.begin()
@@ -59,6 +58,8 @@ class GameScreen(game: Bagel, newWorld: Boolean) : ScreenAdapter() {
         hud.stage.draw()
         hud.l.setText("${worldCreator.currentMap}")
         miniMap.render()
+        debugRenderer.render(world, camera.combined)
+
     }
 
     private fun moveCamera() {

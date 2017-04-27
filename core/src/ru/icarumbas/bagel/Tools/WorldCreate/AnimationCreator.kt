@@ -22,7 +22,7 @@ class AnimationCreator {
     }
 
     fun createTileAnimation(currentMap: Int, rooms: ArrayList<Room>) {
-        val tileset = rooms[currentMap].map.tileSets.getTileSet("Fire")
+        val tileset = rooms[currentMap].map!!.tileSets.getTileSet("Fire")
         fireTiles = HashMap<String, TiledMapTile>()
 
         for (tile in tileset) {
@@ -31,7 +31,7 @@ class AnimationCreator {
         }
 
         fireCellsInScene = ArrayList<TiledMapTileLayer.Cell>()
-        val layer = rooms[currentMap].map.layers.get("Fire") as TiledMapTileLayer
+        val layer = rooms[currentMap].map!!.layers.get("Fire") as TiledMapTileLayer
 
         for (x in 0..layer.width - 1) (0..layer.height - 1).forEach({
             val cell = layer.getCell(x, it)
