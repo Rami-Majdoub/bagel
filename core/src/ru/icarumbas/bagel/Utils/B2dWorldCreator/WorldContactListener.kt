@@ -1,4 +1,4 @@
-package ru.icarumbas.bagel.Tools.B2dWorldCreator
+package ru.icarumbas.bagel.Utils.B2dWorldCreator
 
 import com.badlogic.gdx.physics.box2d.*
 import ru.icarumbas.bagel.Screens.GameScreen
@@ -52,10 +52,10 @@ class WorldContactListener(val gameScreen: GameScreen) : ContactListener, Contac
     fun update() {
 
         if (isContact && isTouchPadDown()) {
-            gameScreen.worldCreator.rooms[gameScreen.worldCreator.currentMap].setPlatformsActivity(false)
+            gameScreen.rooms[gameScreen.currentMap].setPlatformsActivity(false)
         }
         if (!isContact && !isTouchPadDown()) {
-            gameScreen.worldCreator.rooms[gameScreen.worldCreator.currentMap].setPlatformsActivity(true)
+            gameScreen.rooms[gameScreen.currentMap].setPlatformsActivity(true)
 
         }
     }

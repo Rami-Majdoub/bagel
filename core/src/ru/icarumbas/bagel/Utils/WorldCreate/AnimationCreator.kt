@@ -1,4 +1,4 @@
-package ru.icarumbas.bagel.Tools.WorldCreate
+package ru.icarumbas.bagel.Utils.WorldCreate
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.maps.tiled.TiledMapTile

@@ -1,4 +1,4 @@
-package ru.icarumbas.bagel.Scenes
+package ru.icarumbas.bagel.Screens.Scenes
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color

@@ -45,6 +45,7 @@ class MainMenuScreen(private val game: Bagel) : ScreenAdapter() {
         val generator = FreeTypeFontGenerator(Gdx.files.internal("dc_s.ttf"))
         val parameter = FreeTypeFontGenerator.FreeTypeFontParameter()
         parameter.size = 125
+
         font = generator.generateFont(parameter)
 
         val labelStyle = Label.LabelStyle(font, Color.CORAL)

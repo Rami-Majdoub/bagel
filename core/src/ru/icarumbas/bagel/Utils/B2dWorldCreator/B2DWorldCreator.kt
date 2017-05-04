@@ -1,4 +1,4 @@
-package ru.icarumbas.bagel.Tools.B2dWorldCreator
+package ru.icarumbas.bagel.Utils.B2dWorldCreator
 
 import com.badlogic.gdx.maps.MapLayer
 import com.badlogic.gdx.maps.objects.PolylineMapObject

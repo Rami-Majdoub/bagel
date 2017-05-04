@@ -3,7 +3,7 @@ package ru.icarumbas.bagel
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.physics.box2d.Body
 import ru.icarumbas.bagel.Screens.GameScreen
-import ru.icarumbas.bagel.Tools.WorldCreate.WorldCreator
+import ru.icarumbas.bagel.Utils.WorldCreate.WorldCreator
 
 
 class Room {
