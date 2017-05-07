@@ -256,6 +256,8 @@
   <object id="37" x="320" y="512">
    <polyline points="0,0 0,-96 -128,-96 -224,-192 -384,-192 -416,-192 -416,-320 -256,-320 -256,-448 384,-448 384,-320 576,-320 576,-192 352,-192 256,-96 128,-96 128,0"/>
   </object>
+ </objectgroup>
+ <objectgroup name="platform">
   <object id="40" x="320" y="416" width="128" height="8"/>
  </objectgroup>
 </map>

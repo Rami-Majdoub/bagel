@@ -3,11 +3,12 @@ package ru.icarumbas.bagel
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.utils.Json
+import ru.icarumbas.Bagel
 import ru.icarumbas.bagel.Characters.Player
 import ru.icarumbas.bagel.Screens.GameScreen
 
 
-class WorldIO {
+class WorldIO (val game: Bagel){
 
     private val json = Json()
     val preferences = Gdx.app.getPreferences("Bagel preferences")!!
@@ -25,14 +26,14 @@ class WorldIO {
         player.playerBody.setTransform(preferences.getFloat("PlayerPositionX"), preferences.getFloat("PlayerPositionY"), 0f)
 
         rooms[currentMap].loadTileMap(gameScreen.worldCreator)
-        rooms[currentMap].loadBodies(gameScreen.worldCreator, gameScreen)
+        rooms[currentMap].loadBodies(gameScreen.worldCreator, gameScreen, game)
         rooms[currentMap].setAllBodiesActivity(true)
         mapRenderer.map = rooms[currentMap].map
 
         rooms[gameScreen.currentMap].roomLinks.forEach {
-            if (it != 999) {
+            if (it != game.DEFAULT) {
                 rooms[it].loadTileMap(gameScreen.worldCreator)
-                rooms[it].loadBodies(gameScreen.worldCreator, gameScreen)
+                rooms[it].loadBodies(gameScreen.worldCreator, gameScreen, game)
             }
         }
 

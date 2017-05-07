@@ -20,11 +20,7 @@ import ru.icarumbas.bagel.Utils.WorldCreate.WorldCreator
 import ru.icarumbas.bagel.WorldIO
 import kotlin.concurrent.thread
 
-class GameScreen(game: Bagel, newWorld: Boolean): ScreenAdapter() {
-
-    val GROUND_BIT: Short = 2
-    val PLATFORM_BIT: Short = 4
-    val PLAYER_BIT: Short = 8
+class GameScreen(val game: Bagel, newWorld: Boolean): ScreenAdapter() {
 
     private val debugRenderer = Box2DDebugRenderer()
     private val camera = OrthographicCamera(7.68f, 5.12f)
@@ -32,15 +28,14 @@ class GameScreen(game: Bagel, newWorld: Boolean): ScreenAdapter() {
     private val viewport = FitViewport(camera.viewportWidth, camera.viewportHeight, camera)
     val animationCreator = AnimationCreator()
     val world = World(Vector2(0f, -9.8f), true)
-    val player = Player(this)
+    val player = Player(this, game)
     val worldCreator = WorldCreator()
-    private val worldContactListener = WorldContactListener(this)
+    private val worldContactListener = WorldContactListener(this, game)
     val miniMap = MiniMap()
-
     var mapRenderer = OrthogonalTiledMapRenderer(TiledMap(), 0.01f)
     var currentMap = 0
     var rooms = ArrayList<Room>()
-    val worldIO = WorldIO()
+    val worldIO = WorldIO(game)
 
     init {
         if (newWorld) createNewWorld() else continueWorld()
@@ -52,6 +47,7 @@ class GameScreen(game: Bagel, newWorld: Boolean): ScreenAdapter() {
     }
 
     override fun render(delta: Float) {
+        debugRenderer.render(world, camera.combined)
         world.step(1 / 60f, 8, 3)
         player.update(delta)
         moveCamera()
@@ -67,7 +63,6 @@ class GameScreen(game: Bagel, newWorld: Boolean): ScreenAdapter() {
         hud.stage.draw()
         hud.l.setText("$currentMap")
         miniMap.render()
-        debugRenderer.render(world, camera.combined)
         checkRoomChange(player)
     }
 
@@ -75,6 +70,11 @@ class GameScreen(game: Bagel, newWorld: Boolean): ScreenAdapter() {
         worldIO.preferences.putFloat("PlayerPositionX", player.playerBody.position.x)
         worldIO.preferences.putFloat("PlayerPositionY", player.playerBody.position.y)
         worldIO.preferences.flush()
+    }
+
+    override fun dispose() {
+        world.dispose()
+        debugRenderer.dispose()
     }
 
     private fun moveCamera() {
@@ -97,45 +97,15 @@ class GameScreen(game: Bagel, newWorld: Boolean): ScreenAdapter() {
         camera.update()
     }
 
-    override fun dispose() {
-        world.dispose()
-        debugRenderer.dispose()
-    }
-
     fun createNewWorld() {
         rooms.add(Room())
         rooms[0].meshVertices = intArrayOf(25, 25, 25, 25)
         rooms[0].loadTileMap(worldCreator, "Maps/up/up1.tmx")
 
-        // Fill the mesh with nulls
-        for (y in 0..49) {
-            for (x in 0..49) {
-                worldCreator.mesh[y][x] = 0
-            }
-        }
+        worldCreator.createWorld(game, 100, rooms)
 
-        // Set center of the mesh
-        worldCreator.mesh[25][25] = 1
+        System.out.println("Size of rooms: ${rooms.size}")
 
-
-        // Try to create map for each map[i] side
-        for (i in 0..100) {
-            if (i == rooms.size) break
-            worldCreator.generateRoom("Maps/up/up", "Up", 1, 3, i, 0, -1, 0, 3, 0, 1, rooms)
-            worldCreator.generateRoom("Maps/down/down", "Down", 3, 1, i, 0, 1, 0, 1, 0, 3, rooms)
-            worldCreator.generateRoom("Maps/right/right", "Right", 2, 0, i, 1, 0, 2, 1, 0, 1, rooms)
-            worldCreator.generateRoom("Maps/left/left", "Left", 0, 2, i, -1, 0, 0, 1, 2, 1, rooms)
-
-            if (rooms[i].map!!.properties["Height"] != 5.12f) {
-                worldCreator.generateRoom("Maps/right/right", "Right", 6, 0, i, 1, 0, 2, 3, 0, 3, rooms)
-                worldCreator.generateRoom("Maps/left/left", "Left", 4, 2, i, -1, 0, 0, 3, 2, 3, rooms)
-            }
-            if (rooms[i].map!!.properties["Width"] != 7.68f) {
-                worldCreator.generateRoom("Maps/up/up", "Up", 5, 3, i, 0, -1, 2, 3, 2, 1, rooms)
-                worldCreator.generateRoom("Maps/down/down", "Down", 7, 1, i, 0, 1, 2, 1, 2, 3, rooms)
-            }
-
-        }
         currentMap = 0
 
         rooms.forEach { it.map!!.dispose()
@@ -147,7 +117,7 @@ class GameScreen(game: Bagel, newWorld: Boolean): ScreenAdapter() {
 
         (0..4).forEach {
             rooms[it].loadTileMap(worldCreator)
-            rooms[it].loadBodies(worldCreator, this)
+            rooms[it].loadBodies(worldCreator, this, game)
         }
 
         rooms[0].setAllBodiesActivity(true)
@@ -172,16 +142,17 @@ class GameScreen(game: Bagel, newWorld: Boolean): ScreenAdapter() {
         mapRenderer.map = rooms[currentMap].map
         rooms[currentMap].setAllBodiesActivity(true)
 
-        player.setPlayerPosition(side, player, plX, plY, previousMapLink)
+        player.setPlayerPosition(game, side, player, plX, plY, previousMapLink)
 
         worldIO.preferences.putInteger("CurrentMap", currentMap)
         worldIO.preferences.flush()
 
         thread(start = true){
             Gdx.app.postRunnable {
+
                 rooms[previousMapLink].setAllBodiesActivity(false)
                 rooms[previousMapLink].roomLinks.forEach {
-                    if (rooms[previousMapLink].roomLinks.indexOf(it) != link && it != 999){
+                    if (it != game.DEFAULT && it != currentMap){
                         rooms[it].map!!.dispose()
                         rooms[it].groundBodies.forEach { body -> body.fixtureList.forEach{ body.destroyFixture(it) } }
                         rooms[it].platformBodies.forEach { body -> body.fixtureList.forEach{ body.destroyFixture(it) } }
@@ -189,9 +160,9 @@ class GameScreen(game: Bagel, newWorld: Boolean): ScreenAdapter() {
                 }
 
                 rooms[currentMap].roomLinks.forEach {
-                    if (it != 999) {
+                    if (it != game.DEFAULT) {
                         rooms[it].loadTileMap(worldCreator)
-                        rooms[it].loadBodies(worldCreator, this)
+                        rooms[it].loadBodies(worldCreator, this, game)
                     }
                 }
 
@@ -205,21 +176,21 @@ class GameScreen(game: Bagel, newWorld: Boolean): ScreenAdapter() {
         val posX = player.playerBody.position.x
         val posY = player.playerBody.position.y
 
-        if (posX > rooms[currentMap].mapWidth && posY < 5.12f) changeRoom(player, 2, "Right", 2, 1) else // 2
+        if (posX > rooms[currentMap].mapWidth && posY < game.REG_ROOM_HEIGHT) changeRoom(player, 2, "Right", 2, 1) else // 2
 
-            if (posX < 0 && posY < 5.12f) changeRoom(player, 0, "Left", 0, 1) else // 1
+            if (posX < 0 && posY < game.REG_ROOM_HEIGHT) changeRoom(player, 0, "Left", 0, 1) else // 1
 
-                if (posY > rooms[currentMap].mapHeight && posX < 7.68f) changeRoom(player, 1, "Up", 0, 3) else // 4
+                if (posY > rooms[currentMap].mapHeight && posX < game.REG_ROOM_WIDTH) changeRoom(player, 1, "Up", 0, 3) else // 4
 
-                    if (posY < 0 && posX < 7.68f) changeRoom(player, 3, "Down", 0, 1) else // 1
+                    if (posY < 0 && posX < game.REG_ROOM_WIDTH) changeRoom(player, 3, "Down", 0, 1) else // 1
 
-                        if (posX < 0 && posY > 5.12f) changeRoom(player, 4, "Left", 0, 3) else // 4
+                        if (posX < 0 && posY > game.REG_ROOM_HEIGHT) changeRoom(player, 4, "Left", 0, 3) else // 4
 
-                            if (posY < 0 && posX > 7.68f) changeRoom(player, 7, "Down", 2, 1) else // 2
+                            if (posY < 0 && posX > game.REG_ROOM_WIDTH) changeRoom(player, 7, "Down", 2, 1) else // 2
 
-                                if (posX > rooms[currentMap].mapWidth && posY > 5.12f) changeRoom(player, 6, "Right", 2, 3) else // 3
+                                if (posX > rooms[currentMap].mapWidth && posY > game.REG_ROOM_HEIGHT) changeRoom(player, 6, "Right", 2, 3) else // 3
 
-                                    if (posY > rooms[currentMap].mapHeight && posX > 7.68f) changeRoom(player, 5, "Up", 2, 3) // 3
+                                    if (posY > rooms[currentMap].mapHeight && posX > game.REG_ROOM_WIDTH) changeRoom(player, 5, "Up", 2, 3) // 3
     }
 
 }

@@ -2,6 +2,7 @@ package ru.icarumbas.bagel.Utils.WorldCreate
 
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
 import com.badlogic.gdx.math.MathUtils
+import ru.icarumbas.Bagel
 import ru.icarumbas.bagel.Room
 import ru.icarumbas.bagel.Utils.B2dWorldCreator.B2DWorldCreator
 
@@ -10,13 +11,46 @@ class WorldCreator {
     var random = 0
     var zeroRoomChance = 0
     val tmxLoader = TmxMapLoader()
-    var mesh = Array(50) { IntArray(50) }
+    lateinit var mesh: Array<IntArray>
     private var randomMap: Int = 0
     val stringSides = arrayOf("Left", "Up", "Down", "Right")
     val b2DWorldCreator = B2DWorldCreator()
     var newRoom = Room()
     var roomCounter = 0
     var meshCheckSides = IntArray(8)
+
+    fun createWorld(game: Bagel, worldSize: Int, rooms: ArrayList<Room>){
+        mesh = Array(worldSize / 2 + 1) { IntArray(worldSize / 2 + 1) }
+
+        // Fill the mesh with nulls
+        for (y in 0..worldSize.div(2)) {
+            for (x in 0..worldSize.div(2)) {
+                mesh[y][x] = 0
+            }
+        }
+
+        // Set center of the mesh
+        mesh[worldSize.div(4)][worldSize.div(4)] = 1
+
+
+        // Try to create map for each map[i] side
+        for (i in 0..worldSize) {
+            if (i == rooms.size) break
+            generateRoom(game, "Maps/up/up", "Up", 1, 3, i, 0, -1, 0, 3, 0, 1, rooms)
+            generateRoom(game, "Maps/down/down", "Down", 3, 1, i, 0, 1, 0, 1, 0, 3, rooms)
+            generateRoom(game, "Maps/right/right", "Right", 2, 0, i, 1, 0, 2, 1, 0, 1, rooms)
+            generateRoom(game, "Maps/left/left", "Left", 0, 2, i, -1, 0, 0, 1, 2, 1, rooms)
+
+            if (rooms[i].map!!.properties["Height"] != game.REG_ROOM_HEIGHT) {
+                generateRoom(game, "Maps/right/right", "Right", 6, 0, i, 1, 0, 2, 3, 0, 3, rooms)
+                generateRoom(game, "Maps/left/left", "Left", 4, 2, i, -1, 0, 0, 3, 2, 3, rooms)
+            }
+            if (rooms[i].map!!.properties["Width"] != game.REG_ROOM_WIDTH) {
+                generateRoom(game, "Maps/up/up", "Up", 5, 3, i, 0, -1, 2, 3, 2, 1, rooms)
+                generateRoom(game, "Maps/down/down", "Down", 7, 1, i, 0, 1, 2, 1, 2, 3, rooms)
+            }
+        }
+    }
 
     private fun rand(values: Int): Int {
         random = MathUtils.random(1000)
@@ -43,7 +77,7 @@ class WorldCreator {
                 (mesh[meshY + meshCheckSides[7]][meshX + meshCheckSides[6]] == 0)
     }
 
-    private fun chooseMap(path: String, side: String, count: Int, meshX: Int, meshY: Int, rooms: ArrayList<Room>): Room {
+    private fun chooseMap(game: Bagel, path: String, side: String, count: Int, meshX: Int, meshY: Int, rooms: ArrayList<Room>): Room {
 
 
         // Load room randomly
@@ -52,18 +86,17 @@ class WorldCreator {
         newRoom.loadTileMap(this, path + randomMap + ".tmx")
 
         // Set new width and height
-        val mapRoomWidth = (newRoom.mapWidth / 7.68f).toInt()
-        val mapRoomHeight = (newRoom.mapHeight / 5.12f).toInt()
+        val mapRoomWidth = (newRoom.mapWidth / game.REG_ROOM_WIDTH).toInt()
+        val mapRoomHeight = (newRoom.mapHeight / game.REG_ROOM_HEIGHT).toInt()
 
         // Check that new room fits
         if (checkMeshSides(side, meshX, meshY, mapRoomWidth, mapRoomHeight)) {
 
-            /* (x0, x1, x2, x3
-                y0, y1, y2, y3) */
+
             val checkSides = when (side) {
 
-                "Left" -> intArrayOf(-mapRoomWidth - 1, -mapRoomWidth - 1, -mapRoomWidth, -1, -mapRoomWidth, -1, 0, 0, // Xs
-                        0, -mapRoomHeight + 1, -mapRoomHeight, -mapRoomHeight, 1, 1, 0, -mapRoomHeight + 1) // Ys
+                "Left" -> intArrayOf(-mapRoomWidth - 1, -mapRoomWidth - 1, -mapRoomWidth, -1, -mapRoomWidth, -1, 0, 0, // Xss
+                        0, -mapRoomHeight + 1, -mapRoomHeight, -mapRoomHeight, 1, 1, 0, -mapRoomHeight + 1) // Yss
 
                 "Up" -> intArrayOf(-1, -1, 0, mapRoomWidth - 1, 0, mapRoomWidth - 1, mapRoomWidth, mapRoomWidth,
                         -1, -mapRoomHeight, -mapRoomHeight - 1, -mapRoomHeight - 1, 0, 0, -1, -mapRoomHeight)
@@ -84,7 +117,7 @@ class WorldCreator {
                             (meshY.plus(checkSides[i + 8]) == it.meshVertices[1] || meshY.plus(checkSides[i + 8]) == it.meshVertices[3])) {
                         if ((it.map!!.properties.get(stringSides[3 - place]) == "No" && newRoom.map!!.properties.get(stringSides[place]) == "Yes") ||
                                 (it.map!!.properties.get(stringSides[3 - place]) == "Yes" && newRoom.map!!.properties.get(stringSides[place]) == "No")) {
-                            chooseMap(path, side, count, meshX, meshY, rooms)
+                            chooseMap(game, path, side, count, meshX, meshY, rooms)
                         }
                     }
                     if (i % 2 > 0) place++
@@ -93,13 +126,12 @@ class WorldCreator {
             }
 
         }
-        // Else recursion -__- Try to load another room
-        else chooseMap(path, side, count, meshX, meshY, rooms)
+        else chooseMap(game, path, side, count, meshX, meshY, rooms)
 
         return newRoom
     }
 
-    fun generateRoom(path: String, side: String, previousMapLink: Int, currentMapLink: Int, count: Int, closestX: Int, closestY: Int,
+    fun generateRoom(game: Bagel, path: String, side: String, previousMapLink: Int, currentMapLink: Int, count: Int, closestX: Int, closestY: Int,
                      placeX: Int, placeY: Int, linkX: Int, linkY: Int, rooms: ArrayList<Room>) {
 
         // Check that room have gate to create specific map
@@ -112,7 +144,7 @@ class WorldCreator {
             if (mesh[meshY + closestY][meshX + closestX] == 0) {
                 if (zeroRoomChance < 500) zeroRoomChance += 10
                 roomCounter++
-                rooms.add(chooseMap(path, side, count, meshX, meshY, rooms))
+                rooms.add(chooseMap(game, path, side, count, meshX, meshY, rooms))
                 rooms[roomCounter].meshVertices = intArrayOf(meshX + meshCheckSides[0], meshY + meshCheckSides[1], meshX + meshCheckSides[6], meshY + meshCheckSides[7])
                 rooms[roomCounter].roomLinks[currentMapLink] = count
                 rooms[count].roomLinks[previousMapLink] = roomCounter

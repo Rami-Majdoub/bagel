@@ -8,9 +8,10 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.utils.Array
+import ru.icarumbas.Bagel
 import ru.icarumbas.bagel.Screens.GameScreen
 
-class Player(val gameScreen: GameScreen) : Sprite() {
+class Player(val gameScreen: GameScreen, val game: Bagel) : Sprite() {
     lateinit var playerBody: Body
     private val stateAnimation: Animation<*>
     private val runAnimation: Animation<*>
@@ -39,24 +40,20 @@ class Player(val gameScreen: GameScreen) : Sprite() {
 
         val frames = Array<Sprite>()
 
-        for (i in 1..10) {
-            frames.add(Sprite(atlas.findRegion("Idle ($i)")))
-        }
+        (1..10).forEach { frames.add(Sprite(atlas.findRegion("Idle ($it)"))) }
+
         stateAnimation = Animation(.1f, frames)
         stateAnimation.playMode = Animation.PlayMode.LOOP
         frames.clear()
 
-        for (i in 1..10) {
-            frames.add(Sprite(atlas.findRegion("Run ($i)")))
-        }
+        (1..10).forEach { frames.add(Sprite(atlas.findRegion("Run ($it)"))) }
+
         runAnimation = Animation(.1f, frames)
         runAnimation.playMode = Animation.PlayMode.LOOP
         frames.clear()
 
 
-        for (i in 1..10) {
-            frames.add(Sprite(atlas.findRegion("Jump ($i)")))
-        }
+        (1..10).forEach { frames.add(Sprite(atlas.findRegion("Jump ($it)"))) }
         jumpAnimation = Animation(.1f, frames)
         jumpAnimation.playMode = Animation.PlayMode.LOOP
         frames.clear()
@@ -91,7 +88,7 @@ class Player(val gameScreen: GameScreen) : Sprite() {
         circleShape.radius = .25f
         circleShape.position = Vector2(0f, -.28f)
         fixtureDef.friction = 1f
-        fixtureDef.filter.categoryBits = gameScreen.PLAYER_BIT
+        fixtureDef.filter.categoryBits = game.PLAYER_BIT
         playerBody.createFixture(fixtureDef)
 
         setSize(playerBodyWidth, playerBodyHeight)
@@ -137,7 +134,7 @@ class Player(val gameScreen: GameScreen) : Sprite() {
         return region
     }
 
-    fun setPlayerPosition(side: String, player: Player, plX: Int, plY: Int, previousMapLink: Int) {
+    fun setPlayerPosition(game: Bagel, side: String, player: Player, plX: Int, plY: Int, previousMapLink: Int) {
 
         if (side == "Up" || side == "Down") {
             // Compare top-right parts of previous and current maps
@@ -145,12 +142,13 @@ class Player(val gameScreen: GameScreen) : Sprite() {
             val prevX = gameScreen.rooms[previousMapLink].meshVertices[plX]
 
             if (side == "Up") {
-                if (prevX == X10) player.playerBody.setTransform(gameScreen.rooms[gameScreen.currentMap].mapWidth - 3.84f, 0f, 0f)
-                else player.playerBody.setTransform(3.84f, 0f, 0f)
+                if (prevX == X10) player.playerBody.setTransform(gameScreen.rooms[gameScreen.currentMap].mapWidth - game.REG_ROOM_WIDTH/2, 0f, 0f)
+                else player.playerBody.setTransform(game.REG_ROOM_WIDTH/2, 0f, 0f)
             }
             if (side == "Down") {
-                if (prevX == X10) player.playerBody.setTransform(gameScreen.rooms[gameScreen.currentMap].mapWidth - 3.84f, gameScreen.rooms[gameScreen.currentMap].mapHeight, 0f)
-                else player.playerBody.setTransform(3.84f, gameScreen.rooms[gameScreen.currentMap].mapHeight, 0f)
+                if (prevX == X10) player.playerBody.setTransform(gameScreen.rooms[gameScreen.currentMap].mapWidth - game.REG_ROOM_WIDTH/2,
+                                                                 gameScreen.rooms[gameScreen.currentMap].mapHeight, 0f)
+                else player.playerBody.setTransform(game.REG_ROOM_WIDTH/2, gameScreen.rooms[gameScreen.currentMap].mapHeight, 0f)
             }
         }
 
@@ -160,12 +158,13 @@ class Player(val gameScreen: GameScreen) : Sprite() {
             val prevY = gameScreen.rooms[previousMapLink].meshVertices[plY]
 
             if (side == "Left") {
-                if (prevY == Y11) player.playerBody.setTransform(gameScreen.rooms[gameScreen.currentMap].mapWidth, gameScreen.rooms[gameScreen.currentMap].mapHeight - 2.56f, 0f)
-                else player.playerBody.setTransform(gameScreen.rooms[gameScreen.currentMap].mapWidth, 2.56f, 0f)
+                if (prevY == Y11) player.playerBody.setTransform(gameScreen.rooms[gameScreen.currentMap].mapWidth,
+                                                                 gameScreen.rooms[gameScreen.currentMap].mapHeight - game.REG_ROOM_HEIGHT/2, 0f)
+                else player.playerBody.setTransform(gameScreen.rooms[gameScreen.currentMap].mapWidth, game.REG_ROOM_HEIGHT/2, 0f)
             }
             if (side == "Right") {
-                if (prevY == Y11) player.playerBody.setTransform(0f, gameScreen.rooms[gameScreen.currentMap].mapHeight - 2.56f, 0f)
-                else player.playerBody.setTransform(0f, 2.56f, 0f)
+                if (prevY == Y11) player.playerBody.setTransform(0f, gameScreen.rooms[gameScreen.currentMap].mapHeight - game.REG_ROOM_HEIGHT/2, 0f)
+                else player.playerBody.setTransform(0f, game.REG_ROOM_HEIGHT/2, 0f)
             }
         }
 
