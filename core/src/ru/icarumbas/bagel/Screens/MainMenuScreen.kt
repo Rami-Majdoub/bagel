@@ -61,8 +61,8 @@ class MainMenuScreen(private val game: Bagel) : ScreenAdapter() {
         table.addListener(object : InputListener() {
             override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
                 when (event.target) {
-                    newGame -> game.screen = GameScreen(game, true)
-                    continueGame -> game.screen = GameScreen(game, false)
+                    newGame -> game.screen = GameScreen(true)
+                    continueGame -> game.screen = GameScreen(false)
                 }
             }
 

@@ -9,19 +9,20 @@ import java.util.*
 class AnimationCreator {
 
     private var elapsedSinceAnimation = 0f
-    lateinit private var fireTiles: HashMap<String, TiledMapTile>
+    private var fireTiles = HashMap<String, TiledMapTile>()
     lateinit private var fireCellsInScene: ArrayList<TiledMapTileLayer.Cell>
 
     fun updateAnimations() {
         elapsedSinceAnimation += Gdx.graphics.deltaTime
 
-        if (elapsedSinceAnimation > 0.025f) {
+        if (elapsedSinceAnimation > 0.025f && fireTiles.isNotEmpty() ) {
             updateFireAnimations()
             elapsedSinceAnimation = 0f
         }
     }
 
     fun createTileAnimation(currentMap: Int, rooms: ArrayList<Room>) {
+        if (rooms[currentMap].map!!.tileSets.getTileSet("Fire") == null) return
         val tileset = rooms[currentMap].map!!.tileSets.getTileSet("Fire")
         fireTiles = HashMap<String, TiledMapTile>()
 

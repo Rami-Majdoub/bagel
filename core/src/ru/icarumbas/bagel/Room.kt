@@ -3,6 +3,8 @@ package ru.icarumbas.bagel
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.physics.box2d.Body
 import ru.icarumbas.Bagel
+import ru.icarumbas.GROUND_BIT
+import ru.icarumbas.PLATFORM_BIT
 import ru.icarumbas.bagel.Screens.GameScreen
 import ru.icarumbas.bagel.Utils.WorldCreate.WorldCreator
 
@@ -31,10 +33,10 @@ class Room {
 
     fun setGroundActivity(active: Boolean) = groundBodies.forEach { it.isActive = active }
 
-    fun loadBodies(worldCreator: WorldCreator, gameScreen: GameScreen, game: Bagel){
-        worldCreator.b2DWorldCreator.loadBodies(map!!.layers.get("ground"), gameScreen.world, groundBodies, game.GROUND_BIT)
+    fun loadBodies(worldCreator: WorldCreator, gameScreen: GameScreen){
+        worldCreator.b2DWorldCreator.loadBodies(map!!.layers.get("ground"), gameScreen.world, groundBodies, GROUND_BIT)
         if (map!!.layers["platform"] != null)
-        worldCreator.b2DWorldCreator.loadBodies(map!!.layers.get("platform"), gameScreen.world, platformBodies, game.PLATFORM_BIT)
+        worldCreator.b2DWorldCreator.loadBodies(map!!.layers.get("platform"), gameScreen.world, platformBodies, PLATFORM_BIT)
     }
 
     fun loadTileMap(worldCreator: WorldCreator, path: String){

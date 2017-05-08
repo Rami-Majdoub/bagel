@@ -2,10 +2,13 @@ package ru.icarumbas.bagel.Utils.B2dWorldCreator
 
 import com.badlogic.gdx.physics.box2d.*
 import ru.icarumbas.Bagel
+import ru.icarumbas.GROUND_BIT
+import ru.icarumbas.PLATFORM_BIT
+import ru.icarumbas.PLAYER_BIT
 import ru.icarumbas.bagel.Screens.GameScreen
 import kotlin.experimental.or
 
-class WorldContactListener(val gameScreen: GameScreen, val game: Bagel) : ContactListener, ContactFilter {
+class WorldContactListener(val gameScreen: GameScreen) : ContactListener, ContactFilter {
 
     var isContact = false
 
@@ -13,7 +16,7 @@ class WorldContactListener(val gameScreen: GameScreen, val game: Bagel) : Contac
         var playerBody = fixtureA.body
         var otherBody = fixtureB.body
 
-        if (fixtureA.filterData.categoryBits or fixtureB.filterData.categoryBits == game.GROUND_BIT) return true
+        if (fixtureA.filterData.categoryBits or fixtureB.filterData.categoryBits == GROUND_BIT) return true
 
         if (fixtureB.body == gameScreen.player.playerBody){
             playerBody = fixtureB.body
@@ -36,7 +39,7 @@ class WorldContactListener(val gameScreen: GameScreen, val game: Bagel) : Contac
         val fixA = contact.fixtureA.filterData.categoryBits
         val fixB = contact.fixtureB.filterData.categoryBits
         when (fixA or fixB) {
-            game.PLAYER_BIT or game.PLATFORM_BIT -> isContact = true
+            PLAYER_BIT or PLATFORM_BIT -> isContact = true
 
         }
     }
@@ -45,7 +48,7 @@ class WorldContactListener(val gameScreen: GameScreen, val game: Bagel) : Contac
         val fixA = contact.fixtureA.filterData.categoryBits
         val fixB = contact.fixtureB.filterData.categoryBits
         when (fixA or fixB) {
-            game.PLAYER_BIT or game.PLATFORM_BIT -> isContact = false
+            PLAYER_BIT or PLATFORM_BIT -> isContact = false
 
         }
     }

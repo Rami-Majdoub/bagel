@@ -4,20 +4,26 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.scenes.scene2d.EventListener
 import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.viewport.StretchViewport
 import ru.icarumbas.bagel.Characters.Player
 
 
-class Hud {
+class Hud (val player: Player){
 
     var jumping = false
-    var touchedFirst = false
+    var touchedOnce = false
     val stage = Stage(StretchViewport(800f, 480f))
     var doubleJump = 0
     var touchpad: Touchpad
@@ -49,11 +55,36 @@ class Hud {
         fps.setPosition(770f, 460f)
         stage.addActor(fps)
 
+
+        val attackBtnImgPressed = TextureRegionDrawable(TextureRegion(Texture("attackButtonPressed.png")))
+        val attackBtnImg = TextureRegionDrawable(TextureRegion(Texture("attackButton.png")))
+
+
+        var attackButton = Image(Texture("attackButton.png"))
+        with (attackButton) {
+            setBounds(700f, 50f, 75f, 75f)
+
+            addListener(object : InputListener() {
+                override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
+                    attackButton.drawable = attackBtnImg
+                    player.attacking = false
+                }
+
+                override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                    attackButton.drawable = attackBtnImgPressed
+                    player.attacking = true
+                    return true
+                }
+            })
+
+        }
+        stage.addActor(attackButton)
+
         fakeTouchDownEvent.type = InputEvent.Type.touchDown
 
     }
 
-    fun update(player: Player) {
+    fun update() {
         getDirection()
         fps.setText(Gdx.graphics.framesPerSecond.toString())
 
@@ -81,7 +112,8 @@ class Hud {
 
     private fun getDirection() {
         if (Gdx.input.justTouched()) {
-            touchedFirst = true
+            touchedOnce = true
+
             // Get the touch point in screen coordinates.
             screenPos.set(Gdx.input.x.toFloat(), Gdx.input.y.toFloat())
 
