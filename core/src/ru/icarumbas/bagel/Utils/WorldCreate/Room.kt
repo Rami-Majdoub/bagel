@@ -1,12 +1,14 @@
-package ru.icarumbas.bagel
+package ru.icarumbas.bagel.Utils.WorldCreate
 
+import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.physics.box2d.Body
-import ru.icarumbas.Bagel
+import ru.icarumbas.DEFAULT
 import ru.icarumbas.GROUND_BIT
 import ru.icarumbas.PLATFORM_BIT
+import ru.icarumbas.bagel.Characters.mapObjects.Box
 import ru.icarumbas.bagel.Screens.GameScreen
-import ru.icarumbas.bagel.Utils.WorldCreate.WorldCreator
+import ru.icarumbas.bagel.Utils.B2dWorldCreator.B2DWorldCreator
 
 
 class Room {
@@ -15,11 +17,12 @@ class Room {
 
     var map: TiledMap? = TiledMap()
 
-    val roomLinks = intArrayOf(999, 999, 999, 999, 999, 999, 999, 999)  // Game.DEFAULT
+    val roomLinks = intArrayOf(DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT)
     lateinit var meshVertices: IntArray
 
-    var groundBodies: ArrayList<Body> = ArrayList()
-    var platformBodies: ArrayList<Body> = ArrayList()
+    var groundBodies = ArrayList<Body>()
+    var platformBodies = ArrayList<Body>()
+    var boxes = ArrayList<Box>()
 
     var mapWidth = 0f
     var mapHeight = 0f
@@ -27,16 +30,20 @@ class Room {
     fun setAllBodiesActivity(active: Boolean) {
         setGroundActivity(active)
         setPlatformsActivity(active)
+        boxes.forEach { it.body.isActive = true }
     }
 
     fun setPlatformsActivity(active: Boolean) = platformBodies.forEach { it.isActive = active }
 
     fun setGroundActivity(active: Boolean) = groundBodies.forEach { it.isActive = active }
 
-    fun loadBodies(worldCreator: WorldCreator, gameScreen: GameScreen){
-        worldCreator.b2DWorldCreator.loadBodies(map!!.layers.get("ground"), gameScreen.world, groundBodies, GROUND_BIT)
+    fun loadBodies(gameScreen: GameScreen, b2DWorldCreator: B2DWorldCreator){
+        b2DWorldCreator.loadGround(map!!.layers.get("ground"), gameScreen.world, groundBodies, GROUND_BIT)
         if (map!!.layers["platform"] != null)
-        worldCreator.b2DWorldCreator.loadBodies(map!!.layers.get("platform"), gameScreen.world, platformBodies, PLATFORM_BIT)
+        b2DWorldCreator.loadGround(map!!.layers.get("platform"), gameScreen.world, platformBodies, PLATFORM_BIT)
+        if (map!!.layers["boxes"] != null)
+        b2DWorldCreator.loadBoxes(map!!.layers.get("boxes"), gameScreen.world, boxes)
+
     }
 
     fun loadTileMap(worldCreator: WorldCreator, path: String){
@@ -49,6 +56,10 @@ class Room {
         map = worldCreator.tmxLoader.load(path)
         mapWidth = map!!.properties["Width"].toString().toFloat()
         mapHeight = map!!.properties["Height"].toString().toFloat()
+    }
+
+    fun draw(batch: Batch) {
+        boxes.forEach { it.draw(batch) }
     }
 
 }

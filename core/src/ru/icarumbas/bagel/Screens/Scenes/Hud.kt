@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.scenes.scene2d.EventListener
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Stage
@@ -14,7 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.viewport.StretchViewport
 import ru.icarumbas.bagel.Characters.Player
@@ -60,7 +58,7 @@ class Hud (val player: Player){
         val attackBtnImg = TextureRegionDrawable(TextureRegion(Texture("attackButton.png")))
 
 
-        var attackButton = Image(Texture("attackButton.png"))
+        val attackButton = Image(Texture("attackButton.png"))
         with (attackButton) {
             setBounds(700f, 50f, 75f, 75f)
 
@@ -88,23 +86,23 @@ class Hud (val player: Player){
         getDirection()
         fps.setText(Gdx.graphics.framesPerSecond.toString())
 
-        if (player.playerBody.linearVelocity.x < 3.5f && touchpad.knobX > touchpad.width / 2) {
-            player.playerBody.applyLinearImpulse(Vector2(touchpad.knobPercentX / 12, 0f), Vector2(100f, 100f), true)
+        if (player.playerBody.linearVelocity.x < 4.5f && touchpad.knobX > touchpad.width / 2) {
+            player.playerBody.applyLinearImpulse(Vector2(touchpad.knobPercentX / 30, 0f), player.playerBody.worldCenter, true)
             player.lastRight = true
         }
 
-        if (player.playerBody.linearVelocity.x > -3.5f && touchpad.knobX < touchpad.width / 2) {
-            player.playerBody.applyLinearImpulse(Vector2(-touchpad.knobPercentX / -12, 0f), player.playerBody.worldCenter, true)
+        if (player.playerBody.linearVelocity.x > -4.5f && touchpad.knobX < touchpad.width / 2) {
+            player.playerBody.applyLinearImpulse(Vector2(touchpad.knobPercentX / 30, 0f), player.playerBody.worldCenter, true)
             player.lastRight = false
         }
 
-        if (touchpad.knobY > touchpad.height - 45 && doubleJump < 10 && player.playerBody.linearVelocity.y < 2f) {
+        if (touchpad.knobY > touchpad.height - 45 && doubleJump < 7 && player.playerBody.linearVelocity.y < 2f) {
             if (doubleJump == 1) {
-                player.playerBody.applyLinearImpulse(Vector2(0f, 1f), player.playerBody.worldCenter, true)
+                player.playerBody.applyLinearImpulse(Vector2(0f, .3f), player.playerBody.worldCenter, true)
                 doubleJump++
                 jumping = true
             } else {
-                player.playerBody.applyLinearImpulse(Vector2(0f, .15f), player.playerBody.worldCenter, true)
+                player.playerBody.applyLinearImpulse(Vector2(0f, .05f), player.playerBody.worldCenter, true)
                 doubleJump++
             }
         }

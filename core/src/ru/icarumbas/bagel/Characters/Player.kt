@@ -19,8 +19,8 @@ class Player(val gameScreen: GameScreen) : Sprite() {
     private val runAnimation: Animation<*>
     private val jumpAnimation: Animation<*>
     private val attackAnimation: Animation<*>
-    val playerBodyHeight = 1.1f
-    val playerBodyWidth = .71f
+    val playerBodyHeight = 1.75f
+    val playerBodyWidth = 1.25f
     val atlas = TextureAtlas("Packs/GuyKnight.txt")
     var attacking = false
 
@@ -35,14 +35,14 @@ class Player(val gameScreen: GameScreen) : Sprite() {
     var bodyDef = BodyDef()
 
     init {
-        bodyDef.position.set(3f, 2.5f)
+        bodyDef.position.set(6f, 5f)
 
         definePlayer()
 
         stateAnimation = createAnimation("Idle", 10, .1f, Animation.PlayMode.LOOP)
         runAnimation = createAnimation("Run", 10, .1f, Animation.PlayMode.LOOP)
         jumpAnimation = createAnimation("Jump", 10, .1f, Animation.PlayMode.LOOP)
-        attackAnimation = createAnimation("Attack", 10, .1f, Animation.PlayMode.LOOP)
+        attackAnimation = createAnimation("Attack", 10, .05f, Animation.PlayMode.LOOP)
 
     }
 
@@ -61,37 +61,31 @@ class Player(val gameScreen: GameScreen) : Sprite() {
 
 
         val shape = PolygonShape()
-        shape.setAsBox(.23f, .49f)
+        shape.setAsBox(.35f, .65f)
 
         val fixtureDef = FixtureDef()
+        fixtureDef.filter.categoryBits = PLAYER_BIT
         fixtureDef.shape = shape
         fixtureDef.restitution = 0f
-        fixtureDef.friction = .2f
-        fixtureDef.density = .2f
+        fixtureDef.friction = .4f
+        fixtureDef.density = .0325f
 
         playerBody.createFixture(fixtureDef)
 
         val circleShape = CircleShape()
-        circleShape.radius = .3f
-        circleShape.position = Vector2(0f, .2f)
 
         fixtureDef.shape = circleShape
-        fixtureDef.friction = 0f
 
+        circleShape.radius = .35f
+        circleShape.position = Vector2(0f, -.45f)
+        fixtureDef.friction = 1.5f
         playerBody.createFixture(fixtureDef)
 
-
-        circleShape.radius = .25f
-        circleShape.position = Vector2(0f, -.28f)
-        fixtureDef.friction = 1f
-        fixtureDef.filter.categoryBits = PLAYER_BIT
-        playerBody.createFixture(fixtureDef)
 
         setSize(playerBodyWidth, playerBodyHeight)
         setOrigin(width / 2f, height / 2f)
 
         playerBody.isFixedRotation = true
-        playerBody.userData = this
     }
 
     fun update(delta: Float) {
@@ -103,6 +97,7 @@ class Player(val gameScreen: GameScreen) : Sprite() {
             gameScreen.hud.doubleJump = 0
             gameScreen.hud.jumping = false
         }
+        println("${playerBody.position.x} - x, ${playerBody.position.y} - y")
     }
 
     private fun getFrame(dt: Float): TextureRegion {
@@ -140,11 +135,11 @@ class Player(val gameScreen: GameScreen) : Sprite() {
             val prevX = gameScreen.rooms[previousMapLink].meshVertices[plX]
 
             if (side == "Up") {
-                if (prevX == X10) player.playerBody.setTransform(gameScreen.rooms[gameScreen.currentMap].mapWidth - REG_ROOM_WIDTH/2, 0f, 0f)
+                if (prevX == X10) player.playerBody.setTransform(gameScreen.rooms[gameScreen.currentMap].mapWidth - REG_ROOM_WIDTH / 2, 0f, 0f)
                 else player.playerBody.setTransform(REG_ROOM_WIDTH/2, 0f, 0f)
             }
             if (side == "Down") {
-                if (prevX == X10) player.playerBody.setTransform(gameScreen.rooms[gameScreen.currentMap].mapWidth - REG_ROOM_WIDTH/2,
+                if (prevX == X10) player.playerBody.setTransform(gameScreen.rooms[gameScreen.currentMap].mapWidth - REG_ROOM_WIDTH / 2,
                                                                  gameScreen.rooms[gameScreen.currentMap].mapHeight, 0f)
                 else player.playerBody.setTransform(REG_ROOM_WIDTH/2, gameScreen.rooms[gameScreen.currentMap].mapHeight, 0f)
             }
@@ -157,11 +152,11 @@ class Player(val gameScreen: GameScreen) : Sprite() {
 
             if (side == "Left") {
                 if (prevY == Y11) player.playerBody.setTransform(gameScreen.rooms[gameScreen.currentMap].mapWidth,
-                                                                 gameScreen.rooms[gameScreen.currentMap].mapHeight - REG_ROOM_HEIGHT/2, 0f)
+                                  gameScreen.rooms[gameScreen.currentMap].mapHeight - REG_ROOM_HEIGHT / 2 - playerBodyHeight/2, 0f)
                 else player.playerBody.setTransform(gameScreen.rooms[gameScreen.currentMap].mapWidth, REG_ROOM_HEIGHT/2, 0f)
             }
             if (side == "Right") {
-                if (prevY == Y11) player.playerBody.setTransform(0f, gameScreen.rooms[gameScreen.currentMap].mapHeight - REG_ROOM_HEIGHT/2, 0f)
+                if (prevY == Y11) player.playerBody.setTransform(0f, gameScreen.rooms[gameScreen.currentMap].mapHeight - REG_ROOM_HEIGHT / 2 - playerBodyHeight/2, 0f)
                 else player.playerBody.setTransform(0f, REG_ROOM_HEIGHT/2, 0f)
             }
         }

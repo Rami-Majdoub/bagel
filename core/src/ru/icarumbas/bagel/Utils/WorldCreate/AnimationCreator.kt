@@ -3,13 +3,13 @@ package ru.icarumbas.bagel.Utils.WorldCreate
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.maps.tiled.TiledMapTile
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer
-import ru.icarumbas.bagel.Room
+import ru.icarumbas.bagel.Utils.WorldCreate.Room
 import java.util.*
 
 class AnimationCreator {
 
     private var elapsedSinceAnimation = 0f
-    private var fireTiles = HashMap<String, TiledMapTile>()
+    private var fireTiles = HashMap<Int, TiledMapTile>()
     lateinit private var fireCellsInScene: ArrayList<TiledMapTileLayer.Cell>
 
     fun updateAnimations() {
@@ -24,11 +24,11 @@ class AnimationCreator {
     fun createTileAnimation(currentMap: Int, rooms: ArrayList<Room>) {
         if (rooms[currentMap].map!!.tileSets.getTileSet("Fire") == null) return
         val tileset = rooms[currentMap].map!!.tileSets.getTileSet("Fire")
-        fireTiles = HashMap<String, TiledMapTile>()
+        fireTiles = HashMap<Int, TiledMapTile>()
 
         for (tile in tileset) {
             val property = tile.properties.get("FireFrame")
-            if (property != null) fireTiles.put(property as String, tile)
+            if (property != null) fireTiles.put(property as Int, tile)
         }
 
         fireCellsInScene = ArrayList<TiledMapTileLayer.Cell>()
@@ -46,12 +46,11 @@ class AnimationCreator {
 
     private fun updateFireAnimations() {
         for (cell in fireCellsInScene) {
-            val property = cell.tile.properties.get("FireFrame") as String
-            var currentAnimationFrame: Int = Integer.parseInt(property)
+            var currentAnimationFrame = cell.tile.properties.get("FireFrame") as Int
             currentAnimationFrame++
             if (currentAnimationFrame > fireTiles.size) currentAnimationFrame = 1
 
-            val newTile = fireTiles[currentAnimationFrame.toString()]
+            val newTile = fireTiles[currentAnimationFrame]
             cell.tile = newTile
         }
     }

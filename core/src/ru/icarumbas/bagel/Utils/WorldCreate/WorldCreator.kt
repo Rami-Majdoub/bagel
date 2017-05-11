@@ -4,8 +4,6 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader
 import com.badlogic.gdx.math.MathUtils
 import ru.icarumbas.REG_ROOM_HEIGHT
 import ru.icarumbas.REG_ROOM_WIDTH
-import ru.icarumbas.bagel.Room
-import ru.icarumbas.bagel.Utils.B2dWorldCreator.B2DWorldCreator
 
 class WorldCreator {
 
@@ -15,7 +13,6 @@ class WorldCreator {
     lateinit var mesh: Array<IntArray>
     private var randomMap: Int = 0
     val stringSides = arrayOf("Left", "Up", "Down", "Right")
-    val b2DWorldCreator = B2DWorldCreator()
     var newRoom = Room()
     var roomCounter = 0
     var meshCheckSides = IntArray(8)
@@ -31,24 +28,24 @@ class WorldCreator {
         }
 
         // Set center of the mesh
-        mesh[worldSize.div(4)][worldSize.div(4)] = 1
+        mesh[worldSize.div(2)][worldSize.div(2)] = 1
 
 
         // Try to create map for each map[i] side
         for (i in 0..worldSize) {
             if (i == rooms.size) break
-            generateRoom("Maps/up/up", "Up", 1, 3, i, 0, -1, 0, 3, 0, 1, rooms)
-            generateRoom("Maps/down/down", "Down", 3, 1, i, 0, 1, 0, 1, 0, 3, rooms)
-            generateRoom("Maps/right/right", "Right", 2, 0, i, 1, 0, 2, 1, 0, 1, rooms)
-            generateRoom("Maps/left/left", "Left", 0, 2, i, -1, 0, 0, 1, 2, 1, rooms)
+            generateRoom("Maps/Map", "Up", 1, 3, i, 0, -1, 0, 3, 0, 1, rooms)
+            generateRoom("Maps/Map", "Down", 3, 1, i, 0, 1, 0, 1, 0, 3, rooms)
+            generateRoom("Maps/Map", "Right", 2, 0, i, 1, 0, 2, 1, 0, 1, rooms)
+            generateRoom("Maps/Map", "Left", 0, 2, i, -1, 0, 0, 1, 2, 1, rooms)
 
             if (rooms[i].map!!.properties["Height"] != REG_ROOM_HEIGHT) {
-                generateRoom("Maps/right/right", "Right", 6, 0, i, 1, 0, 2, 3, 0, 3, rooms)
-                generateRoom("Maps/left/left", "Left", 4, 2, i, -1, 0, 0, 3, 2, 3, rooms)
+                generateRoom("Maps/Map", "Right", 6, 0, i, 1, 0, 2, 3, 0, 3, rooms)
+                generateRoom("Maps/Map", "Left", 4, 2, i, -1, 0, 0, 3, 2, 3, rooms)
             }
             if (rooms[i].map!!.properties["Width"] != REG_ROOM_WIDTH) {
-                generateRoom("Maps/up/up", "Up", 5, 3, i, 0, -1, 2, 3, 2, 1, rooms)
-                generateRoom("Maps/down/down", "Down", 7, 1, i, 0, 1, 2, 1, 2, 3, rooms)
+                generateRoom("Maps/Map", "Up", 5, 3, i, 0, -1, 2, 3, 2, 1, rooms)
+                generateRoom("Maps/Map", "Down", 7, 1, i, 0, 1, 2, 1, 2, 3, rooms)
             }
         }
     }
@@ -61,7 +58,7 @@ class WorldCreator {
             return MathUtils.random(1, values)
     }
 
-    private fun checkMeshSides(side: String, meshX: Int, meshY: Int, mapRoomWidth: Int, mapRoomHeight: Int): Boolean {
+    private fun checkFit(side: String, meshX: Int, meshY: Int, mapRoomWidth: Int, mapRoomHeight: Int): Boolean {
         meshCheckSides = when (side) {
 
             "Left" -> intArrayOf(-mapRoomWidth, 0, -mapRoomWidth, -mapRoomHeight + 1, -1, 0, -1, -mapRoomHeight + 1)
@@ -82,16 +79,16 @@ class WorldCreator {
 
 
         // Load room randomly
-        randomMap = rand(8)
+        randomMap = rand(4)
         newRoom = Room()
-        newRoom.loadTileMap(this, path + randomMap + ".tmx")
+        newRoom.loadTileMap(this, "$path$randomMap.tmx")
 
         // Set new width and height
         val mapRoomWidth = (newRoom.mapWidth / REG_ROOM_WIDTH).toInt()
         val mapRoomHeight = (newRoom.mapHeight / REG_ROOM_HEIGHT).toInt()
 
         // Check that new room fits
-        if (checkMeshSides(side, meshX, meshY, mapRoomWidth, mapRoomHeight)) {
+        if (checkFit(side, meshX, meshY, mapRoomWidth, mapRoomHeight)) {
 
 
             val checkSides = when (side) {
@@ -118,9 +115,10 @@ class WorldCreator {
                             (meshY.plus(checkSides[i + 8]) == it.meshVertices[1] || meshY.plus(checkSides[i + 8]) == it.meshVertices[3])) {
 
                         if ((it.map!!.properties.get(stringSides[3 - place]) != "Yes" && newRoom.map!!.properties.get(stringSides[place]) == "Yes") ||
-                                (it.map!!.properties.get(stringSides[3 - place]) == "Yes" && newRoom.map!!.properties.get(stringSides[place]) != "Yes")) {
+                            (it.map!!.properties.get(stringSides[3 - place]) == "Yes" && newRoom.map!!.properties.get(stringSides[place]) != "Yes")) {
                             chooseMap(path, side, count, meshX, meshY, rooms)
                         }
+
                     }
                     if (i % 2 > 0) place++
                 }

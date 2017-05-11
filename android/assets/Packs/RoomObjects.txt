@@ -1,0 +1,75 @@
+RoomObjects.png
+size: 249, 509
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+barrel
+  rotate: false
+  xy: 65, 56
+  size: 60, 64
+  orig: 64, 64
+  offset: 2, 0
+  index: -1
+box
+  rotate: false
+  xy: 127, 56
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+bronzeChest
+  rotate: false
+  xy: 133, 1
+  size: 64, 53
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+goldenChandelier
+  rotate: false
+  xy: 1, 316
+  size: 127, 192
+  orig: 128, 192
+  offset: 1, 0
+  index: -1
+goldenChest
+  rotate: false
+  xy: 67, 1
+  size: 64, 53
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+goldenStatue
+  rotate: false
+  xy: 61, 122
+  size: 58, 128
+  orig: 64, 128
+  offset: 4, 0
+  index: -1
+silverChandelier
+  rotate: false
+  xy: 121, 122
+  size: 127, 192
+  orig: 128, 192
+  offset: 0, 0
+  index: -1
+silverChest
+  rotate: false
+  xy: 1, 1
+  size: 64, 53
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+silverStatue
+  rotate: false
+  xy: 1, 122
+  size: 58, 128
+  orig: 64, 128
+  offset: 4, 0
+  index: -1
+spikes
+  rotate: false
+  xy: 1, 56
+  size: 62, 64
+  orig: 64, 64
+  offset: 1, 0
+  index: -1
