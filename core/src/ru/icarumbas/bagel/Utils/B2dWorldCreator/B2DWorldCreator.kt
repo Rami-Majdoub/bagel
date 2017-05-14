@@ -1,14 +1,15 @@
 package ru.icarumbas.bagel.Utils.B2dWorldCreator
 
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.maps.MapLayer
 import com.badlogic.gdx.maps.objects.PolylineMapObject
 import com.badlogic.gdx.maps.objects.RectangleMapObject
 import com.badlogic.gdx.physics.box2d.*
 import ru.icarumbas.PIX_PER_M
 import ru.icarumbas.bagel.Characters.mapObjects.Box
+import ru.icarumbas.bagel.Characters.mapObjects.MapObject
 
-class B2DWorldCreator (val textureAtlas: TextureAtlas){
+
+class B2DWorldCreator {
 
     fun loadGround(objects: MapLayer, world: World, bodies: ArrayList<Body>, bit: Short) {
         val fixtureDef = FixtureDef()
@@ -59,11 +60,11 @@ class B2DWorldCreator (val textureAtlas: TextureAtlas){
 
     }
 
-    fun loadBoxes(layer: MapLayer, world: World, boxes: ArrayList<Box>) {
+    fun loadBoxes(layer: MapLayer, mapObjects: ArrayList<MapObject>) {
         layer.objects
                 .filterIsInstance<RectangleMapObject>()
                 .forEach {
-                    boxes.add(Box(world, it.rectangle, textureAtlas))
+                    mapObjects.add(Box(it.rectangle))
 
                 }
     }

@@ -1,7 +1,6 @@
 package ru.icarumbas.bagel.Utils.B2dWorldCreator
 
 import com.badlogic.gdx.physics.box2d.*
-import ru.icarumbas.Bagel
 import ru.icarumbas.GROUND_BIT
 import ru.icarumbas.PLATFORM_BIT
 import ru.icarumbas.PLAYER_BIT
@@ -23,7 +22,7 @@ class WorldContactListener(val gameScreen: GameScreen) : ContactListener, Contac
             otherBody = fixtureA.body
         }
 
-        return playerBody.position.y - gameScreen.player.playerBodyHeight / 2 > otherBody.position.y
+        return playerBody.position.y - gameScreen.player.height / 2 > otherBody.position.y && !isTouchPadDown()
 
     }
 
@@ -53,16 +52,6 @@ class WorldContactListener(val gameScreen: GameScreen) : ContactListener, Contac
         }
     }
 
-    fun update() {
-
-        if (isContact && isTouchPadDown()) {
-            gameScreen.rooms[gameScreen.currentMap].setPlatformsActivity(false)
-        }
-        if (!isContact && !isTouchPadDown()) {
-            gameScreen.rooms[gameScreen.currentMap].setPlatformsActivity(true)
-
-        }
-    }
 
     fun isTouchPadDown() = gameScreen.hud.touchpad.knobY < gameScreen.hud.touchpad.height / 2f - 20f
 

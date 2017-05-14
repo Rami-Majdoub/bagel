@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.utils.Array
+import ru.icarumbas.GROUND_BIT
 import ru.icarumbas.PLAYER_BIT
 import ru.icarumbas.REG_ROOM_HEIGHT
 import ru.icarumbas.REG_ROOM_WIDTH
@@ -19,8 +20,6 @@ class Player(val gameScreen: GameScreen) : Sprite() {
     private val runAnimation: Animation<*>
     private val jumpAnimation: Animation<*>
     private val attackAnimation: Animation<*>
-    val playerBodyHeight = 1.75f
-    val playerBodyWidth = 1.25f
     val atlas = TextureAtlas("Packs/GuyKnight.txt")
     var attacking = false
 
@@ -36,9 +35,9 @@ class Player(val gameScreen: GameScreen) : Sprite() {
 
     init {
         bodyDef.position.set(6f, 5f)
-
         definePlayer()
 
+        // Animation
         stateAnimation = createAnimation("Idle", 10, .1f, Animation.PlayMode.LOOP)
         runAnimation = createAnimation("Run", 10, .1f, Animation.PlayMode.LOOP)
         jumpAnimation = createAnimation("Jump", 10, .1f, Animation.PlayMode.LOOP)
@@ -61,14 +60,14 @@ class Player(val gameScreen: GameScreen) : Sprite() {
 
 
         val shape = PolygonShape()
-        shape.setAsBox(.35f, .65f)
+        shape.setAsBox(.3f, .6f)
 
         val fixtureDef = FixtureDef()
         fixtureDef.filter.categoryBits = PLAYER_BIT
         fixtureDef.shape = shape
         fixtureDef.restitution = 0f
         fixtureDef.friction = .4f
-        fixtureDef.density = .0325f
+        fixtureDef.density = .04f
 
         playerBody.createFixture(fixtureDef)
 
@@ -76,13 +75,13 @@ class Player(val gameScreen: GameScreen) : Sprite() {
 
         fixtureDef.shape = circleShape
 
-        circleShape.radius = .35f
+        circleShape.radius = .3f
         circleShape.position = Vector2(0f, -.45f)
         fixtureDef.friction = 1.5f
         playerBody.createFixture(fixtureDef)
 
 
-        setSize(playerBodyWidth, playerBodyHeight)
+        setSize(1.1f, 1.45f)
         setOrigin(width / 2f, height / 2f)
 
         playerBody.isFixedRotation = true
@@ -92,12 +91,6 @@ class Player(val gameScreen: GameScreen) : Sprite() {
         setRegion(getFrame(delta))
         setPosition(playerBody.position.x - width / 2, playerBody.position.y - height / 2)
         rotation = playerBody.angle * MathUtils.radiansToDegrees
-
-        if (playerBody.linearVelocity.y == 0f && gameScreen.hud.touchpad.knobY < gameScreen.hud.touchpad.height - 45) {
-            gameScreen.hud.doubleJump = 0
-            gameScreen.hud.jumping = false
-        }
-        println("${playerBody.position.x} - x, ${playerBody.position.y} - y")
     }
 
     private fun getFrame(dt: Float): TextureRegion {
@@ -152,11 +145,11 @@ class Player(val gameScreen: GameScreen) : Sprite() {
 
             if (side == "Left") {
                 if (prevY == Y11) player.playerBody.setTransform(gameScreen.rooms[gameScreen.currentMap].mapWidth,
-                                  gameScreen.rooms[gameScreen.currentMap].mapHeight - REG_ROOM_HEIGHT / 2 - playerBodyHeight/2, 0f)
+                                  gameScreen.rooms[gameScreen.currentMap].mapHeight - REG_ROOM_HEIGHT / 2 - height/2, 0f)
                 else player.playerBody.setTransform(gameScreen.rooms[gameScreen.currentMap].mapWidth, REG_ROOM_HEIGHT/2, 0f)
             }
             if (side == "Right") {
-                if (prevY == Y11) player.playerBody.setTransform(0f, gameScreen.rooms[gameScreen.currentMap].mapHeight - REG_ROOM_HEIGHT / 2 - playerBodyHeight/2, 0f)
+                if (prevY == Y11) player.playerBody.setTransform(0f, gameScreen.rooms[gameScreen.currentMap].mapHeight - REG_ROOM_HEIGHT / 2 - height/2, 0f)
                 else player.playerBody.setTransform(0f, REG_ROOM_HEIGHT/2, 0f)
             }
         }

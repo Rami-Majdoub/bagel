@@ -10,44 +10,52 @@ import ru.icarumbas.BOX_BIT
 import ru.icarumbas.PIX_PER_M
 
 
-class Box : MapObject, Sprite{
+class Box : MapObject{
     private var destroyed = false
-    lateinit var body: Body
+    lateinit override var body: Body
+    override var sprite: Sprite? = null
+    var path = ""
+    var posX = 0f
+    var posY = 0f
 
-    constructor(world: World, rectangle: Rectangle, textureAtlas: TextureAtlas) {
-        defineBody(rectangle, world)
+    constructor()
+
+    constructor(rectangle: Rectangle) {
+
+        posX = rectangle.x.div(PIX_PER_M)
+        posY = rectangle.y.div(PIX_PER_M)
 
         val random = MathUtils.random(1)
-        if (random == 0)
-        set(textureAtlas.createSprite("box"))
-        else
-        set(textureAtlas.createSprite("barrel"))
+        if (random == 0) {
+            path = "box"
+        }
+        else {
+            path = "barrel"
+        }
 
-        setSize(64.div(PIX_PER_M), 64.div(PIX_PER_M))
-        setPosition(body.position.x.minus(width.div(2)), body.position.y.minus(width.div(2)))
+    }
 
-
+    override fun loadSprite(textureAtlas: TextureAtlas) {
+        sprite = textureAtlas.createSprite(path)
+        sprite!!.setSize(64.div(PIX_PER_M), 64.div(PIX_PER_M))
+        sprite!!.setPosition(posX, posY)
     }
 
     override fun draw(batch: Batch) {
-        if (!destroyed) super.draw(batch)
+        if (!destroyed) sprite!!.draw(batch)
     }
 
-    override fun update(dt: Float) {
-
-    }
-
-    override fun defineBody(rect: Rectangle, world: World) {
+    override fun defineBody(world: World) {
 
         val fixtureDef = FixtureDef()
         val def = BodyDef()
         val shape = PolygonShape()
 
-        def.position.x = (rect.x.plus(rect.width.div(2))).div(PIX_PER_M)
-        def.position.y = (rect.y.plus(rect.height.div(2))).div(PIX_PER_M)
+        def.position.x = sprite!!.x.plus(sprite!!.width.div(2))
+        def.position.y = sprite!!.y.plus(sprite!!.height.div(2))
         def.type = BodyDef.BodyType.StaticBody
 
-        shape.setAsBox(rect.width.div(2f).div(PIX_PER_M), rect.height.div(2f).div(PIX_PER_M))
+        shape.setAsBox(sprite!!.width.div(2), sprite!!.height.div(2))
         fixtureDef.shape = shape
         fixtureDef.friction = 1f
         fixtureDef.filter.categoryBits = BOX_BIT

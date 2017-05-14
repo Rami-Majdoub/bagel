@@ -2,79 +2,101 @@ package ru.icarumbas.bagel.Screens
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ScreenAdapter
+import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
 import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.maps.tiled.TiledMap
+import com.badlogic.gdx.maps.tiled.TmxMapLoader
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.viewport.FitViewport
-import ru.icarumbas.DEFAULT
-import ru.icarumbas.REG_ROOM_HEIGHT
-import ru.icarumbas.REG_ROOM_WIDTH
+import ru.icarumbas.*
 import ru.icarumbas.bagel.Characters.Player
-import ru.icarumbas.bagel.Utils.WorldCreate.Room
 import ru.icarumbas.bagel.Screens.Scenes.Hud
 import ru.icarumbas.bagel.Screens.Scenes.MiniMap
 import ru.icarumbas.bagel.Utils.B2dWorldCreator.B2DWorldCreator
 import ru.icarumbas.bagel.Utils.B2dWorldCreator.WorldContactListener
 import ru.icarumbas.bagel.Utils.WorldCreate.AnimationCreator
+import ru.icarumbas.bagel.Utils.WorldCreate.Room
 import ru.icarumbas.bagel.Utils.WorldCreate.WorldCreator
 import ru.icarumbas.bagel.Utils.WorldCreate.WorldIO
-import kotlin.concurrent.thread
+
 
 class GameScreen(newWorld: Boolean): ScreenAdapter() {
-
+    val mapRenderer: OrthogonalTiledMapRenderer
+    val assetManager = AssetManager()
     private val debugRenderer = Box2DDebugRenderer()
     private val camera = OrthographicCamera(REG_ROOM_WIDTH, REG_ROOM_HEIGHT)
     private val viewport = FitViewport(camera.viewportWidth, camera.viewportHeight, camera)
-    val animationCreator = AnimationCreator()
-    val world = World(Vector2(0f, -9.8f), true)
-    val player = Player(this)
-    val hud = Hud(player)
-    val worldCreator = WorldCreator()
+    val animationCreator: AnimationCreator
+    val worldCreator: WorldCreator
     private val worldContactListener = WorldContactListener(this)
     val miniMap = MiniMap()
-    var mapRenderer = OrthogonalTiledMapRenderer(TiledMap(), 0.01f)
     var currentMap = 0
     var rooms = ArrayList<Room>()
     val worldIO = WorldIO()
-    val textureAtlas = TextureAtlas(Gdx.files.absolute("Packs/RoomObjects.txt"))
-    val b2DWorldCreator = B2DWorldCreator(textureAtlas)
+    val textureAtlas = TextureAtlas(Gdx.files.internal("Packs/RoomObjects.txt"))
+    val b2DWorldCreator = B2DWorldCreator()
+    val world = World(Vector2(0f, -9.8f), true)
+    val player = Player(this)
+    val hud = Hud(player)
+    val groundBodies = HashMap<String, ArrayList<Body>>()
 
 
     init {
+        assetManager.setLoader(TiledMap::class.java, TmxMapLoader(InternalFileHandleResolver()))
+        (0..TILED_MAPS_TOTAL).forEach {
+            assetManager.load("Maps/Map$it.tmx", TiledMap::class.java)
+        }
+        assetManager.finishLoading()
+
+        worldCreator = WorldCreator(assetManager)
+        animationCreator = AnimationCreator(assetManager)
+
         if (newWorld) createNewWorld() else continueWorld()
+
+        (0..TILED_MAPS_TOTAL).forEach {
+            val bodies = ArrayList<Body>()
+            b2DWorldCreator.loadGround(assetManager.get("Maps/Map$it.tmx", TiledMap::class.java).layers.get("platform"), world, bodies, PLATFORM_BIT)
+            b2DWorldCreator.loadGround(assetManager.get("Maps/Map$it.tmx", TiledMap::class.java).layers.get("ground"), world, bodies, GROUND_BIT)
+            groundBodies.put("Maps/Map$it.tmx", bodies)
+
+        }
+
+        rooms.forEach { it.mapObjects.forEach { it.loadSprite(textureAtlas)
+                                               it.defineBody(world) } }
+
+        mapRenderer = OrthogonalTiledMapRenderer(assetManager.get(rooms[currentMap].path), 0.01f)
+        groundBodies[rooms[currentMap].path]!!.forEach { it.isActive = true }
 
         Gdx.input.inputProcessor = hud.stage
 
         world.setContactListener(worldContactListener)
         world.setContactFilter(worldContactListener)
 
+
     }
 
     override fun render(delta: Float) {
+        debugRenderer.render(world, camera.combined)
         world.step(1 / 60f, 8, 3)
-        player.update(delta)
-        moveCamera()
         mapRenderer.setView(camera)
         mapRenderer.render()
+        player.update(delta)
 
         mapRenderer.batch.begin()
-        rooms[currentMap].draw(mapRenderer.batch)
         player.draw(mapRenderer.batch)
+        rooms[currentMap].draw(mapRenderer.batch)
         mapRenderer.batch.end()
-
         animationCreator.updateAnimations()
-        worldContactListener.update()
-        hud.update()
-        hud.stage.draw()
-        hud.l.setText("$currentMap")
+        hud.update(currentMap)
+        moveCamera()
         miniMap.render()
         checkRoomChange(player)
-        debugRenderer.render(world, camera.combined)
     }
 
     override fun pause() {
@@ -110,79 +132,54 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
 
     fun createNewWorld() {
         rooms.add(Room())
-        rooms[0].meshVertices = intArrayOf(25, 25, 25, 25)
-        rooms[0].loadTileMap(worldCreator, "Maps/Map0.tmx")
+        rooms[currentMap].meshVertices = intArrayOf(25, 25, 25, 25)
+        rooms[currentMap].loadMap("Maps/Map0.tmx", assetManager)
 
         worldCreator.createWorld(100, rooms)
 
         System.out.println("Size of rooms: ${rooms.size}")
-
         currentMap = 0
 
-        rooms.forEach { it.map!!.dispose()
-            it.map = null}
+        rooms.forEach { it.loadMapObjects(b2DWorldCreator, assetManager) }
 
         worldIO.writeRoomsToJson("roomsFile.Json", rooms, false)
-        worldIO.preferences.putInteger("CurrentMap", 0)
+        worldIO.preferences.putInteger("CurrentMap", currentMap)
         worldIO.preferences.flush()
 
-        (0..4).forEach {
-            rooms[it].loadTileMap(worldCreator)
-            rooms[it].loadBodies(this, b2DWorldCreator)
-        }
-
-        rooms[0].setAllBodiesActivity(true)
-        mapRenderer.map = rooms[0].map
-
-        animationCreator.createTileAnimation(0, rooms)
+        animationCreator.createTileAnimation(currentMap, rooms)
 
     }
 
     fun continueWorld() {
         rooms = worldIO.loadRoomsFromJson("roomsFile.Json")
-        currentMap = worldIO.preferences.getInteger("CurrentMap")
-        worldIO.loadLastState(mapRenderer, player, rooms, this, currentMap)
+        currentMap = worldIO.getCurrentMapNumber("CurrentMap")
+        worldIO.loadLastPlayerState(player)
+
+        animationCreator.createTileAnimation(currentMap, rooms)
     }
 
     private fun changeRoom(player: Player, link: Int, side: String, plX: Int, plY: Int) {
-        val previousMapLink = currentMap
+        player.setPlayerPosition(side, player, plX, plY, currentMap)
+        groundBodies[rooms[currentMap].path]!!.forEach { it.isActive = false }
 
-        currentMap = rooms[currentMap].roomLinks[link]
+        rooms[currentMap].mapObjects.forEach { it.sprite = null
+                                               it.body.isActive = false }
 
-        mapRenderer.map = rooms[currentMap].map
-        rooms[currentMap].setAllBodiesActivity(true)
+        currentMap = rooms[currentMap].roomLinks[link]!!
 
-        player.setPlayerPosition(side, player, plX, plY, previousMapLink)
+        rooms[currentMap].mapObjects.forEach { it.loadSprite(textureAtlas)
+                                               it.body.isActive = true }
+
+        mapRenderer.map = assetManager.get(rooms[currentMap].path, TiledMap::class.java)
+        groundBodies[rooms[currentMap].path]!!.forEach { it.isActive = true }
+
+        animationCreator.createTileAnimation(currentMap, rooms)
 
         worldIO.preferences.putInteger("CurrentMap", currentMap)
         worldIO.preferences.flush()
 
-        thread(start = true){
-            Gdx.app.postRunnable {
 
-                rooms[previousMapLink].setAllBodiesActivity(false)
-                rooms[previousMapLink].roomLinks.forEach {
-                    if (it != DEFAULT && it != currentMap){
-                        rooms[it].map!!.dispose()
-                        rooms[it].groundBodies.forEach { body -> body.fixtureList.forEach{ body.destroyFixture(it) } }
-                        rooms[it].platformBodies.forEach { body -> body.fixtureList.forEach{ body.destroyFixture(it) } }
-                        rooms[it].boxes.forEach { it.body.isActive = false }
 
-                    }
-                }
-
-                rooms[currentMap].roomLinks.forEach {
-                    if (it != DEFAULT) {
-                        rooms[it].loadTileMap(worldCreator)
-                        rooms[it].loadBodies(this, b2DWorldCreator)
-
-                }
-                }
-
-                // Create animation for current room
-                animationCreator.createTileAnimation(currentMap, rooms)
-            }
-        }
     }
 
     fun checkRoomChange(player: Player) {

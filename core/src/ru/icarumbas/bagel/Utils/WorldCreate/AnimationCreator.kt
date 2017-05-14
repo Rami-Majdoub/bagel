@@ -1,12 +1,13 @@
 package ru.icarumbas.bagel.Utils.WorldCreate
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.TiledMapTile
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer
-import ru.icarumbas.bagel.Utils.WorldCreate.Room
 import java.util.*
 
-class AnimationCreator {
+class AnimationCreator(val assetManager: AssetManager){
 
     private var elapsedSinceAnimation = 0f
     private var fireTiles = HashMap<Int, TiledMapTile>()
@@ -22,8 +23,8 @@ class AnimationCreator {
     }
 
     fun createTileAnimation(currentMap: Int, rooms: ArrayList<Room>) {
-        if (rooms[currentMap].map!!.tileSets.getTileSet("Fire") == null) return
-        val tileset = rooms[currentMap].map!!.tileSets.getTileSet("Fire")
+        if (assetManager.get(rooms[currentMap].path, TiledMap::class.java).tileSets.getTileSet("Fire") == null) return
+        val tileset = assetManager.get(rooms[currentMap].path, TiledMap::class.java).tileSets.getTileSet("Fire")
         fireTiles = HashMap<Int, TiledMapTile>()
 
         for (tile in tileset) {
@@ -32,7 +33,7 @@ class AnimationCreator {
         }
 
         fireCellsInScene = ArrayList<TiledMapTileLayer.Cell>()
-        val layer = rooms[currentMap].map!!.layers.get("Fire") as TiledMapTileLayer
+        val layer = assetManager.get(rooms[currentMap].path, TiledMap::class.java).layers.get("Fire") as TiledMapTileLayer
 
         for (x in 0..layer.width - 1) (0..layer.height - 1).forEach({
             val cell = layer.getCell(x, it)

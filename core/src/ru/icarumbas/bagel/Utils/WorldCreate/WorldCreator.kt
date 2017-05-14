@@ -1,17 +1,16 @@
 package ru.icarumbas.bagel.Utils.WorldCreate
 
-import com.badlogic.gdx.maps.tiled.TmxMapLoader
+import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.MathUtils
 import ru.icarumbas.REG_ROOM_HEIGHT
 import ru.icarumbas.REG_ROOM_WIDTH
+import ru.icarumbas.TILED_MAPS_TOTAL
 
-class WorldCreator {
+class WorldCreator (val assetManager: AssetManager){
 
-    var random = 0
     var zeroRoomChance = 0
-    val tmxLoader = TmxMapLoader()
     lateinit var mesh: Array<IntArray>
-    private var randomMap: Int = 0
     val stringSides = arrayOf("Left", "Up", "Down", "Right")
     var newRoom = Room()
     var roomCounter = 0
@@ -28,7 +27,7 @@ class WorldCreator {
         }
 
         // Set center of the mesh
-        mesh[worldSize.div(2)][worldSize.div(2)] = 1
+        mesh[worldSize.div(4)][worldSize.div(4)] = 1
 
 
         // Try to create map for each map[i] side
@@ -39,11 +38,11 @@ class WorldCreator {
             generateRoom("Maps/Map", "Right", 2, 0, i, 1, 0, 2, 1, 0, 1, rooms)
             generateRoom("Maps/Map", "Left", 0, 2, i, -1, 0, 0, 1, 2, 1, rooms)
 
-            if (rooms[i].map!!.properties["Height"] != REG_ROOM_HEIGHT) {
+            if (rooms[i].mapHeight != REG_ROOM_HEIGHT) {
                 generateRoom("Maps/Map", "Right", 6, 0, i, 1, 0, 2, 3, 0, 3, rooms)
                 generateRoom("Maps/Map", "Left", 4, 2, i, -1, 0, 0, 3, 2, 3, rooms)
             }
-            if (rooms[i].map!!.properties["Width"] != REG_ROOM_WIDTH) {
+            if (rooms[i].mapWidth != REG_ROOM_WIDTH) {
                 generateRoom("Maps/Map", "Up", 5, 3, i, 0, -1, 2, 3, 2, 1, rooms)
                 generateRoom("Maps/Map", "Down", 7, 1, i, 0, 1, 2, 1, 2, 3, rooms)
             }
@@ -51,7 +50,7 @@ class WorldCreator {
     }
 
     private fun rand(values: Int): Int {
-        random = MathUtils.random(1000)
+        val random = MathUtils.random(1000)
         if (random < zeroRoomChance) {
             return 0
         } else
@@ -77,13 +76,9 @@ class WorldCreator {
 
     private fun chooseMap(path: String, side: String, count: Int, meshX: Int, meshY: Int, rooms: ArrayList<Room>): Room {
 
-
-        // Load room randomly
-        randomMap = rand(4)
         newRoom = Room()
-        newRoom.loadTileMap(this, "$path$randomMap.tmx")
+        newRoom.loadMap("$path${rand(TILED_MAPS_TOTAL)}.tmx", assetManager)
 
-        // Set new width and height
         val mapRoomWidth = (newRoom.mapWidth / REG_ROOM_WIDTH).toInt()
         val mapRoomHeight = (newRoom.mapHeight / REG_ROOM_HEIGHT).toInt()
 
@@ -114,8 +109,8 @@ class WorldCreator {
                     if ((meshX.plus(checkSides[i]) == it.meshVertices[0] || meshX.plus(checkSides[i]) == it.meshVertices[2]) &&
                             (meshY.plus(checkSides[i + 8]) == it.meshVertices[1] || meshY.plus(checkSides[i + 8]) == it.meshVertices[3])) {
 
-                        if ((it.map!!.properties.get(stringSides[3 - place]) != "Yes" && newRoom.map!!.properties.get(stringSides[place]) == "Yes") ||
-                            (it.map!!.properties.get(stringSides[3 - place]) == "Yes" && newRoom.map!!.properties.get(stringSides[place]) != "Yes")) {
+                        if ((assetManager.get(it.path, TiledMap::class.java).properties.get(stringSides[3 - place]) != "Yes" && assetManager.get(newRoom.path, TiledMap::class.java).properties.get(stringSides[place]) == "Yes") ||
+                            (assetManager.get(it.path, TiledMap::class.java).properties.get(stringSides[3 - place]) == "Yes" && assetManager.get(newRoom.path, TiledMap::class.java).properties.get(stringSides[place]) != "Yes")) {
                             chooseMap(path, side, count, meshX, meshY, rooms)
                         }
 
@@ -135,7 +130,7 @@ class WorldCreator {
                      placeX: Int, placeY: Int, linkX: Int, linkY: Int, rooms: ArrayList<Room>) {
 
         // Check that room have gate to create specific map
-        if (rooms[count].map!!.properties.get(side) == "Yes") {
+        if (assetManager.get(rooms[count].path, TiledMap::class.java).properties.get(side) == "Yes") {
             // X and y positions on mesh. For big maps part of it
             val meshX = rooms[count].meshVertices[placeX]
             val meshY = rooms[count].meshVertices[placeY]

@@ -9,10 +9,10 @@ const val PLATFORM_BIT: Short = 4
 const val PLAYER_BIT: Short = 8
 const val BOX_BIT: Short = 16
 
-const val DEFAULT = 999
 const val REG_ROOM_HEIGHT = 10.24f
 const val REG_ROOM_WIDTH = 15.36f
 const val PIX_PER_M = 100f
+const val TILED_MAPS_TOTAL = 4
 
 class Bagel : Game() {
 

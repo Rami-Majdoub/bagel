@@ -1,13 +1,21 @@
 package ru.icarumbas.bagel.Characters.mapObjects
 
-import com.badlogic.gdx.math.Rectangle
+import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.g2d.Sprite
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.World
 
 
 interface MapObject{
 
-    fun defineBody(rect: Rectangle, world: World)
+    val body: Body
+    var sprite: Sprite?
 
-    fun update(dt: Float)
+    fun defineBody(world: World)
+
+    fun loadSprite(textureAtlas: TextureAtlas)
+
+    fun draw(batch: Batch)
 
 }
