@@ -28,7 +28,12 @@ class Room {
     fun loadMapObjects(b2DWorldCreator: B2DWorldCreator, assetManager: AssetManager){
         if (assetManager.get(path, TiledMap::class.java).layers["boxes"] != null)
         b2DWorldCreator.loadBoxes(assetManager.get(path, TiledMap::class.java).layers["boxes"], mapObjects)
-
+        if (assetManager.get(path, TiledMap::class.java).layers["chandeliers"] != null)
+        b2DWorldCreator.loadChandeliers(assetManager.get(path, TiledMap::class.java).layers["chandeliers"], mapObjects)
+        if (assetManager.get(path, TiledMap::class.java).layers["chests"] != null)
+        b2DWorldCreator.loadChests(assetManager.get(path, TiledMap::class.java).layers.get("chests"), mapObjects)
+        if (assetManager.get(path, TiledMap::class.java).layers["statue"] != null)
+        b2DWorldCreator.loadStatue(assetManager.get(path, TiledMap::class.java).layers.get("statue"), mapObjects)
     }
 
     fun draw(batch: Batch) {

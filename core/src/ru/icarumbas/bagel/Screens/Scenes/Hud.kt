@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.viewport.StretchViewport
+import com.badlogic.gdx.utils.viewport.Viewport
 import ru.icarumbas.bagel.Characters.Player
 
 
@@ -23,7 +24,7 @@ class Hud (val player: Player){
 
     var jumping = false
     var touchedOnce = false
-    val stage = Stage(StretchViewport(800f, 480f))
+    val stage: Stage
     var doubleJump = 0
     var touchpad: Touchpad
     private val screenPos = Vector2()
@@ -32,8 +33,21 @@ class Hud (val player: Player){
     private val lStyle = Label.LabelStyle(BitmapFont(), Color.RED)
     val l = Label("", lStyle)
     val fps = Label("", lStyle)
+    val width = Gdx.graphics.width.toFloat()
+    val height = Gdx.graphics.height.toFloat()
 
     init {
+
+        if ((width / height) == (16 / 10f))
+            stage = Stage(StretchViewport(800f, 480f)) else
+        if (width / height == 4 / 3f)
+            stage = Stage(StretchViewport(800f, 600f)) else
+        if (width / height == 16 / 9f)
+            stage = Stage(StretchViewport(854f, 480f)) else
+        if (width / height == 3 / 2f)
+            stage = Stage(StretchViewport(960f, 640f)) else
+        stage = Stage(StretchViewport(800f, 480f))
+
 
         val skin = Skin()
         skin.add("touchBackground", Texture("touchBackground.png"))
@@ -63,7 +77,7 @@ class Hud (val player: Player){
 
         val attackButton = Image(Texture("attackButton.png"))
         with (attackButton) {
-            setBounds(700f, 50f, 75f, 75f)
+            setBounds(700f, 50f, 85f, 85f)
 
             addListener(object : InputListener() {
                 override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
@@ -105,14 +119,14 @@ class Hud (val player: Player){
             player.lastRight = false
         }
 
-        if (touchpad.knobY > touchpad.height - 45 && doubleJump < 5 && player.playerBody.linearVelocity.y < .5f) {
-            if (doubleJump == 1 ) {
-                player.playerBody.applyLinearImpulse(Vector2(0f, touchpad.knobPercentY/2.25f), player.playerBody.worldCenter, true)
-                doubleJump++
-                jumping = true
+        if (touchpad.knobY > touchpad.height - 45 && doubleJump < 5 && player.playerBody.linearVelocity.y < 3.5) {
+            if (doubleJump == 0) {
+                jump(.15f)
+            }
+            if (doubleJump == 2 || doubleJump == 3 || doubleJump == 4) {
+                jump(.07f)
             } else {
-                player.playerBody.applyLinearImpulse(Vector2(0f, touchpad.knobPercentY/20), player.playerBody.worldCenter, true)
-                doubleJump++
+                jump(.05f)
             }
 
         }
@@ -120,6 +134,12 @@ class Hud (val player: Player){
             doubleJump = 0
             jumping = false
         }
+    }
+
+    private fun jump(velocity: Float){
+        player.playerBody.applyLinearImpulse(Vector2(0f, velocity), player.playerBody.worldCenter, true)
+        doubleJump++
+
     }
 
     private fun getDirection() {

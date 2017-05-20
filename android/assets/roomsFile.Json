@@ -31,25 +31,135 @@
 		null
 	]
 	meshVertices: [ 25, 24, 25, 24 ]
-	mapObjects: []
+	mapObjects: [
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Chandelier
+			destroyed: false
+			body: null
+			sprite: null
+			path: silverChandelier
+			posX: 10.24
+			posY: 7.04
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Chandelier
+			destroyed: false
+			body: null
+			sprite: null
+			path: silverChandelier
+			posX: 3.84
+			posY: 7.04
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Chest
+			destroyed: false
+			body: null
+			sprite: null
+			path: silverChest
+			posX: 10.24
+			posY: 5.12
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Statue
+			destroyed: false
+			body: null
+			sprite: null
+			path: goldenStatue
+			posX: 10.88
+			posY: 5.12
+		}
+	]
 	mapWidth: 15.36
 	mapHeight: 10.24
 }
 {
 	class: ru.icarumbas.bagel.Utils.WorldCreate.Room
-	path: Maps/Map0.tmx
+	path: Maps/Map2.tmx
 	roomLinks: [
-		7
+		null
 		0
-		6
-		5
+		null
+		null
 		null
 		null
 		null
 		null
 	]
 	meshVertices: [ 25, 26, 25, 26 ]
-	mapObjects: []
+	mapObjects: [
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			destroyed: false
+			body: null
+			sprite: null
+			path: barrel
+			posX: 3.84
+			posY: 1.92
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			destroyed: false
+			body: null
+			sprite: null
+			path: barrel
+			posX: 2.56
+			posY: 1.92
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			destroyed: false
+			body: null
+			sprite: null
+			path: barrel
+			posX: 1.92
+			posY: 1.92
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			destroyed: false
+			body: null
+			sprite: null
+			path: barrel
+			posX: 2.56
+			posY: 2.56
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			destroyed: false
+			body: null
+			sprite: null
+			path: box
+			posX: 1.92
+			posY: 2.56
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			destroyed: false
+			body: null
+			sprite: null
+			path: barrel
+			posX: 1.92
+			posY: 3.2
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Chest
+			destroyed: false
+			body: null
+			sprite: null
+			path: bronzeChest
+			posX: 8.96
+			posY: 1.92
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Chest
+			destroyed: false
+			body: null
+			sprite: null
+			path: bronzeChest
+			posX: 5.76
+			posY: 1.92
+		}
+	]
 	mapWidth: 15.36
 	mapHeight: 10.24
 }
@@ -91,7 +201,7 @@
 			destroyed: false
 			body: null
 			sprite: null
-			path: barrel
+			path: box
 			posX: 6.4
 			posY: 1.28
 		}
@@ -100,7 +210,7 @@
 			destroyed: false
 			body: null
 			sprite: null
-			path: box
+			path: barrel
 			posX: 5.76
 			posY: 1.28
 		}
@@ -109,7 +219,7 @@
 			destroyed: false
 			body: null
 			sprite: null
-			path: barrel
+			path: box
 			posX: 5.76
 			posY: 1.92
 		}
@@ -118,17 +228,8 @@
 			destroyed: false
 			body: null
 			sprite: null
-			path: barrel
+			path: box
 			posX: 12.16
-			posY: 6.4
-		}
-		{
-			class: ru.icarumbas.bagel.Characters.mapObjects.Box
-			destroyed: false
-			body: null
-			sprite: null
-			path: barrel
-			posX: 12.8
 			posY: 6.4
 		}
 		{
@@ -138,7 +239,43 @@
 			sprite: null
 			path: box
 			posX: 12.8
+			posY: 6.4
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			destroyed: false
+			body: null
+			sprite: null
+			path: barrel
+			posX: 12.8
 			posY: 7.04
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Chandelier
+			destroyed: false
+			body: null
+			sprite: null
+			path: silverChandelier
+			posX: 4.48
+			posY: 7.04
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Chandelier
+			destroyed: false
+			body: null
+			sprite: null
+			path: silverChandelier
+			posX: 8.96
+			posY: 7.04
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Chest
+			destroyed: false
+			body: null
+			sprite: null
+			path: bronzeChest
+			posX: 12.16
+			posY: 1.92
 		}
 	]
 	mapWidth: 15.36
@@ -146,12 +283,12 @@
 }
 {
 	class: ru.icarumbas.bagel.Utils.WorldCreate.Room
-	path: Maps/Map1.tmx
+	path: Maps/Map0.tmx
 	roomLinks: [
-		null
-		null
+		7
+		5
 		0
-		null
+		6
 		null
 		null
 		null
@@ -164,10 +301,65 @@
 }
 {
 	class: ru.icarumbas.bagel.Utils.WorldCreate.Room
+	path: Maps/Map3.tmx
+	roomLinks: [
+		null
+		null
+		null
+		4
+		null
+		null
+		null
+		null
+	]
+	meshVertices: [ 24, 24, 24, 24 ]
+	mapObjects: [
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Chandelier
+			destroyed: false
+			body: null
+			sprite: null
+			path: goldenChandelier
+			posX: 10.24
+			posY: 7.04
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Chandelier
+			destroyed: false
+			body: null
+			sprite: null
+			path: goldenChandelier
+			posX: 3.84
+			posY: 7.04
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Chest
+			destroyed: false
+			body: null
+			sprite: null
+			path: bronzeChest
+			posX: 10.24
+			posY: 5.12
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Statue
+			destroyed: false
+			body: null
+			sprite: null
+			path: silverStatue
+			posX: 10.88
+			posY: 5.12
+		}
+	]
+	mapWidth: 15.36
+	mapHeight: 10.24
+}
+{
+	class: ru.icarumbas.bagel.Utils.WorldCreate.Room
 	path: Maps/Map2.tmx
 	roomLinks: [
 		null
-		2
+		4
 		null
 		null
 		null
@@ -175,7 +367,7 @@
 		null
 		null
 	]
-	meshVertices: [ 25, 27, 25, 27 ]
+	meshVertices: [ 24, 26, 24, 26 ]
 	mapObjects: [
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Box
@@ -200,7 +392,7 @@
 			destroyed: false
 			body: null
 			sprite: null
-			path: box
+			path: barrel
 			posX: 1.92
 			posY: 1.92
 		}
@@ -231,96 +423,23 @@
 			posX: 1.92
 			posY: 3.2
 		}
-	]
-	mapWidth: 15.36
-	mapHeight: 10.24
-}
-{
-	class: ru.icarumbas.bagel.Utils.WorldCreate.Room
-	path: Maps/Map4.tmx
-	roomLinks: [
-		2
-		null
-		null
-		null
-		null
-		null
-		null
-		null
-	]
-	meshVertices: [ 26, 26, 26, 26 ]
-	mapObjects: [
 		{
-			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			class: ru.icarumbas.bagel.Characters.mapObjects.Chest
 			destroyed: false
 			body: null
 			sprite: null
-			path: barrel
-			posX: 6.4
-			posY: 2.56
-		}
-		{
-			class: ru.icarumbas.bagel.Characters.mapObjects.Box
-			destroyed: false
-			body: null
-			sprite: null
-			path: box
-			posX: 6.4
+			path: bronzeChest
+			posX: 8.96
 			posY: 1.92
 		}
 		{
-			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			class: ru.icarumbas.bagel.Characters.mapObjects.Chest
 			destroyed: false
 			body: null
 			sprite: null
-			path: barrel
-			posX: 6.4
-			posY: 1.28
-		}
-		{
-			class: ru.icarumbas.bagel.Characters.mapObjects.Box
-			destroyed: false
-			body: null
-			sprite: null
-			path: barrel
-			posX: 5.76
-			posY: 1.28
-		}
-		{
-			class: ru.icarumbas.bagel.Characters.mapObjects.Box
-			destroyed: false
-			body: null
-			sprite: null
-			path: box
+			path: bronzeChest
 			posX: 5.76
 			posY: 1.92
-		}
-		{
-			class: ru.icarumbas.bagel.Characters.mapObjects.Box
-			destroyed: false
-			body: null
-			sprite: null
-			path: box
-			posX: 12.16
-			posY: 6.4
-		}
-		{
-			class: ru.icarumbas.bagel.Characters.mapObjects.Box
-			destroyed: false
-			body: null
-			sprite: null
-			path: box
-			posX: 12.8
-			posY: 6.4
-		}
-		{
-			class: ru.icarumbas.bagel.Characters.mapObjects.Box
-			destroyed: false
-			body: null
-			sprite: null
-			path: barrel
-			posX: 12.8
-			posY: 7.04
 		}
 	]
 	mapWidth: 15.36
@@ -332,15 +451,43 @@
 	roomLinks: [
 		null
 		null
-		2
+		4
 		null
 		null
 		null
 		null
 		null
 	]
-	meshVertices: [ 24, 26, 24, 26 ]
-	mapObjects: []
+	meshVertices: [ 23, 25, 23, 25 ]
+	mapObjects: [
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Chandelier
+			destroyed: false
+			body: null
+			sprite: null
+			path: silverChandelier
+			posX: 4.48
+			posY: 7.04
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Chandelier
+			destroyed: false
+			body: null
+			sprite: null
+			path: goldenChandelier
+			posX: 9.6
+			posY: 7.04
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Chest
+			destroyed: false
+			body: null
+			sprite: null
+			path: bronzeChest
+			posX: 2.56
+			posY: 1.92
+		}
+	]
 	mapWidth: 15.36
 	mapHeight: 10.24
 }

@@ -11,6 +11,6 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		new LwjglApplication(new Bagel(), config);
 		config.width = 800;
-		config.height = 480;
+		config.height = 600;
 	}
 }

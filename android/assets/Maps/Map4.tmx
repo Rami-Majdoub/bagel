@@ -84,7 +84,7 @@
   <object id="38" x="258.942" y="685.544" width="189.058" height="18.456"/>
  </objectgroup>
  <objectgroup name="chests">
-  <object id="23" x="1280" y="768" width="64" height="64"/>
+  <object id="23" x="1216" y="768" width="64" height="64"/>
  </objectgroup>
  <objectgroup name="enemies">
   <object id="28" x="1152" y="768" width="64" height="64"/>

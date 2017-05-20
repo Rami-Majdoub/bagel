@@ -5,8 +5,7 @@ import com.badlogic.gdx.maps.objects.PolylineMapObject
 import com.badlogic.gdx.maps.objects.RectangleMapObject
 import com.badlogic.gdx.physics.box2d.*
 import ru.icarumbas.PIX_PER_M
-import ru.icarumbas.bagel.Characters.mapObjects.Box
-import ru.icarumbas.bagel.Characters.mapObjects.MapObject
+import ru.icarumbas.bagel.Characters.mapObjects.*
 
 
 class B2DWorldCreator {
@@ -65,6 +64,33 @@ class B2DWorldCreator {
                 .filterIsInstance<RectangleMapObject>()
                 .forEach {
                     mapObjects.add(Box(it.rectangle))
+
+                }
+    }
+
+    fun loadChandeliers(layer: MapLayer, mapObjects: ArrayList<MapObject>) {
+        layer.objects
+                .filterIsInstance<RectangleMapObject>()
+                .forEach {
+                    mapObjects.add(Chandelier(it.rectangle))
+
+                }
+    }
+
+    fun loadChests(layer: MapLayer, mapObjects: ArrayList<MapObject>) {
+        layer.objects
+                .filterIsInstance<RectangleMapObject>()
+                .forEach {
+                    mapObjects.add(Chest(it.rectangle))
+
+                }
+    }
+
+    fun loadStatue(layer: MapLayer, mapObjects: ArrayList<MapObject>) {
+        layer.objects
+                .filterIsInstance<RectangleMapObject>()
+                .forEach {
+                    mapObjects.add(Statue(it.rectangle))
 
                 }
     }

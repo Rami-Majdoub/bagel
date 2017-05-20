@@ -8,7 +8,7 @@ import com.badlogic.gdx.physics.box2d.Body
 import ru.icarumbas.PIX_PER_M
 
 
-class Box : MapObject{
+class Chandelier: MapObject{
     override var destroyed = false
     lateinit override var body: Body
     override var sprite: Sprite? = null
@@ -25,20 +25,17 @@ class Box : MapObject{
 
         val random = MathUtils.random(1)
         if (random == 0) {
-            path = "box"
+            path = "goldenChandelier"
         }
         else {
-            path = "barrel"
+            path = "silverChandelier"
         }
 
     }
 
     override fun loadSprite(textureAtlas: TextureAtlas) {
         sprite = textureAtlas.createSprite(path)
-        sprite!!.setSize(64.div(PIX_PER_M), 64.div(PIX_PER_M))
+        sprite!!.setSize(127.div(PIX_PER_M), 192.div(PIX_PER_M))
         sprite!!.setPosition(posX, posY)
     }
-
-
-
 }

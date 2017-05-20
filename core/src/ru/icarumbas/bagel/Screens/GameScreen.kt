@@ -34,7 +34,6 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
     private val viewport = FitViewport(camera.viewportWidth, camera.viewportHeight, camera)
     val animationCreator: AnimationCreator
     val worldCreator: WorldCreator
-    private val worldContactListener = WorldContactListener(this)
     val miniMap = MiniMap()
     var currentMap = 0
     var rooms = ArrayList<Room>()
@@ -44,6 +43,7 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
     val world = World(Vector2(0f, -9.8f), true)
     val player = Player(this)
     val hud = Hud(player)
+    private val worldContactListener = WorldContactListener(player, hud)
     val groundBodies = HashMap<String, ArrayList<Body>>()
 
 
@@ -76,27 +76,26 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
         Gdx.input.inputProcessor = hud.stage
 
         world.setContactListener(worldContactListener)
-        world.setContactFilter(worldContactListener)
-
 
     }
 
     override fun render(delta: Float) {
         debugRenderer.render(world, camera.combined)
-        world.step(1 / 60f, 8, 3)
+
         mapRenderer.setView(camera)
         mapRenderer.render()
         player.update(delta)
-
         mapRenderer.batch.begin()
-        player.draw(mapRenderer.batch)
         rooms[currentMap].draw(mapRenderer.batch)
+        player.draw(mapRenderer.batch)
         mapRenderer.batch.end()
         animationCreator.updateAnimations()
         hud.update(currentMap)
         moveCamera()
         miniMap.render()
         checkRoomChange(player)
+        world.step(1 / 60f, 8, 3)
+
     }
 
     override fun pause() {

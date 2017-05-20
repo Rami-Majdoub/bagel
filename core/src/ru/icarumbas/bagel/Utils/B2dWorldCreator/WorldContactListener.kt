@@ -4,55 +4,40 @@ import com.badlogic.gdx.physics.box2d.*
 import ru.icarumbas.GROUND_BIT
 import ru.icarumbas.PLATFORM_BIT
 import ru.icarumbas.PLAYER_BIT
-import ru.icarumbas.bagel.Screens.GameScreen
+import ru.icarumbas.bagel.Characters.Player
+import ru.icarumbas.bagel.Screens.Scenes.Hud
 import kotlin.experimental.or
 
-class WorldContactListener(val gameScreen: GameScreen) : ContactListener, ContactFilter {
+class WorldContactListener(val player: Player, val hud: Hud) : ContactListener {
 
-    var isContact = false
-
-    override fun shouldCollide(fixtureA: Fixture, fixtureB: Fixture): Boolean {
-        var playerBody = fixtureA.body
-        var otherBody = fixtureB.body
-
-        if (fixtureA.filterData.categoryBits or fixtureB.filterData.categoryBits == GROUND_BIT) return true
-
-        if (fixtureB.body == gameScreen.player.playerBody){
-            playerBody = fixtureB.body
-            otherBody = fixtureA.body
-        }
-
-        return playerBody.position.y - gameScreen.player.height / 2 > otherBody.position.y && !isTouchPadDown()
-
-    }
-
-    override fun postSolve(contact: Contact, impulse: ContactImpulse) {
-
-    }
+    override fun postSolve(contact: Contact, impulse: ContactImpulse) {}
 
     override fun preSolve(contact: Contact, oldManifold: Manifold) {
+        val fixA = contact.fixtureA
+        val fixB = contact.fixtureB
 
-    }
 
-    override fun beginContact(contact: Contact) {
-        val fixA = contact.fixtureA.filterData.categoryBits
-        val fixB = contact.fixtureB.filterData.categoryBits
-        when (fixA or fixB) {
-            PLAYER_BIT or PLATFORM_BIT -> isContact = true
+        if (fixA.filterData.categoryBits or fixB.filterData.categoryBits == PLAYER_BIT or PLATFORM_BIT) {
+            var playerBody = fixA.body
+            var platformBody = fixB.body
 
+            if (fixB.body == player.playerBody) {
+                playerBody = fixB.body
+                platformBody = fixA.body
+            }
+
+
+            if (playerBody.position.y < platformBody.position.y + .75 || isTouchPadDown()) {
+                contact.isEnabled = false
+            }
         }
+
     }
 
-    override fun endContact(contact: Contact) {
-        val fixA = contact.fixtureA.filterData.categoryBits
-        val fixB = contact.fixtureB.filterData.categoryBits
-        when (fixA or fixB) {
-            PLAYER_BIT or PLATFORM_BIT -> isContact = false
+    override fun beginContact(contact: Contact) {}
 
-        }
-    }
+    override fun endContact(contact: Contact) {}
 
-
-    fun isTouchPadDown() = gameScreen.hud.touchpad.knobY < gameScreen.hud.touchpad.height / 2f - 20f
+    fun isTouchPadDown() = hud.touchpad.knobY < hud.touchpad.height / 2f - 20f
 
 }

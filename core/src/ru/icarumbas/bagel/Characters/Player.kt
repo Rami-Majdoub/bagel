@@ -8,11 +8,9 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
 import com.badlogic.gdx.utils.Array
-import ru.icarumbas.GROUND_BIT
-import ru.icarumbas.PLAYER_BIT
-import ru.icarumbas.REG_ROOM_HEIGHT
-import ru.icarumbas.REG_ROOM_WIDTH
+import ru.icarumbas.*
 import ru.icarumbas.bagel.Screens.GameScreen
+import kotlin.experimental.or
 
 class Player(val gameScreen: GameScreen) : Sprite() {
     lateinit var playerBody: Body
@@ -39,8 +37,8 @@ class Player(val gameScreen: GameScreen) : Sprite() {
 
         // Animation
         stateAnimation = createAnimation("Idle", 10, .1f, Animation.PlayMode.LOOP)
-        runAnimation = createAnimation("Run", 10, .1f, Animation.PlayMode.LOOP)
-        jumpAnimation = createAnimation("Jump", 10, .1f, Animation.PlayMode.LOOP)
+        runAnimation = createAnimation("Run", 10, .075f, Animation.PlayMode.LOOP)
+        jumpAnimation = createAnimation("Jump", 10, .125f, Animation.PlayMode.LOOP)
         attackAnimation = createAnimation("Attack", 10, .05f, Animation.PlayMode.LOOP)
 
     }
@@ -60,10 +58,11 @@ class Player(val gameScreen: GameScreen) : Sprite() {
 
 
         val shape = PolygonShape()
-        shape.setAsBox(.3f, .6f)
+        shape.setAsBox(.3f, .525f)
 
         val fixtureDef = FixtureDef()
         fixtureDef.filter.categoryBits = PLAYER_BIT
+        fixtureDef.filter.maskBits = PLATFORM_BIT or GROUND_BIT
         fixtureDef.shape = shape
         fixtureDef.restitution = 0f
         fixtureDef.friction = .4f

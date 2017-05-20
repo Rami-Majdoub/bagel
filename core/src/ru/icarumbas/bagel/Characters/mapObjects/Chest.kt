@@ -8,7 +8,7 @@ import com.badlogic.gdx.physics.box2d.Body
 import ru.icarumbas.PIX_PER_M
 
 
-class Box : MapObject{
+class Chest: MapObject{
     override var destroyed = false
     lateinit override var body: Body
     override var sprite: Sprite? = null
@@ -23,12 +23,15 @@ class Box : MapObject{
         posX = rectangle.x.div(PIX_PER_M)
         posY = rectangle.y.div(PIX_PER_M)
 
-        val random = MathUtils.random(1)
+        val random = MathUtils.random(2)
         if (random == 0) {
-            path = "box"
+            path = "goldenChest"
+        }
+        if (random == 1) {
+            path = "silverChest"
         }
         else {
-            path = "barrel"
+            path = "bronzeChest"
         }
 
     }
@@ -38,7 +41,4 @@ class Box : MapObject{
         sprite!!.setSize(64.div(PIX_PER_M), 64.div(PIX_PER_M))
         sprite!!.setPosition(posX, posY)
     }
-
-
-
 }
