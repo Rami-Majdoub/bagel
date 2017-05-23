@@ -8,7 +8,8 @@ import ru.icarumbas.bagel.Screens.MainMenuScreen
 const val GROUND_BIT: Short = 2
 const val PLATFORM_BIT: Short = 4
 const val PLAYER_BIT: Short = 8
-const val BOX_BIT: Short = 16
+const val CHEST_BIT: Short = 16
+const val SPIKES_BIT: Short = 32
 
 const val REG_ROOM_HEIGHT = 10.24f
 const val REG_ROOM_WIDTH = 15.36f

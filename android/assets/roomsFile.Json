@@ -34,6 +34,7 @@
 	mapObjects: [
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Chandelier
+			bit: 1
 			destroyed: false
 			body: null
 			sprite: null
@@ -43,6 +44,7 @@
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Chandelier
+			bit: 1
 			destroyed: false
 			body: null
 			sprite: null
@@ -52,6 +54,7 @@
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Chest
+			bit: 16
 			destroyed: false
 			body: null
 			sprite: null
@@ -61,10 +64,11 @@
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Statue
+			bit: 1
 			destroyed: false
 			body: null
 			sprite: null
-			path: goldenStatue
+			path: silverStatue
 			posX: 10.88
 			posY: 5.12
 		}
@@ -89,24 +93,27 @@
 	mapObjects: [
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			bit: 1
 			destroyed: false
 			body: null
 			sprite: null
-			path: barrel
+			path: box
 			posX: 3.84
 			posY: 1.92
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			bit: 1
 			destroyed: false
 			body: null
 			sprite: null
-			path: barrel
+			path: box
 			posX: 2.56
 			posY: 1.92
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			bit: 1
 			destroyed: false
 			body: null
 			sprite: null
@@ -116,46 +123,51 @@
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			bit: 1
 			destroyed: false
 			body: null
 			sprite: null
-			path: barrel
+			path: box
 			posX: 2.56
 			posY: 2.56
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			bit: 1
+			destroyed: false
+			body: null
+			sprite: null
+			path: barrel
+			posX: 1.92
+			posY: 2.56
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			bit: 1
 			destroyed: false
 			body: null
 			sprite: null
 			path: box
 			posX: 1.92
-			posY: 2.56
-		}
-		{
-			class: ru.icarumbas.bagel.Characters.mapObjects.Box
-			destroyed: false
-			body: null
-			sprite: null
-			path: barrel
-			posX: 1.92
 			posY: 3.2
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Chest
+			bit: 16
 			destroyed: false
 			body: null
 			sprite: null
-			path: bronzeChest
+			path: silverChest
 			posX: 8.96
 			posY: 1.92
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Chest
+			bit: 16
 			destroyed: false
 			body: null
 			sprite: null
-			path: bronzeChest
+			path: silverChest
 			posX: 5.76
 			posY: 1.92
 		}
@@ -180,6 +192,7 @@
 	mapObjects: [
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			bit: 1
 			destroyed: false
 			body: null
 			sprite: null
@@ -189,15 +202,17 @@
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			bit: 1
 			destroyed: false
 			body: null
 			sprite: null
-			path: barrel
+			path: box
 			posX: 6.4
 			posY: 1.92
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			bit: 1
 			destroyed: false
 			body: null
 			sprite: null
@@ -207,6 +222,7 @@
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			bit: 1
 			destroyed: false
 			body: null
 			sprite: null
@@ -216,42 +232,47 @@
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			bit: 1
 			destroyed: false
 			body: null
 			sprite: null
-			path: box
+			path: barrel
 			posX: 5.76
 			posY: 1.92
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			bit: 1
 			destroyed: false
 			body: null
 			sprite: null
-			path: box
+			path: barrel
 			posX: 12.16
 			posY: 6.4
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Box
-			destroyed: false
-			body: null
-			sprite: null
-			path: box
-			posX: 12.8
-			posY: 6.4
-		}
-		{
-			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			bit: 1
 			destroyed: false
 			body: null
 			sprite: null
 			path: barrel
 			posX: 12.8
+			posY: 6.4
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			bit: 1
+			destroyed: false
+			body: null
+			sprite: null
+			path: box
+			posX: 12.8
 			posY: 7.04
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Chandelier
+			bit: 1
 			destroyed: false
 			body: null
 			sprite: null
@@ -261,6 +282,7 @@
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Chandelier
+			bit: 1
 			destroyed: false
 			body: null
 			sprite: null
@@ -270,176 +292,69 @@
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Chest
+			bit: 16
 			destroyed: false
 			body: null
 			sprite: null
-			path: bronzeChest
+			path: silverChest
 			posX: 12.16
 			posY: 1.92
 		}
-	]
-	mapWidth: 15.36
-	mapHeight: 10.24
-}
-{
-	class: ru.icarumbas.bagel.Utils.WorldCreate.Room
-	path: Maps/Map0.tmx
-	roomLinks: [
-		7
-		5
-		0
-		6
-		null
-		null
-		null
-		null
-	]
-	meshVertices: [ 24, 25, 24, 25 ]
-	mapObjects: []
-	mapWidth: 15.36
-	mapHeight: 10.24
-}
-{
-	class: ru.icarumbas.bagel.Utils.WorldCreate.Room
-	path: Maps/Map3.tmx
-	roomLinks: [
-		null
-		null
-		null
-		4
-		null
-		null
-		null
-		null
-	]
-	meshVertices: [ 24, 24, 24, 24 ]
-	mapObjects: [
 		{
-			class: ru.icarumbas.bagel.Characters.mapObjects.Chandelier
+			class: ru.icarumbas.bagel.Characters.mapObjects.Spikes
+			bit: 32
 			destroyed: false
 			body: null
 			sprite: null
-			path: goldenChandelier
+			path: spikes
 			posX: 10.24
-			posY: 7.04
-		}
-		{
-			class: ru.icarumbas.bagel.Characters.mapObjects.Chandelier
-			destroyed: false
-			body: null
-			sprite: null
-			path: goldenChandelier
-			posX: 3.84
-			posY: 7.04
-		}
-		{
-			class: ru.icarumbas.bagel.Characters.mapObjects.Chest
-			destroyed: false
-			body: null
-			sprite: null
-			path: bronzeChest
-			posX: 10.24
-			posY: 5.12
-		}
-		{
-			class: ru.icarumbas.bagel.Characters.mapObjects.Statue
-			destroyed: false
-			body: null
-			sprite: null
-			path: silverStatue
-			posX: 10.88
-			posY: 5.12
-		}
-	]
-	mapWidth: 15.36
-	mapHeight: 10.24
-}
-{
-	class: ru.icarumbas.bagel.Utils.WorldCreate.Room
-	path: Maps/Map2.tmx
-	roomLinks: [
-		null
-		4
-		null
-		null
-		null
-		null
-		null
-		null
-	]
-	meshVertices: [ 24, 26, 24, 26 ]
-	mapObjects: [
-		{
-			class: ru.icarumbas.bagel.Characters.mapObjects.Box
-			destroyed: false
-			body: null
-			sprite: null
-			path: box
-			posX: 3.84
 			posY: 1.92
+			timer: 0
+			hitTimer: 0
+			firstHit: false
+			isTouched: false
 		}
 		{
-			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			class: ru.icarumbas.bagel.Characters.mapObjects.Spikes
+			bit: 32
 			destroyed: false
 			body: null
 			sprite: null
-			path: barrel
-			posX: 2.56
+			path: spikes
+			posX: 9.6
 			posY: 1.92
+			timer: 0
+			hitTimer: 0
+			firstHit: false
+			isTouched: false
 		}
 		{
-			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			class: ru.icarumbas.bagel.Characters.mapObjects.Spikes
+			bit: 32
 			destroyed: false
 			body: null
 			sprite: null
-			path: barrel
-			posX: 1.92
-			posY: 1.92
-		}
-		{
-			class: ru.icarumbas.bagel.Characters.mapObjects.Box
-			destroyed: false
-			body: null
-			sprite: null
-			path: box
-			posX: 2.56
-			posY: 2.56
-		}
-		{
-			class: ru.icarumbas.bagel.Characters.mapObjects.Box
-			destroyed: false
-			body: null
-			sprite: null
-			path: box
-			posX: 1.92
-			posY: 2.56
-		}
-		{
-			class: ru.icarumbas.bagel.Characters.mapObjects.Box
-			destroyed: false
-			body: null
-			sprite: null
-			path: box
-			posX: 1.92
-			posY: 3.2
-		}
-		{
-			class: ru.icarumbas.bagel.Characters.mapObjects.Chest
-			destroyed: false
-			body: null
-			sprite: null
-			path: bronzeChest
+			path: spikes
 			posX: 8.96
 			posY: 1.92
+			timer: 0
+			hitTimer: 0
+			firstHit: false
+			isTouched: false
 		}
 		{
-			class: ru.icarumbas.bagel.Characters.mapObjects.Chest
+			class: ru.icarumbas.bagel.Characters.mapObjects.Spikes
+			bit: 32
 			destroyed: false
 			body: null
 			sprite: null
-			path: bronzeChest
-			posX: 5.76
+			path: spikes
+			posX: 8.32
 			posY: 1.92
+			timer: 0
+			hitTimer: 0
+			firstHit: false
+			isTouched: false
 		}
 	]
 	mapWidth: 15.36
@@ -451,26 +366,28 @@
 	roomLinks: [
 		null
 		null
-		4
+		0
 		null
 		null
 		null
 		null
 		null
 	]
-	meshVertices: [ 23, 25, 23, 25 ]
+	meshVertices: [ 24, 25, 24, 25 ]
 	mapObjects: [
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Chandelier
+			bit: 1
 			destroyed: false
 			body: null
 			sprite: null
-			path: silverChandelier
+			path: goldenChandelier
 			posX: 4.48
 			posY: 7.04
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Chandelier
+			bit: 1
 			destroyed: false
 			body: null
 			sprite: null
@@ -480,6 +397,7 @@
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Chest
+			bit: 16
 			destroyed: false
 			body: null
 			sprite: null

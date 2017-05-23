@@ -1,4 +1,4 @@
-package ru.icarumbas.bagel.Utils.B2dWorldCreator
+package ru.icarumbas.bagel.Utils.B2dWorld
 
 import com.badlogic.gdx.maps.MapLayer
 import com.badlogic.gdx.maps.objects.PolylineMapObject
@@ -59,7 +59,9 @@ class B2DWorldCreator {
 
     }
 
-    fun loadBoxes(layer: MapLayer, mapObjects: ArrayList<MapObject>) {
+
+    fun loadBoxes(layer: MapLayer?, mapObjects: ArrayList<MapObject>) {
+        if (layer != null)
         layer.objects
                 .filterIsInstance<RectangleMapObject>()
                 .forEach {
@@ -68,7 +70,8 @@ class B2DWorldCreator {
                 }
     }
 
-    fun loadChandeliers(layer: MapLayer, mapObjects: ArrayList<MapObject>) {
+    fun loadChandeliers(layer: MapLayer?, mapObjects: ArrayList<MapObject>) {
+        if (layer != null)
         layer.objects
                 .filterIsInstance<RectangleMapObject>()
                 .forEach {
@@ -77,7 +80,8 @@ class B2DWorldCreator {
                 }
     }
 
-    fun loadChests(layer: MapLayer, mapObjects: ArrayList<MapObject>) {
+    fun loadChests(layer: MapLayer?, mapObjects: ArrayList<MapObject>) {
+        if (layer != null)
         layer.objects
                 .filterIsInstance<RectangleMapObject>()
                 .forEach {
@@ -86,11 +90,22 @@ class B2DWorldCreator {
                 }
     }
 
-    fun loadStatue(layer: MapLayer, mapObjects: ArrayList<MapObject>) {
+    fun loadStatues(layer: MapLayer?, mapObjects: ArrayList<MapObject>) {
+        if (layer != null)
         layer.objects
                 .filterIsInstance<RectangleMapObject>()
                 .forEach {
                     mapObjects.add(Statue(it.rectangle))
+
+                }
+    }
+
+    fun loadSpikes(layer: MapLayer?, mapObjects: ArrayList<MapObject>) {
+        if (layer != null)
+        layer.objects
+                .filterIsInstance<RectangleMapObject>()
+                .forEach {
+                    mapObjects.add(Spikes(it.rectangle))
 
                 }
     }

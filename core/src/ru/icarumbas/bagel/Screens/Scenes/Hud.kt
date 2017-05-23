@@ -16,7 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.viewport.StretchViewport
-import com.badlogic.gdx.utils.viewport.Viewport
 import ru.icarumbas.bagel.Characters.Player
 
 
@@ -31,7 +30,8 @@ class Hud (val player: Player){
     private var localPos = Vector2()
     private val fakeTouchDownEvent = InputEvent()
     private val lStyle = Label.LabelStyle(BitmapFont(), Color.RED)
-    val l = Label("", lStyle)
+    private val currentRoom = Label("", lStyle)
+    val hp = Label("100", lStyle)
     val fps = Label("", lStyle)
     val width = Gdx.graphics.width.toFloat()
     val height = Gdx.graphics.height.toFloat()
@@ -63,9 +63,13 @@ class Hud (val player: Player){
         touchpad.setBounds(0f, 0f, 100f, 100f)
         stage.addActor(touchpad)
 
-        l.setPosition(10f, 10f)
-        l.setSize(25f, 25f)
-        stage.addActor(l)
+        currentRoom.setPosition(10f, 10f)
+        currentRoom.setSize(25f, 25f)
+        stage.addActor(currentRoom)
+
+        hp.setPosition(10f, 450f)
+        currentRoom.setSize(30f,30f)
+        stage.addActor(hp)
 
         fps.setPosition(770f, 460f)
         stage.addActor(fps)
@@ -77,7 +81,7 @@ class Hud (val player: Player){
 
         val attackButton = Image(Texture("attackButton.png"))
         with (attackButton) {
-            setBounds(700f, 50f, 85f, 85f)
+            setBounds(780f, 60f, 85f, 85f)
 
             addListener(object : InputListener() {
                 override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
@@ -100,12 +104,27 @@ class Hud (val player: Player){
     }
 
     fun update(currentMap: Int) {
+        isAlive()
         stage.draw()
-        l.setText("$currentMap")
+        currentRoom.setText("$currentMap")
         getDirection()
         fps.setText(Gdx.graphics.framesPerSecond.toString())
         detectJumping()
+        player.state = getState()
 
+    }
+
+    fun getState(): Player.State {
+        if (player.attacking) return Player.State.Attacking
+        if (jumping && player.playerBody.linearVelocity.y != 0f)
+            return Player.State.Jumping
+        if ((touchpad.knobX < touchpad.width / 2 ||
+                touchpad.knobX > touchpad.width / 2) &&
+                !jumping && touchedOnce)
+
+            return Player.State.Running
+        else
+            return Player.State.Standing
     }
 
     fun detectJumping(){
@@ -167,5 +186,9 @@ class Hud (val player: Player){
             touchpad.isVisible = false
         }
 
+    }
+
+    fun isAlive(){
+        if (hp.text.toString().toInt() <= 0) Gdx.app.exit()
     }
 }

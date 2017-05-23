@@ -21,8 +21,8 @@ class Player(val gameScreen: GameScreen) : Sprite() {
     val atlas = TextureAtlas("Packs/GuyKnight.txt")
     var attacking = false
 
-
-    private enum class State {
+    var state = State.Standing
+    enum class State {
         Standing, Running, Jumping, Attacking
     }
 
@@ -58,25 +58,24 @@ class Player(val gameScreen: GameScreen) : Sprite() {
 
 
         val shape = PolygonShape()
-        shape.setAsBox(.3f, .525f)
+        shape.setAsBox(.3f, .52f)
 
         val fixtureDef = FixtureDef()
-        fixtureDef.filter.categoryBits = PLAYER_BIT
-        fixtureDef.filter.maskBits = PLATFORM_BIT or GROUND_BIT
         fixtureDef.shape = shape
         fixtureDef.restitution = 0f
         fixtureDef.friction = .4f
         fixtureDef.density = .04f
+        fixtureDef.filter.categoryBits = PLAYER_BIT
+        fixtureDef.filter.maskBits = PLATFORM_BIT or GROUND_BIT or SPIKES_BIT
 
         playerBody.createFixture(fixtureDef)
 
         val circleShape = CircleShape()
-
         fixtureDef.shape = circleShape
-
-        circleShape.radius = .3f
-        circleShape.position = Vector2(0f, -.45f)
+        circleShape.radius = .29f
+        circleShape.position = Vector2(0f, -.4f)
         fixtureDef.friction = 1.5f
+
         playerBody.createFixture(fixtureDef)
 
 
@@ -155,20 +154,6 @@ class Player(val gameScreen: GameScreen) : Sprite() {
 
 
     }
-
-    private var state = State.Standing
-        get() {
-            if (attacking) return State.Attacking
-            if (gameScreen.hud.jumping && playerBody.linearVelocity.y != 0f)
-                return State.Jumping
-            if ((gameScreen.hud.touchpad.knobX < gameScreen.hud.touchpad.width / 2 ||
-                    gameScreen.hud.touchpad.knobX > gameScreen.hud.touchpad.width / 2) &&
-                    !gameScreen.hud.jumping && gameScreen.hud.touchedOnce)
-
-                return State.Running
-            else
-                return State.Standing
-        }
 }
 
 

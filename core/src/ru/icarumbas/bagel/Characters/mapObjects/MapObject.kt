@@ -4,7 +4,8 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.physics.box2d.*
-import ru.icarumbas.BOX_BIT
+import ru.icarumbas.bagel.Characters.Player
+import ru.icarumbas.bagel.Screens.Scenes.Hud
 
 
 abstract class MapObject{
@@ -12,6 +13,7 @@ abstract class MapObject{
     abstract var destroyed: Boolean
     abstract var body: Body
     abstract var sprite: Sprite?
+    abstract val bit: Short
 
     fun defineBody(world: World){
         val fixtureDef = FixtureDef()
@@ -25,7 +27,7 @@ abstract class MapObject{
         shape.setAsBox(sprite!!.width.div(2), sprite!!.height.div(2))
         fixtureDef.shape = shape
         fixtureDef.friction = 1f
-        fixtureDef.filter.categoryBits = BOX_BIT
+        fixtureDef.filter.categoryBits = bit
 
         body = world.createBody(def)
         body.createFixture(fixtureDef)
@@ -34,7 +36,7 @@ abstract class MapObject{
 
     abstract fun loadSprite(textureAtlas: TextureAtlas)
 
-    fun draw(batch: Batch){
+    open fun draw(batch: Batch, delta: Float, hud: Hud, player: Player){
         if (!destroyed) sprite!!.draw(batch)
 
     }

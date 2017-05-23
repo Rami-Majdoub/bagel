@@ -18,8 +18,8 @@ import ru.icarumbas.*
 import ru.icarumbas.bagel.Characters.Player
 import ru.icarumbas.bagel.Screens.Scenes.Hud
 import ru.icarumbas.bagel.Screens.Scenes.MiniMap
-import ru.icarumbas.bagel.Utils.B2dWorldCreator.B2DWorldCreator
-import ru.icarumbas.bagel.Utils.B2dWorldCreator.WorldContactListener
+import ru.icarumbas.bagel.Utils.B2dWorld.B2DWorldCreator
+import ru.icarumbas.bagel.Utils.B2dWorld.WorldContactListener
 import ru.icarumbas.bagel.Utils.WorldCreate.AnimationCreator
 import ru.icarumbas.bagel.Utils.WorldCreate.Room
 import ru.icarumbas.bagel.Utils.WorldCreate.WorldCreator
@@ -43,7 +43,7 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
     val world = World(Vector2(0f, -9.8f), true)
     val player = Player(this)
     val hud = Hud(player)
-    private val worldContactListener = WorldContactListener(player, hud)
+    private val worldContactListener: WorldContactListener
     val groundBodies = HashMap<String, ArrayList<Body>>()
 
 
@@ -67,26 +67,32 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
 
         }
 
-        rooms.forEach { it.mapObjects.forEach { it.loadSprite(textureAtlas)
-                                               it.defineBody(world) } }
+        rooms.forEach { it.mapObjects.forEach {
+            it.loadSprite(textureAtlas)
+            it.defineBody(world)
+        } }
+
 
         mapRenderer = OrthogonalTiledMapRenderer(assetManager.get(rooms[currentMap].path), 0.01f)
         groundBodies[rooms[currentMap].path]!!.forEach { it.isActive = true }
+        rooms[currentMap].mapObjects.forEach { it.body.isActive = true }
+
 
         Gdx.input.inputProcessor = hud.stage
 
+        worldContactListener = WorldContactListener(player, hud, rooms)
         world.setContactListener(worldContactListener)
+        System.out.println("Size of rooms: ${rooms.size}")
+
 
     }
 
     override fun render(delta: Float) {
-        debugRenderer.render(world, camera.combined)
-
         mapRenderer.setView(camera)
         mapRenderer.render()
         player.update(delta)
         mapRenderer.batch.begin()
-        rooms[currentMap].draw(mapRenderer.batch)
+        rooms[currentMap].draw(mapRenderer.batch, delta, hud, player)
         player.draw(mapRenderer.batch)
         mapRenderer.batch.end()
         animationCreator.updateAnimations()
@@ -95,6 +101,8 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
         miniMap.render()
         checkRoomChange(player)
         world.step(1 / 60f, 8, 3)
+        debugRenderer.render(world, camera.combined)
+
 
     }
 
@@ -136,7 +144,6 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
 
         worldCreator.createWorld(100, rooms)
 
-        System.out.println("Size of rooms: ${rooms.size}")
         currentMap = 0
 
         rooms.forEach { it.loadMapObjects(b2DWorldCreator, assetManager) }
@@ -177,8 +184,6 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
         worldIO.preferences.putInteger("CurrentMap", currentMap)
         worldIO.preferences.flush()
 
-
-
     }
 
     fun checkRoomChange(player: Player) {
@@ -187,19 +192,19 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
 
         if (posX > rooms[currentMap].mapWidth && posY < REG_ROOM_HEIGHT) changeRoom(player, 2, "Right", 2, 1) else // 2
 
-            if (posX < 0 && posY < REG_ROOM_HEIGHT) changeRoom(player, 0, "Left", 0, 1) else // 1
+        if (posX < 0 && posY < REG_ROOM_HEIGHT) changeRoom(player, 0, "Left", 0, 1) else // 1
 
-                if (posY > rooms[currentMap].mapHeight && posX < REG_ROOM_WIDTH) changeRoom(player, 1, "Up", 0, 3) else // 4
+        if (posY > rooms[currentMap].mapHeight && posX < REG_ROOM_WIDTH) changeRoom(player, 1, "Up", 0, 3) else // 4
 
-                    if (posY < 0 && posX < REG_ROOM_WIDTH) changeRoom(player, 3, "Down", 0, 1) else // 1
+        if (posY < 0 && posX < REG_ROOM_WIDTH) changeRoom(player, 3, "Down", 0, 1) else // 1
 
-                        if (posX < 0 && posY > REG_ROOM_HEIGHT) changeRoom(player, 4, "Left", 0, 3) else // 4
+        if (posX < 0 && posY > REG_ROOM_HEIGHT) changeRoom(player, 4, "Left", 0, 3) else // 4
 
-                            if (posY < 0 && posX > REG_ROOM_WIDTH) changeRoom(player, 7, "Down", 2, 1) else // 2
+        if (posY < 0 && posX > REG_ROOM_WIDTH) changeRoom(player, 7, "Down", 2, 1) else // 2
 
-                                if (posX > rooms[currentMap].mapWidth && posY > REG_ROOM_HEIGHT) changeRoom(player, 6, "Right", 2, 3) else // 3
+        if (posX > rooms[currentMap].mapWidth && posY > REG_ROOM_HEIGHT) changeRoom(player, 6, "Right", 2, 3) else // 3
 
-                                    if (posY > rooms[currentMap].mapHeight && posX > REG_ROOM_WIDTH) changeRoom(player, 5, "Up", 2, 3) // 3
+        if (posY > rooms[currentMap].mapHeight && posX > REG_ROOM_WIDTH) changeRoom(player, 5, "Up", 2, 3) // 3
     }
 
 }

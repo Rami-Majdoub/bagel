@@ -5,10 +5,13 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.physics.box2d.Body
+import ru.icarumbas.CHEST_BIT
 import ru.icarumbas.PIX_PER_M
 
 
 class Chest: MapObject{
+
+    override val bit: Short = CHEST_BIT
     override var destroyed = false
     lateinit override var body: Body
     override var sprite: Sprite? = null
