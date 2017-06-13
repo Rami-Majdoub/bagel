@@ -2,9 +2,15 @@ package ru.icarumbas.bagel.Utils.WorldCreate
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.graphics.g2d.Animation
+import com.badlogic.gdx.graphics.g2d.Sprite
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.TiledMapTile
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer
+import com.badlogic.gdx.utils.Array
+import ru.icarumbas.PIX_PER_M
 import java.util.*
 
 class AnimationCreator(val assetManager: AssetManager){
@@ -54,5 +60,30 @@ class AnimationCreator(val assetManager: AssetManager){
             val newTile = fireTiles[currentAnimationFrame]
             cell.tile = newTile
         }
+    }
+
+    // Single sprites
+    fun createSpriteAnimation(path: String, count: Int, animSpeed: Float, animPlaymode: Animation.PlayMode, atlas: TextureAtlas): Animation<*> {
+        val frames = Array<TextureRegion>(count)
+        (1..count).forEach { frames.add(atlas.findRegion("$path ($it)")) }
+        val animation = Animation(animSpeed, frames)
+        animation.playMode = animPlaymode
+        frames.clear()
+        return animation
+    }
+
+    // Sprite sheet
+    fun createSpriteAnimation(path: String, count: Int, animSpeed: Float, animPlaymode: Animation.PlayMode, atlas: TextureAtlas,
+                              width: Int, height: Int): Animation<*> {
+        val frames = Array<Sprite>(count)
+        (0..count).forEach {
+            val sprite = Sprite(atlas.findRegion(path), it * width, 0, width, height)
+            sprite.setSize(width.div(PIX_PER_M), height.div(PIX_PER_M))
+            frames.add(sprite)
+        }
+        val animation = Animation(animSpeed, frames)
+        animation.playMode = animPlaymode
+        frames.clear()
+        return animation
     }
 }

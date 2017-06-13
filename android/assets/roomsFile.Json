@@ -14,6 +14,7 @@
 	]
 	meshVertices: [ 25, 25, 25, 25 ]
 	mapObjects: []
+	enemies: []
 	mapWidth: 15.36
 	mapHeight: 10.24
 }
@@ -61,6 +62,8 @@
 			path: silverChest
 			posX: 10.24
 			posY: 5.12
+			coins: []
+			isOpened: false
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Statue
@@ -68,9 +71,47 @@
 			destroyed: false
 			body: null
 			sprite: null
-			path: silverStatue
+			path: goldenStatue
 			posX: 10.88
 			posY: 5.12
+		}
+	]
+	enemies: [
+		{
+			class: ru.icarumbas.bagel.Characters.Enemies.CramMunch
+			sprite: null
+			bit: 64
+			destroyed: false
+			body: null
+			posX: 10.408199
+			posY: 1.9200003
+			stateTimer: 0
+			stateAnimation: null
+			runAnimation: null
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.Enemies.CramMunch
+			sprite: null
+			bit: 64
+			destroyed: false
+			body: null
+			posX: 5.12
+			posY: 1.92
+			stateTimer: 0
+			stateAnimation: null
+			runAnimation: null
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.Enemies.CramMunch
+			sprite: null
+			bit: 64
+			destroyed: false
+			body: null
+			posX: 3.2
+			posY: 3.84
+			stateTimer: 0
+			stateAnimation: null
+			runAnimation: null
 		}
 	]
 	mapWidth: 15.36
@@ -117,7 +158,7 @@
 			destroyed: false
 			body: null
 			sprite: null
-			path: barrel
+			path: box
 			posX: 1.92
 			posY: 1.92
 		}
@@ -127,7 +168,7 @@
 			destroyed: false
 			body: null
 			sprite: null
-			path: box
+			path: barrel
 			posX: 2.56
 			posY: 2.56
 		}
@@ -147,7 +188,7 @@
 			destroyed: false
 			body: null
 			sprite: null
-			path: box
+			path: barrel
 			posX: 1.92
 			posY: 3.2
 		}
@@ -160,6 +201,8 @@
 			path: silverChest
 			posX: 8.96
 			posY: 1.92
+			coins: []
+			isOpened: false
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Chest
@@ -167,9 +210,49 @@
 			destroyed: false
 			body: null
 			sprite: null
-			path: silverChest
+			path: bronzeChest
 			posX: 5.76
 			posY: 1.92
+			coins: []
+			isOpened: false
+		}
+	]
+	enemies: [
+		{
+			class: ru.icarumbas.bagel.Characters.Enemies.CramMunch
+			sprite: null
+			bit: 64
+			destroyed: false
+			body: null
+			posX: 9.6
+			posY: 6.4
+			stateTimer: 0
+			stateAnimation: null
+			runAnimation: null
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.Enemies.CramMunch
+			sprite: null
+			bit: 64
+			destroyed: false
+			body: null
+			posX: 5.12
+			posY: 6.4
+			stateTimer: 0
+			stateAnimation: null
+			runAnimation: null
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.Enemies.CramMunch
+			sprite: null
+			bit: 64
+			destroyed: false
+			body: null
+			posX: 7.68
+			posY: 1.92
+			stateTimer: 0
+			stateAnimation: null
+			runAnimation: null
 		}
 	]
 	mapWidth: 15.36
@@ -196,7 +279,7 @@
 			destroyed: false
 			body: null
 			sprite: null
-			path: barrel
+			path: box
 			posX: 6.4
 			posY: 2.56
 		}
@@ -216,7 +299,7 @@
 			destroyed: false
 			body: null
 			sprite: null
-			path: box
+			path: barrel
 			posX: 6.4
 			posY: 1.28
 		}
@@ -246,7 +329,7 @@
 			destroyed: false
 			body: null
 			sprite: null
-			path: barrel
+			path: box
 			posX: 12.16
 			posY: 6.4
 		}
@@ -266,7 +349,7 @@
 			destroyed: false
 			body: null
 			sprite: null
-			path: box
+			path: barrel
 			posX: 12.8
 			posY: 7.04
 		}
@@ -286,7 +369,7 @@
 			destroyed: false
 			body: null
 			sprite: null
-			path: silverChandelier
+			path: goldenChandelier
 			posX: 8.96
 			posY: 7.04
 		}
@@ -296,9 +379,11 @@
 			destroyed: false
 			body: null
 			sprite: null
-			path: silverChest
+			path: bronzeChest
 			posX: 12.16
 			posY: 1.92
+			coins: []
+			isOpened: false
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Spikes
@@ -306,7 +391,6 @@
 			destroyed: false
 			body: null
 			sprite: null
-			path: spikes
 			posX: 10.24
 			posY: 1.92
 			timer: 0
@@ -320,7 +404,6 @@
 			destroyed: false
 			body: null
 			sprite: null
-			path: spikes
 			posX: 9.6
 			posY: 1.92
 			timer: 0
@@ -334,7 +417,6 @@
 			destroyed: false
 			body: null
 			sprite: null
-			path: spikes
 			posX: 8.96
 			posY: 1.92
 			timer: 0
@@ -348,13 +430,50 @@
 			destroyed: false
 			body: null
 			sprite: null
-			path: spikes
 			posX: 8.32
 			posY: 1.92
 			timer: 0
 			hitTimer: 0
 			firstHit: false
 			isTouched: false
+		}
+	]
+	enemies: [
+		{
+			class: ru.icarumbas.bagel.Characters.Enemies.CramMunch
+			sprite: null
+			bit: 64
+			destroyed: false
+			body: null
+			posX: 3.15717
+			posY: 1.2799978
+			stateTimer: 0
+			stateAnimation: null
+			runAnimation: null
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.Enemies.CramMunch
+			sprite: null
+			bit: 64
+			destroyed: false
+			body: null
+			posX: 11.52
+			posY: 1.9199991
+			stateTimer: 0
+			stateAnimation: null
+			runAnimation: null
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.Enemies.CramMunch
+			sprite: null
+			bit: 64
+			destroyed: false
+			body: null
+			posX: 11.52
+			posY: 6.4000034
+			stateTimer: 0
+			stateAnimation: null
+			runAnimation: null
 		}
 	]
 	mapWidth: 15.36
@@ -401,9 +520,37 @@
 			destroyed: false
 			body: null
 			sprite: null
-			path: bronzeChest
+			path: goldenChest
 			posX: 2.56
 			posY: 1.92
+			coins: []
+			isOpened: false
+		}
+	]
+	enemies: [
+		{
+			class: ru.icarumbas.bagel.Characters.Enemies.CramMunch
+			sprite: null
+			bit: 64
+			destroyed: false
+			body: null
+			posX: 4.54094
+			posY: 1.9379797
+			stateTimer: 0
+			stateAnimation: null
+			runAnimation: null
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.Enemies.CramMunch
+			sprite: null
+			bit: 64
+			destroyed: false
+			body: null
+			posX: 8.906079
+			posY: 1.9559469
+			stateTimer: 0
+			stateAnimation: null
+			runAnimation: null
 		}
 	]
 	mapWidth: 15.36

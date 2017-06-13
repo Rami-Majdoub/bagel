@@ -1,10 +1,14 @@
 package ru.icarumbas.bagel.Utils.B2dWorld
 
+import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.maps.MapLayer
 import com.badlogic.gdx.maps.objects.PolylineMapObject
 import com.badlogic.gdx.maps.objects.RectangleMapObject
+import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.physics.box2d.*
 import ru.icarumbas.PIX_PER_M
+import ru.icarumbas.bagel.Characters.Enemies.CramMunch
+import ru.icarumbas.bagel.Characters.Enemies.Enemy
 import ru.icarumbas.bagel.Characters.mapObjects.*
 
 
@@ -59,55 +63,34 @@ class B2DWorldCreator {
 
     }
 
-
-    fun loadBoxes(layer: MapLayer?, mapObjects: ArrayList<MapObject>) {
+    fun loadMapObject(roomPath: String, objectPath: String, assetManager: AssetManager, mapObjects: ArrayList<MapObject>) {
+        val layer = assetManager.get(roomPath, TiledMap::class.java).layers[objectPath]
         if (layer != null)
-        layer.objects
-                .filterIsInstance<RectangleMapObject>()
-                .forEach {
-                    mapObjects.add(Box(it.rectangle))
+            layer.objects
+                    .filterIsInstance<RectangleMapObject>()
+                    .forEach {
+                        mapObjects.add(when(objectPath){
+                            "boxes" -> Box(it.rectangle)
+                            "chandeliers" -> Chandelier(it.rectangle)
+                            "chests" -> Chest(it.rectangle)
+                            "statue" -> Statue(it.rectangle)
+                            "spikes" -> Spikes(it.rectangle)
+                            else -> throw Exception("NO SUCH CLASS")
+                        })
 
-                }
+                    }
     }
 
-    fun loadChandeliers(layer: MapLayer?, mapObjects: ArrayList<MapObject>) {
+
+
+    fun loadCramMunch(layer: MapLayer?, enemies: ArrayList<Enemy>) {
         if (layer != null)
-        layer.objects
-                .filterIsInstance<RectangleMapObject>()
-                .forEach {
-                    mapObjects.add(Chandelier(it.rectangle))
+            layer.objects
+                    .filterIsInstance<RectangleMapObject>()
+                    .forEach {
+                        enemies.add(CramMunch(it.rectangle))
 
-                }
-    }
-
-    fun loadChests(layer: MapLayer?, mapObjects: ArrayList<MapObject>) {
-        if (layer != null)
-        layer.objects
-                .filterIsInstance<RectangleMapObject>()
-                .forEach {
-                    mapObjects.add(Chest(it.rectangle))
-
-                }
-    }
-
-    fun loadStatues(layer: MapLayer?, mapObjects: ArrayList<MapObject>) {
-        if (layer != null)
-        layer.objects
-                .filterIsInstance<RectangleMapObject>()
-                .forEach {
-                    mapObjects.add(Statue(it.rectangle))
-
-                }
-    }
-
-    fun loadSpikes(layer: MapLayer?, mapObjects: ArrayList<MapObject>) {
-        if (layer != null)
-        layer.objects
-                .filterIsInstance<RectangleMapObject>()
-                .forEach {
-                    mapObjects.add(Spikes(it.rectangle))
-
-                }
+                    }
     }
 
 

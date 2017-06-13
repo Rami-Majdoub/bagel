@@ -83,7 +83,7 @@
   <object id="25" x="1024" y="448" width="64" height="64"/>
  </objectgroup>
  <objectgroup name="enemies">
-  <object id="19" x="1152" y="768" width="64" height="64"/>
+  <object id="19" x="1040.82" y="656.819" width="175.181" height="175.181"/>
   <object id="20" x="512" y="768" width="64" height="64"/>
   <object id="21" x="320" y="576" width="64" height="64"/>
  </objectgroup>

@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
+import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
@@ -39,12 +40,21 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
     var rooms = ArrayList<Room>()
     val worldIO = WorldIO()
     val textureAtlas = TextureAtlas(Gdx.files.internal("Packs/RoomObjects.txt"))
+    val enemyTextureAtlas = TextureAtlas(Gdx.files.internal("Packs/CrapMunch.txt"))
     val b2DWorldCreator = B2DWorldCreator()
     val world = World(Vector2(0f, -9.8f), true)
-    val player = Player(this)
-    val hud = Hud(player)
+    val player: Player
+    val hud: Hud
     private val worldContactListener: WorldContactListener
     val groundBodies = HashMap<String, ArrayList<Body>>()
+
+    enum class State {
+        Standing,
+        Running,
+        Jumping,
+        Attacking,
+        Dead
+    }
 
 
     init {
@@ -56,19 +66,28 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
 
         worldCreator = WorldCreator(assetManager)
         animationCreator = AnimationCreator(assetManager)
+        player = Player(this, animationCreator)
+        hud = Hud(player)
 
         if (newWorld) createNewWorld() else continueWorld()
 
         (0..TILED_MAPS_TOTAL).forEach {
             val bodies = ArrayList<Body>()
-            b2DWorldCreator.loadGround(assetManager.get("Maps/Map$it.tmx", TiledMap::class.java).layers.get("platform"), world, bodies, PLATFORM_BIT)
-            b2DWorldCreator.loadGround(assetManager.get("Maps/Map$it.tmx", TiledMap::class.java).layers.get("ground"), world, bodies, GROUND_BIT)
+            b2DWorldCreator.loadGround(assetManager.get("Maps/Map$it.tmx",
+                    TiledMap::class.java).layers.get("platform"), world, bodies, PLATFORM_BIT)
+            b2DWorldCreator.loadGround(assetManager.get("Maps/Map$it.tmx",
+                    TiledMap::class.java).layers.get("ground"), world, bodies, GROUND_BIT)
             groundBodies.put("Maps/Map$it.tmx", bodies)
 
         }
 
         rooms.forEach { it.mapObjects.forEach {
             it.loadSprite(textureAtlas)
+            it.defineBody(world)
+        } }
+
+        rooms.forEach { it.enemies.forEach {
+            it.loadSprite(enemyTextureAtlas, animationCreator)
             it.defineBody(world)
         } }
 
@@ -80,7 +99,7 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
 
         Gdx.input.inputProcessor = hud.stage
 
-        worldContactListener = WorldContactListener(player, hud, rooms)
+        worldContactListener = WorldContactListener(this)
         world.setContactListener(worldContactListener)
         System.out.println("Size of rooms: ${rooms.size}")
 
@@ -88,11 +107,14 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
     }
 
     override fun render(delta: Float) {
+        world.step(1 / 60f, 8, 3)
+        debugRenderer.render(world, camera.combined)
+        worldContactListener.update()
         mapRenderer.setView(camera)
         mapRenderer.render()
-        player.update(delta)
+        player.update(delta, hud)
         mapRenderer.batch.begin()
-        rooms[currentMap].draw(mapRenderer.batch, delta, hud, player)
+        rooms[currentMap].draw(mapRenderer.batch, delta, this)
         player.draw(mapRenderer.batch)
         mapRenderer.batch.end()
         animationCreator.updateAnimations()
@@ -100,9 +122,6 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
         moveCamera()
         miniMap.render()
         checkRoomChange(player)
-        world.step(1 / 60f, 8, 3)
-        debugRenderer.render(world, camera.combined)
-
 
     }
 
@@ -115,6 +134,10 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
     override fun dispose() {
         world.dispose()
         debugRenderer.dispose()
+    }
+
+    override fun resize(width: Int, height: Int) {
+        hud.stage.viewport.update(width, height, true)
     }
 
     private fun moveCamera() {
@@ -165,16 +188,22 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
     }
 
     private fun changeRoom(player: Player, link: Int, side: String, plX: Int, plY: Int) {
-        player.setPlayerPosition(side, player, plX, plY, currentMap)
+        player.setRoomPosition(side, plX, plY, currentMap)
         groundBodies[rooms[currentMap].path]!!.forEach { it.isActive = false }
 
         rooms[currentMap].mapObjects.forEach { it.sprite = null
                                                it.body.isActive = false }
 
+        rooms[currentMap].enemies.forEach { it.sprite = null
+            it.body.isActive = false }
+
         currentMap = rooms[currentMap].roomLinks[link]!!
 
         rooms[currentMap].mapObjects.forEach { it.loadSprite(textureAtlas)
                                                it.body.isActive = true }
+
+        rooms[currentMap].enemies.forEach { it.loadSprite(enemyTextureAtlas, animationCreator)
+                                            it.body.isActive = true }
 
         mapRenderer.map = assetManager.get(rooms[currentMap].path, TiledMap::class.java)
         groundBodies[rooms[currentMap].path]!!.forEach { it.isActive = true }
@@ -190,21 +219,29 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
         val posX = player.playerBody.position.x
         val posY = player.playerBody.position.y
 
-        if (posX > rooms[currentMap].mapWidth && posY < REG_ROOM_HEIGHT) changeRoom(player, 2, "Right", 2, 1) else // 2
+        if (posX > rooms[currentMap].mapWidth && posY < REG_ROOM_HEIGHT)
+            changeRoom(player, 2, "Right", 2, 1) else
 
-        if (posX < 0 && posY < REG_ROOM_HEIGHT) changeRoom(player, 0, "Left", 0, 1) else // 1
+        if (posX < 0 && posY < REG_ROOM_HEIGHT)
+            changeRoom(player, 0, "Left", 0, 1) else
 
-        if (posY > rooms[currentMap].mapHeight && posX < REG_ROOM_WIDTH) changeRoom(player, 1, "Up", 0, 3) else // 4
+        if (posY > rooms[currentMap].mapHeight && posX < REG_ROOM_WIDTH)
+            changeRoom(player, 1, "Up", 0, 3) else
 
-        if (posY < 0 && posX < REG_ROOM_WIDTH) changeRoom(player, 3, "Down", 0, 1) else // 1
+        if (posY < 0 && posX < REG_ROOM_WIDTH)
+            changeRoom(player, 3, "Down", 0, 1) else
 
-        if (posX < 0 && posY > REG_ROOM_HEIGHT) changeRoom(player, 4, "Left", 0, 3) else // 4
+        if (posX < 0 && posY > REG_ROOM_HEIGHT)
+            changeRoom(player, 4, "Left", 0, 3) else
 
-        if (posY < 0 && posX > REG_ROOM_WIDTH) changeRoom(player, 7, "Down", 2, 1) else // 2
+        if (posY < 0 && posX > REG_ROOM_WIDTH)
+            changeRoom(player, 7, "Down", 2, 1) else
 
-        if (posX > rooms[currentMap].mapWidth && posY > REG_ROOM_HEIGHT) changeRoom(player, 6, "Right", 2, 3) else // 3
+        if (posX > rooms[currentMap].mapWidth && posY > REG_ROOM_HEIGHT)
+            changeRoom(player, 6, "Right", 2, 3) else
 
-        if (posY > rooms[currentMap].mapHeight && posX > REG_ROOM_WIDTH) changeRoom(player, 5, "Up", 2, 3) // 3
+        if (posY > rooms[currentMap].mapHeight && posX > REG_ROOM_WIDTH)
+            changeRoom(player, 5, "Up", 2, 3)
     }
 
 }

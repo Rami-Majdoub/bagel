@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.physics.box2d.*
 import ru.icarumbas.bagel.Characters.Player
+import ru.icarumbas.bagel.Screens.GameScreen
 import ru.icarumbas.bagel.Screens.Scenes.Hud
 
 
@@ -22,7 +23,6 @@ abstract class MapObject{
 
         def.position.x = sprite!!.x.plus(sprite!!.width.div(2))
         def.position.y = sprite!!.y.plus(sprite!!.height.div(2))
-        def.type = BodyDef.BodyType.StaticBody
 
         shape.setAsBox(sprite!!.width.div(2), sprite!!.height.div(2))
         fixtureDef.shape = shape
@@ -32,11 +32,12 @@ abstract class MapObject{
         body = world.createBody(def)
         body.createFixture(fixtureDef)
         body.isActive = false
+        body.isFixedRotation = true
     }
 
     abstract fun loadSprite(textureAtlas: TextureAtlas)
 
-    open fun draw(batch: Batch, delta: Float, hud: Hud, player: Player){
+    open fun draw(batch: Batch, delta: Float, gameScreen: GameScreen){
         if (!destroyed) sprite!!.draw(batch)
 
     }

@@ -3,8 +3,10 @@ package ru.icarumbas.bagel.Utils.WorldCreate
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.maps.tiled.TiledMap
+import ru.icarumbas.bagel.Characters.Enemies.Enemy
 import ru.icarumbas.bagel.Characters.Player
 import ru.icarumbas.bagel.Characters.mapObjects.MapObject
+import ru.icarumbas.bagel.Screens.GameScreen
 import ru.icarumbas.bagel.Screens.Scenes.Hud
 import ru.icarumbas.bagel.Utils.B2dWorld.B2DWorldCreator
 
@@ -17,6 +19,7 @@ class Room {
     lateinit var meshVertices: IntArray
 
     var mapObjects = ArrayList<MapObject>()
+    var enemies = ArrayList<Enemy>()
 
     var mapWidth = 0f
     var mapHeight = 0f
@@ -28,15 +31,20 @@ class Room {
     }
 
     fun loadMapObjects(b2DWorldCreator: B2DWorldCreator, assetManager: AssetManager){
-        b2DWorldCreator.loadBoxes(assetManager.get(path, TiledMap::class.java).layers["boxes"], mapObjects)
-        b2DWorldCreator.loadChandeliers(assetManager.get(path, TiledMap::class.java).layers["chandeliers"], mapObjects)
-        b2DWorldCreator.loadChests(assetManager.get(path, TiledMap::class.java).layers["chests"], mapObjects)
-        b2DWorldCreator.loadStatues(assetManager.get(path, TiledMap::class.java).layers["statue"], mapObjects)
-        b2DWorldCreator.loadSpikes(assetManager.get(path, TiledMap::class.java).layers["spikes"], mapObjects)
+
+        b2DWorldCreator.loadMapObject(path, "boxes", assetManager, mapObjects)
+        b2DWorldCreator.loadMapObject(path, "chandeliers", assetManager, mapObjects)
+        b2DWorldCreator.loadMapObject(path, "chests", assetManager, mapObjects)
+        b2DWorldCreator.loadMapObject(path, "statue", assetManager, mapObjects)
+        b2DWorldCreator.loadMapObject(path, "spikes", assetManager, mapObjects)
+
+        b2DWorldCreator.loadCramMunch(assetManager.get(path, TiledMap::class.java).layers["enemies"], enemies)
+
     }
 
-    fun draw(batch: Batch, delta: Float, hud: Hud, player: Player) {
-        mapObjects.forEach { it.draw(batch, delta, hud, player) }
+    fun draw(batch: Batch, delta: Float, gameScreen: GameScreen) {
+        mapObjects.forEach { it.draw(batch, delta, gameScreen) }
+        enemies.forEach { it.draw(batch, delta, gameScreen) }
     }
 
 }

@@ -24,6 +24,10 @@ class MainMenuScreen(private val game: Bagel) : ScreenAdapter() {
     private var back: Sprite = Sprite()
     private var stateTimer = 0f
 
+    override fun resize(width: Int, height: Int) {
+        stage.viewport.update(width, height)
+    }
+
     override fun show() {
 
         Gdx.input.inputProcessor = stage
@@ -61,8 +65,8 @@ class MainMenuScreen(private val game: Bagel) : ScreenAdapter() {
         table.addListener(object : InputListener() {
             override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
                 when (event.target) {
-                    newGame -> game.screen = GameScreen(true)
-                    continueGame -> game.screen = GameScreen(false)
+                    newGame -> game.screen = GameScreen(newWorld = true)
+                    continueGame -> game.screen = GameScreen(newWorld = false)
                 }
             }
 

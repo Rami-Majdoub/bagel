@@ -124,11 +124,11 @@
 /* Begin PBXGroup section */
 		0DD1FE87F12C493FE61EDFD5 /* Multi-OS Engine */ = {
 			isa = PBXGroup;
-			name = "Multi-OS Engine";
-			sourceTree = "<group>";
 			children = (
 				D2F49B1B74F34C263D61E785 /* moe-main-interfaces.m */,
 			);
+			name = "Multi-OS Engine";
+			sourceTree = "<group>";
 		};
 		11DFED721E7C0183D04B5B52 /* Products */ = {
 			isa = PBXGroup;

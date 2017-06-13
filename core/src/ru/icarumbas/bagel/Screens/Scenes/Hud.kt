@@ -19,40 +19,35 @@ import com.badlogic.gdx.utils.viewport.StretchViewport
 import ru.icarumbas.bagel.Characters.Player
 
 
-class Hud (val player: Player){
+class Hud {
 
-    var jumping = false
     var touchedOnce = false
     val stage: Stage
-    var doubleJump = 0
     var touchpad: Touchpad
     private val screenPos = Vector2()
     private var localPos = Vector2()
     private val fakeTouchDownEvent = InputEvent()
     private val lStyle = Label.LabelStyle(BitmapFont(), Color.RED)
-    private val currentRoom = Label("", lStyle)
-    val hp = Label("100", lStyle)
-    val fps = Label("", lStyle)
+    private val currentRoom = Label("Current room: ", lStyle)
+    val hp = Label("HP: 100", lStyle)
+    val fps = Label("FPS: ", lStyle)
+    val money = Label("Money: ", lStyle)
     val width = Gdx.graphics.width.toFloat()
     val height = Gdx.graphics.height.toFloat()
 
-    init {
+    constructor(player: Player) {
 
-        if ((width / height) == (16 / 10f))
-            stage = Stage(StretchViewport(800f, 480f)) else
-        if (width / height == 4 / 3f)
-            stage = Stage(StretchViewport(800f, 600f)) else
-        if (width / height == 16 / 9f)
-            stage = Stage(StretchViewport(854f, 480f)) else
-        if (width / height == 3 / 2f)
-            stage = Stage(StretchViewport(960f, 640f)) else
+        if ((width / height) == (16 / 10f)) stage = Stage(StretchViewport(800f, 480f)) else
+        if (width / height == 4 / 3f) stage = Stage(StretchViewport(800f, 600f)) else
+        if (width / height == 16 / 9f) stage = Stage(StretchViewport(854f, 480f)) else
+        if (width / height == 3 / 2f) stage = Stage(StretchViewport(960f, 640f)) else
         stage = Stage(StretchViewport(800f, 480f))
 
 
         val skin = Skin()
         skin.add("touchBackground", Texture("touchBackground.png"))
         val knob = Sprite(Texture("touchKnob.png"))
-        knob.setSize(50f, 50f)
+        knob.setSize(height/12, height/12)
         skin.add("touchKnob", knob)
 
         val touchpadStyle = Touchpad.TouchpadStyle()
@@ -60,19 +55,22 @@ class Hud (val player: Player){
         touchpadStyle.knob = skin.getDrawable("touchKnob")
 
         touchpad = Touchpad(6f, touchpadStyle)
-        touchpad.setBounds(0f, 0f, 100f, 100f)
+        touchpad.setBounds(0f, 0f, height/6, height/6)
         stage.addActor(touchpad)
 
         currentRoom.setPosition(10f, 10f)
-        currentRoom.setSize(25f, 25f)
+        currentRoom.setSize(stage.width/10, stage.height/10)
         stage.addActor(currentRoom)
 
-        hp.setPosition(10f, 450f)
-        currentRoom.setSize(30f,30f)
+        hp.setPosition(3f, stage.height - hp.height - 20)
+        hp.setSize(stage.width / 10, stage.height / 10)
         stage.addActor(hp)
 
-        fps.setPosition(770f, 460f)
+        fps.setPosition(hp.x, hp.y - 15)
         stage.addActor(fps)
+
+        money.setPosition(fps.x, fps.y - 15)
+        stage.addActor(money)
 
 
         val attackBtnImgPressed = TextureRegionDrawable(TextureRegion(Texture("attackButtonPressed.png")))
@@ -80,9 +78,11 @@ class Hud (val player: Player){
 
 
         val attackButton = Image(Texture("attackButton.png"))
-        with (attackButton) {
-            setBounds(780f, 60f, 85f, 85f)
 
+        attackButton.setSize(stage.width / 10, stage.width / 10)
+        attackButton.setPosition(stage.width - attackButton.width - 20, stage.height/10f)
+
+        with (attackButton) {
             addListener(object : InputListener() {
                 override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
                     attackButton.drawable = attackBtnImg
@@ -104,61 +104,10 @@ class Hud (val player: Player){
     }
 
     fun update(currentMap: Int) {
-        isAlive()
         stage.draw()
         currentRoom.setText("$currentMap")
         getDirection()
-        fps.setText(Gdx.graphics.framesPerSecond.toString())
-        detectJumping()
-        player.state = getState()
-
-    }
-
-    fun getState(): Player.State {
-        if (player.attacking) return Player.State.Attacking
-        if (jumping && player.playerBody.linearVelocity.y != 0f)
-            return Player.State.Jumping
-        if ((touchpad.knobX < touchpad.width / 2 ||
-                touchpad.knobX > touchpad.width / 2) &&
-                !jumping && touchedOnce)
-
-            return Player.State.Running
-        else
-            return Player.State.Standing
-    }
-
-    fun detectJumping(){
-        if (player.playerBody.linearVelocity.x < 4.5f && touchpad.knobX > touchpad.width / 2) {
-            player.playerBody.applyLinearImpulse(Vector2(touchpad.knobPercentX / 30, 0f), player.playerBody.worldCenter, true)
-            player.lastRight = true
-        }
-
-        if (player.playerBody.linearVelocity.x > -4.5f && touchpad.knobX < touchpad.width / 2) {
-            player.playerBody.applyLinearImpulse(Vector2(touchpad.knobPercentX / 30, 0f), player.playerBody.worldCenter, true)
-            player.lastRight = false
-        }
-
-        if (touchpad.knobY > touchpad.height - 45 && doubleJump < 5 && player.playerBody.linearVelocity.y < 3.5) {
-            if (doubleJump == 0) {
-                jump(.15f)
-            }
-            if (doubleJump == 2 || doubleJump == 3 || doubleJump == 4) {
-                jump(.07f)
-            } else {
-                jump(.05f)
-            }
-
-        }
-        if (player.playerBody.linearVelocity.y == 0f && touchpad.knobY < touchpad.height - 45) {
-            doubleJump = 0
-            jumping = false
-        }
-    }
-
-    private fun jump(velocity: Float){
-        player.playerBody.applyLinearImpulse(Vector2(0f, velocity), player.playerBody.worldCenter, true)
-        doubleJump++
-
+        fps.setText("FPS: ${Gdx.graphics.framesPerSecond}")
     }
 
     private fun getDirection() {
@@ -188,7 +137,5 @@ class Hud (val player: Player){
 
     }
 
-    fun isAlive(){
-        if (hp.text.toString().toInt() <= 0) Gdx.app.exit()
-    }
+
 }

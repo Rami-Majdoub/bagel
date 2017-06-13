@@ -9,6 +9,7 @@ import ru.icarumbas.PIX_PER_M
 
 
 class Box : MapObject{
+
     override val bit: Short = 1
     override var destroyed = false
     lateinit override var body: Body

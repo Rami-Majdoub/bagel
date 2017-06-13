@@ -1,0 +1,26 @@
+CrapMunch.png
+size: 1571, 178
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+idle
+  rotate: false
+  xy: 1, 1
+  size: 588, 76
+  orig: 588, 76
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 1, 81
+  size: 1569, 96
+  orig: 1617, 96
+  offset: 48, 0
+  index: -1
+attack
+  rotate: false
+  xy: 591, 1
+  size: 859, 78
+  orig: 872, 78
+  offset: 13, 0
+  index: -1
