@@ -74,11 +74,12 @@ class AnimationCreator(val assetManager: AssetManager){
 
     // Sprite sheet
     fun createSpriteAnimation(path: String, count: Int, animSpeed: Float, animPlaymode: Animation.PlayMode, atlas: TextureAtlas,
-                              width: Int, height: Int): Animation<*> {
+                              width: Int, height: Int, posX: Float, posY: Float): Animation<*> {
         val frames = Array<Sprite>(count)
         (0..count).forEach {
             val sprite = Sprite(atlas.findRegion(path), it * width, 0, width, height)
             sprite.setSize(width.div(PIX_PER_M), height.div(PIX_PER_M))
+            sprite.setPosition(posX - sprite.width.div(2), posY - sprite.height.div(2))
             frames.add(sprite)
         }
         val animation = Animation(animSpeed, frames)

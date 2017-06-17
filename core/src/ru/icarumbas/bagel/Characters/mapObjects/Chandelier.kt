@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.physics.box2d.Body
+import ru.icarumbas.CHEST_BIT
 import ru.icarumbas.PIX_PER_M
 
 
@@ -18,21 +19,19 @@ class Chandelier: MapObject{
     var posX = 0f
     var posY = 0f
 
-    constructor()
+    @Suppress("Used for JSON Serialization")
+    private constructor()
 
     constructor(rectangle: Rectangle) {
 
         posX = rectangle.x.div(PIX_PER_M)
         posY = rectangle.y.div(PIX_PER_M)
 
-        val random = MathUtils.random(1)
-        if (random == 0) {
-            path = "goldenChandelier"
-        }
-        else {
-            path = "silverChandelier"
-        }
+        when (MathUtils.random(1)) {
+            0 -> path = "goldenChandelier"
+            1 -> path = "silverChandelier"
 
+        }
     }
 
     override fun loadSprite(textureAtlas: TextureAtlas) {

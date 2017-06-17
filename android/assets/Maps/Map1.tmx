@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="16" tilewidth="64" tileheight="64" nextobjectid="72">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="16" tilewidth="64" tileheight="64" nextobjectid="89">
  <properties>
   <property name="Height" type="float" value="10.24"/>
   <property name="Right" value="Yes"/>
@@ -71,10 +71,6 @@
 113,114,115,113,114,115,113,114,115,113,114,115,113,114,115,113,114,115,113,114,115,113,114,115
 </data>
  </layer>
- <objectgroup name="enemies">
-  <object id="16" x="454.094" y="766.202" width="64" height="64"/>
-  <object id="19" x="890.608" y="765.107" width="63.2983" height="63.2983"/>
- </objectgroup>
  <objectgroup name="ground">
   <object id="1" x="192" y="832">
    <polyline points="0,0 960,0 1152,-192 1472,-192 1472,-448 1216,-448 1152,-512 1152,-640 1088,-704 64,-704 0,-640 0,0"/>
@@ -91,7 +87,11 @@
  <objectgroup name="tables">
   <object id="9" x="512" y="768" width="128" height="64"/>
  </objectgroup>
+ <objectgroup name="enemies">
+  <object id="74" x="960" y="768" width="64" height="64"/>
+  <object id="75" x="512" y="768" width="64" height="64"/>
+ </objectgroup>
  <objectgroup name="chests">
-  <object id="71" x="256" y="768" width="64" height="64"/>
+  <object id="88" x="255.298" y="764.405" width="64" height="64"/>
  </objectgroup>
 </map>

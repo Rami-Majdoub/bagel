@@ -7,7 +7,7 @@ import ru.icarumbas.bagel.Characters.Player
 
 class WorldIO {
 
-    private val json = Json()
+    val json = Json()
     val preferences = Gdx.app.getPreferences("Bagel preferences")!!
 
     init {
@@ -22,7 +22,7 @@ class WorldIO {
         player.playerBody.setTransform(preferences.getFloat("PlayerPositionX"), preferences.getFloat("PlayerPositionY"), 0f)
     }
 
-    fun getCurrentMapNumber (path: String): Int{
+    fun getInteger(path: String): Int{
         return preferences.getInteger(path)
     }
 }

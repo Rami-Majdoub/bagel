@@ -35,10 +35,12 @@ class Room {
         b2DWorldCreator.loadMapObject(path, "boxes", assetManager, mapObjects)
         b2DWorldCreator.loadMapObject(path, "chandeliers", assetManager, mapObjects)
         b2DWorldCreator.loadMapObject(path, "chests", assetManager, mapObjects)
-        b2DWorldCreator.loadMapObject(path, "statue", assetManager, mapObjects)
+        b2DWorldCreator.loadMapObject(path, "statues", assetManager, mapObjects)
+        b2DWorldCreator.loadMapObject(path, "spikeTraps", assetManager, mapObjects)
         b2DWorldCreator.loadMapObject(path, "spikes", assetManager, mapObjects)
 
-        b2DWorldCreator.loadCramMunch(assetManager.get(path, TiledMap::class.java).layers["enemies"], enemies)
+
+        //b2DWorldCreator.loadCramMunch(assetManager.get(path, TiledMap::class.java).layers["enemies"], enemies)
 
     }
 

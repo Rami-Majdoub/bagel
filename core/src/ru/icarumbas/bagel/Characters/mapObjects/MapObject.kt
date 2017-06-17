@@ -4,12 +4,10 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.physics.box2d.*
-import ru.icarumbas.bagel.Characters.Player
 import ru.icarumbas.bagel.Screens.GameScreen
-import ru.icarumbas.bagel.Screens.Scenes.Hud
 
 
-abstract class MapObject{
+abstract class MapObject {
 
     abstract var destroyed: Boolean
     abstract var body: Body

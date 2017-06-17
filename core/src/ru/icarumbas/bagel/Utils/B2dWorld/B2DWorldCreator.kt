@@ -73,8 +73,9 @@ class B2DWorldCreator {
                             "boxes" -> Box(it.rectangle)
                             "chandeliers" -> Chandelier(it.rectangle)
                             "chests" -> Chest(it.rectangle)
-                            "statue" -> Statue(it.rectangle)
-                            "spikes" -> Spikes(it.rectangle)
+                            "statues" -> Statue(it.rectangle)
+                            "spikeTraps" -> SpikeTrap(it.rectangle)
+                            "spikes" -> Spike(it.rectangle)
                             else -> throw Exception("NO SUCH CLASS")
                         })
 

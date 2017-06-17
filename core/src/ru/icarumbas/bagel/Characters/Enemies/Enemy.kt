@@ -10,7 +10,7 @@ import ru.icarumbas.bagel.Screens.GameScreen
 import ru.icarumbas.bagel.Utils.WorldCreate.AnimationCreator
 
 
-abstract class Enemy{
+abstract class Enemy {
 
     abstract var destroyed: Boolean
     abstract var body: Body
@@ -28,8 +28,8 @@ abstract class Enemy{
         val def = BodyDef()
         val shape = PolygonShape()
 
-        def.position.x = posX
-        def.position.y = posY
+        def.position.x = posX.plus(sprite!!.width.div(2))
+        def.position.y = posY.plus(sprite!!.width.div(2))
 
         shape.setAsBox(sprite!!.width.div(2), sprite!!.height.div(2))
         fixtureDef.shape = shape

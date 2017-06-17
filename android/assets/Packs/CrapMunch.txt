@@ -1,26 +1,26 @@
 CrapMunch.png
-size: 1571, 178
+size: 1327, 149
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 idle
   rotate: false
   xy: 1, 1
-  size: 588, 76
-  orig: 588, 76
+  size: 495, 64
+  orig: 495, 64
   offset: 0, 0
   index: -1
-run
+s_crapmunch_shovelswat_strip11
   rotate: false
-  xy: 1, 81
-  size: 1569, 96
-  orig: 1617, 96
-  offset: 48, 0
+  xy: 1, 67
+  size: 1325, 81
+  orig: 1364, 81
+  offset: 39, 0
   index: -1
-attack
+s_crapmunch_walk_strip8
   rotate: false
-  xy: 591, 1
-  size: 859, 78
-  orig: 872, 78
-  offset: 13, 0
+  xy: 498, 1
+  size: 705, 64
+  orig: 715, 64
+  offset: 10, 0
   index: -1

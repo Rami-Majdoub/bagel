@@ -87,7 +87,7 @@
   <object id="20" x="512" y="768" width="64" height="64"/>
   <object id="21" x="320" y="576" width="64" height="64"/>
  </objectgroup>
- <objectgroup name="statue">
+ <objectgroup name="statues">
   <object id="24" x="1088" y="384" width="64" height="128"/>
  </objectgroup>
  <objectgroup name="chandeliers">

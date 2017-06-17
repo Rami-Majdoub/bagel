@@ -1,6 +1,7 @@
 package ru.icarumbas.bagel.Characters
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
@@ -35,7 +36,10 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
     private var runningRight = true
     var lastRight: Boolean = false
     private var stateTimer = 0f
+
     val defaultColor = color!!
+    var hitTimer = 0f
+    var isFirstHit = true
 
     var HP = 100
     var money = 0
@@ -51,7 +55,7 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
         runAnimation = animationCreator.createSpriteAnimation("Run", 10, .075f, Animation.PlayMode.LOOP, atlas)
         jumpAnimation = animationCreator.createSpriteAnimation("Jump", 10, .125f, Animation.PlayMode.LOOP, atlas)
         attackAnimation = animationCreator.createSpriteAnimation("Attack", 10, .05f, Animation.PlayMode.LOOP, atlas)
-        deadAnimation = animationCreator.createSpriteAnimation("Dead", 10, 1.5f, Animation.PlayMode.NORMAL, atlas)
+        deadAnimation = animationCreator.createSpriteAnimation("Dead", 10, 1f, Animation.PlayMode.NORMAL, atlas)
 
     }
 
@@ -71,7 +75,7 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
         fixtureDef.friction = .4f
         fixtureDef.density = .04f
         fixtureDef.filter.categoryBits = PLAYER_BIT
-        fixtureDef.filter.maskBits = PLATFORM_BIT or GROUND_BIT or SPIKES_BIT or CHEST_BIT or COIN_BIT
+        fixtureDef.filter.maskBits = PLATFORM_BIT or GROUND_BIT or SPIKE_BIT or SPIKE_TRAP_BIT or CHEST_BIT or COIN_BIT or ENEMY_BIT
 
         playerBody.createFixture(fixtureDef)
 
@@ -119,6 +123,10 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
     }*/
 
     fun update(delta: Float, hud: Hud) {
+        hitTimer += delta
+        if (hitTimer > .1f) color = defaultColor
+        if (hitTimer > 2) isFirstHit = true
+
         isDead()
         detectJumping(hud)
         setRegion(getFrame(delta, hud))
@@ -127,6 +135,7 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
 //        swordBody.applyLinearImpulse(Vector2(.25f, 0f), playerBody.worldCenter, true)
         hud.hp.setText("HP: $HP")
         hud.money.setText("Money: $money")
+
     }
 
     fun isDead(){
@@ -207,6 +216,7 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
     fun getState(hud: Hud): GameScreen.State {
         if (HP <= 0) {
             stateTimerDead += .1f
+            hud.stage.clear()
             return GameScreen.State.Dead
         } else
         if (attacking) return GameScreen.State.Attacking else
@@ -248,6 +258,19 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
     private fun jump(velocity: Float){
         playerBody.applyLinearImpulse(Vector2(0f, velocity), playerBody.worldCenter, true)
         doubleJump++
+    }
+
+    fun hit(damage: Int, velocity: Vector2){
+        if (hitTimer > .5f) {
+            if (isFirstHit) {
+                playerBody.applyLinearImpulse(velocity, playerBody.localPoint2, true)
+                isFirstHit = false
+            }
+
+            color = Color.RED
+            HP -= damage
+            hitTimer = 0f
+        }
     }
 }
 

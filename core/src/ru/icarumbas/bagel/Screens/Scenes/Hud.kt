@@ -34,6 +34,7 @@ class Hud {
     val money = Label("Money: ", lStyle)
     val width = Gdx.graphics.width.toFloat()
     val height = Gdx.graphics.height.toFloat()
+    val openButton = Image(Texture("attackButton.png"))
 
     constructor(player: Player) {
 
@@ -47,7 +48,7 @@ class Hud {
         val skin = Skin()
         skin.add("touchBackground", Texture("touchBackground.png"))
         val knob = Sprite(Texture("touchKnob.png"))
-        knob.setSize(height/12, height/12)
+        knob.setSize(height/15, height/15)
         skin.add("touchKnob", knob)
 
         val touchpadStyle = Touchpad.TouchpadStyle()
@@ -55,7 +56,7 @@ class Hud {
         touchpadStyle.knob = skin.getDrawable("touchKnob")
 
         touchpad = Touchpad(6f, touchpadStyle)
-        touchpad.setBounds(0f, 0f, height/6, height/6)
+        touchpad.setBounds(0f, 0f, height/7, height/7)
         stage.addActor(touchpad)
 
         currentRoom.setPosition(10f, 10f)

@@ -1,6 +1,7 @@
 package ru.icarumbas.bagel.Screens
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
@@ -9,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
-import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
@@ -17,6 +17,7 @@ import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.viewport.FitViewport
 import ru.icarumbas.*
 import ru.icarumbas.bagel.Characters.Player
+import ru.icarumbas.bagel.Characters.mapObjects.Chest
 import ru.icarumbas.bagel.Screens.Scenes.Hud
 import ru.icarumbas.bagel.Screens.Scenes.MiniMap
 import ru.icarumbas.bagel.Utils.B2dWorld.B2DWorldCreator
@@ -47,6 +48,7 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
     val hud: Hud
     private val worldContactListener: WorldContactListener
     val groundBodies = HashMap<String, ArrayList<Body>>()
+    var isWorldRendering = false
 
     enum class State {
         Standing,
@@ -104,11 +106,21 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
         System.out.println("Size of rooms: ${rooms.size}")
 
 
+//        Gdx.files.local("roomsFile.Json").writeString(worldIO.json.prettyPrint(world), true)
+
+
+    }
+
+    fun applyWorldRender(){
+        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+            if (!isWorldRendering) isWorldRendering = true else
+            if (isWorldRendering) isWorldRendering = false
+        }
+
     }
 
     override fun render(delta: Float) {
         world.step(1 / 60f, 8, 3)
-        debugRenderer.render(world, camera.combined)
         worldContactListener.update()
         mapRenderer.setView(camera)
         mapRenderer.render()
@@ -122,12 +134,20 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
         moveCamera()
         miniMap.render()
         checkRoomChange(player)
+        applyWorldRender()
+
+        if (isWorldRendering) debugRenderer.render(world, camera.combined)
+
 
     }
 
     override fun pause() {
         worldIO.preferences.putFloat("PlayerPositionX", player.playerBody.position.x)
         worldIO.preferences.putFloat("PlayerPositionY", player.playerBody.position.y)
+        worldIO.preferences.putInteger("Money", player.money)
+        worldIO.preferences.putInteger("CurrentMap", currentMap)
+
+//        worldIO.writeRoomsToJson("roomsFile.Json", rooms, false)
         worldIO.preferences.flush()
     }
 
@@ -181,21 +201,35 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
 
     fun continueWorld() {
         rooms = worldIO.loadRoomsFromJson("roomsFile.Json")
-        currentMap = worldIO.getCurrentMapNumber("CurrentMap")
+        currentMap = worldIO.getInteger("CurrentMap")
+        player.money = worldIO.getInteger("Money")
         worldIO.loadLastPlayerState(player)
 
         animationCreator.createTileAnimation(currentMap, rooms)
     }
 
     private fun changeRoom(player: Player, link: Int, side: String, plX: Int, plY: Int) {
+        // Previous room
+
+
         player.setRoomPosition(side, plX, plY, currentMap)
         groundBodies[rooms[currentMap].path]!!.forEach { it.isActive = false }
 
-        rooms[currentMap].mapObjects.forEach { it.sprite = null
-                                               it.body.isActive = false }
+        rooms[currentMap].mapObjects.forEach {
+            if (it is Chest) {
+                it.coins.forEach { world.destroyBody(it) }
+                it.coins.clear()
+            }
+
+            it.sprite = null
+            it.body.isActive = false
+
+        }
 
         rooms[currentMap].enemies.forEach { it.sprite = null
             it.body.isActive = false }
+
+        // New Room
 
         currentMap = rooms[currentMap].roomLinks[link]!!
 
@@ -209,9 +243,6 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
         groundBodies[rooms[currentMap].path]!!.forEach { it.isActive = true }
 
         animationCreator.createTileAnimation(currentMap, rooms)
-
-        worldIO.preferences.putInteger("CurrentMap", currentMap)
-        worldIO.preferences.flush()
 
     }
 

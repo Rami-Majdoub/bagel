@@ -3,7 +3,8 @@ package ru.icarumbas.bagel.Utils.B2dWorld
 import com.badlogic.gdx.physics.box2d.*
 import ru.icarumbas.*
 import ru.icarumbas.bagel.Characters.mapObjects.Chest
-import ru.icarumbas.bagel.Characters.mapObjects.Spikes
+import ru.icarumbas.bagel.Characters.mapObjects.Spike
+import ru.icarumbas.bagel.Characters.mapObjects.SpikeTrap
 import ru.icarumbas.bagel.Screens.GameScreen
 import kotlin.experimental.or
 
@@ -36,8 +37,13 @@ class WorldContactListener(val gameScreen: GameScreen) : ContactListener {
                 }
             }
 
-            PLAYER_BIT or SPIKES_BIT -> {
-                gameScreen.rooms[gameScreen.currentMap].mapObjects.forEach { if (it is Spikes && it.body == otherBody) it.isTouched = true }
+            PLAYER_BIT or SPIKE_TRAP_BIT -> {
+                gameScreen.rooms[gameScreen.currentMap].mapObjects.forEach { if (it is SpikeTrap && it.body == otherBody) it.isTouched = true }
+                contact.isEnabled = false
+            }
+
+            PLAYER_BIT or SPIKE_BIT -> {
+                gameScreen.rooms[gameScreen.currentMap].mapObjects.forEach { if (it is Spike && it.body == otherBody) it.isTouched = true }
                 contact.isEnabled = false
             }
 
@@ -50,9 +56,8 @@ class WorldContactListener(val gameScreen: GameScreen) : ContactListener {
                 contact.isEnabled = false
 
                 if (deleteList.size == 0) {
-
-                    gameScreen.rooms[gameScreen.currentMap].mapObjects.forEach { if (it is Chest) it.coins.remove(otherBody) }
                     deleteList.add(otherBody)
+                    gameScreen.rooms[gameScreen.currentMap].mapObjects.forEach { if (it is Chest) it.coins.remove(otherBody) }
                     gameScreen.player.money += 1
                 }
             }
@@ -61,9 +66,7 @@ class WorldContactListener(val gameScreen: GameScreen) : ContactListener {
     }
 
     fun update(){
-        deleteList.forEach {
-            gameScreen.world.destroyBody(it)
-        }
+        deleteList.forEach { gameScreen.world.destroyBody(it) }
         deleteList.clear()
     }
 
@@ -75,16 +78,25 @@ class WorldContactListener(val gameScreen: GameScreen) : ContactListener {
         val fixA = contact.fixtureA
         val fixB = contact.fixtureB
 
+        var playerBody = fixA.body
         var otherBody = fixB.body
 
-        if (fixA.filterData.categoryBits or fixB.filterData.categoryBits == PLAYER_BIT or SPIKES_BIT) {
+        if (fixB.body == gameScreen.player.playerBody) {
+            playerBody = fixB.body
+            otherBody = fixA.body
+        }
 
-            if (fixB.body == gameScreen.player.playerBody) {
-                otherBody = fixA.body
+        when (fixA.filterData.categoryBits or fixB.filterData.categoryBits) {
+
+            PLAYER_BIT or SPIKE_TRAP_BIT -> {
+                gameScreen.rooms[gameScreen.currentMap].mapObjects.forEach { if (it is SpikeTrap && it.body == otherBody) it.isTouched = false }
+
             }
 
-            gameScreen.rooms[gameScreen.currentMap].mapObjects.forEach { if (it is Spikes && it.body == otherBody) it.isTouched = false }
+            PLAYER_BIT or SPIKE_BIT -> {
+                gameScreen.rooms[gameScreen.currentMap].mapObjects.forEach { if (it is Spike && it.body == otherBody) it.isTouched = false }
 
+            }
         }
     }
 

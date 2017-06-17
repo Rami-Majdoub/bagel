@@ -18,21 +18,19 @@ class Statue: MapObject {
     var posX = 0f
     var posY = 0f
 
-    constructor()
+    @Suppress("Used for JSON Serialization")
+    private constructor()
 
     constructor(rectangle: Rectangle) {
 
         posX = rectangle.x.div(PIX_PER_M)
         posY = rectangle.y.div(PIX_PER_M)
 
-        val random = MathUtils.random(1)
-        if (random == 0) {
-            path = "goldenStatue"
-        }
-        else {
-            path = "silverStatue"
-        }
+        when (MathUtils.random(1)) {
+            0 -> path = "goldenStatue"
+            1 -> path = "silverStatue"
 
+        }
     }
 
     override fun loadSprite(textureAtlas: TextureAtlas) {

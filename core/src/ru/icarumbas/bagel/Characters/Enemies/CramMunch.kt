@@ -5,7 +5,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.physics.box2d.Body
+import ru.icarumbas.CHEST_BIT
 import ru.icarumbas.ENEMY_BIT
+import ru.icarumbas.GROUND_BIT
 import ru.icarumbas.PIX_PER_M
 import ru.icarumbas.bagel.Utils.WorldCreate.AnimationCreator
 
@@ -23,7 +25,8 @@ class CramMunch: Enemy {
     override lateinit var runAnimation: Animation<*>
 
 
-    constructor()
+    @Suppress("Used for JSON Serialization")
+    private constructor()
 
     constructor(rectangle: Rectangle) {
         posX = rectangle.x.div(PIX_PER_M)
@@ -31,8 +34,8 @@ class CramMunch: Enemy {
     }
 
     override fun loadSprite(textureAtlas: TextureAtlas, animationCreator: AnimationCreator) {
-        sprite = Sprite(textureAtlas.findRegion("idle"), 0, 0, 147, 114)
-        stateAnimation = animationCreator.createSpriteAnimation("idle", 6, .25f, Animation.PlayMode.LOOP, textureAtlas, 147, 114)
+        stateAnimation = animationCreator.createSpriteAnimation("idle", 6, .25f, Animation.PlayMode.LOOP, textureAtlas, 82, 64, posX, posY)
+        sprite = stateAnimation.keyFrames.first() as Sprite
     }
 
 }

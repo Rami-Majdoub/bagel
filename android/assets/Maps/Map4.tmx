@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="16" tilewidth="64" tileheight="64" nextobjectid="49">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="16" tilewidth="64" tileheight="64" nextobjectid="66">
  <properties>
   <property name="Height" type="float" value="10.24"/>
   <property name="Left" value="Yes"/>
@@ -83,9 +83,6 @@
  <objectgroup name="platform">
   <object id="38" x="258.942" y="685.544" width="189.058" height="18.456"/>
  </objectgroup>
- <objectgroup name="chests">
-  <object id="23" x="1216" y="768" width="64" height="64"/>
- </objectgroup>
  <objectgroup name="boxes">
   <object id="31" x="640" y="704" width="64" height="64"/>
   <object id="32" x="640" y="768" width="64" height="64"/>
@@ -96,7 +93,7 @@
   <object id="40" x="1280" y="320" width="64" height="64"/>
   <object id="41" x="1280" y="256" width="64" height="64"/>
  </objectgroup>
- <objectgroup name="spikes">
+ <objectgroup name="spikeTraps">
   <object id="42" x="1024" y="768" width="64" height="64"/>
   <object id="43" x="960" y="768" width="64" height="64"/>
   <object id="44" x="896" y="768" width="64" height="64"/>
@@ -106,5 +103,8 @@
   <object id="46" x="315.717" y="804.736" width="132.283" height="91.2642"/>
   <object id="47" x="1152" y="732.67" width="126.312" height="99.3301"/>
   <object id="48" x="1152" y="289.979" width="124.596" height="94.0206"/>
+ </objectgroup>
+ <objectgroup name="chests">
+  <object id="65" x="1152" y="768" width="64" height="64"/>
  </objectgroup>
 </map>

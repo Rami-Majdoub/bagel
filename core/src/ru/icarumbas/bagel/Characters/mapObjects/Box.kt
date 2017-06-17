@@ -18,21 +18,19 @@ class Box : MapObject{
     var posX = 0f
     var posY = 0f
 
-    constructor()
+    @Suppress("Used for JSON Serialization")
+    private constructor()
 
     constructor(rectangle: Rectangle) {
 
         posX = rectangle.x.div(PIX_PER_M)
         posY = rectangle.y.div(PIX_PER_M)
 
-        val random = MathUtils.random(1)
-        if (random == 0) {
-            path = "box"
-        }
-        else {
-            path = "barrel"
-        }
+        when (MathUtils.random(1)) {
+            0 -> path = "box"
+            1 -> path = "barrel"
 
+        }
     }
 
     override fun loadSprite(textureAtlas: TextureAtlas) {
