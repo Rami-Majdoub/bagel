@@ -75,28 +75,33 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
 
         (0..TILED_MAPS_TOTAL).forEach {
             val bodies = ArrayList<Body>()
-            b2DWorldCreator.loadGround(assetManager.get("Maps/Map$it.tmx",
-                    TiledMap::class.java).layers.get("platform"), world, bodies, PLATFORM_BIT)
-            b2DWorldCreator.loadGround(assetManager.get("Maps/Map$it.tmx",
-                    TiledMap::class.java).layers.get("ground"), world, bodies, GROUND_BIT)
+
+            if (assetManager.get("Maps/Map$it.tmx", TiledMap::class.java).layers.get("platform") != null) {
+                b2DWorldCreator.loadGround(assetManager.get("Maps/Map$it.tmx",
+                        TiledMap::class.java).layers.get("platform"), world, bodies, PLATFORM_BIT)
+            }
+
+            if (assetManager.get("Maps/Map$it.tmx", TiledMap::class.java).layers.get("ground") != null) {
+                b2DWorldCreator.loadGround(assetManager.get("Maps/Map$it.tmx",
+                        TiledMap::class.java).layers.get("ground"), world, bodies, GROUND_BIT)
+            }
+
             groundBodies.put("Maps/Map$it.tmx", bodies)
 
         }
 
         rooms.forEach { it.mapObjects.forEach {
-            it.loadSprite(textureAtlas)
             it.defineBody(world)
         } }
 
-        rooms.forEach { it.enemies.forEach {
-            it.loadSprite(enemyTextureAtlas, animationCreator)
+       /* rooms.forEach { it.enemies.forEach {
             it.defineBody(world)
-        } }
+        } }*/
 
 
         mapRenderer = OrthogonalTiledMapRenderer(assetManager.get(rooms[currentMap].path), 0.01f)
         groundBodies[rooms[currentMap].path]!!.forEach { it.isActive = true }
-        rooms[currentMap].mapObjects.forEach { it.body.isActive = true }
+        rooms[currentMap].mapObjects.forEach { it.body?.isActive = true }
 
 
         Gdx.input.inputProcessor = hud.stage
@@ -104,11 +109,6 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
         worldContactListener = WorldContactListener(this)
         world.setContactListener(worldContactListener)
         System.out.println("Size of rooms: ${rooms.size}")
-
-
-//        Gdx.files.local("roomsFile.Json").writeString(worldIO.json.prettyPrint(world), true)
-
-
     }
 
     fun applyWorldRender(){
@@ -121,7 +121,7 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
 
     override fun render(delta: Float) {
         world.step(1 / 60f, 8, 3)
-        worldContactListener.update()
+        worldContactListener.deleteBodies()
         mapRenderer.setView(camera)
         mapRenderer.render()
         player.update(delta, hud)
@@ -137,7 +137,6 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
         applyWorldRender()
 
         if (isWorldRendering) debugRenderer.render(world, camera.combined)
-
 
     }
 
@@ -208,42 +207,63 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
         animationCreator.createTileAnimation(currentMap, rooms)
     }
 
-    private fun changeRoom(player: Player, link: Int, side: String, plX: Int, plY: Int) {
+    fun updateRoomObjects(previousRoom: Int, newRoom: Int){
         // Previous room
 
 
-        player.setRoomPosition(side, plX, plY, currentMap)
-        groundBodies[rooms[currentMap].path]!!.forEach { it.isActive = false }
+        // Clear ground
+        groundBodies[rooms[previousRoom].path]!!.forEach { it.isActive = false }
 
-        rooms[currentMap].mapObjects.forEach {
+        // Clear mapObjects
+        rooms[previousRoom].mapObjects.forEach {
             if (it is Chest) {
-                it.coins.forEach { world.destroyBody(it) }
+                it.coins.forEach { body ->
+                    worldContactListener.deleteList.add(body)
+                }
                 it.coins.clear()
             }
 
             it.sprite = null
-            it.body.isActive = false
-
+            it.body?.isActive = false
         }
 
-        rooms[currentMap].enemies.forEach { it.sprite = null
+        (0..rooms[previousRoom].mapObjects.size-1)
+                .filter { rooms[previousRoom].mapObjects[it].destroyed }
+                .forEach { rooms[previousRoom].mapObjects.removeAt(it) }
+
+        // Clear enemies
+        rooms[previousRoom].enemies.forEach { it.sprite = null
             it.body.isActive = false }
 
+        // New room
+
+
+        // Load mapObjects
+        rooms[newRoom].mapObjects.forEach { it.loadSprite(textureAtlas)
+            it.body?.isActive = true }
+
+        // Load Enemies
+        rooms[newRoom].enemies.forEach { it.loadSprite(enemyTextureAtlas, animationCreator)
+            it.body.isActive = true }
+
+        // Change map
+        mapRenderer.map = assetManager.get(rooms[newRoom].path, TiledMap::class.java)
+
+        // Load ground
+        groundBodies[rooms[newRoom].path]!!.forEach { it.isActive = true }
+
+        // Animation
+        animationCreator.createTileAnimation(newRoom, rooms)
+
+        currentMap = newRoom
+    }
+
+    private fun moveToAnotherRoom(player: Player, link: Int, side: String, plX: Int, plY: Int) {
+        // Previous room
+        player.setRoomPosition(side, plX, plY, currentMap)
+
         // New Room
-
-        currentMap = rooms[currentMap].roomLinks[link]!!
-
-        rooms[currentMap].mapObjects.forEach { it.loadSprite(textureAtlas)
-                                               it.body.isActive = true }
-
-        rooms[currentMap].enemies.forEach { it.loadSprite(enemyTextureAtlas, animationCreator)
-                                            it.body.isActive = true }
-
-        mapRenderer.map = assetManager.get(rooms[currentMap].path, TiledMap::class.java)
-        groundBodies[rooms[currentMap].path]!!.forEach { it.isActive = true }
-
-        animationCreator.createTileAnimation(currentMap, rooms)
-
+        updateRoomObjects(currentMap, rooms[currentMap].roomLinks[link]!!)
     }
 
     fun checkRoomChange(player: Player) {
@@ -251,28 +271,28 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
         val posY = player.playerBody.position.y
 
         if (posX > rooms[currentMap].mapWidth && posY < REG_ROOM_HEIGHT)
-            changeRoom(player, 2, "Right", 2, 1) else
+            moveToAnotherRoom(player, 2, "Right", 2, 1) else
 
         if (posX < 0 && posY < REG_ROOM_HEIGHT)
-            changeRoom(player, 0, "Left", 0, 1) else
+            moveToAnotherRoom(player, 0, "Left", 0, 1) else
 
         if (posY > rooms[currentMap].mapHeight && posX < REG_ROOM_WIDTH)
-            changeRoom(player, 1, "Up", 0, 3) else
+            moveToAnotherRoom(player, 1, "Up", 0, 3) else
 
         if (posY < 0 && posX < REG_ROOM_WIDTH)
-            changeRoom(player, 3, "Down", 0, 1) else
+            moveToAnotherRoom(player, 3, "Down", 0, 1) else
 
         if (posX < 0 && posY > REG_ROOM_HEIGHT)
-            changeRoom(player, 4, "Left", 0, 3) else
+            moveToAnotherRoom(player, 4, "Left", 0, 3) else
 
         if (posY < 0 && posX > REG_ROOM_WIDTH)
-            changeRoom(player, 7, "Down", 2, 1) else
+            moveToAnotherRoom(player, 7, "Down", 2, 1) else
 
         if (posX > rooms[currentMap].mapWidth && posY > REG_ROOM_HEIGHT)
-            changeRoom(player, 6, "Right", 2, 3) else
+            moveToAnotherRoom(player, 6, "Right", 2, 3) else
 
         if (posY > rooms[currentMap].mapHeight && posX > REG_ROOM_WIDTH)
-            changeRoom(player, 5, "Up", 2, 3)
+            moveToAnotherRoom(player, 5, "Up", 2, 3)
     }
 
 }

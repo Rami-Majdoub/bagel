@@ -34,7 +34,7 @@ class Hud {
     val money = Label("Money: ", lStyle)
     val width = Gdx.graphics.width.toFloat()
     val height = Gdx.graphics.height.toFloat()
-    val openButton = Image(Texture("attackButton.png"))
+    //val openButton = Image(Texture("attackButton.png"))
 
     constructor(player: Player) {
 

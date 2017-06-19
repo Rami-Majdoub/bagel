@@ -3,6 +3,7 @@ package ru.icarumbas.bagel.Utils.B2dWorld
 import com.badlogic.gdx.physics.box2d.*
 import ru.icarumbas.*
 import ru.icarumbas.bagel.Characters.mapObjects.Chest
+import ru.icarumbas.bagel.Characters.mapObjects.PortalDoor
 import ru.icarumbas.bagel.Characters.mapObjects.Spike
 import ru.icarumbas.bagel.Characters.mapObjects.SpikeTrap
 import ru.icarumbas.bagel.Screens.GameScreen
@@ -10,7 +11,7 @@ import kotlin.experimental.or
 
 class WorldContactListener(val gameScreen: GameScreen) : ContactListener {
 
-    private val deleteList = ArrayList<Body>()
+    val deleteList = ArrayList<Body>()
 
     override fun postSolve(contact: Contact, impulse: ContactImpulse) {
     }
@@ -31,14 +32,24 @@ class WorldContactListener(val gameScreen: GameScreen) : ContactListener {
 
         when (fixA.filterData.categoryBits or fixB.filterData.categoryBits) {
 
+            PLAYER_BIT or COIN_BIT -> {
+                contact.isEnabled = false
+
+                if (deleteList.isEmpty()) {
+                    deleteList.add(otherBody)
+                    gameScreen.rooms[gameScreen.currentMap].mapObjects.forEach { if (it is Chest) it.coins.remove(otherBody) }
+                    gameScreen.player.money += 1
+                }
+            }
+
             PLAYER_BIT or PLATFORM_BIT -> {
                 if (playerBody.position.y < otherBody.position.y + .7 || isTouchPadDown()) {
                     contact.isEnabled = false
                 }
             }
 
-            PLAYER_BIT or SPIKE_TRAP_BIT -> {
-                gameScreen.rooms[gameScreen.currentMap].mapObjects.forEach { if (it is SpikeTrap && it.body == otherBody) it.isTouched = true }
+            PLAYER_BIT or CHEST_BIT -> {
+                gameScreen.rooms[gameScreen.currentMap].mapObjects.forEach { if (it is Chest && it.body == otherBody) it.isOpened = true }
                 contact.isEnabled = false
             }
 
@@ -47,26 +58,19 @@ class WorldContactListener(val gameScreen: GameScreen) : ContactListener {
                 contact.isEnabled = false
             }
 
-            PLAYER_BIT or CHEST_BIT -> {
-                gameScreen.rooms[gameScreen.currentMap].mapObjects.forEach { if (it is Chest && it.body == otherBody) it.isOpened = true }
+            PLAYER_BIT or PORTAL_DOOR_BIT -> {
+                gameScreen.rooms[gameScreen.currentMap].mapObjects.forEach { if (it is PortalDoor) it.opened = true }
                 contact.isEnabled = false
-            }
-
-            PLAYER_BIT or COIN_BIT -> {
-                contact.isEnabled = false
-
-                if (deleteList.size == 0) {
-                    deleteList.add(otherBody)
-                    gameScreen.rooms[gameScreen.currentMap].mapObjects.forEach { if (it is Chest) it.coins.remove(otherBody) }
-                    gameScreen.player.money += 1
-                }
             }
         }
 
     }
 
-    fun update(){
-        deleteList.forEach { gameScreen.world.destroyBody(it) }
+    fun deleteBodies(){
+        deleteList.forEach {
+            gameScreen.world.destroyBody(it)
+        }
+
         deleteList.clear()
     }
 
@@ -87,11 +91,6 @@ class WorldContactListener(val gameScreen: GameScreen) : ContactListener {
         }
 
         when (fixA.filterData.categoryBits or fixB.filterData.categoryBits) {
-
-            PLAYER_BIT or SPIKE_TRAP_BIT -> {
-                gameScreen.rooms[gameScreen.currentMap].mapObjects.forEach { if (it is SpikeTrap && it.body == otherBody) it.isTouched = false }
-
-            }
 
             PLAYER_BIT or SPIKE_BIT -> {
                 gameScreen.rooms[gameScreen.currentMap].mapObjects.forEach { if (it is Spike && it.body == otherBody) it.isTouched = false }

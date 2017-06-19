@@ -38,7 +38,7 @@ class Room {
         b2DWorldCreator.loadMapObject(path, "statues", assetManager, mapObjects)
         b2DWorldCreator.loadMapObject(path, "spikeTraps", assetManager, mapObjects)
         b2DWorldCreator.loadMapObject(path, "spikes", assetManager, mapObjects)
-
+        b2DWorldCreator.loadMapObject(path, "portalDoor", assetManager, mapObjects)
 
         //b2DWorldCreator.loadCramMunch(assetManager.get(path, TiledMap::class.java).layers["enemies"], enemies)
 

@@ -75,7 +75,14 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
         fixtureDef.friction = .4f
         fixtureDef.density = .04f
         fixtureDef.filter.categoryBits = PLAYER_BIT
-        fixtureDef.filter.maskBits = PLATFORM_BIT or GROUND_BIT or SPIKE_BIT or SPIKE_TRAP_BIT or CHEST_BIT or COIN_BIT or ENEMY_BIT
+        fixtureDef.filter.maskBits =
+                PLATFORM_BIT or
+                GROUND_BIT or
+                SPIKE_BIT or
+                CHEST_BIT or
+                COIN_BIT or
+                ENEMY_BIT or
+                PORTAL_DOOR_BIT
 
         playerBody.createFixture(fixtureDef)
 
@@ -261,7 +268,7 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
     }
 
     fun hit(damage: Int, velocity: Vector2){
-        if (hitTimer > .5f) {
+        if (hitTimer > .5f && stateTimerDead == 0f) {
             if (isFirstHit) {
                 playerBody.applyLinearImpulse(velocity, playerBody.localPoint2, true)
                 isFirstHit = false

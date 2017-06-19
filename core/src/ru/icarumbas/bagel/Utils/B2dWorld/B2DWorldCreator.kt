@@ -76,6 +76,7 @@ class B2DWorldCreator {
                             "statues" -> Statue(it.rectangle)
                             "spikeTraps" -> SpikeTrap(it.rectangle)
                             "spikes" -> Spike(it.rectangle)
+                            "portalDoor" -> PortalDoor(it.rectangle)
                             else -> throw Exception("NO SUCH CLASS")
                         })
 

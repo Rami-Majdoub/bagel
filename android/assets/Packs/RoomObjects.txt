@@ -1,5 +1,5 @@
 RoomObjects.png
-size: 192, 639
+size: 192, 992
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
@@ -19,21 +19,35 @@ box
   index: -1
 bronzeChest
   rotate: false
-  xy: 1, 56
+  xy: 67, 1
   size: 64, 53
   orig: 64, 64
   offset: 0, 0
   index: -1
+doorClosed
+  rotate: false
+  xy: 1, 426
+  size: 128, 177
+  orig: 128, 192
+  offset: 0, 0
+  index: -1
+doorOpened
+  rotate: false
+  xy: 61, 252
+  size: 128, 172
+  orig: 128, 192
+  offset: 0, 0
+  index: -1
 goldenChandelier
   rotate: false
-  xy: 1, 446
+  xy: 1, 799
   size: 127, 192
   orig: 128, 192
   offset: 1, 0
   index: -1
 goldenChest
   rotate: false
-  xy: 67, 1
+  xy: 1, 56
   size: 64, 53
   orig: 64, 64
   offset: 0, 0
@@ -47,7 +61,7 @@ goldenStatue
   index: -1
 silverChandelier
   rotate: false
-  xy: 61, 252
+  xy: 1, 605
   size: 127, 192
   orig: 128, 192
   offset: 0, 0
