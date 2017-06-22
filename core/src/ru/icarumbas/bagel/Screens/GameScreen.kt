@@ -4,7 +4,9 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.assets.loaders.SoundLoader
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.maps.tiled.TiledMap
@@ -17,6 +19,7 @@ import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.viewport.FitViewport
 import ru.icarumbas.*
 import ru.icarumbas.bagel.Characters.Player
+import ru.icarumbas.bagel.Characters.mapObjects.Breakable
 import ru.icarumbas.bagel.Characters.mapObjects.Chest
 import ru.icarumbas.bagel.Screens.Scenes.Hud
 import ru.icarumbas.bagel.Screens.Scenes.MiniMap
@@ -41,12 +44,11 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
     var rooms = ArrayList<Room>()
     val worldIO = WorldIO()
     val textureAtlas = TextureAtlas(Gdx.files.internal("Packs/RoomObjects.txt"))
-    val enemyTextureAtlas = TextureAtlas(Gdx.files.internal("Packs/CrapMunch.txt"))
     val b2DWorldCreator = B2DWorldCreator()
     val world = World(Vector2(0f, -9.8f), true)
     val player: Player
     val hud: Hud
-    private val worldContactListener: WorldContactListener
+    val worldContactListener: WorldContactListener
     val groundBodies = HashMap<String, ArrayList<Body>>()
     var isWorldRendering = false
 
@@ -60,10 +62,23 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
 
 
     init {
+
+        // Rooms
         assetManager.setLoader(TiledMap::class.java, TmxMapLoader(InternalFileHandleResolver()))
         (0..TILED_MAPS_TOTAL).forEach {
             assetManager.load("Maps/Map$it.tmx", TiledMap::class.java)
         }
+
+        // Sounds
+        assetManager.setLoader(Sound::class.java, SoundLoader(InternalFileHandleResolver()))
+        assetManager.load("Sounds/openchest.wav", Sound::class.java)
+        assetManager.load("Sounds/coinpickup.wav", Sound::class.java)
+        assetManager.load("Sounds/spikes.wav", Sound::class.java)
+        assetManager.load("Sounds/shatterMetal.wav", Sound::class.java)
+        assetManager.load("Sounds/crateBreak0.wav", Sound::class.java)
+        assetManager.load("Sounds/crateBreak1.wav", Sound::class.java)
+
+
         assetManager.finishLoading()
 
         worldCreator = WorldCreator(assetManager)
@@ -120,21 +135,23 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
     }
 
     override fun render(delta: Float) {
-        world.step(1 / 60f, 8, 3)
-        worldContactListener.deleteBodies()
         mapRenderer.setView(camera)
         mapRenderer.render()
         player.update(delta, hud)
+
         mapRenderer.batch.begin()
         rooms[currentMap].draw(mapRenderer.batch, delta, this)
         player.draw(mapRenderer.batch)
         mapRenderer.batch.end()
         animationCreator.updateAnimations()
-        hud.update(currentMap)
         moveCamera()
         miniMap.render()
         checkRoomChange(player)
         applyWorldRender()
+
+        hud.update(this)
+        world.step(1 / 60f, 8, 3)
+        worldContactListener.deleteBodies()
 
         if (isWorldRendering) debugRenderer.render(world, camera.combined)
 
@@ -214,9 +231,15 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
         // Clear ground
         groundBodies[rooms[previousRoom].path]!!.forEach { it.isActive = false }
 
-        // Clear mapObjects
+        // Clear chest coins
         rooms[previousRoom].mapObjects.forEach {
             if (it is Chest) {
+                it.coins.forEach { body ->
+                    worldContactListener.deleteList.add(body)
+                }
+                it.coins.clear()
+            } else
+            if (it is Breakable) {
                 it.coins.forEach { body ->
                     worldContactListener.deleteList.add(body)
                 }
@@ -227,24 +250,20 @@ class GameScreen(newWorld: Boolean): ScreenAdapter() {
             it.body?.isActive = false
         }
 
-        (0..rooms[previousRoom].mapObjects.size-1)
-                .filter { rooms[previousRoom].mapObjects[it].destroyed }
-                .forEach { rooms[previousRoom].mapObjects.removeAt(it) }
-
-        // Clear enemies
-        rooms[previousRoom].enemies.forEach { it.sprite = null
-            it.body.isActive = false }
+        // Deleting used MapObjects
+        val it = rooms[previousRoom].mapObjects.iterator()
+        while (it.hasNext()) {
+            if (it.next().destroyed) it.remove()
+        }
 
         // New room
 
 
         // Load mapObjects
-        rooms[newRoom].mapObjects.forEach { it.loadSprite(textureAtlas)
-            it.body?.isActive = true }
-
-        // Load Enemies
-        rooms[newRoom].enemies.forEach { it.loadSprite(enemyTextureAtlas, animationCreator)
-            it.body.isActive = true }
+        rooms[newRoom].mapObjects.forEach {
+            it.loadSprite(textureAtlas)
+            it.body!!.isActive = true
+        }
 
         // Change map
         mapRenderer.map = assetManager.get(rooms[newRoom].path, TiledMap::class.java)

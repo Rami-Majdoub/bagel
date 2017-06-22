@@ -32,7 +32,7 @@ class MainMenuScreen(private val game: Bagel) : ScreenAdapter() {
 
         Gdx.input.inputProcessor = stage
 
-        val atlas = TextureAtlas("Main_Menu.txt")
+        val atlas = TextureAtlas("Packs/Main_Menu.txt")
         back = Sprite(atlas.findRegion("menu_background"))
         back.setSize(Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
 

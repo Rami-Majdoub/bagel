@@ -18,6 +18,7 @@ abstract class MapObject {
     open val width = 64f.div(PIX_PER_M)
     open val height = 64f.div(PIX_PER_M)
     open val bit: Short = 1
+    open val bodyType = BodyDef.BodyType.StaticBody
     var destroyed = false
 
     abstract val path: String
@@ -35,6 +36,7 @@ abstract class MapObject {
         val def = BodyDef()
         val shape = PolygonShape()
 
+        def.type = bodyType
         def.position.x = posX.plus(width.div(2))
         def.position.y = posY.plus(height.div(2))
 
@@ -52,11 +54,13 @@ abstract class MapObject {
     fun loadSprite(textureAtlas: TextureAtlas) {
         sprite = textureAtlas.createSprite(path)
         sprite!!.setSize(width, height)
-        sprite!!.setPosition(posX, posY)
     }
 
     open fun draw(batch: Batch, delta: Float, gameScreen: GameScreen){
-        sprite?.draw(batch)
+        if (!destroyed) {
+            sprite?.setPosition(body!!.position.x.minus(width.div(2)), body!!.position.y.minus(height.div(2)))
+            sprite?.draw(batch)
+        }
     }
 
 }

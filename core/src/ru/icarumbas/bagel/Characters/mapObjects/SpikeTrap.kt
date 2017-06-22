@@ -1,5 +1,6 @@
 package ru.icarumbas.bagel.Characters.mapObjects
 
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
@@ -12,6 +13,7 @@ class SpikeTrap : Spike {
     override val path = "spikeTrap"
     override val height = 64f.div(PIX_PER_M)
     private var timer = 0f
+    private var soundPlayed = false
 
     @Suppress("Used for JSON Serialization")
     private constructor()
@@ -28,13 +30,20 @@ class SpikeTrap : Spike {
         if ((isTouched || (timer > 0 && timer < 2.5f))) {
 
             timer += delta
+
+            if (timer > .65 && !soundPlayed){
+                gameScreen.assetManager["Sounds/spikes.wav", Sound::class.java].play()
+                soundPlayed = true
+            }
+
             if (timer > .75f) {
-                sprite!!.draw(batch)
+                super.draw(batch, delta, gameScreen)
                 checkHit(gameScreen)
             }
 
         }
         if (!isTouched && timer >= 2.5f) {
+            soundPlayed = false
             timer = 0f
         }
 

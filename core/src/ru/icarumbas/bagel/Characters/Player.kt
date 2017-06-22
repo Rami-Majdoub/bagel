@@ -37,7 +37,6 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
     var lastRight: Boolean = false
     private var stateTimer = 0f
 
-    val defaultColor = color!!
     var hitTimer = 0f
     var isFirstHit = true
 
@@ -82,7 +81,8 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
                 CHEST_BIT or
                 COIN_BIT or
                 ENEMY_BIT or
-                PORTAL_DOOR_BIT
+                PORTAL_DOOR_BIT or
+                BREAKABLE_BIT
 
         playerBody.createFixture(fixtureDef)
 
@@ -131,7 +131,7 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
 
     fun update(delta: Float, hud: Hud) {
         hitTimer += delta
-        if (hitTimer > .1f) color = defaultColor
+        if (hitTimer > .1f) color = Color.WHITE
         if (hitTimer > 2) isFirstHit = true
 
         isDead()

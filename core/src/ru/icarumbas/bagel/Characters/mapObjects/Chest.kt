@@ -1,11 +1,10 @@
 package ru.icarumbas.bagel.Characters.mapObjects
 
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.physics.box2d.Body
-import com.badlogic.gdx.physics.box2d.World
 import ru.icarumbas.CHEST_BIT
 import ru.icarumbas.bagel.Characters.Coin
 import ru.icarumbas.bagel.Screens.GameScreen
@@ -16,6 +15,7 @@ class Chest: MapObject{
     override val bit: Short = CHEST_BIT
     override lateinit var path: String
 
+    lateinit var coin: Coin
     val coins = ArrayList<Body>()
     var isOpened = false
 
@@ -34,31 +34,25 @@ class Chest: MapObject{
     override fun draw(batch: Batch, delta: Float, gameScreen: GameScreen) {
         super.draw(batch, delta, gameScreen)
 
-        if (isOpened) open(gameScreen.world)
-
-        coins.forEach {
-            (it.userData as Sprite).setPosition(
-                    it.position.x - (it.userData as Sprite).width.div(2),
-                    it.position.y - (it.userData as Sprite).height.div(2)
-            )
-            (it.userData as Sprite).draw(batch)
-        }
-
+        if (isOpened && gameScreen.hud.openButtonPressed) open(gameScreen)
+        if (coins.isNotEmpty()) coin.updateCoins(coins, batch)
     }
 
-    fun open(world: World){
+    fun open(gameScreen: GameScreen){
         isOpened = false
         destroyed = true
 
-        val coin = Coin()
-        coin.createCoins(body!!, world, coins, count = when(path){
+        gameScreen.assetManager["Sounds/openchest.wav", Sound::class.java].play()
+
+        coin = Coin(gameScreen.textureAtlas)
+        coin.createCoins(body!!, gameScreen.world, coins, count = when(path){
             "goldenChest" -> 30
             "silverChest" -> 20
             "bronzeChest" -> 10
-            else -> 10
+            else -> throw Exception("Unknown path")
         })
 
-        world.destroyBody(body)
+        gameScreen.worldContactListener.deleteList.add(body!!)
         body = null
         sprite = null
 

@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.Sprite
-import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
@@ -14,14 +13,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.viewport.StretchViewport
 import ru.icarumbas.bagel.Characters.Player
+import ru.icarumbas.bagel.Screens.GameScreen
 
 
-class Hud {
+class Hud(val player: Player): InputListener(){
 
     var touchedOnce = false
+    var openButtonPressed = false
     val stage: Stage
     var touchpad: Touchpad
     private val screenPos = Vector2()
@@ -34,9 +34,11 @@ class Hud {
     val money = Label("Money: ", lStyle)
     val width = Gdx.graphics.width.toFloat()
     val height = Gdx.graphics.height.toFloat()
-    //val openButton = Image(Texture("attackButton.png"))
+    val openButton = Image(Texture("open.png"))
+    val attackButton = Image(Texture("attackButton.png"))
 
-    constructor(player: Player) {
+
+    init {
 
         if ((width / height) == (16 / 10f)) stage = Stage(StretchViewport(800f, 480f)) else
         if (width / height == 4 / 3f) stage = Stage(StretchViewport(800f, 600f)) else
@@ -48,7 +50,7 @@ class Hud {
         val skin = Skin()
         skin.add("touchBackground", Texture("touchBackground.png"))
         val knob = Sprite(Texture("touchKnob.png"))
-        knob.setSize(height/15, height/15)
+        knob.setSize(width/21, width/21)
         skin.add("touchKnob", knob)
 
         val touchpadStyle = Touchpad.TouchpadStyle()
@@ -56,7 +58,7 @@ class Hud {
         touchpadStyle.knob = skin.getDrawable("touchKnob")
 
         touchpad = Touchpad(6f, touchpadStyle)
-        touchpad.setBounds(0f, 0f, height/7, height/7)
+        touchpad.setBounds(0f, 0f, width/10, width/10)
         stage.addActor(touchpad)
 
         currentRoom.setPosition(10f, 10f)
@@ -73,42 +75,28 @@ class Hud {
         money.setPosition(fps.x, fps.y - 15)
         stage.addActor(money)
 
-
-        val attackBtnImgPressed = TextureRegionDrawable(TextureRegion(Texture("attackButtonPressed.png")))
-        val attackBtnImg = TextureRegionDrawable(TextureRegion(Texture("attackButton.png")))
-
-
-        val attackButton = Image(Texture("attackButton.png"))
-
         attackButton.setSize(stage.width / 10, stage.width / 10)
         attackButton.setPosition(stage.width - attackButton.width - 20, stage.height/10f)
-
-        with (attackButton) {
-            addListener(object : InputListener() {
-                override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
-                    attackButton.drawable = attackBtnImg
-                    player.attacking = false
-                }
-
-                override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                    attackButton.drawable = attackBtnImgPressed
-                    player.attacking = true
-                    return true
-                }
-            })
-
-        }
+        attackButton.addListener(this)
         stage.addActor(attackButton)
+
+        openButton.setSize(stage.width / 15, stage.width / 15)
+        openButton.setPosition(stage.width - openButton.width - attackButton.width * 1.5f, stage.height/10f)
+        openButton.addListener(this)
+        openButton.isVisible = false
+        stage.addActor(openButton)
 
         fakeTouchDownEvent.type = InputEvent.Type.touchDown
 
     }
 
-    fun update(currentMap: Int) {
+    fun update(gameScreen: GameScreen) {
         stage.draw()
-        currentRoom.setText("$currentMap")
+        currentRoom.setText("${gameScreen.currentMap}")
         getDirection()
         fps.setText("FPS: ${Gdx.graphics.framesPerSecond}")
+        openButton.isVisible = gameScreen.worldContactListener.touchedOpeningItem
+
     }
 
     private fun getDirection() {
@@ -138,5 +126,33 @@ class Hud {
 
     }
 
+    override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
+        when (event!!.target) {
+            attackButton -> {
+                attackButton.color = Color.WHITE
+                player.attacking = false
+            }
 
+            openButton -> {
+                openButtonPressed = false
+                openButton.color = Color.WHITE
+            }
+        }
+    }
+
+    override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+        when (event!!.target) {
+            attackButton -> {
+                attackButton.color = Color.GRAY
+                player.attacking = true
+            }
+
+            openButton -> {
+                openButtonPressed = true
+                openButton.color = Color.GRAY
+            }
+
+        }
+        return true
+    }
 }

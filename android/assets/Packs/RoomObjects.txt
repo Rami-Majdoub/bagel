@@ -5,7 +5,7 @@ filter: Linear,Linear
 repeat: none
 barrel
   rotate: false
-  xy: 131, 56
+  xy: 67, 56
   size: 60, 64
   orig: 64, 64
   offset: 2, 0
@@ -19,9 +19,16 @@ box
   index: -1
 bronzeChest
   rotate: false
-  xy: 67, 1
+  xy: 85, 1
   size: 64, 53
   orig: 64, 64
+  offset: 0, 0
+  index: -1
+Coin
+  rotate: false
+  xy: 1, 1
+  size: 16, 16
+  orig: 16, 16
   offset: 0, 0
   index: -1
 doorClosed
@@ -40,7 +47,7 @@ doorOpened
   index: -1
 goldenChandelier
   rotate: false
-  xy: 1, 799
+  xy: 1, 605
   size: 127, 192
   orig: 128, 192
   offset: 1, 0
@@ -54,28 +61,28 @@ goldenChest
   index: -1
 goldenStatue
   rotate: false
-  xy: 133, 122
+  xy: 1, 252
   size: 58, 128
   orig: 64, 128
   offset: 4, 0
   index: -1
 silverChandelier
   rotate: false
-  xy: 1, 605
+  xy: 1, 799
   size: 127, 192
   orig: 128, 192
   offset: 0, 0
   index: -1
 silverChest
   rotate: false
-  xy: 1, 1
+  xy: 19, 1
   size: 64, 53
   orig: 64, 64
   offset: 0, 0
   index: -1
 silverStatue
   rotate: false
-  xy: 1, 252
+  xy: 133, 122
   size: 58, 128
   orig: 64, 128
   offset: 4, 0
@@ -89,7 +96,7 @@ spike
   index: -1
 spikeTrap
   rotate: false
-  xy: 67, 56
+  xy: 129, 56
   size: 62, 64
   orig: 64, 64
   offset: 1, 0
