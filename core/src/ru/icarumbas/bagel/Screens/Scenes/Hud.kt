@@ -50,7 +50,7 @@ class Hud(val player: Player): InputListener(){
         val skin = Skin()
         skin.add("touchBackground", Texture("touchBackground.png"))
         val knob = Sprite(Texture("touchKnob.png"))
-        knob.setSize(width/21, width/21)
+        knob.setSize(stage.width/20, stage.width/20)
         skin.add("touchKnob", knob)
 
         val touchpadStyle = Touchpad.TouchpadStyle()
@@ -58,7 +58,7 @@ class Hud(val player: Player): InputListener(){
         touchpadStyle.knob = skin.getDrawable("touchKnob")
 
         touchpad = Touchpad(6f, touchpadStyle)
-        touchpad.setBounds(0f, 0f, width/10, width/10)
+        touchpad.setBounds(0f, 0f, stage.width/8, stage.width/8)
         stage.addActor(touchpad)
 
         currentRoom.setPosition(10f, 10f)

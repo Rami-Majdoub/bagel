@@ -21,9 +21,5 @@ class WorldIO {
     fun loadLastPlayerState(player: Player){
         player.playerBody.setTransform(preferences.getFloat("PlayerPositionX"), preferences.getFloat("PlayerPositionY"), 0f)
     }
-
-    fun getInteger(path: String): Int{
-        return preferences.getInteger(path)
-    }
 }
 

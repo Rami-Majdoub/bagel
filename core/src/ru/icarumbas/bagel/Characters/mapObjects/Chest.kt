@@ -2,6 +2,7 @@ package ru.icarumbas.bagel.Characters.mapObjects
 
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.physics.box2d.Body
@@ -42,9 +43,9 @@ class Chest: MapObject{
         isOpened = false
         destroyed = true
 
-        gameScreen.assetManager["Sounds/openchest.wav", Sound::class.java].play()
+        gameScreen.game.assetManager["Sounds/openchest.wav", Sound::class.java].play()
 
-        coin = Coin(gameScreen.textureAtlas)
+        coin = Coin(gameScreen.game.assetManager.get("Packs/RoomObjects.txt", TextureAtlas::class.java))
         coin.createCoins(body!!, gameScreen.world, coins, count = when(path){
             "goldenChest" -> 30
             "silverChest" -> 20

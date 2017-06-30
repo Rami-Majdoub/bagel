@@ -7,7 +7,7 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.physics.box2d.*
 import ru.icarumbas.PIX_PER_M
-import ru.icarumbas.bagel.Characters.Enemies.CramMunch
+import ru.icarumbas.bagel.Characters.Enemies.RedBug
 import ru.icarumbas.bagel.Characters.Enemies.Enemy
 import ru.icarumbas.bagel.Characters.mapObjects.*
 
@@ -90,7 +90,7 @@ class B2DWorldCreator {
             layer.objects
                     .filterIsInstance<RectangleMapObject>()
                     .forEach {
-                        enemies.add(CramMunch(it.rectangle))
+                        enemies.add(RedBug(it.rectangle))
 
                     }
     }

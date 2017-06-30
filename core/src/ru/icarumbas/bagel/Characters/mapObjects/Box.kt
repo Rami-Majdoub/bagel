@@ -2,6 +2,7 @@ package ru.icarumbas.bagel.Characters.mapObjects
 
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.physics.box2d.Body
@@ -42,11 +43,11 @@ class Box : MapObject, Breakable {
         if (canBeBroken && gameScreen.player.attacking) {
 
             when (MathUtils.random(1)) {
-                0 -> gameScreen.assetManager["Sounds/crateBreak0.wav", Sound::class.java].play()
-                1 -> gameScreen.assetManager["Sounds/crateBreak1.wav", Sound::class.java].play()
+                0 -> gameScreen.game.assetManager["Sounds/crateBreak0.wav", Sound::class.java].play()
+                1 -> gameScreen.game.assetManager["Sounds/crateBreak1.wav", Sound::class.java].play()
             }
 
-            coin = Coin(gameScreen.textureAtlas)
+            coin = Coin(gameScreen.game.assetManager.get("Packs/RoomObjects.txt", TextureAtlas::class.java))
             coin.createCoins(body!!, gameScreen.world, coins, when (MathUtils.random(4)) {
                 0 -> 1 // 1 coin
                 else -> 0

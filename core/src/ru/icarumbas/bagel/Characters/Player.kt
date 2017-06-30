@@ -1,16 +1,17 @@
 package ru.icarumbas.bagel.Characters
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
 import ru.icarumbas.*
 import ru.icarumbas.bagel.Screens.GameScreen
+import ru.icarumbas.bagel.Screens.MainMenuScreen
 import ru.icarumbas.bagel.Screens.Scenes.Hud
 import ru.icarumbas.bagel.Utils.WorldCreate.AnimationCreator
 import kotlin.experimental.or
@@ -18,7 +19,8 @@ import kotlin.experimental.or
 class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : Sprite() {
 
     lateinit var playerBody: Body
-//    lateinit var swordBody: Body
+
+    val atlas = gameScreen.game.assetManager["Packs/GuyKnight.txt", TextureAtlas::class.java]!!
 
     private val stateAnimation: Animation<*>
     private val runAnimation: Animation<*>
@@ -26,20 +28,23 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
     private val attackAnimation: Animation<*>
     private val deadAnimation: Animation<*>
 
-    val atlas = TextureAtlas("Packs/GuyKnight.txt")
+    private val stepSound: Sound
+    private var stepSoundPlaying = false
+
     var attacking = false
     var jumping = false
     var doubleJump = 0
+    var lastRight = true
+    var runningRight = true
+
 
     private var stateTimerDead = 0f
-
-    private var runningRight = true
-    var lastRight: Boolean = false
     private var stateTimer = 0f
 
     var hitTimer = 0f
     var isFirstHit = true
 
+    var strength = 35
     var HP = 100
     var money = 0
 
@@ -48,6 +53,9 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
 
         setSize(1.1f, 1.45f)
         setOrigin(width / 2f, height / 2f)
+
+        stepSound = gameScreen.game.assetManager["Sounds/steps.wav", Sound::class.java]
+        stepSound.loop()
 
         // Animation
         stateAnimation = animationCreator.createSpriteAnimation("Idle", 10, .1f, Animation.PlayMode.LOOP, atlas)
@@ -81,8 +89,7 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
                 CHEST_BIT or
                 COIN_BIT or
                 ENEMY_BIT or
-                PORTAL_DOOR_BIT or
-                BREAKABLE_BIT
+                PORTAL_DOOR_BIT
 
         playerBody.createFixture(fixtureDef)
 
@@ -96,70 +103,99 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
 
         playerBody.isFixedRotation = true
 
-//        defineWeapon(bodyDef, playerBody)
+        defineWeapon(playerBody, fixtureDef)
     }
 
-   /* fun defineWeapon(bodyDef: BodyDef, playerBody: Body) {
-        bodyDef.position.set(6.05f, 5.5f)
-        swordBody = gameScreen.world.createBody(bodyDef)
-
-        val fixtureDef = FixtureDef()
-        val shape = ChainShape()
-        shape.createChain(arrayOf(Vector2(.5f, 0f), Vector2(2f, .75f)))
-        fixtureDef.shape = shape
+    fun defineWeapon(playerBody: Body, fixtureDef: FixtureDef) {
         fixtureDef.friction = 0f
         fixtureDef.density = 0f
-        fixtureDef.filter.categoryBits = GROUND_BIT
-        swordBody.createFixture(fixtureDef)
+        fixtureDef.filter.categoryBits = SWORD_BIT
+        fixtureDef.filter.maskBits = BREAKABLE_BIT or ENEMY_BIT
 
-        val swordJoint = RevoluteJointDef()
-        swordJoint.collideConnected = false
-        swordJoint.bodyA = playerBody
-        swordJoint.bodyB = swordBody
-        swordJoint.localAnchorA.set(.3f, 0f)
-        swordJoint.localAnchorB.set(.45f, 0f)
+        val shape = EdgeShape()
+        fixtureDef.shape = shape
 
-        *//*swordJoint.enableMotor = true
-        swordJoint.motorSpeed = 0f
-        swordJoint.maxMotorTorque = 10f
-        swordJoint.enableLimit = true
-        swordJoint.lowerAngle = 1.2f
-        swordJoint.upperAngle = 5f*//*
+        shape.set(.3f, 0f, .75f, 0f)
+        playerBody.createFixture(fixtureDef)
 
-        gameScreen.world.createJoint(swordJoint)
-    }*/
+        shape.set(.3f, 0f, .75f, -.5f)
+        playerBody.createFixture(fixtureDef)
+
+        shape.set(.3f, 0f, .75f, .5f)
+        playerBody.createFixture(fixtureDef)
+
+        fixtureDef.filter.categoryBits = SWORD_BIT_LEFT
+        shape.set(-.3f, 0f, -.75f, 0f)
+        playerBody.createFixture(fixtureDef)
+
+        shape.set(-.3f, 0f, -.75f, -.5f)
+        playerBody.createFixture(fixtureDef)
+
+        shape.set(-.3f, 0f, -.75f, .5f)
+        playerBody.createFixture(fixtureDef)
+    }
 
     fun update(delta: Float, hud: Hud) {
         hitTimer += delta
         if (hitTimer > .1f) color = Color.WHITE
-        if (hitTimer > 2) isFirstHit = true
+        if (hitTimer > 1) isFirstHit = true
+
+        when (getState(hud)) {
+            GameScreen.State.Dead -> {
+                stepSoundPlaying = false
+                stepSound.pause()
+
+                stateTimerDead += .1f
+                hud.stage.clear()
+            }
+
+            GameScreen.State.Running -> {
+                if (!stepSoundPlaying) {
+                    stepSound.stop()
+                    stepSoundPlaying = false
+                }
+            }
+
+            GameScreen.State.Standing -> {
+                stepSoundPlaying = false
+                stepSound.pause()
+            }
+
+            GameScreen.State.Jumping -> {
+                stepSoundPlaying = false
+                stepSound.pause()
+            }
+
+            GameScreen.State.Attacking -> {
+                stepSoundPlaying = false
+                stepSound.pause()
+            }
+        }
 
         isDead()
         detectJumping(hud)
         setRegion(getFrame(delta, hud))
         setPosition(playerBody.position.x - width / 2, playerBody.position.y - height / 2)
-        rotation = playerBody.angle * MathUtils.radiansToDegrees
-//        swordBody.applyLinearImpulse(Vector2(.25f, 0f), playerBody.worldCenter, true)
         hud.hp.setText("HP: $HP")
         hud.money.setText("Money: $money")
-
     }
 
     fun isDead(){
-        if (deadAnimation.isAnimationFinished(stateTimerDead)) Gdx.app.exit()
+        if (deadAnimation.isAnimationFinished(stateTimerDead)) {
+            gameScreen.game.worldIO.preferences.putBoolean("CanContinueWorld", false)
+            gameScreen.game.worldIO.preferences.flush()
+            gameScreen.game.screen = MainMenuScreen(gameScreen.game)
+        }
     }
 
     private fun getFrame(dt: Float, hud: Hud): TextureRegion {
-        val currentState = getState(hud)
 
-        var region = TextureRegion()
-
-        when (currentState) {
-            GameScreen.State.Jumping -> region = jumpAnimation.getKeyFrame(stateTimer) as TextureRegion
-            GameScreen.State.Running -> region = runAnimation.getKeyFrame(stateTimer) as TextureRegion
-            GameScreen.State.Standing -> region = stateAnimation.getKeyFrame(stateTimer) as TextureRegion
-            GameScreen.State.Attacking -> region = attackAnimation.getKeyFrame(stateTimer) as TextureRegion
-            GameScreen.State.Dead -> region = deadAnimation.getKeyFrame(stateTimer) as TextureRegion
+        val region = when (getState(hud)) {
+            GameScreen.State.Jumping -> jumpAnimation.getKeyFrame(stateTimer) as TextureRegion
+            GameScreen.State.Running -> runAnimation.getKeyFrame(stateTimer) as TextureRegion
+            GameScreen.State.Standing -> stateAnimation.getKeyFrame(stateTimer) as TextureRegion
+            GameScreen.State.Attacking -> attackAnimation.getKeyFrame(stateTimer) as TextureRegion
+            GameScreen.State.Dead -> deadAnimation.getKeyFrame(stateTimer) as TextureRegion
 
         }
 
@@ -218,31 +254,39 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
 
     }
 
-//    private fun setSwordPosition() = swordBody.setTransform(playerBody.position.x + .05f, playerBody.position.y+.5f, 0f)
-
     fun getState(hud: Hud): GameScreen.State {
-        if (HP <= 0) {
-            stateTimerDead += .1f
-            hud.stage.clear()
-            return GameScreen.State.Dead
-        } else
+        if (HP <= 0) return GameScreen.State.Dead
+         else
         if (attacking) return GameScreen.State.Attacking else
-        if (jumping && playerBody.linearVelocity.y != 0f) return GameScreen.State.Jumping else
-        if ((hud.touchpad.knobX < hud.touchpad.width / 2 || hud.touchpad.knobX > hud.touchpad.width / 2) && !jumping && hud.touchedOnce)
-            return GameScreen.State.Running
-        else
-            return GameScreen.State.Standing
+        if (playerBody.linearVelocity.y > 1.5f) return GameScreen.State.Jumping else
+        if ((
+                hud.touchpad.knobX < hud.touchpad.width / 2 || hud.touchpad.knobX > hud.touchpad.width / 2)
+            ) { return GameScreen.State.Running
+        }
+        else return GameScreen.State.Standing
+
     }
 
     fun detectJumping(hud: Hud){
         if (playerBody.linearVelocity.x < 4f && hud.touchpad.knobX > hud.touchpad.width / 2 + hud.touchpad.width/20) {
             playerBody.applyLinearImpulse(Vector2(.03f, 0f), playerBody.worldCenter, true)
             lastRight = true
+
+            playerBody.fixtureList.forEach {
+                if (it.filterData.categoryBits == SWORD_BIT_LEFT && !it.isSensor) it.isSensor = true
+                if (it.filterData.categoryBits == SWORD_BIT && it.isSensor) it.isSensor = false
+            }
         }
 
         if (playerBody.linearVelocity.x > -4f && hud.touchpad.knobX < hud.touchpad.width / 2 - hud.touchpad.width/20) {
             playerBody.applyLinearImpulse(Vector2(-.03f, 0f), playerBody.worldCenter, true)
             lastRight = false
+
+            playerBody.fixtureList.forEach {
+                if (it.filterData.categoryBits == SWORD_BIT_LEFT && it.isSensor) it.isSensor = false
+                if (it.filterData.categoryBits == SWORD_BIT && !it.isSensor) it.isSensor = true
+            }
+
         }
 
         if (hud.touchpad.knobY > hud.touchpad.height / 2 + hud.touchpad.width/10 && doubleJump < 5 && playerBody.linearVelocity.y < 3.5) {
@@ -265,6 +309,7 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
     private fun jump(velocity: Float){
         playerBody.applyLinearImpulse(Vector2(0f, velocity), playerBody.worldCenter, true)
         doubleJump++
+        jumping = true
     }
 
     fun hit(damage: Int, velocity: Vector2){

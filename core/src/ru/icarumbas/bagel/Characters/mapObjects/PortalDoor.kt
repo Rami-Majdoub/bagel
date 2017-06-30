@@ -1,6 +1,7 @@
 package ru.icarumbas.bagel.Characters.mapObjects
 
 import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Rectangle
 import ru.icarumbas.PIX_PER_M
@@ -46,7 +47,7 @@ class PortalDoor : MapObject {
 
             if (path == "doorClosed") {
                 path = "doorOpened"
-                loadSprite(gameScreen.textureAtlas)
+                loadSprite(gameScreen.game.assetManager.get("Packs/RoomObjects.txt", TextureAtlas::class.java))
             }
 
             timer += delta
@@ -56,7 +57,7 @@ class PortalDoor : MapObject {
                 changeRoom(gameScreen)
                 gameScreen.hud.openButtonPressed = false
                 path = "doorClosed"
-                loadSprite(gameScreen.textureAtlas)
+                loadSprite(gameScreen.game.assetManager.get("Packs/RoomObjects.txt", TextureAtlas::class.java))
 
                 gameScreen.rooms[gameScreen.currentMap].mapObjects.forEach {
                     if (it is PortalDoor) {

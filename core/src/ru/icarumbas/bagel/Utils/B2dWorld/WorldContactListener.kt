@@ -3,6 +3,7 @@ package ru.icarumbas.bagel.Utils.B2dWorld
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.physics.box2d.*
 import ru.icarumbas.*
+import ru.icarumbas.bagel.Characters.Enemies.Enemy
 import ru.icarumbas.bagel.Characters.mapObjects.Breakable
 import ru.icarumbas.bagel.Characters.mapObjects.Chest
 import ru.icarumbas.bagel.Characters.mapObjects.PortalDoor
@@ -39,26 +40,44 @@ class WorldContactListener(val gameScreen: GameScreen) : ContactListener {
                 contact.isEnabled = false
 
                 if (deleteList.isEmpty()) {
-                    gameScreen.assetManager["Sounds/coinpickup.wav", Sound::class.java].play()
+                    gameScreen.game.assetManager["Sounds/coinpickup.wav", Sound::class.java].play()
 
                     deleteList.add(otherBody)
                     gameScreen.rooms[gameScreen.currentMap].mapObjects.forEach {
                         if (it is Chest && it.coins.contains(otherBody)) it.coins.remove(otherBody) else
-                        if (it is Breakable && it.coins.contains(otherBody)) it.coins.remove(otherBody)
+                            if (it is Breakable && it.coins.contains(otherBody)) it.coins.remove(otherBody)
+                    }
+                    gameScreen.rooms[gameScreen.currentMap].enemies.forEach {
+                        if (it.coins.contains(otherBody)) it.coins.remove(otherBody)
                     }
                     gameScreen.player.money += 1
+
                 }
             }
 
-            PLAYER_BIT or BREAKABLE_BIT -> {
+            SWORD_BIT or BREAKABLE_BIT,  SWORD_BIT_LEFT or BREAKABLE_BIT -> {
                 contact.isEnabled = false
                 gameScreen.rooms[gameScreen.currentMap].mapObjects.forEach {
                     if (it is Breakable && it.body == otherBody) it.canBeBroken = true
                 }
             }
 
+            SWORD_BIT or ENEMY_BIT,  SWORD_BIT_LEFT or ENEMY_BIT -> {
+                contact.isEnabled = false
+                gameScreen.rooms[gameScreen.currentMap].enemies.forEach {
+                    if (it is Enemy && it.body == otherBody) it.canHit = true
+                }
+            }
+
+            PLAYER_BIT or ENEMY_BIT -> {
+                contact.isEnabled = false
+                gameScreen.rooms[gameScreen.currentMap].enemies.forEach {
+                    if (it is Enemy && it.body == otherBody) it.bite(gameScreen.player)
+                }
+            }
+
             PLAYER_BIT or PLATFORM_BIT -> {
-                if (playerBody.position.y < otherBody.position.y + .7 || isTouchPadDown()) {
+                if (playerBody!!.position!!.y < otherBody!!.position!!.y + .7 || isTouchPadDown()) {
                     contact.isEnabled = false
                 }
             }
@@ -87,19 +106,9 @@ class WorldContactListener(val gameScreen: GameScreen) : ContactListener {
                 }
                 contact.isEnabled = false
             }
+
         }
 
-    }
-
-    fun deleteBodies(){
-        if (deleteList.isNotEmpty()) {
-
-            deleteList.forEach {
-                gameScreen.world.destroyBody(it)
-                println("Destroyed body $it.")
-            }
-            deleteList.clear()
-        }
     }
 
     override fun beginContact(contact: Contact) {
@@ -110,19 +119,23 @@ class WorldContactListener(val gameScreen: GameScreen) : ContactListener {
         val fixA = contact.fixtureA
         val fixB = contact.fixtureB
 
-        var playerBody = fixA.body
         var otherBody = fixB.body
 
         if (fixB.body == gameScreen.player.playerBody) {
-            playerBody = fixB.body
             otherBody = fixA.body
         }
 
         when (fixA.filterData.categoryBits or fixB.filterData.categoryBits) {
 
-            PLAYER_BIT or BREAKABLE_BIT -> {
+            SWORD_BIT or BREAKABLE_BIT, SWORD_BIT_LEFT or BREAKABLE_BIT -> {
                 gameScreen.rooms[gameScreen.currentMap].mapObjects.forEach {
                     if (it is Breakable && it.body == otherBody) it.canBeBroken = false
+                }
+            }
+
+            SWORD_BIT or ENEMY_BIT,  SWORD_BIT_LEFT or ENEMY_BIT -> {
+                gameScreen.rooms[gameScreen.currentMap].enemies.forEach {
+                    if (it is Enemy && it.body == otherBody) it.canHit = false
                 }
             }
 
@@ -137,6 +150,16 @@ class WorldContactListener(val gameScreen: GameScreen) : ContactListener {
             PLAYER_BIT or PORTAL_DOOR_BIT -> {
                 touchedOpeningItem = false
             }
+        }
+    }
+
+    fun deleteBodies(){
+        if (deleteList.isNotEmpty()) {
+
+            deleteList.forEach {
+                gameScreen.world.destroyBody(it)
+            }
+            deleteList.clear()
         }
     }
 

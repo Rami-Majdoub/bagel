@@ -32,13 +32,12 @@ class MainMenuScreen(private val game: Bagel) : ScreenAdapter() {
 
         Gdx.input.inputProcessor = stage
 
-        val atlas = TextureAtlas("Packs/Main_Menu.txt")
-        back = Sprite(atlas.findRegion("menu_background"))
+        back = Sprite(game.assetManager.get("Packs/Main_Menu.txt", TextureAtlas::class.java).findRegion("menu_background"))
         back.setSize(Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
 
         val frames = Array<Sprite>()
         for (i in 1..4) {
-            val frame = Sprite(atlas.findRegion("rain_drops-0" + i))
+            val frame = Sprite(game.assetManager.get("Packs/Main_Menu.txt", TextureAtlas::class.java).findRegion("rain_drops-0" + i))
             frame.setSize(Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
             frames.add(frame)
         }
@@ -57,16 +56,21 @@ class MainMenuScreen(private val game: Bagel) : ScreenAdapter() {
 
         val newGame = Label("New Game", labelStyle)
         table.add(newGame).row()
-        val continueGame = Label("Continue", labelStyle)
-        table.add(continueGame).row()
+
+        if (game.worldIO.preferences.getBoolean("CanContinueWorld")) {
+            val continueGame = Label("Continue", labelStyle)
+            table.add(continueGame).row()
+        }
+
         val options = Label("Options", labelStyle)
         table.add(options)
 
         table.addListener(object : InputListener() {
             override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
                 when (event.target) {
-                    newGame -> game.screen = GameScreen(newWorld = true)
-                    continueGame -> game.screen = GameScreen(newWorld = false)
+                    newGame -> game.screen = GameScreen(newWorld = true, game = game)
+                    options -> TODO()
+                    else -> game.screen = GameScreen(newWorld = false, game = game)
                 }
             }
 

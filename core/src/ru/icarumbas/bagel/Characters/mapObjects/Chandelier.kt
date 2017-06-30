@@ -2,6 +2,7 @@ package ru.icarumbas.bagel.Characters.mapObjects
 
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.physics.box2d.Body
@@ -48,9 +49,9 @@ class Chandelier: MapObject, Breakable {
 
             body!!.type = BodyDef.BodyType.DynamicBody
             sprite!!.setAlpha(.25f)
-            gameScreen.assetManager["Sounds/shatterMetal.wav", Sound::class.java].play()
+            gameScreen.game.assetManager["Sounds/shatterMetal.wav", Sound::class.java].play()
 
-            coin = Coin(gameScreen.textureAtlas)
+            coin = Coin(gameScreen.game.assetManager.get("Packs/RoomObjects.txt", TextureAtlas::class.java))
             coin.createCoins(body!!, gameScreen.world, coins, when (path) {
                 "goldenChandelier" -> MathUtils.random(0, 4)
                 "silverChandelier" -> MathUtils.random(0, 2)

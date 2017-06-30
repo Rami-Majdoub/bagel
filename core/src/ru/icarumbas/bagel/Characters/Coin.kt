@@ -18,7 +18,6 @@ class Coin(textureAtlas: TextureAtlas){
     val coinBdef = BodyDef()
 
     init {
-        println("Here!")
         coinSprite.setSize(16.div(PIX_PER_M), 16.div(PIX_PER_M))
         coinBdef.type = BodyDef.BodyType.DynamicBody
         coinFixDef.shape = coinShape
@@ -31,14 +30,11 @@ class Coin(textureAtlas: TextureAtlas){
     fun createCoins(mainBody: Body, world: World, arr: ArrayList<Body>, count: Int) {
 
         if (count != 0) {
-            println("$count")
             coinBdef.position.set(mainBody.position.x, mainBody.position.y)
             coinShape.setAsBox(coinSprite.width.div(2), coinSprite.height.div(2))
 
-            println("Here1")
             (0..count - 1).forEach {
                 arr.add(world.createBody(coinBdef))
-                println("Here2")
                 arr[arr.size - 1].createFixture(coinFixDef)
                 arr[arr.size - 1].userData = coinSprite
                 arr[arr.size - 1].applyLinearImpulse(
@@ -46,10 +42,7 @@ class Coin(textureAtlas: TextureAtlas){
                                 MathUtils.random(10f)),
                         arr[arr.size - 1].localPoint2, true
                 )
-                println("Here2.5")
             }
-
-            println("Created ${arr.size} coins.")
 
         }
 

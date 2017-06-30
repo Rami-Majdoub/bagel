@@ -31,12 +31,11 @@ class SpikeTrap : Spike {
 
             timer += delta
 
-            if (timer > .65 && !soundPlayed){
-                gameScreen.assetManager["Sounds/spikes.wav", Sound::class.java].play()
-                soundPlayed = true
-            }
-
             if (timer > .75f) {
+                if (!soundPlayed){
+                    gameScreen.game.assetManager["Sounds/spikes.wav", Sound::class.java].play()
+                    soundPlayed = true
+                }
                 super.draw(batch, delta, gameScreen)
                 checkHit(gameScreen)
             }
