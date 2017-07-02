@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.*
 import ru.icarumbas.PIX_PER_M
 import ru.icarumbas.bagel.Characters.Enemies.RedBug
 import ru.icarumbas.bagel.Characters.Enemies.Enemy
+import ru.icarumbas.bagel.Characters.Enemies.Skeleton
 import ru.icarumbas.bagel.Characters.mapObjects.*
 
 
@@ -79,22 +80,22 @@ class B2DWorldCreator {
                             "portalDoor" -> PortalDoor(it.rectangle)
                             else -> throw Exception("NO SUCH CLASS")
                         })
-
                     }
     }
 
-
-
-    fun loadCramMunch(layer: MapLayer?, enemies: ArrayList<Enemy>) {
+    fun loadEnemies(roomPath: String, objectPath: String, assetManager: AssetManager, mapObjects: ArrayList<Enemy>) {
+        val layer = assetManager.get(roomPath, TiledMap::class.java).layers[objectPath]
         if (layer != null)
             layer.objects
                     .filterIsInstance<RectangleMapObject>()
                     .forEach {
-                        enemies.add(RedBug(it.rectangle))
-
+                        mapObjects.add(when(objectPath){
+                            "flyingEnemies" -> RedBug(it.rectangle)
+                            "groundEnemies" -> Skeleton(it.rectangle)
+                            else -> throw Exception("NO SUCH CLASS")
+                        })
                     }
     }
-
 
 }
 

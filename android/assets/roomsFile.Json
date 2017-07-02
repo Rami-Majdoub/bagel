@@ -79,7 +79,7 @@
 			coin: null
 			coins: []
 			canBeBroken: false
-			path: box
+			path: barrel
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Box
@@ -112,6 +112,528 @@
 			coins: []
 			canBeBroken: false
 			path: barrel
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			body: null
+			sprite: null
+			posX: 12.16
+			posY: 4.48
+			width: 0.64
+			height: 0.64
+			bit: 32
+			bodyType: DynamicBody
+			destroyed: false
+			coin: null
+			coins: []
+			canBeBroken: false
+			path: barrel
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			body: null
+			sprite: null
+			posX: 11.52
+			posY: 4.48
+			width: 0.64
+			height: 0.64
+			bit: 32
+			bodyType: DynamicBody
+			destroyed: false
+			coin: null
+			coins: []
+			canBeBroken: false
+			path: box
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Chandelier
+			body: null
+			sprite: null
+			posX: 10.88
+			posY: 7.04
+			width: 1.27
+			height: 1.92
+			bit: 32
+			bodyType: StaticBody
+			destroyed: false
+			coin: null
+			coins: []
+			canBeBroken: false
+			path: goldenChandelier
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Chandelier
+			body: null
+			sprite: null
+			posX: 3.2
+			posY: 7.04
+			width: 1.27
+			height: 1.92
+			bit: 32
+			bodyType: StaticBody
+			destroyed: false
+			coin: null
+			coins: []
+			canBeBroken: false
+			path: silverChandelier
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Chest
+			body: null
+			sprite: null
+			posX: 7.04
+			posY: 6.4
+			width: 0.64
+			height: 0.64
+			bit: 16
+			bodyType: StaticBody
+			destroyed: false
+			path: goldenChest
+			coin: null
+			coins: []
+			isOpened: false
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Statue
+			body: null
+			sprite: null
+			posX: 2.56
+			posY: 4.48
+			width: 0.64
+			height: 1.28
+			bit: 32
+			bodyType: StaticBody
+			destroyed: false
+			coin: null
+			coins: []
+			canBeBroken: false
+			path: silverStatue
+		}
+	]
+	enemies: [
+		{
+			class: ru.icarumbas.bagel.Characters.Enemies.RedBug
+			killed: false
+			body: null
+			sprite: null
+			categorybit: 128
+			maskbit: 3080
+			gravityScale: 0
+			coin: null
+			coins: []
+			lastState: Running
+			currentState: Standing
+			canHit: false
+			HP: 100
+			stateTimer: 0
+			hitTimer: 0
+			biteTimer: 0
+			stateAnimation: null
+			runAnimation: null
+			attackAnimation: null
+			dieAnimation: null
+			appearAnimation: null
+			jumpAnimation: null
+			velocity: null
+			posX: 5.12
+			posY: 7.68
+			strength: 15
+			width: 0.92
+			height: 0.92
+			speed: 0.25
+			lastRight: true
+			lastUp: true
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.Enemies.RedBug
+			killed: false
+			body: null
+			sprite: null
+			categorybit: 128
+			maskbit: 3080
+			gravityScale: 0
+			coin: null
+			coins: []
+			lastState: Running
+			currentState: Standing
+			canHit: false
+			HP: 100
+			stateTimer: 0
+			hitTimer: 0
+			biteTimer: 0
+			stateAnimation: null
+			runAnimation: null
+			attackAnimation: null
+			dieAnimation: null
+			appearAnimation: null
+			jumpAnimation: null
+			velocity: null
+			posX: 9.6
+			posY: 7.68
+			strength: 15
+			width: 0.92
+			height: 0.92
+			speed: 0.25
+			lastRight: true
+			lastUp: true
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.Enemies.Skeleton
+			killed: false
+			body: null
+			sprite: null
+			categorybit: 128
+			maskbit: 3086
+			gravityScale: 1
+			coin: null
+			coins: []
+			lastState: Running
+			currentState: Standing
+			canHit: false
+			HP: 100
+			stateTimer: 0
+			hitTimer: 0
+			biteTimer: 0
+			stateAnimation: null
+			runAnimation: null
+			attackAnimation: null
+			dieAnimation: null
+			appearAnimation: null
+			jumpAnimation: null
+			velocity: null
+			posX: 5.12
+			posY: 1.92
+			strength: 20
+			speed: 1
+			width: 1.45
+			height: 2.2
+			appeared: false
+			attacking: false
+			attackTimer: 0
+		}
+	]
+	mapWidth: 15.36
+	mapHeight: 10.24
+}
+{
+	class: ru.icarumbas.bagel.Utils.WorldCreate.Room
+	path: Maps/Map2.tmx
+	roomLinks: [
+		null
+		0
+		null
+		null
+		null
+		null
+		null
+		null
+	]
+	meshVertices: [ 25, 26, 25, 26 ]
+	mapObjects: [
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Chest
+			body: null
+			sprite: null
+			posX: 4.48
+			posY: 6.4
+			width: 0.64
+			height: 0.64
+			bit: 16
+			bodyType: StaticBody
+			destroyed: false
+			path: bronzeChest
+			coin: null
+			coins: []
+			isOpened: false
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Statue
+			body: null
+			sprite: null
+			posX: 1.28
+			posY: 6.4
+			width: 0.64
+			height: 1.28
+			bit: 32
+			bodyType: StaticBody
+			destroyed: false
+			coin: null
+			coins: []
+			canBeBroken: false
+			path: silverStatue
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Spike
+			body: null
+			sprite: null
+			posX: 9.6
+			posY: 1.2799999
+			width: 0.64
+			height: 1.09
+			bit: 64
+			bodyType: StaticBody
+			destroyed: false
+			path: spike
+			isTouched: false
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Spike
+			body: null
+			sprite: null
+			posX: 8.96
+			posY: 1.2799999
+			width: 0.64
+			height: 1.09
+			bit: 64
+			bodyType: StaticBody
+			destroyed: false
+			path: spike
+			isTouched: false
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Spike
+			body: null
+			sprite: null
+			posX: 8.32
+			posY: 1.2799999
+			width: 0.64
+			height: 1.09
+			bit: 64
+			bodyType: StaticBody
+			destroyed: false
+			path: spike
+			isTouched: false
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Spike
+			body: null
+			sprite: null
+			posX: 7.04
+			posY: 1.2799999
+			width: 0.64
+			height: 1.09
+			bit: 64
+			bodyType: StaticBody
+			destroyed: false
+			path: spike
+			isTouched: false
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Spike
+			body: null
+			sprite: null
+			posX: 6.4
+			posY: 1.2800003
+			width: 0.64
+			height: 1.09
+			bit: 64
+			bodyType: StaticBody
+			destroyed: false
+			path: spike
+			isTouched: false
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Spike
+			body: null
+			sprite: null
+			posX: 5.76
+			posY: 1.2800003
+			width: 0.64
+			height: 1.09
+			bit: 64
+			bodyType: StaticBody
+			destroyed: false
+			path: spike
+			isTouched: false
+		}
+	]
+	enemies: [
+		{
+			class: ru.icarumbas.bagel.Characters.Enemies.RedBug
+			killed: false
+			body: null
+			sprite: null
+			categorybit: 128
+			maskbit: 3080
+			gravityScale: 0
+			coin: null
+			coins: []
+			lastState: Running
+			currentState: Standing
+			canHit: false
+			HP: 100
+			stateTimer: 0
+			hitTimer: 0
+			biteTimer: 0
+			stateAnimation: null
+			runAnimation: null
+			attackAnimation: null
+			dieAnimation: null
+			appearAnimation: null
+			jumpAnimation: null
+			velocity: null
+			posX: 7.68
+			posY: 3.84
+			strength: 15
+			width: 0.92
+			height: 0.92
+			speed: 0.25
+			lastRight: true
+			lastUp: true
+		}
+	]
+	mapWidth: 15.36
+	mapHeight: 10.24
+}
+{
+	class: ru.icarumbas.bagel.Utils.WorldCreate.Room
+	path: Maps/Map0.tmx
+	roomLinks: [
+		0
+		5
+		7
+		6
+		null
+		null
+		null
+		null
+	]
+	meshVertices: [ 26, 25, 26, 25 ]
+	mapObjects: []
+	enemies: []
+	mapWidth: 15.36
+	mapHeight: 10.24
+}
+{
+	class: ru.icarumbas.bagel.Utils.WorldCreate.Room
+	path: Maps/Map1.tmx
+	roomLinks: [
+		null
+		null
+		0
+		null
+		null
+		null
+		null
+		null
+	]
+	meshVertices: [ 24, 25, 24, 25 ]
+	mapObjects: [
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.PortalDoor
+			body: null
+			sprite: null
+			posX: 1.28
+			posY: 3.84
+			width: 1.28
+			height: 1.92
+			bit: 512
+			bodyType: StaticBody
+			destroyed: false
+			path: doorClosed
+			roomsWithPortalDoor: []
+			timer: 0
+			isOpened: false
+		}
+	]
+	enemies: []
+	mapWidth: 15.36
+	mapHeight: 10.24
+}
+{
+	class: ru.icarumbas.bagel.Utils.WorldCreate.Room
+	path: Maps/Map3.tmx
+	roomLinks: [
+		null
+		null
+		null
+		3
+		null
+		null
+		null
+		null
+	]
+	meshVertices: [ 26, 24, 26, 24 ]
+	mapObjects: [
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			body: null
+			sprite: null
+			posX: 7.83505
+			posY: -0.6878003
+			width: 0.64
+			height: 0.64
+			bit: 32
+			bodyType: DynamicBody
+			destroyed: false
+			coin: null
+			coins: []
+			canBeBroken: false
+			path: barrel
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			body: null
+			sprite: null
+			posX: 12.8
+			posY: 4.48
+			width: 0.64
+			height: 0.64
+			bit: 32
+			bodyType: DynamicBody
+			destroyed: false
+			coin: null
+			coins: []
+			canBeBroken: false
+			path: box
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			body: null
+			sprite: null
+			posX: 12.8
+			posY: 5.12
+			width: 0.64
+			height: 0.64
+			bit: 32
+			bodyType: DynamicBody
+			destroyed: false
+			coin: null
+			coins: []
+			canBeBroken: false
+			path: box
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			body: null
+			sprite: null
+			posX: 12.16
+			posY: 5.76
+			width: 0.64
+			height: 0.64
+			bit: 32
+			bodyType: DynamicBody
+			destroyed: false
+			coin: null
+			coins: []
+			canBeBroken: false
+			path: box
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			body: null
+			sprite: null
+			posX: 12.16
+			posY: 5.12
+			width: 0.64
+			height: 0.64
+			bit: 32
+			bodyType: DynamicBody
+			destroyed: false
+			coin: null
+			coins: []
+			canBeBroken: false
+			path: box
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Box
@@ -210,7 +732,108 @@
 			path: silverStatue
 		}
 	]
-	enemies: []
+	enemies: [
+		{
+			class: ru.icarumbas.bagel.Characters.Enemies.RedBug
+			killed: false
+			body: null
+			sprite: null
+			categorybit: 128
+			maskbit: 3080
+			gravityScale: 0
+			coin: null
+			coins: []
+			lastState: Running
+			currentState: Standing
+			canHit: false
+			HP: 100
+			stateTimer: 0
+			hitTimer: 0
+			biteTimer: 0
+			stateAnimation: null
+			runAnimation: null
+			attackAnimation: null
+			dieAnimation: null
+			appearAnimation: null
+			jumpAnimation: null
+			velocity: null
+			posX: 5.12
+			posY: 7.68
+			strength: 15
+			width: 0.92
+			height: 0.92
+			speed: 0.25
+			lastRight: true
+			lastUp: true
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.Enemies.RedBug
+			killed: false
+			body: null
+			sprite: null
+			categorybit: 128
+			maskbit: 3080
+			gravityScale: 0
+			coin: null
+			coins: []
+			lastState: Running
+			currentState: Standing
+			canHit: false
+			HP: 100
+			stateTimer: 0
+			hitTimer: 0
+			biteTimer: 0
+			stateAnimation: null
+			runAnimation: null
+			attackAnimation: null
+			dieAnimation: null
+			appearAnimation: null
+			jumpAnimation: null
+			velocity: null
+			posX: 9.6
+			posY: 7.68
+			strength: 15
+			width: 0.92
+			height: 0.92
+			speed: 0.25
+			lastRight: true
+			lastUp: true
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.Enemies.Skeleton
+			killed: false
+			body: null
+			sprite: null
+			categorybit: 128
+			maskbit: 3086
+			gravityScale: 1
+			coin: null
+			coins: []
+			lastState: Running
+			currentState: Standing
+			canHit: false
+			HP: 100
+			stateTimer: 0
+			hitTimer: 0
+			biteTimer: 0
+			stateAnimation: null
+			runAnimation: null
+			attackAnimation: null
+			dieAnimation: null
+			appearAnimation: null
+			jumpAnimation: null
+			velocity: null
+			posX: 5.12
+			posY: 1.92
+			strength: 20
+			speed: 1
+			width: 1.45
+			height: 2.2
+			appeared: false
+			attacking: false
+			attackTimer: 0
+		}
+	]
 	mapWidth: 15.36
 	mapHeight: 10.24
 }
@@ -219,7 +842,7 @@
 	path: Maps/Map2.tmx
 	roomLinks: [
 		null
-		0
+		3
 		null
 		null
 		null
@@ -227,7 +850,7 @@
 		null
 		null
 	]
-	meshVertices: [ 25, 26, 25, 26 ]
+	meshVertices: [ 26, 26, 26, 26 ]
 	mapObjects: [
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Chest
@@ -259,7 +882,7 @@
 			coin: null
 			coins: []
 			canBeBroken: false
-			path: goldenStatue
+			path: silverStatue
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Spike
@@ -346,7 +969,41 @@
 			isTouched: false
 		}
 	]
-	enemies: []
+	enemies: [
+		{
+			class: ru.icarumbas.bagel.Characters.Enemies.RedBug
+			killed: false
+			body: null
+			sprite: null
+			categorybit: 128
+			maskbit: 3080
+			gravityScale: 0
+			coin: null
+			coins: []
+			lastState: Running
+			currentState: Standing
+			canHit: false
+			HP: 100
+			stateTimer: 0
+			hitTimer: 0
+			biteTimer: 0
+			stateAnimation: null
+			runAnimation: null
+			attackAnimation: null
+			dieAnimation: null
+			appearAnimation: null
+			jumpAnimation: null
+			velocity: null
+			posX: 7.68
+			posY: 3.84
+			strength: 15
+			width: 0.92
+			height: 0.92
+			speed: 0.25
+			lastRight: true
+			lastUp: true
+		}
+	]
 	mapWidth: 15.36
 	mapHeight: 10.24
 }
@@ -354,7 +1011,7 @@
 	class: ru.icarumbas.bagel.Utils.WorldCreate.Room
 	path: Maps/Map4.tmx
 	roomLinks: [
-		0
+		3
 		null
 		null
 		null
@@ -363,7 +1020,7 @@
 		null
 		null
 	]
-	meshVertices: [ 26, 25, 26, 25 ]
+	meshVertices: [ 27, 25, 27, 25 ]
 	mapObjects: [
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Box
@@ -379,7 +1036,7 @@
 			coin: null
 			coins: []
 			canBeBroken: false
-			path: barrel
+			path: box
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Box
@@ -403,38 +1060,6 @@
 			sprite: null
 			posX: 6.4
 			posY: 1.28
-			width: 0.64
-			height: 0.64
-			bit: 32
-			bodyType: DynamicBody
-			destroyed: false
-			coin: null
-			coins: []
-			canBeBroken: false
-			path: barrel
-		}
-		{
-			class: ru.icarumbas.bagel.Characters.mapObjects.Box
-			body: null
-			sprite: null
-			posX: 5.76
-			posY: 1.28
-			width: 0.64
-			height: 0.64
-			bit: 32
-			bodyType: DynamicBody
-			destroyed: false
-			coin: null
-			coins: []
-			canBeBroken: false
-			path: barrel
-		}
-		{
-			class: ru.icarumbas.bagel.Characters.mapObjects.Box
-			body: null
-			sprite: null
-			posX: 5.76
-			posY: 1.92
 			width: 0.64
 			height: 0.64
 			bit: 32
@@ -444,6 +1069,38 @@
 			coins: []
 			canBeBroken: false
 			path: box
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			body: null
+			sprite: null
+			posX: 5.76
+			posY: 1.28
+			width: 0.64
+			height: 0.64
+			bit: 32
+			bodyType: DynamicBody
+			destroyed: false
+			coin: null
+			coins: []
+			canBeBroken: false
+			path: box
+		}
+		{
+			class: ru.icarumbas.bagel.Characters.mapObjects.Box
+			body: null
+			sprite: null
+			posX: 5.76
+			posY: 1.92
+			width: 0.64
+			height: 0.64
+			bit: 32
+			bodyType: DynamicBody
+			destroyed: false
+			coin: null
+			coins: []
+			canBeBroken: false
+			path: barrel
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Box
@@ -459,7 +1116,7 @@
 			coin: null
 			coins: []
 			canBeBroken: false
-			path: barrel
+			path: box
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Box
@@ -475,7 +1132,7 @@
 			coin: null
 			coins: []
 			canBeBroken: false
-			path: barrel
+			path: box
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Box
@@ -523,7 +1180,7 @@
 			coin: null
 			coins: []
 			canBeBroken: false
-			path: silverChandelier
+			path: goldenChandelier
 		}
 		{
 			class: ru.icarumbas.bagel.Characters.mapObjects.Chest
@@ -617,6 +1274,8 @@
 			gravityScale: 0
 			coin: null
 			coins: []
+			lastState: Running
+			currentState: Standing
 			canHit: false
 			HP: 100
 			stateTimer: 0
@@ -624,32 +1283,10 @@
 			biteTimer: 0
 			stateAnimation: null
 			runAnimation: null
-			velocity: null
-			posX: 3.2
-			posY: 1.92
-			strength: 15
-			width: 0.92
-			height: 0.92
-			speed: 0.25
-			lastRight: true
-		}
-		{
-			class: ru.icarumbas.bagel.Characters.Enemies.RedBug
-			killed: false
-			body: null
-			sprite: null
-			categorybit: 128
-			maskbit: 3080
-			gravityScale: 0
-			coin: null
-			coins: []
-			canHit: false
-			HP: 100
-			stateTimer: 0
-			hitTimer: 0
-			biteTimer: 0
-			stateAnimation: null
-			runAnimation: null
+			attackAnimation: null
+			dieAnimation: null
+			appearAnimation: null
+			jumpAnimation: null
 			velocity: null
 			posX: 11.52
 			posY: 7.04
@@ -658,17 +1295,20 @@
 			height: 0.92
 			speed: 0.25
 			lastRight: true
+			lastUp: true
 		}
 		{
-			class: ru.icarumbas.bagel.Characters.Enemies.RedBug
+			class: ru.icarumbas.bagel.Characters.Enemies.Skeleton
 			killed: false
 			body: null
 			sprite: null
 			categorybit: 128
-			maskbit: 3080
-			gravityScale: 0
+			maskbit: 3086
+			gravityScale: 1
 			coin: null
 			coins: []
+			lastState: Running
+			currentState: Standing
 			canHit: false
 			HP: 100
 			stateTimer: 0
@@ -676,52 +1316,22 @@
 			biteTimer: 0
 			stateAnimation: null
 			runAnimation: null
+			attackAnimation: null
+			dieAnimation: null
+			appearAnimation: null
+			jumpAnimation: null
 			velocity: null
-			posX: 12.16
-			posY: 2.56
-			strength: 15
-			width: 0.92
-			height: 0.92
-			speed: 0.25
-			lastRight: true
+			posX: 3.84
+			posY: 1.28
+			strength: 20
+			speed: 1
+			width: 1.45
+			height: 2.2
+			appeared: false
+			attacking: false
+			attackTimer: 0
 		}
 	]
-	mapWidth: 15.36
-	mapHeight: 10.24
-}
-{
-	class: ru.icarumbas.bagel.Utils.WorldCreate.Room
-	path: Maps/Map1.tmx
-	roomLinks: [
-		null
-		null
-		0
-		null
-		null
-		null
-		null
-		null
-	]
-	meshVertices: [ 24, 25, 24, 25 ]
-	mapObjects: [
-		{
-			class: ru.icarumbas.bagel.Characters.mapObjects.PortalDoor
-			body: null
-			sprite: null
-			posX: 1.28
-			posY: 3.84
-			width: 1.28
-			height: 1.92
-			bit: 512
-			bodyType: StaticBody
-			destroyed: false
-			path: doorClosed
-			roomsWithPortalDoor: []
-			timer: 0
-			isOpened: false
-		}
-	]
-	enemies: []
 	mapWidth: 15.36
 	mapHeight: 10.24
 }

@@ -1,0 +1,278 @@
+Enemies.png
+size: 1953, 783
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+appear
+  rotate: false
+  xy: 130, 1
+  size: 32, 53
+  orig: 195, 249
+  offset: 69, 1
+  index: 1
+appear
+  rotate: false
+  xy: 164, 1
+  size: 32, 74
+  orig: 195, 249
+  offset: 70, 0
+  index: 2
+appear
+  rotate: false
+  xy: 301, 1
+  size: 40, 80
+  orig: 195, 249
+  offset: 52, 0
+  index: 3
+appear
+  rotate: false
+  xy: 1, 1
+  size: 127, 39
+  orig: 195, 249
+  offset: 10, 0
+  index: 4
+appear
+  rotate: false
+  xy: 702, 1
+  size: 143, 123
+  orig: 195, 249
+  offset: 6, 0
+  index: 5
+appear
+  rotate: false
+  xy: 1102, 1
+  size: 139, 152
+  orig: 195, 249
+  offset: 3, 0
+  index: 6
+appear
+  rotate: false
+  xy: 1243, 1
+  size: 139, 184
+  orig: 195, 249
+  offset: 0, 0
+  index: 7
+appear
+  rotate: false
+  xy: 1630, 1
+  size: 146, 215
+  orig: 195, 249
+  offset: 14, 0
+  index: 8
+appear
+  rotate: false
+  xy: 1778, 1
+  size: 149, 218
+  orig: 195, 249
+  offset: 19, 0
+  index: 9
+appear
+  rotate: false
+  xy: 1, 221
+  size: 178, 249
+  orig: 195, 249
+  offset: 17, 0
+  index: 10
+die
+  rotate: false
+  xy: 1254, 221
+  size: 212, 273
+  orig: 342, 273
+  offset: 74, 0
+  index: 1
+die
+  rotate: false
+  xy: 181, 221
+  size: 230, 251
+  orig: 342, 273
+  offset: 62, 0
+  index: 2
+die
+  rotate: false
+  xy: 1384, 1
+  size: 244, 194
+  orig: 342, 273
+  offset: 51, 0
+  index: 3
+die
+  rotate: false
+  xy: 847, 1
+  size: 253, 129
+  orig: 342, 273
+  offset: 44, 0
+  index: 4
+die
+  rotate: false
+  xy: 446, 1
+  size: 254, 104
+  orig: 342, 273
+  offset: 44, 0
+  index: 5
+go
+  rotate: false
+  xy: 1, 496
+  size: 164, 273
+  orig: 168, 273
+  offset: 1, 0
+  index: 1
+go
+  rotate: false
+  xy: 167, 496
+  size: 165, 273
+  orig: 168, 273
+  offset: 2, 0
+  index: 2
+go
+  rotate: false
+  xy: 1773, 221
+  size: 164, 273
+  orig: 168, 273
+  offset: 4, 0
+  index: 3
+go
+  rotate: false
+  xy: 1468, 221
+  size: 150, 273
+  orig: 168, 273
+  offset: 7, 0
+  index: 4
+go
+  rotate: false
+  xy: 1620, 221
+  size: 151, 273
+  orig: 168, 273
+  offset: 5, 0
+  index: 5
+go
+  rotate: false
+  xy: 496, 496
+  size: 157, 273
+  orig: 168, 273
+  offset: 2, 0
+  index: 6
+go
+  rotate: false
+  xy: 334, 496
+  size: 160, 273
+  orig: 168, 273
+  offset: 0, 0
+  index: 7
+go
+  rotate: false
+  xy: 1089, 221
+  size: 163, 273
+  orig: 168, 273
+  offset: 0, 0
+  index: 8
+hit
+  rotate: false
+  xy: 655, 496
+  size: 155, 274
+  orig: 246, 288
+  offset: 90, 12
+  index: 1
+hit
+  rotate: false
+  xy: 812, 496
+  size: 157, 274
+  orig: 246, 288
+  offset: 86, 12
+  index: 2
+hit
+  rotate: false
+  xy: 1837, 496
+  size: 115, 286
+  orig: 246, 288
+  offset: 86, 0
+  index: 3
+hit
+  rotate: false
+  xy: 1168, 496
+  size: 181, 274
+  orig: 246, 288
+  offset: 9, 12
+  index: 4
+hit
+  rotate: false
+  xy: 971, 496
+  size: 195, 274
+  orig: 246, 288
+  offset: 46, 12
+  index: 5
+hit
+  rotate: false
+  xy: 1508, 496
+  size: 142, 274
+  orig: 246, 288
+  offset: 104, 12
+  index: 6
+hit
+  rotate: false
+  xy: 1652, 496
+  size: 183, 276
+  orig: 246, 288
+  offset: 0, 12
+  index: 7
+hit
+  rotate: false
+  xy: 1351, 496
+  size: 155, 274
+  orig: 246, 288
+  offset: 90, 12
+  index: 8
+idle
+  rotate: false
+  xy: 581, 221
+  size: 167, 273
+  orig: 168, 273
+  offset: 0, 0
+  index: 1
+idle
+  rotate: false
+  xy: 750, 221
+  size: 168, 273
+  orig: 168, 273
+  offset: 0, 0
+  index: 2
+idle
+  rotate: false
+  xy: 920, 221
+  size: 167, 273
+  orig: 168, 273
+  offset: 1, 0
+  index: 3
+idle
+  rotate: false
+  xy: 413, 221
+  size: 166, 272
+  orig: 168, 273
+  offset: 2, 0
+  index: 4
+idle
+  rotate: false
+  xy: 920, 221
+  size: 167, 273
+  orig: 168, 273
+  offset: 1, 0
+  index: 5
+idle
+  rotate: false
+  xy: 750, 221
+  size: 168, 273
+  orig: 168, 273
+  offset: 0, 0
+  index: 6
+redBug
+  rotate: false
+  xy: 198, 1
+  size: 101, 77
+  orig: 110, 92
+  offset: 3, 3
+  index: 1
+redBug
+  rotate: false
+  xy: 343, 1
+  size: 101, 85
+  orig: 110, 92
+  offset: 3, 3
+  index: 2

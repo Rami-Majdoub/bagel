@@ -58,7 +58,7 @@ class Hud(val player: Player): InputListener(){
         touchpadStyle.knob = skin.getDrawable("touchKnob")
 
         touchpad = Touchpad(6f, touchpadStyle)
-        touchpad.setBounds(0f, 0f, stage.width/8, stage.width/8)
+        touchpad.setBounds(0f, 0f, stage.width/9, stage.width/9)
         stage.addActor(touchpad)
 
         currentRoom.setPosition(10f, 10f)
@@ -129,8 +129,8 @@ class Hud(val player: Player): InputListener(){
     override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
         when (event!!.target) {
             attackButton -> {
+                player.canDamage = false
                 attackButton.color = Color.WHITE
-                player.attacking = false
             }
 
             openButton -> {
@@ -143,8 +143,12 @@ class Hud(val player: Player): InputListener(){
     override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
         when (event!!.target) {
             attackButton -> {
-                attackButton.color = Color.GRAY
-                player.attacking = true
+                if (player.attackAnimation.animationDuration < player.stateTimer ||
+                        player.currentState != GameScreen.State.Attacking) {
+                    attackButton.color = Color.GRAY
+                    player.attacking = true
+                    player.canDamage = true
+                }
             }
 
             openButton -> {

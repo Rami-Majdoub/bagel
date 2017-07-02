@@ -4,6 +4,7 @@ import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.physics.box2d.*
 import ru.icarumbas.*
 import ru.icarumbas.bagel.Characters.Enemies.Enemy
+import ru.icarumbas.bagel.Characters.Enemies.FlyingEnemy
 import ru.icarumbas.bagel.Characters.mapObjects.Breakable
 import ru.icarumbas.bagel.Characters.mapObjects.Chest
 import ru.icarumbas.bagel.Characters.mapObjects.PortalDoor
@@ -22,19 +23,16 @@ class WorldContactListener(val gameScreen: GameScreen) : ContactListener {
 
     override fun preSolve(contact: Contact, oldManifold: Manifold) {
 
-        val fixA = contact.fixtureA
-        val fixB = contact.fixtureB
+        var playerBody = contact.fixtureA.body
+        var otherBody = contact.fixtureB.body
 
-        var playerBody = fixA.body
-        var otherBody = fixB.body
-
-        if (fixB.body == gameScreen.player.playerBody) {
-            playerBody = fixB.body
-            otherBody = fixA.body
+        if (contact.fixtureB.body == gameScreen.player.playerBody) {
+            playerBody = contact.fixtureB.body
+            otherBody = contact.fixtureA.body
         }
 
 
-        when (fixA.filterData.categoryBits or fixB.filterData.categoryBits) {
+        when (contact.fixtureA.filterData.categoryBits or contact.fixtureB.filterData.categoryBits) {
 
             PLAYER_BIT or COIN_BIT -> {
                 contact.isEnabled = false
@@ -72,12 +70,23 @@ class WorldContactListener(val gameScreen: GameScreen) : ContactListener {
             PLAYER_BIT or ENEMY_BIT -> {
                 contact.isEnabled = false
                 gameScreen.rooms[gameScreen.currentMap].enemies.forEach {
-                    if (it is Enemy && it.body == otherBody) it.bite(gameScreen.player)
+                    if (it is FlyingEnemy && it.body == otherBody) it.attack(gameScreen.player)
                 }
             }
 
             PLAYER_BIT or PLATFORM_BIT -> {
                 if (playerBody!!.position!!.y < otherBody!!.position!!.y + .7 || isTouchPadDown()) {
+                    contact.isEnabled = false
+                }
+            }
+
+            ENEMY_BIT or PLATFORM_BIT -> {
+                if (contact.fixtureB.filterData.categoryBits == ENEMY_BIT){
+                    playerBody = contact.fixtureB.body
+                    otherBody = contact.fixtureA.body
+                }
+
+                if (playerBody!!.position!!.y < otherBody!!.position!!.y) {
                     contact.isEnabled = false
                 }
             }

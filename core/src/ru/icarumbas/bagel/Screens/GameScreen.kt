@@ -37,8 +37,8 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
     var rooms = ArrayList<Room>()
     val b2DWorldCreator = B2DWorldCreator()
     val world = World(Vector2(0f, -9.8f), true)
-    val player: Player
-    val hud: Hud
+    val player = Player(this, animationCreator)
+    val hud = Hud(player)
     val worldContactListener: WorldContactListener
     val groundBodies = HashMap<String, ArrayList<Body>>()
     var isWorldRendering = false
@@ -46,9 +46,6 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
 
 
     init {
-
-        player = Player(this, animationCreator)
-        hud = Hud(player)
 
         if (newWorld) createNewWorld() else continueWorld()
 
@@ -99,13 +96,17 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         Running,
         Jumping,
         Attacking,
-        Dead
+        Dead,
+        Appearing,
+        NULL
     }
 
     override fun render(delta: Float) {
         mapRenderer.setView(camera)
         mapRenderer.render()
+
         player.update(delta, hud)
+        hud.update(this)
 
         mapRenderer.batch.begin()
         rooms[currentMap].draw(mapRenderer.batch, delta, this)
@@ -118,7 +119,6 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         checkRoomChange(player)
         applyWorldRender()
 
-        hud.update(this)
         world.step(1 / 60f, 8, 3)
         worldContactListener.deleteBodies()
 

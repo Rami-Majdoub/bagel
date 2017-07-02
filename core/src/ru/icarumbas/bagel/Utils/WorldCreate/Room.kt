@@ -4,10 +4,8 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.maps.tiled.TiledMap
 import ru.icarumbas.bagel.Characters.Enemies.Enemy
-import ru.icarumbas.bagel.Characters.Player
 import ru.icarumbas.bagel.Characters.mapObjects.MapObject
 import ru.icarumbas.bagel.Screens.GameScreen
-import ru.icarumbas.bagel.Screens.Scenes.Hud
 import ru.icarumbas.bagel.Utils.B2dWorld.B2DWorldCreator
 
 
@@ -40,8 +38,8 @@ class Room {
         b2DWorldCreator.loadMapObject(path, "spikes", assetManager, mapObjects)
         b2DWorldCreator.loadMapObject(path, "portalDoor", assetManager, mapObjects)
 
-        b2DWorldCreator.loadCramMunch(assetManager.get(path, TiledMap::class.java).layers["enemies"], enemies)
-
+        b2DWorldCreator.loadEnemies(path, "flyingEnemies", assetManager,  enemies)
+        b2DWorldCreator.loadEnemies(path, "groundEnemies", assetManager,  enemies)
     }
 
     fun draw(batch: Batch, delta: Float, gameScreen: GameScreen) {

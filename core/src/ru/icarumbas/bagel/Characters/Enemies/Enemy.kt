@@ -26,6 +26,9 @@ abstract class Enemy {
     lateinit var coin: Coin
     val coins = ArrayList<Body>()
 
+    var lastState = GameScreen.State.Running
+    var currentState = GameScreen.State.Standing
+
     var canHit = false
     var HP = 100
     abstract val strength: Int
@@ -36,6 +39,10 @@ abstract class Enemy {
 
     var stateAnimation: Animation<*>? = null
     var runAnimation: Animation<*>? = null
+    var attackAnimation: Animation<*>? = null
+    var dieAnimation: Animation<*>? = null
+    var appearAnimation: Animation<*>? = null
+    var jumpAnimation: Animation<*>? = null
 
     abstract val speed: Float
     lateinit var velocity: Vector2
@@ -53,25 +60,58 @@ abstract class Enemy {
     }
 
     open fun draw(batch: Batch, delta: Float, gameScreen: GameScreen) {
-        if (!killed) {
+        if (!killed && getState(gameScreen.player) != GameScreen.State.NULL) {
             hitTimer += delta
             biteTimer += delta
-            if (hitTimer > .1f) sprite!!.color = Color.WHITE
 
+            println(stateTimer)
 
-            sprite!!.setRegion(getFrame(delta, gameScreen.player))
+            currentState = when (getState(gameScreen.player)) {
+
+                GameScreen.State.Dead -> {
+                    GameScreen.State.Dead
+                }
+
+                GameScreen.State.Running -> {
+                    GameScreen.State.Running
+                }
+
+                GameScreen.State.Standing -> {
+                    GameScreen.State.Standing
+                }
+
+                GameScreen.State.Appearing -> {
+                    GameScreen.State.Appearing
+                }
+
+                GameScreen.State.Attacking -> {
+                    GameScreen.State.Attacking
+                }
+
+                GameScreen.State.NULL -> {
+                    GameScreen.State.NULL
+                }
+                else -> {
+                    throw Exception("Unknown State")
+                }
+            }
+
+            sprite = Sprite(getFrame(delta, gameScreen.player))
+            sprite!!.setSize(sprite!!.width.div(PIX_PER_M), sprite!!.height.div(PIX_PER_M))
             sprite!!.setPosition(body!!.position.x.minus(width.div(2)), body!!.position.y.minus(height.div(2)))
+            if (hitTimer > .1f) sprite!!.color = Color.WHITE
+            if (canHit && gameScreen.player.canDamage) hit(gameScreen.player)
             sprite!!.draw(batch)
 
-            if (canHit && gameScreen.player.attacking) hit(gameScreen.player)
-            move(gameScreen.player)
+            move(gameScreen.player, delta)
             isDead(gameScreen)
+
         }
         if (coins.isNotEmpty()) coin.updateCoins(coins, batch)
 
     }
 
-    abstract fun move(player: Player)
+    abstract fun move(player: Player, delta: Float)
 
     fun isPlayerRight(player: Player) = player.playerBody.position.x > body!!.position.x
 
@@ -80,28 +120,27 @@ abstract class Enemy {
     fun hit(player: Player){
         if (isPlayerRight(player)) {
             body!!.setLinearVelocity(0f, 0f)
-            body!!.applyLinearImpulse(Vector2(-20f, 0f), body!!.localPoint2, true)
+            body!!.applyLinearImpulse(Vector2(-20f, .05f), body!!.localPoint2, true)
         }
         else {
             body!!.setLinearVelocity(0f, 0f)
-            body!!.applyLinearImpulse(Vector2(20f, 0f), body!!.localPoint2, true)
+            body!!.applyLinearImpulse(Vector2(20f, .05f), body!!.localPoint2, true)
         }
 
         HP -= player.strength
         sprite!!.color = Color.RED
-        canHit = false
-        player.attacking = false
+        player.canDamage = false
         hitTimer = 0f
     }
 
-    fun bite(player: Player){
+    fun attack(player: Player){
         if (biteTimer > .25f) {
             if (isPlayerRight(player)) {
-                player.hit(strength, Vector2(.1f, .05f))
+                player.hit(strength, Vector2(.2f, .05f))
                 body!!.setLinearVelocity(0f, 0f)
                 body!!.applyLinearImpulse(Vector2(15f, 0f), body!!.localPoint2, true)
             } else {
-                player.hit(strength, Vector2(-.1f, .05f))
+                player.hit(strength, Vector2(-.2f, .05f))
                 body!!.setLinearVelocity(0f, 0f)
                 body!!.applyLinearImpulse(Vector2(15f, 0f), body!!.localPoint2, true)
             }
@@ -109,7 +148,7 @@ abstract class Enemy {
         }
     }
 
-    fun isDead(gameScreen: GameScreen) {
+    open fun isDead(gameScreen: GameScreen) {
         if (HP <= 0) {
             coin = Coin(gameScreen.game.assetManager.get("Packs/RoomObjects.txt", TextureAtlas::class.java))
             coin.createCoins(body!!, gameScreen.world, coins, MathUtils.random(3))
@@ -133,7 +172,7 @@ abstract class Enemy {
 
         shape.setAsBox(width.div(2), height.div(2))
         fixtureDef.shape = shape
-        fixtureDef.friction = 0f
+        fixtureDef.friction = .4f
         fixtureDef.restitution = .1f
         fixtureDef.density = 10f
         fixtureDef.filter.categoryBits = categorybit
@@ -146,9 +185,7 @@ abstract class Enemy {
         body!!.gravityScale = gravityScale
     }
 
-    private fun getState(): GameScreen.State {
-        return GameScreen.State.Standing
-    }
+    abstract fun getState(player: Player): GameScreen.State
 
     private fun flipOnPlayer(player: Player, region: TextureRegion){
 
@@ -162,17 +199,21 @@ abstract class Enemy {
 
     fun getFrame(delta: Float, player: Player): TextureRegion{
         stateTimer += delta
-        val region = stateAnimation!!.getKeyFrame(stateTimer) as TextureRegion
-        flipOnPlayer(player, region)
 
+        val region = when (getState(player)) {
+            GameScreen.State.Standing -> stateAnimation!!.getKeyFrame(stateTimer) as TextureRegion
+            GameScreen.State.Running -> runAnimation!!.getKeyFrame(stateTimer) as TextureRegion
+            GameScreen.State.Jumping -> jumpAnimation!!.getKeyFrame(stateTimer) as TextureRegion
+            GameScreen.State.Attacking -> attackAnimation!!.getKeyFrame(stateTimer) as TextureRegion
+            GameScreen.State.Dead -> dieAnimation!!.getKeyFrame(stateTimer) as TextureRegion
+            GameScreen.State.Appearing -> appearAnimation!!.getKeyFrame(stateTimer) as TextureRegion
+            GameScreen.State.NULL -> TextureRegion()
 
-        when (getState()) {
-            GameScreen.State.Standing -> return region
-            GameScreen.State.Running -> TODO()
-            GameScreen.State.Jumping -> TODO()
-            GameScreen.State.Attacking -> TODO()
-            GameScreen.State.Dead -> TODO()
+            else -> throw Exception("Unknown State")
         }
+
+        flipOnPlayer(player, region)
+        return region
 
     }
 
