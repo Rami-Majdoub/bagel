@@ -13,11 +13,7 @@ import ru.icarumbas.bagel.Characters.Coin
 import ru.icarumbas.bagel.Screens.GameScreen
 
 
-class Chandelier: MapObject, Breakable {
-
-    lateinit var coin: Coin
-    override val coins = ArrayList<Body>()
-    override var canBeBroken = false
+class Chandelier: BreakableMapObject {
 
     override lateinit var path: String
     override val bit = BREAKABLE_BIT
@@ -40,7 +36,7 @@ class Chandelier: MapObject, Breakable {
         super.draw(batch, delta, gameScreen)
 
         if (!destroyed) onHit(gameScreen)
-        if (coins.isNotEmpty()) coin.updateCoins(coins, batch)
+        if (coins.isNotEmpty()) coin!!.updateCoins(coins, batch)
     }
 
 
@@ -52,7 +48,7 @@ class Chandelier: MapObject, Breakable {
             gameScreen.game.assetManager["Sounds/shatterMetal.wav", Sound::class.java].play()
 
             coin = Coin(gameScreen.game.assetManager.get("Packs/RoomObjects.txt", TextureAtlas::class.java))
-            coin.createCoins(body!!, gameScreen.world, coins, when (path) {
+            coin!!.createCoins(body!!, gameScreen.world, coins, when (path) {
                 "goldenChandelier" -> MathUtils.random(0, 4)
                 "silverChandelier" -> MathUtils.random(0, 2)
                 else -> throw Exception("Unknown path")
@@ -60,10 +56,7 @@ class Chandelier: MapObject, Breakable {
 
         }
         if (body!!.linearVelocity.y < -3f) {
-            gameScreen.worldContactListener.deleteList.add(body!!)
-            destroyed = true
-            body = null
-            sprite = null
+            super.onHit(gameScreen)
         }
     }
 }

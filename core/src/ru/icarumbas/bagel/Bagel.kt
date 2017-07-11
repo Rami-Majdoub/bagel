@@ -64,6 +64,8 @@ class Bagel : Game() {
         assetManager.load("Sounds/crateBreak0.wav", Sound::class.java)
         assetManager.load("Sounds/crateBreak1.wav", Sound::class.java)
         assetManager.load("Sounds/steps.wav", Sound::class.java)
+        assetManager.load("Sounds/sword.wav", Sound::class.java)
+
 
         assetManager.finishLoading()
 

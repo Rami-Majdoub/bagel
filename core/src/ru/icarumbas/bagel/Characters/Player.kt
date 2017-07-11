@@ -230,7 +230,7 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
         if ((playerBody.linearVelocity.x < 0 || !runningRight) && !region.isFlipX && !lastRight) {
             region.flip(true, false)
             runningRight = false
-        }
+        } else
         if ((playerBody.linearVelocity.x > 0 || runningRight) && region.isFlipX && lastRight) {
             region.flip(true, false)
             runningRight = true

@@ -1,6 +1,7 @@
 package ru.icarumbas.bagel.Screens.Scenes
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
@@ -18,7 +19,7 @@ import ru.icarumbas.bagel.Characters.Player
 import ru.icarumbas.bagel.Screens.GameScreen
 
 
-class Hud(val player: Player): InputListener(){
+class Hud(val gameScreen: GameScreen): InputListener(){
 
     var touchedOnce = false
     var openButtonPressed = false
@@ -129,7 +130,7 @@ class Hud(val player: Player): InputListener(){
     override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
         when (event!!.target) {
             attackButton -> {
-                player.canDamage = false
+                gameScreen.player.canDamage = false
                 attackButton.color = Color.WHITE
             }
 
@@ -143,12 +144,17 @@ class Hud(val player: Player): InputListener(){
     override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
         when (event!!.target) {
             attackButton -> {
-                if (player.attackAnimation.animationDuration < player.stateTimer ||
-                        player.currentState != GameScreen.State.Attacking) {
-                    attackButton.color = Color.GRAY
-                    player.attacking = true
-                    player.canDamage = true
+                if (
+                    gameScreen.player.attackAnimation.animationDuration < gameScreen.player.stateTimer ||
+                    gameScreen.player.currentState != GameScreen.State.Attacking
+                    )
+                {
+                        gameScreen.player.attacking = true
+                        gameScreen.player.canDamage = true
+                        attackButton.color = Color.GRAY
+                        gameScreen.game.assetManager["Sounds/sword.wav", Sound::class.java].play()
                 }
+
             }
 
             openButton -> {

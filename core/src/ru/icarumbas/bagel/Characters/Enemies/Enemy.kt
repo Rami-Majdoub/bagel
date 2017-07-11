@@ -23,7 +23,7 @@ abstract class Enemy {
     open val maskbit: Short = PLAYER_BIT or SWORD_BIT or SWORD_BIT_LEFT
     open val gravityScale = 1f
 
-    lateinit var coin: Coin
+    var coin: Coin? = null
     val coins = ArrayList<Body>()
 
     var lastState = GameScreen.State.Running
@@ -63,8 +63,6 @@ abstract class Enemy {
         if (!killed && getState(gameScreen.player) != GameScreen.State.NULL) {
             hitTimer += delta
             biteTimer += delta
-
-            println(stateTimer)
 
             currentState = when (getState(gameScreen.player)) {
 
@@ -107,7 +105,7 @@ abstract class Enemy {
             isDead(gameScreen)
 
         }
-        if (coins.isNotEmpty()) coin.updateCoins(coins, batch)
+        if (coins.isNotEmpty()) coin!!.updateCoins(coins, batch)
 
     }
 
@@ -151,7 +149,7 @@ abstract class Enemy {
     open fun isDead(gameScreen: GameScreen) {
         if (HP <= 0) {
             coin = Coin(gameScreen.game.assetManager.get("Packs/RoomObjects.txt", TextureAtlas::class.java))
-            coin.createCoins(body!!, gameScreen.world, coins, MathUtils.random(3))
+            coin!!.createCoins(body!!, gameScreen.world, coins, MathUtils.random(3))
 
             gameScreen.worldContactListener.deleteList.add(body!!)
             sprite = null
@@ -217,6 +215,6 @@ abstract class Enemy {
 
     }
 
-    open fun loadSprite(textureAtlas: TextureAtlas, animationCreator: AnimationCreator){}
+    open fun loadAnimation(textureAtlas: TextureAtlas, animationCreator: AnimationCreator){}
 
 }

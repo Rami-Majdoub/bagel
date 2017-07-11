@@ -16,7 +16,7 @@ class RedBug : FlyingEnemy {
 
     constructor(rectangle: Rectangle) : super(rectangle)
 
-    override fun loadSprite(textureAtlas: TextureAtlas, animationCreator: AnimationCreator) {
+    override fun loadAnimation(textureAtlas: TextureAtlas, animationCreator: AnimationCreator) {
         runAnimation = Animation(.1f, textureAtlas.findRegions("redBug"), Animation.PlayMode.LOOP)
         sprite = Sprite()
 

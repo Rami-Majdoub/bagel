@@ -20,8 +20,7 @@ abstract class MapObject {
     open val bit: Short = 1
     open val bodyType = BodyDef.BodyType.StaticBody
     var destroyed = false
-
-    abstract val path: String
+    open val path = ""
 
     @Suppress("Used for JSON Serialization")
     constructor()

@@ -1,6 +1,9 @@
 package ru.icarumbas.bagel.Characters.Enemies
 
-import com.badlogic.gdx.graphics.g2d.*
+import com.badlogic.gdx.graphics.g2d.Animation
+import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.g2d.Sprite
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import ru.icarumbas.GROUND_BIT
@@ -61,10 +64,10 @@ class Skeleton : Enemy {
     }
 
     override fun move(player: Player, delta: Float) {
-        if (isPlayerRight(player) && body!!.linearVelocity.x < 3f && player.playerBody.position.x > body!!.position.x + 1.5f) {
+        if (isPlayerRight(player) && body!!.linearVelocity.x < 2f && player.playerBody.position.x > body!!.position.x + 1.5f) {
             body!!.applyLinearImpulse(Vector2(3.5f, 0f), body!!.localPoint2, true)
         } else
-            if (!isPlayerRight(player) && body!!.linearVelocity.x > -3f && player.playerBody.position.x < body!!.position.x - 1.5f) {
+            if (!isPlayerRight(player) && body!!.linearVelocity.x > -2f && player.playerBody.position.x < body!!.position.x - 1.5f) {
                 body!!.applyLinearImpulse(Vector2(-3.5f, 0f), body!!.localPoint2, true)
             }
 
@@ -77,16 +80,17 @@ class Skeleton : Enemy {
         {
             attackTimer += delta
             if (attackTimer > 1.5f) {
-                attack(player)
                 attacking = true
                 attackTimer = 0f
             } else {
-                if (attackTimer > attackAnimation!!.animationDuration)
-                attacking = false
+                if (attackAnimation!!.isAnimationFinished(attackTimer) && attacking) {
+                    attacking = false
+                    attack(player)
+                }
             }
         }
         else {
-            if (attackTimer < attackAnimation!!.animationDuration)
+            if (!attackAnimation!!.isAnimationFinished(attackTimer))
                 attackTimer+=delta
             else
                 attacking = false
@@ -101,7 +105,7 @@ class Skeleton : Enemy {
     }
 
 
-    override fun loadSprite(textureAtlas: TextureAtlas, animationCreator: AnimationCreator) {
+    override fun loadAnimation(textureAtlas: TextureAtlas, animationCreator: AnimationCreator) {
         stateAnimation = Animation(.1f, textureAtlas.findRegions("idle"), Animation.PlayMode.LOOP)
         attackAnimation = Animation(.1f, textureAtlas.findRegions("hit"), Animation.PlayMode.LOOP)
         runAnimation = Animation(.1f, textureAtlas.findRegions("go"), Animation.PlayMode.LOOP)

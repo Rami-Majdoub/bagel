@@ -11,13 +11,10 @@ import ru.icarumbas.bagel.Characters.Coin
 import ru.icarumbas.bagel.Screens.GameScreen
 
 
-class Chest: MapObject{
+class Chest: BreakableMapObject{
 
     override val bit: Short = CHEST_BIT
     override lateinit var path: String
-
-    lateinit var coin: Coin
-    val coins = ArrayList<Body>()
     var isOpened = false
 
     @Suppress("Used for JSON Serialization")
@@ -36,7 +33,7 @@ class Chest: MapObject{
         super.draw(batch, delta, gameScreen)
 
         if (isOpened && gameScreen.hud.openButtonPressed) open(gameScreen)
-        if (coins.isNotEmpty()) coin.updateCoins(coins, batch)
+        if (coins.isNotEmpty()) coin!!.updateCoins(coins, batch)
     }
 
     fun open(gameScreen: GameScreen){
@@ -46,16 +43,14 @@ class Chest: MapObject{
         gameScreen.game.assetManager["Sounds/openchest.wav", Sound::class.java].play()
 
         coin = Coin(gameScreen.game.assetManager.get("Packs/RoomObjects.txt", TextureAtlas::class.java))
-        coin.createCoins(body!!, gameScreen.world, coins, count = when(path){
+        coin!!.createCoins(body!!, gameScreen.world, coins, count = when(path){
             "goldenChest" -> 30
             "silverChest" -> 20
             "bronzeChest" -> 10
             else -> throw Exception("Unknown path")
         })
+        super.onHit(gameScreen)
 
-        gameScreen.worldContactListener.deleteList.add(body!!)
-        body = null
-        sprite = null
 
     }
 

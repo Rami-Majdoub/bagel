@@ -14,8 +14,6 @@ import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.viewport.FitViewport
 import ru.icarumbas.*
 import ru.icarumbas.bagel.Characters.Player
-import ru.icarumbas.bagel.Characters.mapObjects.Breakable
-import ru.icarumbas.bagel.Characters.mapObjects.Chest
 import ru.icarumbas.bagel.Screens.Scenes.Hud
 import ru.icarumbas.bagel.Screens.Scenes.MiniMap
 import ru.icarumbas.bagel.Utils.B2dWorld.B2DWorldCreator
@@ -26,10 +24,10 @@ import ru.icarumbas.bagel.Utils.WorldCreate.WorldCreator
 
 
 class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
+
     val mapRenderer: OrthogonalTiledMapRenderer
     private val debugRenderer = Box2DDebugRenderer()
-    private val camera = OrthographicCamera(REG_ROOM_WIDTH, REG_ROOM_HEIGHT)
-    private val viewport = FitViewport(camera.viewportWidth, camera.viewportHeight, camera)
+    private val viewport = FitViewport(REG_ROOM_WIDTH, REG_ROOM_HEIGHT, OrthographicCamera(REG_ROOM_WIDTH, REG_ROOM_HEIGHT))
     val animationCreator: AnimationCreator = AnimationCreator(game.assetManager)
     val worldCreator: WorldCreator = WorldCreator(game.assetManager)
     val miniMap = MiniMap()
@@ -38,14 +36,26 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
     val b2DWorldCreator = B2DWorldCreator()
     val world = World(Vector2(0f, -9.8f), true)
     val player = Player(this, animationCreator)
-    val hud = Hud(player)
-    val worldContactListener: WorldContactListener
+    val hud = Hud(this)
+    val worldContactListener = WorldContactListener(this)
     val groundBodies = HashMap<String, ArrayList<Body>>()
-    var isWorldRendering = false
+    var isB2DWorldRendering = false
 
 
+    enum class State {
+        Standing,
+        Running,
+        Jumping,
+        Attacking,
+        Dead,
+        Appearing,
+        NULL
+    }
 
     init {
+
+//        var client = Client()
+//        val serv = Server()
 
         if (newWorld) createNewWorld() else continueWorld()
 
@@ -66,43 +76,38 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
 
         }
 
-        rooms.forEach { it.mapObjects.forEach {
-            it.defineBody(world)
-        } }
+        rooms.forEach {
+            it.enemies.forEach {
+                if (!it.killed) it.defineBody(world)
+            }
+            it.mapObjects.forEach {
+                if (!it.destroyed) it.defineBody(world)
+            }
 
-        rooms[currentMap].mapObjects.forEach { it.loadSprite(game.assetManager.get("Packs/RoomObjects.txt", TextureAtlas::class.java)) }
-
-        rooms.forEach { it.enemies.forEach {
-            it.defineBody(world)
-        } }
-
-        rooms[currentMap].enemies.forEach { it.loadSprite(game.assetManager.get("Packs/Enemies.txt", TextureAtlas::class.java), animationCreator) }
-
+            if (rooms.indexOf(it) == currentMap) {
+                it.enemies.forEach {
+                    it.loadAnimation(game.assetManager.get("Packs/Enemies.txt", TextureAtlas::class.java), animationCreator)
+                    it.body!!.isActive = true
+                }
+                it.mapObjects.forEach {
+                    it.loadSprite(game.assetManager.get("Packs/RoomObjects.txt", TextureAtlas::class.java))
+                    it.body?.isActive = true
+                }
+            }
+        }
 
         mapRenderer = OrthogonalTiledMapRenderer(game.assetManager.get(rooms[currentMap].path), 0.01f)
         groundBodies[rooms[currentMap].path]!!.forEach { it.isActive = true }
-        rooms[currentMap].mapObjects.forEach { it.body?.isActive = true }
-
 
         Gdx.input.inputProcessor = hud.stage
 
-        worldContactListener = WorldContactListener(this)
         world.setContactListener(worldContactListener)
         println("Size of rooms: ${rooms.size}")
-    }
-
-    enum class State {
-        Standing,
-        Running,
-        Jumping,
-        Attacking,
-        Dead,
-        Appearing,
-        NULL
+        println("World bodies count: ${world.bodyCount}")
     }
 
     override fun render(delta: Float) {
-        mapRenderer.setView(camera)
+        mapRenderer.setView(viewport.camera as OrthographicCamera)
         mapRenderer.render()
 
         player.update(delta, hud)
@@ -122,18 +127,25 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         world.step(1 / 60f, 8, 3)
         worldContactListener.deleteBodies()
 
-        if (isWorldRendering) debugRenderer.render(world, camera.combined)
+        if (isB2DWorldRendering) debugRenderer.render(world, viewport.camera.combined)
 
     }
 
     override fun pause() {
-        game.worldIO.preferences.putFloat("PlayerPositionX", player.playerBody.position.x)
-        game.worldIO.preferences.putFloat("PlayerPositionY", player.playerBody.position.y)
-        game.worldIO.preferences.putInteger("Money", player.money)
-        game.worldIO.preferences.putInteger("CurrentMap", currentMap)
+        rooms.forEach {
+            it.removeUnserealizableObjects()
+            it.clearEntities(worldContactListener)
+        }
+            game.worldIO.writeRoomsToJson("roomsFile.Json", rooms, false)
 
-//        worldIO.writeRoomsToJson("roomsFile.Json", rooms, false)
-        game.worldIO.preferences.flush()
+            with(game.worldIO.preferences) {
+                putFloat("PlayerPositionX", player.playerBody.position.x)
+                putFloat("PlayerPositionY", player.playerBody.position.y)
+                putInteger("Money", player.money)
+                putInteger("CurrentMap", currentMap)
+                flush()
+            }
+
     }
 
     override fun dispose() {
@@ -149,29 +161,29 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
 
     fun applyWorldRender(){
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-            if (!isWorldRendering) isWorldRendering = true else
-            if (isWorldRendering) isWorldRendering = false
+            if (!isB2DWorldRendering) isB2DWorldRendering = true else
+            if (isB2DWorldRendering) isB2DWorldRendering = false
         }
     }
 
     private fun moveCamera() {
 
-        camera.position.x = player.playerBody.position.x
-        camera.position.y = player.playerBody.position.y
+        viewport.camera.position.x = player.playerBody.position.x
+        viewport.camera.position.y = player.playerBody.position.y
 
-        if (camera.position.y - viewport.worldHeight / 2f < 0)
-            camera.position.y = viewport.worldHeight / 2f
+        if (viewport.camera.position.y - viewport.worldHeight / 2f < 0)
+            viewport.camera.position.y = viewport.worldHeight / 2f
 
-        if (camera.position.x - viewport.worldWidth / 2f < 0)
-            camera.position.x = viewport.worldWidth / 2f
+        if (viewport.camera.position.x - viewport.worldWidth / 2f < 0)
+            viewport.camera.position.x = viewport.worldWidth / 2f
 
-        if (camera.position.x + viewport.worldWidth / 2f > rooms[currentMap].mapWidth)
-            camera.position.x = rooms[currentMap].mapWidth - viewport.worldWidth / 2f
+        if (viewport.camera.position.x + viewport.worldWidth / 2f > rooms[currentMap].mapWidth)
+            viewport.camera.position.x = rooms[currentMap].mapWidth - viewport.worldWidth / 2f
 
-        if (camera.position.y + viewport.worldHeight / 2f > rooms[currentMap].mapHeight)
-            camera.position.y = rooms[currentMap].mapHeight - viewport.worldHeight / 2f
+        if (viewport.camera.position.y + viewport.worldHeight / 2f > rooms[currentMap].mapHeight)
+            viewport.camera.position.y = rooms[currentMap].mapHeight - viewport.worldHeight / 2f
 
-        camera.update()
+        viewport.camera.update()
     }
 
     fun createNewWorld() {
@@ -183,17 +195,17 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
 
         currentMap = 0
 
-        rooms.forEach { it.loadMapObjects(b2DWorldCreator, game.assetManager) }
-
-        game.worldIO.writeRoomsToJson("roomsFile.Json", rooms, false)
-        game.worldIO.preferences.putInteger("CurrentMap", currentMap)
-        game.worldIO.preferences.flush()
+        rooms.forEach { it.loadEntities(b2DWorldCreator, game.assetManager) }
 
         animationCreator.createTileAnimation(currentMap, rooms)
 
-        game.worldIO.preferences.putBoolean("CanContinueWorld", true)
-        game.worldIO.preferences.flush()
+        with (game.worldIO.preferences) {
+            putInteger("CurrentMap", currentMap)
+            putBoolean("CanContinueWorld", true)
+            flush()
+        }
 
+        game.worldIO.writeRoomsToJson("roomsFile.Json", rooms, false)
     }
 
     fun continueWorld() {
@@ -206,63 +218,14 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
     }
 
     fun updateRoomObjects(previousRoom: Int, newRoom: Int){
-        // Previous room
-
 
         // Clear ground
         groundBodies[rooms[previousRoom].path]!!.forEach { it.isActive = false }
 
-        // Clear chest coins
-        rooms[previousRoom].mapObjects.forEach {
-            if (it is Chest) {
-                it.coins.forEach { body ->
-                    worldContactListener.deleteList.add(body)
-                }
-                it.coins.clear()
-            } else
-            if (it is Breakable) {
-                it.coins.forEach { body ->
-                    worldContactListener.deleteList.add(body)
-                }
-                it.coins.clear()
-            }
-
-            it.sprite = null
-            it.body?.isActive = false
-        }
-
-        // Deleting used MapObjects
-        val it = rooms[previousRoom].mapObjects.iterator()
-        while (it.hasNext()) {
-            if (it.next().destroyed) it.remove()
-        }
-
-        rooms[previousRoom].enemies.forEach {
-            it.coins.forEach { worldContactListener.deleteList.add(it) }
-            it.coins.clear()
-            it.sprite = null
-            it.body?.isActive = false
-        }
-
-        // Deleting killed Enemies
-        val itEn = rooms[previousRoom].enemies.iterator()
-        while (itEn.hasNext()) {
-            if (itEn.next().killed) itEn.remove()
-        }
+        rooms[previousRoom].clearEntities(worldContactListener)
 
         // New room
-
-
-        // Load mapObjects
-        rooms[newRoom].mapObjects.forEach {
-            it.loadSprite(game.assetManager.get("Packs/RoomObjects.txt", TextureAtlas::class.java))
-            it.body!!.isActive = true
-        }
-
-        rooms[newRoom].enemies.forEach {
-            it.loadSprite(game.assetManager.get("Packs/Enemies.txt", TextureAtlas::class.java), animationCreator)
-            it.body!!.isActive = true
-        }
+        rooms[newRoom].awakeEntities(animationCreator, game)
 
         // Change map
         mapRenderer.map = game.assetManager.get(rooms[newRoom].path, TiledMap::class.java)

@@ -5,7 +5,7 @@ import com.badlogic.gdx.physics.box2d.*
 import ru.icarumbas.*
 import ru.icarumbas.bagel.Characters.Enemies.Enemy
 import ru.icarumbas.bagel.Characters.Enemies.FlyingEnemy
-import ru.icarumbas.bagel.Characters.mapObjects.Breakable
+import ru.icarumbas.bagel.Characters.mapObjects.BreakableMapObject
 import ru.icarumbas.bagel.Characters.mapObjects.Chest
 import ru.icarumbas.bagel.Characters.mapObjects.PortalDoor
 import ru.icarumbas.bagel.Characters.mapObjects.Spike
@@ -43,7 +43,7 @@ class WorldContactListener(val gameScreen: GameScreen) : ContactListener {
                     deleteList.add(otherBody)
                     gameScreen.rooms[gameScreen.currentMap].mapObjects.forEach {
                         if (it is Chest && it.coins.contains(otherBody)) it.coins.remove(otherBody) else
-                            if (it is Breakable && it.coins.contains(otherBody)) it.coins.remove(otherBody)
+                            if (it is BreakableMapObject && it.coins.contains(otherBody)) it.coins.remove(otherBody)
                     }
                     gameScreen.rooms[gameScreen.currentMap].enemies.forEach {
                         if (it.coins.contains(otherBody)) it.coins.remove(otherBody)
@@ -56,7 +56,7 @@ class WorldContactListener(val gameScreen: GameScreen) : ContactListener {
             SWORD_BIT or BREAKABLE_BIT,  SWORD_BIT_LEFT or BREAKABLE_BIT -> {
                 contact.isEnabled = false
                 gameScreen.rooms[gameScreen.currentMap].mapObjects.forEach {
-                    if (it is Breakable && it.body == otherBody) it.canBeBroken = true
+                    if (it is BreakableMapObject && it.body == otherBody) it.canBeBroken = true
                 }
             }
 
@@ -138,7 +138,7 @@ class WorldContactListener(val gameScreen: GameScreen) : ContactListener {
 
             SWORD_BIT or BREAKABLE_BIT, SWORD_BIT_LEFT or BREAKABLE_BIT -> {
                 gameScreen.rooms[gameScreen.currentMap].mapObjects.forEach {
-                    if (it is Breakable && it.body == otherBody) it.canBeBroken = false
+                    if (it is BreakableMapObject && it.body == otherBody) it.canBeBroken = false
                 }
             }
 

@@ -12,11 +12,7 @@ import ru.icarumbas.bagel.Characters.Coin
 import ru.icarumbas.bagel.Screens.GameScreen
 
 
-class Statue: MapObject, Breakable {
-
-    lateinit var coin: Coin
-    override val coins = ArrayList<Body>()
-    override var canBeBroken = false
+class Statue: BreakableMapObject {
 
     override lateinit var path: String
     override val bit = BREAKABLE_BIT
@@ -37,7 +33,7 @@ class Statue: MapObject, Breakable {
         super.draw(batch, delta, gameScreen)
 
         if (!destroyed) onHit(gameScreen)
-        if (coins.isNotEmpty()) coin.updateCoins(coins, batch)
+        if (coins.isNotEmpty()) coin!!.updateCoins(coins, batch)
     }
 
     override fun onHit(gameScreen: GameScreen) {
@@ -46,16 +42,13 @@ class Statue: MapObject, Breakable {
             gameScreen.game.assetManager["Sounds/shatterMetal.wav", Sound::class.java].play()
 
             coin = Coin(gameScreen.game.assetManager.get("Packs/RoomObjects.txt", TextureAtlas::class.java))
-            coin.createCoins(body!!, gameScreen.world, coins, when (path) {
+            coin!!.createCoins(body!!, gameScreen.world, coins, when (path) {
                 "goldenStatue" -> MathUtils.random(0, 5)
                 "silverStatue" -> MathUtils.random(0, 2)
                 else -> throw Exception("Unknown path")
             })
+            super.onHit(gameScreen)
 
-            gameScreen.worldContactListener.deleteList.add(body!!)
-            destroyed = true
-            sprite = null
-            body = null
         }
     }
 }

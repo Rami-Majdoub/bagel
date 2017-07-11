@@ -12,11 +12,7 @@ import ru.icarumbas.bagel.Characters.Coin
 import ru.icarumbas.bagel.Screens.GameScreen
 
 
-class Box : MapObject, Breakable {
-
-    lateinit var coin: Coin
-    override val coins = ArrayList<Body>()
-    override var canBeBroken = false
+class Box : BreakableMapObject {
 
     override val bodyType = BodyDef.BodyType.DynamicBody
     override lateinit var path: String
@@ -35,7 +31,7 @@ class Box : MapObject, Breakable {
     override fun draw(batch: Batch, delta: Float, gameScreen: GameScreen) {
         super.draw(batch, delta, gameScreen)
         if (!destroyed) onHit(gameScreen)
-        if (coins.isNotEmpty()) coin.updateCoins(coins, batch)
+        if (coins.isNotEmpty()) coin!!.updateCoins(coins, batch)
 
     }
 
@@ -48,15 +44,13 @@ class Box : MapObject, Breakable {
             }
 
             coin = Coin(gameScreen.game.assetManager.get("Packs/RoomObjects.txt", TextureAtlas::class.java))
-            coin.createCoins(body!!, gameScreen.world, coins, when (MathUtils.random(4)) {
+            coin!!.createCoins(body!!, gameScreen.world, coins, when (MathUtils.random(4)) {
                 0 -> 1 // 1 coin
                 else -> 0
             })
 
-            gameScreen.worldContactListener.deleteList.add(body!!)
-            destroyed = true
-            sprite = null
-            body = null
+            super.onHit(gameScreen)
+
         }
     }
 

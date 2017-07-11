@@ -9,15 +9,18 @@ import com.badlogic.gdx.physics.box2d.*
 import ru.icarumbas.*
 import kotlin.experimental.or
 
-class Coin(textureAtlas: TextureAtlas){
+class Coin {
 
-    val coinSprite = textureAtlas.createSprite("Coin")!!
+    lateinit var coinSprite: Sprite
     val coinShape = PolygonShape()
 
     val coinFixDef = FixtureDef()
     val coinBdef = BodyDef()
 
-    init {
+    constructor()
+
+    constructor(textureAtlas: TextureAtlas) {
+        coinSprite = textureAtlas.createSprite("Coin")!!
         coinSprite.setSize(16.div(PIX_PER_M), 16.div(PIX_PER_M))
         coinBdef.type = BodyDef.BodyType.DynamicBody
         coinFixDef.shape = coinShape
