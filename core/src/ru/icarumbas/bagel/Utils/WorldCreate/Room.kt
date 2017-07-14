@@ -112,12 +112,12 @@ class Room {
     fun awakeEntities(animationCreator: AnimationCreator, game: Bagel){
         mapObjects.forEach {
             it.loadSprite(game.assetManager.get("Packs/RoomObjects.txt", TextureAtlas::class.java))
-            it.body!!.isActive = true
+            it.body?.isActive = true
         }
 
         enemies.forEach {
             it.loadAnimation(game.assetManager.get("Packs/Enemies.txt", TextureAtlas::class.java), animationCreator)
-            it.body!!.isActive = true
+            it.body?.isActive = true
         }
     }
 

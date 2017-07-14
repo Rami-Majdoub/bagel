@@ -44,7 +44,7 @@
 			bit: 32
 			bodyType: DynamicBody
 			destroyed: false
-			path: box
+			path: barrel
 			canBeBroken: false
 			coins: []
 			coin: null
@@ -76,7 +76,7 @@
 			bit: 32
 			bodyType: DynamicBody
 			destroyed: false
-			path: barrel
+			path: box
 			canBeBroken: false
 			coins: []
 			coin: null
@@ -140,7 +140,7 @@
 			bit: 32
 			bodyType: DynamicBody
 			destroyed: false
-			path: barrel
+			path: box
 			canBeBroken: false
 			coins: []
 			coin: null
@@ -156,7 +156,7 @@
 			bit: 32
 			bodyType: StaticBody
 			destroyed: false
-			path: silverChandelier
+			path: goldenChandelier
 			canBeBroken: false
 			coins: []
 			coin: null
@@ -188,7 +188,7 @@
 			bit: 16
 			bodyType: StaticBody
 			destroyed: false
-			path: bronzeChest
+			path: silverChest
 			canBeBroken: false
 			coins: []
 			coin: null
@@ -205,7 +205,7 @@
 			bit: 32
 			bodyType: StaticBody
 			destroyed: false
-			path: silverStatue
+			path: goldenStatue
 			canBeBroken: false
 			coins: []
 			coin: null
@@ -226,9 +226,9 @@
 			currentState: Running
 			canHit: false
 			HP: 100
-			stateTimer: 4.6653824
-			hitTimer: 4.6653824
-			biteTimer: 4.6653824
+			stateTimer: 1.9056023
+			hitTimer: 1.9056023
+			biteTimer: 1.9056023
 			stateAnimation: null
 			runAnimation: null
 			attackAnimation: null
@@ -236,7 +236,7 @@
 			appearAnimation: null
 			jumpAnimation: null
 			velocity: {
-				x: 0.19582677
+				x: 0.07728154
 				y: -0.25
 			}
 			posX: 5.12
@@ -262,9 +262,9 @@
 			currentState: Running
 			canHit: false
 			HP: 100
-			stateTimer: 4.6653824
-			hitTimer: 4.6653824
-			biteTimer: 0.51795745
+			stateTimer: 1.9056023
+			hitTimer: 1.9056023
+			biteTimer: 1.9056023
 			stateAnimation: null
 			runAnimation: null
 			attackAnimation: null
@@ -272,7 +272,7 @@
 			appearAnimation: null
 			jumpAnimation: null
 			velocity: {
-				x: 0.08265825
+				x: -0.068357125
 				y: -0.25
 			}
 			posX: 9.6
@@ -281,7 +281,7 @@
 			width: 0.92
 			height: 0.92
 			speed: 0.25
-			lastRight: false
+			lastRight: true
 			lastUp: true
 		}
 		{
@@ -298,9 +298,9 @@
 			currentState: Running
 			canHit: false
 			HP: 100
-			stateTimer: 0.5512479
-			hitTimer: 3.0092707
-			biteTimer: 0.56832427
+			stateTimer: 0.3852412
+			hitTimer: 1.4216931
+			biteTimer: 1.4216931
 			stateAnimation: null
 			runAnimation: null
 			attackAnimation: null
@@ -316,7 +316,7 @@
 			height: 2.2
 			appeared: true
 			attacking: false
-			attackTimer: 0.81952584
+			attackTimer: 0.8030544
 		}
 	]
 	mapWidth: 15.36
@@ -365,7 +365,7 @@
 			bit: 32
 			bodyType: StaticBody
 			destroyed: false
-			path: silverStatue
+			path: goldenStatue
 			canBeBroken: false
 			coins: []
 			coin: null
@@ -519,7 +519,7 @@
 			bit: 32
 			bodyType: DynamicBody
 			destroyed: false
-			path: barrel
+			path: box
 			canBeBroken: false
 			coins: []
 			coin: null
@@ -535,7 +535,7 @@
 			bit: 32
 			bodyType: DynamicBody
 			destroyed: false
-			path: box
+			path: barrel
 			canBeBroken: false
 			coins: []
 			coin: null
@@ -615,7 +615,7 @@
 			bit: 32
 			bodyType: DynamicBody
 			destroyed: false
-			path: barrel
+			path: box
 			canBeBroken: false
 			coins: []
 			coin: null
@@ -679,7 +679,7 @@
 			bit: 16
 			bodyType: StaticBody
 			destroyed: false
-			path: bronzeChest
+			path: silverChest
 			canBeBroken: false
 			coins: []
 			coin: null
@@ -762,19 +762,22 @@
 			coin: null
 			coins: []
 			lastState: Running
-			currentState: Standing
+			currentState: Running
 			canHit: false
 			HP: 100
-			stateTimer: 0
-			hitTimer: 0
-			biteTimer: 0
+			stateTimer: 5.750624
+			hitTimer: 5.750624
+			biteTimer: 5.750624
 			stateAnimation: null
 			runAnimation: null
 			attackAnimation: null
 			dieAnimation: null
 			appearAnimation: null
 			jumpAnimation: null
-			velocity: null
+			velocity: {
+				x: -0.25
+				y: -0.0017192136
+			}
 			posX: 11.52
 			posY: 7.04
 			strength: 15

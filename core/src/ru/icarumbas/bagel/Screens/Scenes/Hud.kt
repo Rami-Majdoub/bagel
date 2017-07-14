@@ -91,8 +91,12 @@ class Hud(val gameScreen: GameScreen): InputListener(){
 
     }
 
-    fun update(gameScreen: GameScreen) {
+    fun draw(gameScreen: GameScreen) {
         stage.draw()
+        update(gameScreen)
+    }
+
+    fun update(gameScreen: GameScreen) {
         currentRoom.setText("${gameScreen.currentMap}")
         getDirection()
         fps.setText("FPS: ${Gdx.graphics.framesPerSecond}")

@@ -19,18 +19,20 @@ class B2DWorldCreator {
         val fixtureDef = FixtureDef()
         val def = BodyDef()
 
-        for (o in objects.objects) {
+        val chainShape = ChainShape()
+        val polygonShape = PolygonShape()
 
-            if (o is PolylineMapObject) {
 
-                def.type = BodyDef.BodyType.StaticBody
-                val vertices = o.polyline.transformedVertices
+        objects.objects.forEach {
+
+            if (it is PolylineMapObject) {
+
+                val vertices = it.polyline.transformedVertices.clone()
 
                 for (x in vertices.indices) vertices[x] /= PIX_PER_M
 
-                val shape2 = ChainShape()
-                shape2.createChain(vertices)
-                fixtureDef.shape = shape2
+                chainShape.createChain(vertices)
+                fixtureDef.shape = chainShape
                 fixtureDef.friction = 1f
                 fixtureDef.filter.categoryBits = bit
 
@@ -40,17 +42,16 @@ class B2DWorldCreator {
 
             }
 
-            if (o is RectangleMapObject) {
+            if (it is RectangleMapObject) {
 
-                val shape = PolygonShape()
-                val rect = o.rectangle
+                val rect = it.rectangle
 
                 def.position.x = (rect.x + rect.width / 2f) / PIX_PER_M
                 def.position.y = (rect.y + rect.height / 2f) / PIX_PER_M
                 def.type = BodyDef.BodyType.StaticBody
 
-                shape.setAsBox(rect.width / 2f / PIX_PER_M, rect.height / 2f / PIX_PER_M)
-                fixtureDef.shape = shape
+                polygonShape.setAsBox(rect.width / 2f / PIX_PER_M, rect.height / 2f / PIX_PER_M)
+                fixtureDef.shape = polygonShape
                 fixtureDef.friction = 1f
                 fixtureDef.filter.categoryBits = bit
 

@@ -108,7 +108,7 @@ class Skeleton : Enemy {
     override fun loadAnimation(textureAtlas: TextureAtlas, animationCreator: AnimationCreator) {
         stateAnimation = Animation(.1f, textureAtlas.findRegions("idle"), Animation.PlayMode.LOOP)
         attackAnimation = Animation(.1f, textureAtlas.findRegions("hit"), Animation.PlayMode.LOOP)
-        runAnimation = Animation(.1f, textureAtlas.findRegions("go"), Animation.PlayMode.LOOP)
+        runAnimation = Animation(.08f, textureAtlas.findRegions("go"), Animation.PlayMode.LOOP)
         dieAnimation = Animation(.25f, textureAtlas.findRegions("die"), Animation.PlayMode.LOOP)
         appearAnimation = Animation(.1f, textureAtlas.findRegions("appear"), Animation.PlayMode.LOOP)
 

@@ -109,8 +109,10 @@ class WorldCreator (val assetManager: AssetManager){
                     if ((meshX.plus(checkSides[i]) == it.meshVertices[0] || meshX.plus(checkSides[i]) == it.meshVertices[2]) &&
                             (meshY.plus(checkSides[i + 8]) == it.meshVertices[1] || meshY.plus(checkSides[i + 8]) == it.meshVertices[3])) {
 
-                        if ((assetManager.get(it.path, TiledMap::class.java).properties.get(stringSides[3 - place]) != "Yes" && assetManager.get(newRoom.path, TiledMap::class.java).properties.get(stringSides[place]) == "Yes") ||
-                            (assetManager.get(it.path, TiledMap::class.java).properties.get(stringSides[3 - place]) == "Yes" && assetManager.get(newRoom.path, TiledMap::class.java).properties.get(stringSides[place]) != "Yes")) {
+                        if ((assetManager.get(it.path, TiledMap::class.java).properties.get(stringSides[3 - place]) != "Yes"
+                          && assetManager.get(newRoom.path, TiledMap::class.java).properties.get(stringSides[place]) == "Yes") ||
+                            (assetManager.get(it.path, TiledMap::class.java).properties.get(stringSides[3 - place]) == "Yes"
+                          && assetManager.get(newRoom.path, TiledMap::class.java).properties.get(stringSides[place]) != "Yes")) {
                             chooseMap(path, side, count, meshX, meshY, rooms)
                         }
 

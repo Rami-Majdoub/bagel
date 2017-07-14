@@ -35,7 +35,6 @@ class Bagel : Game() {
     lateinit var worldIO : WorldIO
     lateinit var assetManager : AssetManager
 
-
     override fun create() {
         // Asset manager loading
         assetManager = AssetManager()
@@ -71,5 +70,9 @@ class Bagel : Game() {
 
         worldIO = WorldIO()
         setScreen(MainMenuScreen(this))
+    }
+
+    override fun dispose() {
+        assetManager.dispose()
     }
 }

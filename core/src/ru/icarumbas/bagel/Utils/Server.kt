@@ -5,7 +5,7 @@ import com.esotericsoftware.kryonet.Listener
 import com.esotericsoftware.kryonet.Server
 
 
-class Server(){
+class Server {
 
     val server = Server()
 

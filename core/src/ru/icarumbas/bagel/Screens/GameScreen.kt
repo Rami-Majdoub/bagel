@@ -25,6 +25,7 @@ import ru.icarumbas.bagel.Utils.WorldCreate.WorldCreator
 
 class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
 
+
     val mapRenderer: OrthogonalTiledMapRenderer
     private val debugRenderer = Box2DDebugRenderer()
     private val viewport = FitViewport(REG_ROOM_WIDTH, REG_ROOM_HEIGHT, OrthographicCamera(REG_ROOM_WIDTH, REG_ROOM_HEIGHT))
@@ -62,14 +63,16 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         (0..TILED_MAPS_TOTAL).forEach {
             val bodies = ArrayList<Body>()
 
-            if (game.assetManager.get("Maps/Map$it.tmx", TiledMap::class.java).layers.get("platform") != null) {
-                b2DWorldCreator.loadGround(game.assetManager.get("Maps/Map$it.tmx",
-                        TiledMap::class.java).layers.get("platform"), world, bodies, PLATFORM_BIT)
+            if (game.assetManager.get("Maps/Map$it.tmx", TiledMap::class.java).layers.get("ground") != null) {
+                b2DWorldCreator.loadGround(
+                        game.assetManager.get("Maps/Map$it.tmx",
+                        TiledMap::class.java).layers.get("ground"), world, bodies, GROUND_BIT)
             }
 
-            if (game.assetManager.get("Maps/Map$it.tmx", TiledMap::class.java).layers.get("ground") != null) {
-                b2DWorldCreator.loadGround(game.assetManager.get("Maps/Map$it.tmx",
-                        TiledMap::class.java).layers.get("ground"), world, bodies, GROUND_BIT)
+            if (game.assetManager.get("Maps/Map$it.tmx", TiledMap::class.java).layers.get("platform") != null) {
+                b2DWorldCreator.loadGround(
+                        game.assetManager.get("Maps/Map$it.tmx",
+                        TiledMap::class.java).layers.get("platform"), world, bodies, PLATFORM_BIT)
             }
 
             groundBodies.put("Maps/Map$it.tmx", bodies)
@@ -86,12 +89,16 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
 
             if (rooms.indexOf(it) == currentMap) {
                 it.enemies.forEach {
-                    it.loadAnimation(game.assetManager.get("Packs/Enemies.txt", TextureAtlas::class.java), animationCreator)
-                    it.body!!.isActive = true
+                    if (!it.killed) {
+                        it.loadAnimation(game.assetManager.get("Packs/Enemies.txt", TextureAtlas::class.java), animationCreator)
+                        it.body!!.isActive = true
+                    }
                 }
                 it.mapObjects.forEach {
-                    it.loadSprite(game.assetManager.get("Packs/RoomObjects.txt", TextureAtlas::class.java))
-                    it.body?.isActive = true
+                    if (!it.destroyed) {
+                        it.loadSprite(game.assetManager.get("Packs/RoomObjects.txt", TextureAtlas::class.java))
+                        it.body!!.isActive = true
+                    }
                 }
             }
         }
@@ -110,8 +117,8 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         mapRenderer.setView(viewport.camera as OrthographicCamera)
         mapRenderer.render()
 
+        hud.draw(this)
         player.update(delta, hud)
-        hud.update(this)
 
         mapRenderer.batch.begin()
         rooms[currentMap].draw(mapRenderer.batch, delta, this)
@@ -128,6 +135,8 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         worldContactListener.deleteBodies()
 
         if (isB2DWorldRendering) debugRenderer.render(world, viewport.camera.combined)
+
+
 
     }
 
@@ -152,7 +161,6 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         world.dispose()
         debugRenderer.dispose()
         mapRenderer.dispose()
-        game.assetManager.dispose()
     }
 
     override fun resize(width: Int, height: Int) {
