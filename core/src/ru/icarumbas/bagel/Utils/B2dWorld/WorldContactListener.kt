@@ -4,7 +4,7 @@ import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.physics.box2d.*
 import ru.icarumbas.*
 import ru.icarumbas.bagel.Characters.Enemies.Enemy
-import ru.icarumbas.bagel.Characters.Enemies.FlyingEnemy
+import ru.icarumbas.bagel.Characters.Enemies.FlyMovement
 import ru.icarumbas.bagel.Characters.mapObjects.BreakableMapObject
 import ru.icarumbas.bagel.Characters.mapObjects.Chest
 import ru.icarumbas.bagel.Characters.mapObjects.PortalDoor
@@ -33,6 +33,10 @@ class WorldContactListener(val gameScreen: GameScreen) : ContactListener {
 
 
         when (contact.fixtureA.filterData.categoryBits or contact.fixtureB.filterData.categoryBits) {
+
+            PLAYER_BIT or GROUND_BIT -> {
+                gameScreen.player.collidingWithGround = true
+            }
 
             PLAYER_BIT or COIN_BIT -> {
                 contact.isEnabled = false
@@ -70,7 +74,7 @@ class WorldContactListener(val gameScreen: GameScreen) : ContactListener {
             PLAYER_BIT or ENEMY_BIT -> {
                 contact.isEnabled = false
                 gameScreen.rooms[gameScreen.currentMap].enemies.forEach {
-                    if (it is FlyingEnemy && it.body == otherBody) it.attack(gameScreen.player)
+                    if (it is FlyMovement && it.body == otherBody) it.attack(gameScreen.player)
                 }
             }
 
@@ -136,6 +140,10 @@ class WorldContactListener(val gameScreen: GameScreen) : ContactListener {
 
         when (fixA.filterData.categoryBits or fixB.filterData.categoryBits) {
 
+            PLAYER_BIT or GROUND_BIT -> {
+                gameScreen.player.collidingWithGround = false
+            }
+
             SWORD_BIT or BREAKABLE_BIT, SWORD_BIT_LEFT or BREAKABLE_BIT -> {
                 gameScreen.rooms[gameScreen.currentMap].mapObjects.forEach {
                     if (it is BreakableMapObject && it.body == otherBody) it.canBeBroken = false
@@ -172,6 +180,6 @@ class WorldContactListener(val gameScreen: GameScreen) : ContactListener {
         }
     }
 
-    fun isTouchPadDown() = gameScreen.hud.touchpad.knobY < gameScreen.hud.touchpad.height / 2f - gameScreen.hud.touchpad.width/7f
+    fun isTouchPadDown() = gameScreen.hud.touchpad.knobY < gameScreen.hud.touchpad.height / 2f - gameScreen.hud.touchpad.width/6f
 
 }

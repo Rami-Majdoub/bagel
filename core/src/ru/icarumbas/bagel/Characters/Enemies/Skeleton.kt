@@ -19,9 +19,10 @@ class Skeleton : Enemy {
 
     override val strength = 20
     override val maskbit = GROUND_BIT or PLATFORM_BIT or super.maskbit
-    override val speed = 1f
     override val width = 145f.div(PIX_PER_M)
     override val height = 220f.div(PIX_PER_M)
+    val speed = 3.5f
+
 
     var appeared = false
     var attacking = false
@@ -33,7 +34,9 @@ class Skeleton : Enemy {
     constructor(rectangle: Rectangle) : super(rectangle)
 
     override fun draw(batch: Batch, delta: Float, gameScreen: GameScreen) {
-        if (appearAnimation != null && appearAnimation!!.isAnimationFinished(stateTimer)) appeared = true
+        if (appearAnimation != null && appearAnimation!!.isAnimationFinished(stateTimer)) {
+            appeared = true
+        }
 
         super.draw(batch, delta, gameScreen)
     }
@@ -63,12 +66,21 @@ class Skeleton : Enemy {
         }
     }
 
+    fun disappear(player: Player){
+        /*if (
+            player.playerBody.position.x > body!!.position.x + 3f &&
+            player.playerBody.position.x < body!!.position.x - 3f) {
+            appeared = false
+            currentState = GameScreen.State.Appearing
+        }*/
+    }
+
     override fun move(player: Player, delta: Float) {
-        if (isPlayerRight(player) && body!!.linearVelocity.x < 2f && player.playerBody.position.x > body!!.position.x + 1.5f) {
-            body!!.applyLinearImpulse(Vector2(3.5f, 0f), body!!.localPoint2, true)
+        if (isPlayerRight(player) && body!!.linearVelocity.x < 1.5f && player.playerBody.position.x > body!!.position.x + 1.5f) {
+            body!!.applyLinearImpulse(Vector2(speed, 0f), body!!.localPoint2, true)
         } else
-            if (!isPlayerRight(player) && body!!.linearVelocity.x > -2f && player.playerBody.position.x < body!!.position.x - 1.5f) {
-                body!!.applyLinearImpulse(Vector2(-3.5f, 0f), body!!.localPoint2, true)
+            if (!isPlayerRight(player) && body!!.linearVelocity.x > -1.5f && player.playerBody.position.x < body!!.position.x - 1.5f) {
+                body!!.applyLinearImpulse(Vector2(-speed, 0f), body!!.localPoint2, true)
             }
 
         if (
@@ -103,7 +115,6 @@ class Skeleton : Enemy {
         lastState = currentState
 
     }
-
 
     override fun loadAnimation(textureAtlas: TextureAtlas, animationCreator: AnimationCreator) {
         stateAnimation = Animation(.1f, textureAtlas.findRegions("idle"), Animation.PlayMode.LOOP)

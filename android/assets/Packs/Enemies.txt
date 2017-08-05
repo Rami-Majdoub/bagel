@@ -1,5 +1,5 @@
 Enemies.png
-size: 1953, 783
+size: 1714, 1281
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
@@ -54,35 +54,42 @@ appear
   index: 7
 appear
   rotate: false
-  xy: 1630, 1
+  xy: 1, 197
   size: 146, 215
   orig: 195, 249
   offset: 14, 0
   index: 8
 appear
   rotate: false
-  xy: 1778, 1
+  xy: 149, 197
   size: 149, 218
   orig: 195, 249
   offset: 19, 0
   index: 9
 appear
   rotate: false
-  xy: 1, 221
+  xy: 300, 197
   size: 178, 249
   orig: 195, 249
   offset: 17, 0
   index: 10
+ballista
+  rotate: false
+  xy: 827, 748
+  size: 863, 532
+  orig: 863, 532
+  offset: 0, 0
+  index: -1
 die
   rotate: false
-  xy: 1254, 221
+  xy: 154, 472
   size: 212, 273
   orig: 342, 273
   offset: 74, 0
   index: 1
 die
   rotate: false
-  xy: 181, 221
+  xy: 480, 197
   size: 230, 251
   orig: 342, 273
   offset: 62, 0
@@ -110,169 +117,169 @@ die
   index: 5
 go
   rotate: false
-  xy: 1, 496
+  xy: 368, 472
   size: 164, 273
   orig: 168, 273
   offset: 1, 0
   index: 1
 go
   rotate: false
-  xy: 167, 496
+  xy: 534, 472
   size: 165, 273
   orig: 168, 273
   offset: 2, 0
   index: 2
 go
   rotate: false
-  xy: 1773, 221
+  xy: 1012, 472
   size: 164, 273
   orig: 168, 273
   offset: 4, 0
   index: 3
 go
   rotate: false
-  xy: 1468, 221
+  xy: 701, 472
   size: 150, 273
   orig: 168, 273
   offset: 7, 0
   index: 4
 go
   rotate: false
-  xy: 1620, 221
+  xy: 1, 472
   size: 151, 273
   orig: 168, 273
   offset: 5, 0
   index: 5
 go
   rotate: false
-  xy: 496, 496
+  xy: 853, 472
   size: 157, 273
   orig: 168, 273
   offset: 2, 0
   index: 6
 go
   rotate: false
-  xy: 334, 496
+  xy: 1215, 197
   size: 160, 273
   orig: 168, 273
   offset: 0, 0
   index: 7
 go
   rotate: false
-  xy: 1089, 221
+  xy: 880, 197
   size: 163, 273
   orig: 168, 273
   offset: 0, 0
   index: 8
 hit
   rotate: false
-  xy: 655, 496
+  xy: 1335, 472
   size: 155, 274
   orig: 246, 288
   offset: 90, 12
   index: 1
 hit
   rotate: false
-  xy: 812, 496
+  xy: 1492, 472
   size: 157, 274
   orig: 246, 288
   offset: 86, 12
   index: 2
 hit
   rotate: false
-  xy: 1837, 496
+  xy: 710, 748
   size: 115, 286
   orig: 246, 288
   offset: 86, 0
   index: 3
 hit
   rotate: false
-  xy: 1168, 496
+  xy: 1, 748
   size: 181, 274
   orig: 246, 288
   offset: 9, 12
   index: 4
 hit
   rotate: false
-  xy: 971, 496
+  xy: 328, 748
   size: 195, 274
   orig: 246, 288
   offset: 46, 12
   index: 5
 hit
   rotate: false
-  xy: 1508, 496
+  xy: 184, 748
   size: 142, 274
   orig: 246, 288
   offset: 104, 12
   index: 6
 hit
   rotate: false
-  xy: 1652, 496
+  xy: 525, 748
   size: 183, 276
   orig: 246, 288
   offset: 0, 12
   index: 7
 hit
   rotate: false
-  xy: 1351, 496
+  xy: 1178, 472
   size: 155, 274
   orig: 246, 288
   offset: 90, 12
   index: 8
 idle
   rotate: false
-  xy: 581, 221
+  xy: 1377, 197
   size: 167, 273
   orig: 168, 273
   offset: 0, 0
   index: 1
 idle
   rotate: false
-  xy: 750, 221
+  xy: 1045, 197
   size: 168, 273
   orig: 168, 273
   offset: 0, 0
   index: 2
 idle
   rotate: false
-  xy: 920, 221
+  xy: 1546, 197
   size: 167, 273
   orig: 168, 273
   offset: 1, 0
   index: 3
 idle
   rotate: false
-  xy: 413, 221
+  xy: 712, 197
   size: 166, 272
   orig: 168, 273
   offset: 2, 0
   index: 4
 idle
   rotate: false
-  xy: 920, 221
+  xy: 1546, 197
   size: 167, 273
   orig: 168, 273
   offset: 1, 0
   index: 5
 idle
   rotate: false
-  xy: 750, 221
+  xy: 1045, 197
   size: 168, 273
   orig: 168, 273
   offset: 0, 0
   index: 6
-redBug
+redBug (2)
   rotate: false
   xy: 198, 1
   size: 101, 77
   orig: 110, 92
   offset: 3, 3
-  index: 1
+  index: -1
 redBug
   rotate: false
   xy: 343, 1
   size: 101, 85
   orig: 110, 92
   offset: 3, 3
-  index: 2
+  index: -1

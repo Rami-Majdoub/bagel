@@ -1,18 +1,18 @@
 RoomObjects.png
-size: 192, 992
+size: 472, 434
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 barrel
   rotate: false
-  xy: 67, 56
+  xy: 281, 1
   size: 60, 64
   orig: 64, 64
   offset: 2, 0
   index: -1
 box
   rotate: false
-  xy: 1, 122
+  xy: 1, 67
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -21,6 +21,13 @@ bronzeChest
   rotate: false
   xy: 85, 1
   size: 64, 53
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+chair
+  rotate: false
+  xy: 67, 67
+  size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
@@ -33,42 +40,42 @@ Coin
   index: -1
 doorClosed
   rotate: false
-  xy: 1, 426
+  xy: 1, 241
   size: 128, 177
   orig: 128, 192
   offset: 0, 0
   index: -1
 doorOpened
   rotate: false
-  xy: 61, 252
+  xy: 319, 67
   size: 128, 172
   orig: 128, 192
   offset: 0, 0
   index: -1
 goldenChandelier
   rotate: false
-  xy: 1, 605
+  xy: 260, 241
   size: 127, 192
   orig: 128, 192
   offset: 1, 0
   index: -1
 goldenChest
   rotate: false
-  xy: 1, 56
+  xy: 151, 1
   size: 64, 53
   orig: 64, 64
   offset: 0, 0
   index: -1
 goldenStatue
   rotate: false
-  xy: 1, 252
+  xy: 259, 67
   size: 58, 128
   orig: 64, 128
   offset: 4, 0
   index: -1
 silverChandelier
   rotate: false
-  xy: 1, 799
+  xy: 131, 241
   size: 127, 192
   orig: 128, 192
   offset: 0, 0
@@ -82,22 +89,29 @@ silverChest
   index: -1
 silverStatue
   rotate: false
-  xy: 133, 122
+  xy: 199, 67
   size: 58, 128
   orig: 64, 128
   offset: 4, 0
   index: -1
 spike
   rotate: false
-  xy: 67, 122
+  xy: 133, 67
   size: 64, 110
   orig: 64, 128
   offset: 0, 0
   index: -1
 spikeTrap
   rotate: false
-  xy: 129, 56
+  xy: 217, 1
   size: 62, 64
   orig: 64, 64
   offset: 1, 0
+  index: -1
+table
+  rotate: false
+  xy: 343, 1
+  size: 128, 64
+  orig: 128, 64
+  offset: 0, 0
   index: -1

@@ -154,9 +154,7 @@ class Hud(val gameScreen: GameScreen): InputListener(){
                     )
                 {
                         gameScreen.player.attacking = true
-                        gameScreen.player.canDamage = true
                         attackButton.color = Color.GRAY
-                        gameScreen.game.assetManager["Sounds/sword.wav", Sound::class.java].play()
                 }
 
             }

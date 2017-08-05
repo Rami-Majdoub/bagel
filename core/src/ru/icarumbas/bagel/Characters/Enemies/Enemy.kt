@@ -35,7 +35,7 @@ abstract class Enemy {
 
     var stateTimer = 0f
     var hitTimer = 0f
-    var biteTimer = 0f
+    var canAttackTimer = 0f
 
     var stateAnimation: Animation<*>? = null
     var runAnimation: Animation<*>? = null
@@ -44,8 +44,6 @@ abstract class Enemy {
     var appearAnimation: Animation<*>? = null
     var jumpAnimation: Animation<*>? = null
 
-    abstract val speed: Float
-    lateinit var velocity: Vector2
     var posX = 0f
     var posY = 0f
     abstract val width: Float
@@ -62,41 +60,14 @@ abstract class Enemy {
     open fun draw(batch: Batch, delta: Float, gameScreen: GameScreen) {
         if (!killed && getState(gameScreen.player) != GameScreen.State.NULL) {
             hitTimer += delta
-            biteTimer += delta
+            canAttackTimer += delta
 
-            currentState = when (getState(gameScreen.player)) {
-
-                GameScreen.State.Dead -> {
-                    GameScreen.State.Dead
-                }
-
-                GameScreen.State.Running -> {
-                    GameScreen.State.Running
-                }
-
-                GameScreen.State.Standing -> {
-                    GameScreen.State.Standing
-                }
-
-                GameScreen.State.Appearing -> {
-                    GameScreen.State.Appearing
-                }
-
-                GameScreen.State.Attacking -> {
-                    GameScreen.State.Attacking
-                }
-
-                GameScreen.State.NULL -> {
-                    GameScreen.State.NULL
-                }
-                else -> {
-                    throw Exception("Unknown State")
-                }
-            }
+            currentState = getState(gameScreen.player)
 
             sprite = Sprite(getFrame(delta, gameScreen.player))
             sprite!!.setSize(sprite!!.width.div(PIX_PER_M), sprite!!.height.div(PIX_PER_M))
             sprite!!.setPosition(body!!.position.x.minus(width.div(2)), body!!.position.y.minus(height.div(2)))
+
             if (hitTimer > .1f) sprite!!.color = Color.WHITE
             if (canHit && gameScreen.player.canDamage) hit(gameScreen.player)
             sprite!!.draw(batch)
@@ -109,7 +80,7 @@ abstract class Enemy {
 
     }
 
-    abstract fun move(player: Player, delta: Float)
+    open fun move(player: Player, delta: Float){}
 
     fun isPlayerRight(player: Player) = player.playerBody.position.x > body!!.position.x
 
@@ -132,7 +103,7 @@ abstract class Enemy {
     }
 
     fun attack(player: Player){
-        if (biteTimer > .25f) {
+        if (canAttackTimer > .25f) {
             if (isPlayerRight(player)) {
                 player.hit(strength, Vector2(.2f, .05f))
                 body!!.setLinearVelocity(0f, 0f)
@@ -142,7 +113,7 @@ abstract class Enemy {
                 body!!.setLinearVelocity(0f, 0f)
                 body!!.applyLinearImpulse(Vector2(15f, 0f), body!!.localPoint2, true)
             }
-            biteTimer = 0f
+            canAttackTimer = 0f
         }
     }
 
@@ -183,7 +154,7 @@ abstract class Enemy {
         body!!.gravityScale = gravityScale
     }
 
-    abstract fun getState(player: Player): GameScreen.State
+    open fun getState(player: Player) = GameScreen.State.Standing
 
     private fun flipOnPlayer(player: Player, region: TextureRegion){
 

@@ -1,0 +1,40 @@
+Entities.png
+size: 1986, 44
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Knight/attack
+  rotate: false
+  xy: 1, 1
+  size: 800, 42
+  orig: 800, 42
+  offset: 0, 0
+  index: -1
+Knight/block
+  rotate: false
+  xy: 803, 1
+  size: 294, 42
+  orig: 294, 42
+  offset: 0, 0
+  index: -1
+Knight/die
+  rotate: false
+  xy: 1099, 1
+  size: 378, 42
+  orig: 378, 42
+  offset: 0, 0
+  index: -1
+Knight/idle
+  rotate: false
+  xy: 1479, 1
+  size: 168, 42
+  orig: 168, 42
+  offset: 0, 0
+  index: -1
+Knight/run
+  rotate: false
+  xy: 1649, 1
+  size: 336, 42
+  orig: 336, 42
+  offset: 0, 0
+  index: -1

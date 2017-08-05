@@ -27,7 +27,7 @@ const val SWORD_BIT_LEFT: Short = 2048
 const val PIX_PER_M = 100f
 const val REG_ROOM_HEIGHT = 1024f.div(PIX_PER_M)
 const val REG_ROOM_WIDTH = 1536f.div(PIX_PER_M)
-const val TILED_MAPS_TOTAL = 4
+const val TILED_MAPS_TOTAL = 10
 
 
 class Bagel : Game() {
@@ -48,7 +48,7 @@ class Bagel : Game() {
         // Texture Atlases
         assetManager.setLoader(TextureAtlas::class.java, TextureAtlasLoader(InternalFileHandleResolver()))
         assetManager.load("Packs/RoomObjects.txt", TextureAtlas::class.java)
-        assetManager.load("Packs/GuyKnight.txt", TextureAtlas::class.java)
+        assetManager.load("Packs/GuyKnight.pack", TextureAtlas::class.java)
         assetManager.load("Packs/Main_Menu.txt", TextureAtlas::class.java)
         assetManager.load("Packs/Enemies.txt", TextureAtlas::class.java)
 

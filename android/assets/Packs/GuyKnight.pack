@@ -1,7 +1,7 @@
 GuyKnight.png
 size: 1982, 1902
 format: RGBA8888
-filter: Linear,Linear
+filter: Nearest,Nearest
 repeat: none
 Attack (1)
   rotate: false

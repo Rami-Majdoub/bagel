@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="16" tilewidth="64" tileheight="64" nextobjectid="154">
  <properties>
-  <property name="Height" type="float" value="10.24"/>
+  <property name="Height" type="float" value="1024"/>
   <property name="Right" value="Yes"/>
-  <property name="Width" type="float" value="15.36"/>
+  <property name="Width" type="float" value="1536"/>
  </properties>
  <tileset firstgid="1" name="walls-128x128_2" tilewidth="64" tileheight="64" tilecount="64" columns="8">
   <image source="Resources/walls-128x128_2.png" width="512" height="512"/>

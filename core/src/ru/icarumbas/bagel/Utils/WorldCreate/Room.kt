@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.maps.tiled.TiledMap
 import ru.icarumbas.Bagel
+import ru.icarumbas.PIX_PER_M
 import ru.icarumbas.bagel.Characters.Enemies.Enemy
 import ru.icarumbas.bagel.Characters.mapObjects.BreakableMapObject
 import ru.icarumbas.bagel.Characters.mapObjects.Chest
@@ -29,8 +30,8 @@ class Room {
 
     fun loadMap(path: String, assetManager: AssetManager){
         this.path = path
-        mapWidth = assetManager.get(path, TiledMap::class.java).properties["Width"].toString().toFloat()
-        mapHeight = assetManager.get(path, TiledMap::class.java).properties["Height"].toString().toFloat()
+        mapWidth = assetManager.get(path, TiledMap::class.java).properties["Width"].toString().toFloat().div(PIX_PER_M)
+        mapHeight = assetManager.get(path, TiledMap::class.java).properties["Height"].toString().toFloat().div(PIX_PER_M)
     }
 
     fun removeUnserealizableObjects(){
@@ -63,6 +64,9 @@ class Room {
         b2DWorldCreator.loadMapObject(path, "spikeTraps", assetManager, mapObjects)
         b2DWorldCreator.loadMapObject(path, "spikes", assetManager, mapObjects)
         b2DWorldCreator.loadMapObject(path, "portalDoor", assetManager, mapObjects)
+        b2DWorldCreator.loadMapObject(path, "chairs", assetManager, mapObjects)
+        b2DWorldCreator.loadMapObject(path, "tables", assetManager, mapObjects)
+
 
         b2DWorldCreator.loadEnemies(path, "flyingEnemies", assetManager,  enemies)
         b2DWorldCreator.loadEnemies(path, "groundEnemies", assetManager,  enemies)

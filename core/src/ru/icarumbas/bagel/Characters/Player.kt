@@ -19,7 +19,7 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
 
     lateinit var playerBody: Body
 
-    val atlas = gameScreen.game.assetManager["Packs/GuyKnight.txt", TextureAtlas::class.java]!!
+    val atlas = gameScreen.game.assetManager["Packs/GuyKnight.pack", TextureAtlas::class.java]!!
 
     private val stateAnimation: Animation<*>
     private val runAnimation: Animation<*>
@@ -28,15 +28,15 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
     private val deadAnimation: Animation<*>
 
     private val stepSound: Sound
-    private var stepSoundPlaying = false
 
     var attacking = false
     var canDamage = false
 
-    var jumping = false
+    var collidingWithGround = false
     var doubleJump = 0
     var lastRight = true
     var runningRight = true
+    var attackSoundPlayed = false
 
     var lastState = GameScreen.State.Running
     var currentState = GameScreen.State.Standing
@@ -57,7 +57,6 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
         setOrigin(width / 2f, height / 2f)
 
         stepSound = gameScreen.game.assetManager["Sounds/steps.wav", Sound::class.java]
-        stepSound.loop()
 
         // Animation
         stateAnimation = animationCreator.createSpriteAnimation("Idle", 10, .1f, Animation.PlayMode.LOOP, atlas)
@@ -76,7 +75,7 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
         playerBody = gameScreen.world.createBody(bodyDef)
 
         val shape = PolygonShape()
-        shape.setAsBox(.3f, .52f)
+        shape.setAsBox(.3f, .6f)
 
         val fixtureDef = FixtureDef()
         fixtureDef.shape = shape
@@ -142,53 +141,7 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
         if (hitTimer > .1f) color = Color.WHITE
         if (hitTimer > 1) isFirstHit = true
 
-        when (getState(hud)) {
-            GameScreen.State.Dead -> {
-                currentState = GameScreen.State.Dead
-
-                stepSoundPlaying = false
-                stepSound.pause()
-
-                hud.stage.clear()
-            }
-
-            GameScreen.State.Running -> {
-                currentState = GameScreen.State.Running
-
-                if (!stepSoundPlaying) {
-                    stepSound.stop()
-                    stepSoundPlaying = false
-                }
-            }
-
-            GameScreen.State.Standing -> {
-                currentState = GameScreen.State.Standing
-
-                stepSoundPlaying = false
-                stepSound.pause()
-            }
-
-            GameScreen.State.Jumping -> {
-                currentState = GameScreen.State.Jumping
-
-                stepSoundPlaying = false
-                stepSound.pause()
-            }
-
-            GameScreen.State.Attacking -> {
-                currentState = GameScreen.State.Attacking
-
-                stepSoundPlaying = false
-                stepSound.pause()
-            }
-            else -> {
-                throw Exception("Unknown State")
-            }
-        }
-
-        if (attackAnimation.animationDuration < stateTimer) {
-            attacking = false
-        }
+        currentState = getState(hud)
 
         if (lastState != currentState) {
             if (currentState == GameScreen.State.Attacking) {
@@ -197,8 +150,23 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
             stateTimer = 0f
         }
 
+        if (stateTimer > attackAnimation.animationDuration / 2 && !attackSoundPlayed && currentState == GameScreen.State.Attacking) {
+            gameScreen.game.assetManager["Sounds/sword.wav", Sound::class.java].play()
+            canDamage = true
+            attackSoundPlayed = true
+        }
+
+        if (attackAnimation.animationDuration < stateTimer && currentState == GameScreen.State.Attacking) {
+            attacking = false
+            attackSoundPlayed = false
+        }
+
+
         lastState = currentState
 
+        // hack to collide with platform
+        playerBody.applyLinearImpulse(Vector2(0f, -.00001f), playerBody.localPoint2, true)
+        playerBody.applyLinearImpulse(Vector2(0f, .00001f), playerBody.localPoint2, true)
 
         isDead()
         detectJumping(hud)
@@ -213,6 +181,8 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
             gameScreen.game.worldIO.preferences.putBoolean("CanContinueWorld", false)
             gameScreen.game.worldIO.preferences.flush()
             gameScreen.game.screen = MainMenuScreen(gameScreen.game)
+            gameScreen.hud.stage.clear()
+
         }
     }
 
@@ -241,44 +211,43 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
         return region
     }
 
-    fun setRoomPosition (side: String, plX: Int, plY: Int, previousMapLink: Int) {
+    fun setRoomPosition (side: String, plX: Int, plY: Int, previousMapLink: Int, currentMap: Int) {
 
         if (side == "Up" || side == "Down") {
             // Compare top-right parts of previous and current maps
-            val X10 = gameScreen.rooms[gameScreen.currentMap].meshVertices[2]
+            val X10 = gameScreen.rooms[currentMap].meshVertices[2]
             val prevX = gameScreen.rooms[previousMapLink].meshVertices[plX]
 
             if (side == "Up") {
                 if (prevX == X10) {
-                    playerBody.setTransform(gameScreen.rooms[gameScreen.currentMap].mapWidth - REG_ROOM_WIDTH / 2, 0f, 0f)
+                    playerBody.setTransform(gameScreen.rooms[currentMap].mapWidth - REG_ROOM_WIDTH / 2, 0f, 0f)
                 }
                 else playerBody.setTransform(REG_ROOM_WIDTH/2, 0f, 0f)
             }
             if (side == "Down") {
-                if (prevX == X10) playerBody.setTransform(gameScreen.rooms[gameScreen.currentMap].mapWidth - REG_ROOM_WIDTH / 2,
-                                                                 gameScreen.rooms[gameScreen.currentMap].mapHeight, 0f)
-                else playerBody.setTransform(REG_ROOM_WIDTH/2, gameScreen.rooms[gameScreen.currentMap].mapHeight, 0f)
+                if (prevX == X10) playerBody.setTransform(gameScreen.rooms[currentMap].mapWidth - REG_ROOM_WIDTH / 2,
+                                                                 gameScreen.rooms[currentMap].mapHeight, 0f)
+                else playerBody.setTransform(REG_ROOM_WIDTH/2, gameScreen.rooms[currentMap].mapHeight, 0f)
             }
         }
 
         if (side == "Left" || side == "Right") {
             // Compare top parts of previous and current maps
-            val Y11 = gameScreen.rooms[gameScreen.currentMap].meshVertices[3]
+            val Y11 = gameScreen.rooms[currentMap].meshVertices[3]
             val prevY = gameScreen.rooms[previousMapLink].meshVertices[plY]
 
             if (side == "Left") {
-                if (prevY == Y11) playerBody.setTransform(gameScreen.rooms[gameScreen.currentMap].mapWidth,
-                                  gameScreen.rooms[gameScreen.currentMap].mapHeight - REG_ROOM_HEIGHT / 2 - height/2, 0f)
-                else playerBody.setTransform(gameScreen.rooms[gameScreen.currentMap].mapWidth, REG_ROOM_HEIGHT/2, 0f)
+                if (prevY == Y11) playerBody.setTransform(gameScreen.rooms[currentMap].mapWidth,
+                                  gameScreen.rooms[currentMap].mapHeight - REG_ROOM_HEIGHT / 2 - height/2, 0f)
+                else playerBody.setTransform(gameScreen.rooms[currentMap].mapWidth, REG_ROOM_HEIGHT/2 - height/2, 0f)
             }
             if (side == "Right") {
                 if (prevY == Y11)
-                playerBody.setTransform(0f, gameScreen.rooms[gameScreen.currentMap].mapHeight - REG_ROOM_HEIGHT / 2 - height/2, 0f)
-                else playerBody.setTransform(0f, REG_ROOM_HEIGHT/2, 0f)
+                    playerBody.setTransform(0f, gameScreen.rooms[currentMap].mapHeight - REG_ROOM_HEIGHT / 2 - height/2, 0f)
+                else
+                    playerBody.setTransform(0f, REG_ROOM_HEIGHT/2 - height/2, 0f)
             }
         }
-
-//        setSwordPosition()
 
     }
 
@@ -327,16 +296,15 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
             }
 
         }
-        if (playerBody.linearVelocity.y == 0f && hud.touchpad.knobY <= hud.touchpad.height - hud.touchpad.height/2 + 5) {
+        if (playerBody.linearVelocity.y == 0f && (hud.touchpad.knobY <= hud.touchpad.height - hud.touchpad.height/2 + 5 ||
+                !collidingWithGround)) {
             doubleJump = 0
-            jumping = false
         }
     }
 
     private fun jump(velocity: Float){
         playerBody.applyLinearImpulse(Vector2(0f, velocity), playerBody.worldCenter, true)
         doubleJump++
-        jumping = true
     }
 
     fun hit(damage: Int, velocity: Vector2){

@@ -1,26 +1,33 @@
 package ru.icarumbas.bagel.Utils
 
-import com.esotericsoftware.kryonet.Connection
-import com.esotericsoftware.kryonet.Listener
-import com.esotericsoftware.kryonet.Server
+import java.io.DataInputStream
+import java.io.DataOutputStream
+import java.net.ServerSocket
 
 
 class Server {
 
-    val server = Server()
+    val port = 6415
 
     init {
-        server.start()
-        server.bind(54555, 54777)
+            val serverSocket = ServerSocket(port)
+            println("Waiting for a client...")
 
-        server.addListener(object : Listener(){
-            override fun received(connection: Connection, `object`: Any) {
-                if (`object` is String) {
-                    println(`object`)
-                    connection.sendTCP("Fuck you")
-                }
+            val socket = serverSocket.accept()
+            println("Got it!")
+
+            val input = DataInputStream(socket.getInputStream())
+            val output = DataOutputStream(socket.getOutputStream())
+
+            var line = ""
+            while (true) {
+                line = input.readUTF()
+                println("It sent me this shit: $line")
+
+                output.writeUTF("Take this back $line")
+                output.flush()
 
             }
-        })
+
     }
 }

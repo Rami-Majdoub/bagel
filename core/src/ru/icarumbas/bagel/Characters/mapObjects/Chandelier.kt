@@ -20,7 +20,6 @@ class Chandelier: BreakableMapObject {
     override val width = 127f.div(PIX_PER_M)
     override val height = 192f.div(PIX_PER_M)
 
-
     @Suppress("Used for JSON Serialization")
     private constructor()
 
@@ -32,31 +31,25 @@ class Chandelier: BreakableMapObject {
         }
     }
 
-    override fun draw(batch: Batch, delta: Float, gameScreen: GameScreen) {
-        super.draw(batch, delta, gameScreen)
-
-        if (!destroyed) onHit(gameScreen)
-        if (coins.isNotEmpty()) coin!!.updateCoins(coins, batch)
-    }
-
-
     override fun onHit(gameScreen: GameScreen) {
-        if (canBeBroken && body!!.type != BodyDef.BodyType.DynamicBody && gameScreen.player.attacking) {
+        if (!destroyed) {
+            if (canBeBroken && body!!.type != BodyDef.BodyType.DynamicBody && gameScreen.player.attacking) {
 
-            body!!.type = BodyDef.BodyType.DynamicBody
-            sprite!!.setAlpha(.25f)
-            gameScreen.game.assetManager["Sounds/shatterMetal.wav", Sound::class.java].play()
+                body!!.type = BodyDef.BodyType.DynamicBody
+                sprite!!.setAlpha(.25f)
+                gameScreen.game.assetManager["Sounds/shatterMetal.wav", Sound::class.java].play()
 
-            coin = Coin(gameScreen.game.assetManager.get("Packs/RoomObjects.txt", TextureAtlas::class.java))
-            coin!!.createCoins(body!!, gameScreen.world, coins, when (path) {
-                "goldenChandelier" -> MathUtils.random(0, 4)
-                "silverChandelier" -> MathUtils.random(0, 2)
-                else -> throw Exception("Unknown path")
-            })
+                coin = Coin(gameScreen.game.assetManager.get("Packs/RoomObjects.txt", TextureAtlas::class.java))
+                coin!!.createCoins(body!!, gameScreen.world, coins, when (path) {
+                    "goldenChandelier" -> MathUtils.random(0, 4)
+                    "silverChandelier" -> MathUtils.random(0, 2)
+                    else -> throw Exception("Unknown path")
+                })
 
-        }
-        if (body!!.linearVelocity.y < -3f) {
-            super.onHit(gameScreen)
+            }
+            if (body!!.linearVelocity.y < -3f) {
+                super.onHit(gameScreen)
+            }
         }
     }
 }

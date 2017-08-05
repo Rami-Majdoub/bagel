@@ -12,14 +12,14 @@ import ru.icarumbas.bagel.Characters.Coin
 import ru.icarumbas.bagel.Screens.GameScreen
 
 
-class Box : BreakableMapObject {
+open class Box : BreakableMapObject {
 
     override val bodyType = BodyDef.BodyType.DynamicBody
     override lateinit var path: String
     override val bit = BREAKABLE_BIT
 
     @Suppress("Used for JSON Serialization")
-    private constructor()
+    constructor()
 
     constructor(rectangle: Rectangle) : super(rectangle){
         when (MathUtils.random(1)) {
@@ -28,15 +28,8 @@ class Box : BreakableMapObject {
         }
     }
 
-    override fun draw(batch: Batch, delta: Float, gameScreen: GameScreen) {
-        super.draw(batch, delta, gameScreen)
-        if (!destroyed) onHit(gameScreen)
-        if (coins.isNotEmpty()) coin!!.updateCoins(coins, batch)
-
-    }
-
     override fun onHit(gameScreen: GameScreen) {
-        if (canBeBroken && gameScreen.player.attacking) {
+        if (canBeBroken && gameScreen.player.attacking && !destroyed) {
 
             when (MathUtils.random(1)) {
                 0 -> gameScreen.game.assetManager["Sounds/crateBreak0.wav", Sound::class.java].play()

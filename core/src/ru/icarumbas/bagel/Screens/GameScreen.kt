@@ -18,6 +18,7 @@ import ru.icarumbas.bagel.Screens.Scenes.Hud
 import ru.icarumbas.bagel.Screens.Scenes.MiniMap
 import ru.icarumbas.bagel.Utils.B2dWorld.B2DWorldCreator
 import ru.icarumbas.bagel.Utils.B2dWorld.WorldContactListener
+import ru.icarumbas.bagel.Utils.Server
 import ru.icarumbas.bagel.Utils.WorldCreate.AnimationCreator
 import ru.icarumbas.bagel.Utils.WorldCreate.Room
 import ru.icarumbas.bagel.Utils.WorldCreate.WorldCreator
@@ -79,6 +80,19 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
 
         }
 
+        loadRoomObjects()
+
+        mapRenderer = OrthogonalTiledMapRenderer(game.assetManager.get(rooms[currentMap].path), 0.01f)
+        groundBodies[rooms[currentMap].path]!!.forEach { it.isActive = true }
+
+        Gdx.input.inputProcessor = hud.stage
+
+        world.setContactListener(worldContactListener)
+        println("Size of rooms: ${rooms.size}")
+        println("World bodies count: ${world.bodyCount}")
+    }
+
+    fun loadRoomObjects(){
         rooms.forEach {
             it.enemies.forEach {
                 if (!it.killed) it.defineBody(world)
@@ -102,22 +116,13 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
                 }
             }
         }
-
-        mapRenderer = OrthogonalTiledMapRenderer(game.assetManager.get(rooms[currentMap].path), 0.01f)
-        groundBodies[rooms[currentMap].path]!!.forEach { it.isActive = true }
-
-        Gdx.input.inputProcessor = hud.stage
-
-        world.setContactListener(worldContactListener)
-        println("Size of rooms: ${rooms.size}")
-        println("World bodies count: ${world.bodyCount}")
     }
 
     override fun render(delta: Float) {
         mapRenderer.setView(viewport.camera as OrthographicCamera)
         mapRenderer.render()
 
-        hud.draw(this)
+        checkRoomChange(player)
         player.update(delta, hud)
 
         mapRenderer.batch.begin()
@@ -128,11 +133,13 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         animationCreator.updateAnimations()
         moveCamera()
         miniMap.render()
-        checkRoomChange(player)
         applyWorldRender()
 
         world.step(1 / 60f, 8, 3)
         worldContactListener.deleteBodies()
+
+        hud.draw(this)
+
 
         if (isB2DWorldRendering) debugRenderer.render(world, viewport.camera.combined)
 
@@ -152,8 +159,11 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
                 putFloat("PlayerPositionY", player.playerBody.position.y)
                 putInteger("Money", player.money)
                 putInteger("CurrentMap", currentMap)
+                putInteger("HP", player.HP)
                 flush()
             }
+
+        game.screen = MainMenuScreen(game)
 
     }
 
@@ -197,9 +207,10 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
     fun createNewWorld() {
         rooms.add(Room())
         rooms[currentMap].meshVertices = intArrayOf(25, 25, 25, 25)
-        rooms[currentMap].loadMap("Maps/Map0.tmx", game.assetManager)
+        rooms[currentMap].loadMap("Maps/Map4.tmx", game.assetManager)
 
         worldCreator.createWorld(100, rooms)
+        player.HP = 100
 
         currentMap = 0
 
@@ -221,6 +232,8 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         currentMap = game.worldIO.preferences.getInteger("CurrentMap")
         player.money = game.worldIO.preferences.getInteger("Money")
         game.worldIO.loadLastPlayerState(player)
+        player.HP = game.worldIO.preferences.getInteger("HP")
+
 
         animationCreator.createTileAnimation(currentMap, rooms)
     }
@@ -249,7 +262,7 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
 
     private fun moveToAnotherRoom(player: Player, link: Int, side: String, plX: Int, plY: Int) {
         // Previous room
-        player.setRoomPosition(side, plX, plY, currentMap)
+        player.setRoomPosition(side, plX, plY, currentMap, rooms[currentMap].roomLinks[link]!!)
 
         // New Room
         updateRoomObjects(currentMap, rooms[currentMap].roomLinks[link]!!)

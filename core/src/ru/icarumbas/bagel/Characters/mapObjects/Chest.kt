@@ -29,30 +29,22 @@ class Chest: BreakableMapObject{
         }
     }
 
-    override fun draw(batch: Batch, delta: Float, gameScreen: GameScreen) {
-        super.draw(batch, delta, gameScreen)
+    override fun onHit(gameScreen: GameScreen){
+        if (isOpened && gameScreen.hud.openButtonPressed) {
+            isOpened = false
+            destroyed = true
 
-        if (isOpened && gameScreen.hud.openButtonPressed) open(gameScreen)
-        if (coins.isNotEmpty()) coin!!.updateCoins(coins, batch)
+            gameScreen.game.assetManager["Sounds/openchest.wav", Sound::class.java].play()
+
+            coin = Coin(gameScreen.game.assetManager.get("Packs/RoomObjects.txt", TextureAtlas::class.java))
+            coin!!.createCoins(body!!, gameScreen.world, coins, count = when (path) {
+                "goldenChest" -> 30
+                "silverChest" -> 20
+                "bronzeChest" -> 10
+                else -> throw Exception("Unknown path")
+            })
+            super.onHit(gameScreen)
+        }
     }
-
-    fun open(gameScreen: GameScreen){
-        isOpened = false
-        destroyed = true
-
-        gameScreen.game.assetManager["Sounds/openchest.wav", Sound::class.java].play()
-
-        coin = Coin(gameScreen.game.assetManager.get("Packs/RoomObjects.txt", TextureAtlas::class.java))
-        coin!!.createCoins(body!!, gameScreen.world, coins, count = when(path){
-            "goldenChest" -> 30
-            "silverChest" -> 20
-            "bronzeChest" -> 10
-            else -> throw Exception("Unknown path")
-        })
-        super.onHit(gameScreen)
-
-
-    }
-
 
 }

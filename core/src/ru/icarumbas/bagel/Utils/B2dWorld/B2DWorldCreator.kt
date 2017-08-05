@@ -79,6 +79,8 @@ class B2DWorldCreator {
                             "spikeTraps" -> SpikeTrap(it.rectangle)
                             "spikes" -> Spike(it.rectangle)
                             "portalDoor" -> PortalDoor(it.rectangle)
+                            "chairs" -> Chair(it.rectangle)
+                            "tables" -> Table(it.rectangle)
                             else -> throw Exception("NO SUCH CLASS")
                         })
                     }

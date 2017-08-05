@@ -16,7 +16,6 @@ class Statue: BreakableMapObject {
 
     override lateinit var path: String
     override val bit = BREAKABLE_BIT
-
     override val height = 128f.div(PIX_PER_M)
 
     @Suppress("Used for JSON Serialization")
@@ -29,15 +28,8 @@ class Statue: BreakableMapObject {
         }
     }
 
-    override fun draw(batch: Batch, delta: Float, gameScreen: GameScreen) {
-        super.draw(batch, delta, gameScreen)
-
-        if (!destroyed) onHit(gameScreen)
-        if (coins.isNotEmpty()) coin!!.updateCoins(coins, batch)
-    }
-
     override fun onHit(gameScreen: GameScreen) {
-        if (canBeBroken && gameScreen.player.attacking) {
+        if (canBeBroken && gameScreen.player.attacking && !destroyed) {
 
             gameScreen.game.assetManager["Sounds/shatterMetal.wav", Sound::class.java].play()
 
