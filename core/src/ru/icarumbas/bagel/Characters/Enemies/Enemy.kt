@@ -1,20 +1,8 @@
 package ru.icarumbas.bagel.Characters.Enemies
 
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.g2d.*
-import com.badlogic.gdx.math.MathUtils
-import com.badlogic.gdx.math.Rectangle
-import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.*
-import ru.icarumbas.*
-import ru.icarumbas.bagel.Characters.Coin
-import ru.icarumbas.bagel.Characters.Player
-import ru.icarumbas.bagel.Screens.GameScreen
-import ru.icarumbas.bagel.Utils.WorldCreate.AnimationCreator
-import kotlin.experimental.or
 
+abstract class Enemy {/*
 
-abstract class Enemy {
 
     var killed = false
     var body: Body? = null
@@ -49,7 +37,6 @@ abstract class Enemy {
     abstract val width: Float
     abstract val height: Float
 
-    @Suppress("Used for JSON Serialization")
     constructor()
 
     constructor(rectangle: Rectangle) {
@@ -187,5 +174,5 @@ abstract class Enemy {
     }
 
     open fun loadAnimation(textureAtlas: TextureAtlas, animationCreator: AnimationCreator){}
-
+*/
 }

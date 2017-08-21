@@ -1,21 +1,11 @@
 package ru.icarumbas.bagel.Characters
 
-import com.badlogic.gdx.audio.Sound
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.Sprite
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
-import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.*
-import ru.icarumbas.*
-import ru.icarumbas.bagel.Screens.GameScreen
-import ru.icarumbas.bagel.Screens.MainMenuScreen
-import ru.icarumbas.bagel.Screens.Scenes.Hud
-import ru.icarumbas.bagel.Utils.WorldCreate.AnimationCreator
-import kotlin.experimental.or
+import ru.icarumbas.bagel.AnimationCreator
+import ru.icarumbas.bagel.screens.GameScreen
 
 class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : Sprite() {
+/*
 
     lateinit var playerBody: Body
 
@@ -38,8 +28,8 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
     var runningRight = true
     var attackSoundPlayed = false
 
-    var lastState = GameScreen.State.Running
-    var currentState = GameScreen.State.Standing
+    var lastState = State.Running
+    var currentState = State.Standing
 
     var stateTimer = 0f
 
@@ -50,6 +40,14 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
     var HP = 100
     var money = 0
 
+    enum class State {
+        Standing,
+        Running,
+        Jumping,
+        Attacking,
+        Dead
+    }
+
     init {
         definePlayer()
 
@@ -59,11 +57,11 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
         stepSound = gameScreen.game.assetManager["Sounds/steps.wav", Sound::class.java]
 
         // Animation
-        stateAnimation = animationCreator.createSpriteAnimation("Idle", 10, .1f, Animation.PlayMode.LOOP, atlas)
-        runAnimation = animationCreator.createSpriteAnimation("Run", 10, .075f, Animation.PlayMode.LOOP, atlas)
-        jumpAnimation = animationCreator.createSpriteAnimation("Jump", 10, .15f, Animation.PlayMode.LOOP, atlas)
-        attackAnimation = animationCreator.createSpriteAnimation("Attack", 10, .05f, Animation.PlayMode.LOOP, atlas)
-        deadAnimation = animationCreator.createSpriteAnimation("Dead", 10, .1f, Animation.PlayMode.LOOP, atlas)
+        stateAnimation = animationCreator.create("Idle", 10, .1f, Animation.PlayMode.LOOP, atlas)
+        runAnimation = animationCreator.create("Run", 10, .075f, Animation.PlayMode.LOOP, atlas)
+        jumpAnimation = animationCreator.create("Jump", 10, .15f, Animation.PlayMode.LOOP, atlas)
+        attackAnimation = animationCreator.create("Attack", 10, .05f, Animation.PlayMode.LOOP, atlas)
+        deadAnimation = animationCreator.create("Dead", 10, .1f, Animation.PlayMode.LOOP, atlas)
 
     }
 
@@ -144,19 +142,19 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
         currentState = getState(hud)
 
         if (lastState != currentState) {
-            if (currentState == GameScreen.State.Attacking) {
+            if (currentState == State.Attacking) {
                 attacking = true
             }
             stateTimer = 0f
         }
 
-        if (stateTimer > attackAnimation.animationDuration / 2 && !attackSoundPlayed && currentState == GameScreen.State.Attacking) {
+        if (stateTimer > attackAnimation.animationDuration / 2 && !attackSoundPlayed && currentState == State.Attacking) {
             gameScreen.game.assetManager["Sounds/sword.wav", Sound::class.java].play()
             canDamage = true
             attackSoundPlayed = true
         }
 
-        if (attackAnimation.animationDuration < stateTimer && currentState == GameScreen.State.Attacking) {
+        if (attackAnimation.animationDuration < stateTimer && currentState == State.Attacking) {
             attacking = false
             attackSoundPlayed = false
         }
@@ -177,7 +175,7 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
     }
 
     fun isDead(){
-        if (currentState == GameScreen.State.Dead && stateTimer > deadAnimation.animationDuration) {
+        if (currentState == State.Dead && stateTimer > deadAnimation.animationDuration) {
             gameScreen.game.worldIO.preferences.putBoolean("CanContinueWorld", false)
             gameScreen.game.worldIO.preferences.flush()
             gameScreen.game.screen = MainMenuScreen(gameScreen.game)
@@ -189,11 +187,11 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
     private fun getFrame(dt: Float): TextureRegion {
 
         val region = when (currentState) {
-            GameScreen.State.Jumping -> jumpAnimation.getKeyFrame(stateTimer) as TextureRegion
-            GameScreen.State.Running -> runAnimation.getKeyFrame(stateTimer) as TextureRegion
-            GameScreen.State.Standing -> stateAnimation.getKeyFrame(stateTimer) as TextureRegion
-            GameScreen.State.Attacking -> attackAnimation.getKeyFrame(stateTimer) as TextureRegion
-            GameScreen.State.Dead -> deadAnimation.getKeyFrame(stateTimer) as TextureRegion
+            State.Jumping -> jumpAnimation.getKeyFrame(stateTimer) as TextureRegion
+            State.Running -> runAnimation.getKeyFrame(stateTimer) as TextureRegion
+            State.Standing -> stateAnimation.getKeyFrame(stateTimer) as TextureRegion
+            State.Attacking -> attackAnimation.getKeyFrame(stateTimer) as TextureRegion
+            State.Dead -> deadAnimation.getKeyFrame(stateTimer) as TextureRegion
             else -> throw Exception("Unknown State")
         }
 
@@ -251,15 +249,15 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
 
     }
 
-    fun getState(hud: Hud): GameScreen.State {
-        if (HP <= 0) return GameScreen.State.Dead
+    fun getState(hud: Hud): State {
+        if (HP <= 0) return State.Dead
          else
-        if (attacking) return GameScreen.State.Attacking else
-        if (playerBody.linearVelocity.y > 1.5f) return GameScreen.State.Jumping else
+        if (attacking) return State.Attacking else
+        if (playerBody.linearVelocity.y > 1.5f) return State.Jumping else
         if ((hud.touchpad.knobX < hud.touchpad.width / 2 || hud.touchpad.knobX > hud.touchpad.width / 2)) {
-            return GameScreen.State.Running
+            return State.Running
         }
-        else return GameScreen.State.Standing
+        else return State.Standing
 
     }
 
@@ -318,7 +316,8 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
             HP -= damage
             hitTimer = 0f
         }
-    }
+    }*/
+
 }
 
 

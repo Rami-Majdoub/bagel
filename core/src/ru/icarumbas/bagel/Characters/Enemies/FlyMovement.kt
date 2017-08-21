@@ -1,13 +1,9 @@
 package ru.icarumbas.bagel.Characters.Enemies
 
-import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.Body
-import ru.icarumbas.bagel.Characters.Player
-
 
 interface FlyMovement {
 
-    val velocity: Vector2
+   /* val velocity: Vector2
     val speed: Float
     var lastRight: Boolean
     var lastUp: Boolean
@@ -59,6 +55,6 @@ interface FlyMovement {
 
         body.applyLinearImpulse(velocity, body.localPoint2, true)
 
-    }
+    }*/
 
 }

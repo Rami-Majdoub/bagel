@@ -1,15 +1,7 @@
 package ru.icarumbas.bagel.Characters.mapObjects
 
-import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
-import com.badlogic.gdx.math.MathUtils
-import com.badlogic.gdx.math.Rectangle
-import ru.icarumbas.PIX_PER_M
-import ru.icarumbas.PORTAL_DOOR_BIT
-import ru.icarumbas.bagel.Screens.GameScreen
-import ru.icarumbas.bagel.Utils.WorldCreate.Room
 
-
+/*
 class PortalDoor : MapObject {
 
     override val bit = PORTAL_DOOR_BIT
@@ -74,4 +66,4 @@ class PortalDoor : MapObject {
         super.draw(batch, delta, gameScreen)
         open(gameScreen, delta)
     }
-}
+}*/

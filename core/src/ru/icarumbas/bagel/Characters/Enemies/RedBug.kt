@@ -1,14 +1,7 @@
 package ru.icarumbas.bagel.Characters.Enemies
 
-import com.badlogic.gdx.graphics.g2d.*
-import com.badlogic.gdx.math.Rectangle
-import com.badlogic.gdx.math.Vector2
-import ru.icarumbas.PIX_PER_M
-import ru.icarumbas.bagel.Characters.Player
-import ru.icarumbas.bagel.Utils.WorldCreate.AnimationCreator
 
-
-class RedBug : Enemy, FlyMovement {
+class RedBug {/*
 
     override val velocity = Vector2()
     override var lastRight = true
@@ -20,7 +13,6 @@ class RedBug : Enemy, FlyMovement {
     override val speed = .25f
     override val gravityScale = 0f
 
-    @Suppress("Used for JSON Serialization")
     private constructor()
 
     constructor(rectangle: Rectangle) : super(rectangle)
@@ -35,5 +27,5 @@ class RedBug : Enemy, FlyMovement {
 
     }
 
-
+*/
 }

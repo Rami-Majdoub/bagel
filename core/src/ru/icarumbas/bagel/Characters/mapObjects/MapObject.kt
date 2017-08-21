@@ -6,10 +6,11 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.physics.box2d.*
 import ru.icarumbas.PIX_PER_M
-import ru.icarumbas.bagel.Screens.GameScreen
+import ru.icarumbas.bagel.screens.GameScreen
 
 
 abstract class MapObject {
+
 
     var body: Body? = null
     var sprite: Sprite? = null

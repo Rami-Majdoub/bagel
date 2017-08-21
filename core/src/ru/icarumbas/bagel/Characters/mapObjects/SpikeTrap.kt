@@ -1,13 +1,7 @@
 package ru.icarumbas.bagel.Characters.mapObjects
 
-import com.badlogic.gdx.audio.Sound
-import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.math.Rectangle
-import com.badlogic.gdx.math.Vector2
-import ru.icarumbas.PIX_PER_M
-import ru.icarumbas.bagel.Screens.GameScreen
 
-
+/*
 class SpikeTrap : Spike {
 
     override val path = "spikeTrap"
@@ -47,4 +41,4 @@ class SpikeTrap : Spike {
         }
 
     }
-}
+}*/

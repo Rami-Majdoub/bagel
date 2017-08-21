@@ -9,20 +9,16 @@ import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
-import ru.icarumbas.bagel.Screens.MainMenuScreen
-import ru.icarumbas.bagel.Utils.WorldCreate.WorldIO
+import ru.icarumbas.bagel.WorldIO
+import ru.icarumbas.bagel.screens.MainMenuScreen
 
 const val GROUND_BIT: Short = 2
 const val PLATFORM_BIT: Short = 4
 const val PLAYER_BIT: Short = 8
-const val CHEST_BIT: Short = 16
-const val BREAKABLE_BIT: Short = 32
-const val SPIKE_BIT: Short = 64
-const val ENEMY_BIT: Short = 128
-const val COIN_BIT: Short = 256
-const val PORTAL_DOOR_BIT: Short = 512
-const val SWORD_BIT: Short = 1024
-const val SWORD_BIT_LEFT: Short = 2048
+const val WEAPON_BIT: Short = 16
+const val KEY_OPEN_BIT: Short = 32
+const val OTHER_ENTITY_BIT: Short = 64
+
 
 const val PIX_PER_M = 100f
 const val REG_ROOM_HEIGHT = 1024f.div(PIX_PER_M)
@@ -30,7 +26,8 @@ const val REG_ROOM_WIDTH = 1536f.div(PIX_PER_M)
 const val TILED_MAPS_TOTAL = 10
 
 
-class Bagel : Game() {
+class Bagel: Game() {
+
 
     lateinit var worldIO : WorldIO
     lateinit var assetManager : AssetManager

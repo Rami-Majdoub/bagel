@@ -1,7 +1,6 @@
 package ru.icarumbas.bagel.Characters.mapObjects
 
-import com.badlogic.gdx.math.Rectangle
-import ru.icarumbas.PIX_PER_M
+/*
 
 
 class Table : Box {
@@ -14,4 +13,4 @@ class Table : Box {
     constructor(rectangle: Rectangle) : super(rectangle){
         path = "table"
     }
-}
+}*/

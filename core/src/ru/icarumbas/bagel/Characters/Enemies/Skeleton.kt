@@ -1,21 +1,8 @@
 package ru.icarumbas.bagel.Characters.Enemies
 
-import com.badlogic.gdx.graphics.g2d.Animation
-import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.g2d.Sprite
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
-import com.badlogic.gdx.math.Rectangle
-import com.badlogic.gdx.math.Vector2
-import ru.icarumbas.GROUND_BIT
-import ru.icarumbas.PIX_PER_M
-import ru.icarumbas.PLATFORM_BIT
-import ru.icarumbas.bagel.Characters.Player
-import ru.icarumbas.bagel.Screens.GameScreen
-import ru.icarumbas.bagel.Utils.WorldCreate.AnimationCreator
-import kotlin.experimental.or
 
+class Skeleton {/*
 
-class Skeleton : Enemy {
 
     override val strength = 20
     override val maskbit = GROUND_BIT or PLATFORM_BIT or super.maskbit
@@ -67,12 +54,14 @@ class Skeleton : Enemy {
     }
 
     fun disappear(player: Player){
-        /*if (
+        */
+/*if (
             player.playerBody.position.x > body!!.position.x + 3f &&
             player.playerBody.position.x < body!!.position.x - 3f) {
             appeared = false
             currentState = GameScreen.State.Appearing
-        }*/
+        }*//*
+
     }
 
     override fun move(player: Player, delta: Float) {
@@ -124,5 +113,5 @@ class Skeleton : Enemy {
         appearAnimation = Animation(.1f, textureAtlas.findRegions("appear"), Animation.PlayMode.LOOP)
 
         sprite = Sprite()
-    }
+    }*/
 }

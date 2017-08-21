@@ -1,24 +1,13 @@
 package ru.icarumbas.bagel.Characters.mapObjects
 
-import com.badlogic.gdx.audio.Sound
-import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
-import com.badlogic.gdx.math.MathUtils
-import com.badlogic.gdx.math.Rectangle
-import com.badlogic.gdx.physics.box2d.Body
-import com.badlogic.gdx.physics.box2d.BodyDef
-import ru.icarumbas.BREAKABLE_BIT
-import ru.icarumbas.bagel.Characters.Coin
-import ru.icarumbas.bagel.Screens.GameScreen
 
-
+/*
 open class Box : BreakableMapObject {
 
     override val bodyType = BodyDef.BodyType.DynamicBody
     override lateinit var path: String
     override val bit = BREAKABLE_BIT
 
-    @Suppress("Used for JSON Serialization")
     constructor()
 
     constructor(rectangle: Rectangle) : super(rectangle){
@@ -48,4 +37,4 @@ open class Box : BreakableMapObject {
     }
 
 
-}
+}*/

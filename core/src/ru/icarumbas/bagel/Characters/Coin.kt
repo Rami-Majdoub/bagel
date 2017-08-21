@@ -1,14 +1,6 @@
 package ru.icarumbas.bagel.Characters
 
-import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.g2d.Sprite
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
-import com.badlogic.gdx.math.MathUtils
-import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.*
-import ru.icarumbas.*
-import kotlin.experimental.or
-
+/*
 class Coin {
 
     lateinit var coinSprite: Sprite
@@ -61,3 +53,4 @@ class Coin {
         }
     }
 }
+*/
