@@ -27,7 +27,7 @@ class RunningSystem : IteratingSystem {
     }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        if (Math.abs(body[entity].body.linearVelocity.x) < params[entity].maxSpeed) {
+        if (Math.abs(body[entity].body.linearVelocity.x) <= params[entity].maxSpeed) {
             if (Mappers.player.has(entity)) {
                 if (hud.isRightPressed()) {
                     applyImpulse(body[entity].body, params[entity].acceleration, 0f)

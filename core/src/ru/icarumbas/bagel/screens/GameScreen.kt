@@ -25,14 +25,16 @@ import ru.icarumbas.bagel.components.rendering.SizeComponent
 import ru.icarumbas.bagel.components.velocity.JumpComponent
 import ru.icarumbas.bagel.components.velocity.RunComponent
 import ru.icarumbas.bagel.screens.scenes.Hud
+import ru.icarumbas.bagel.systems.other.HealthSystem
 import ru.icarumbas.bagel.systems.other.RoomChangingSystem
 import ru.icarumbas.bagel.systems.other.StateSwapSystem
-import ru.icarumbas.bagel.systems.other.WeaponSystem
 import ru.icarumbas.bagel.systems.physics.AwakeSystem
 import ru.icarumbas.bagel.systems.physics.ContactSystem
+import ru.icarumbas.bagel.systems.physics.WeaponSystem
 import ru.icarumbas.bagel.systems.rendering.*
 import ru.icarumbas.bagel.systems.velocity.JumpingSystem
 import ru.icarumbas.bagel.systems.velocity.RunningSystem
+import ru.icarumbas.bagel.utils.createRevoluteJoint
 
 
 class GameScreen(newWorld: Boolean, game: Bagel): ScreenAdapter() {
@@ -43,10 +45,11 @@ class GameScreen(newWorld: Boolean, game: Bagel): ScreenAdapter() {
     var rooms = ArrayList<Room>()
     private val world = World(Vector2(0f, -9.8f), true)
     private val hud = Hud()
-    private val debugRenderer : DebugRenderer
+    private val debugRenderer: DebugRenderer
     private val engine = Engine()
     val playerBody: Body
     private val mapRenderer: MapRenderer
+    private val worldCleaner: B2DWorldCleaner
 
     init {
 
@@ -63,12 +66,19 @@ class GameScreen(newWorld: Boolean, game: Bagel): ScreenAdapter() {
         debugRenderer = DebugRenderer(Box2DDebugRenderer(), world, viewport)
         playerBody = b2DWorldCreator.createPlayerBody()
 
-        val contactSystem = ContactSystem(hud)
+        val coins = ArrayList<Body>()
+        val entityDeleteList = ArrayList<Entity>()
+        val bodyDeleteList = ArrayList<Body>()
+
+        worldCleaner = B2DWorldCleaner(entityDeleteList, bodyDeleteList, engine, world)
+
+        val contactSystem = ContactSystem(hud, bodyDeleteList)
         world.setContactListener(contactSystem)
 
         // Other
         engine.addSystem(RoomChangingSystem(this))
         engine.addSystem(StateSwapSystem(this))
+        engine.addSystem(HealthSystem(this, world, coins, entityDeleteList))
 
         // Velocity
         engine.addSystem(RunningSystem(hud))
@@ -82,8 +92,8 @@ class GameScreen(newWorld: Boolean, game: Bagel): ScreenAdapter() {
         // Rendering
         engine.addSystem(AnimationSystem(this))
         engine.addSystem(ViewportSystem(viewport, this))
-        engine.addSystem(RenderingSystem(this, orthoRenderer.batch))
         engine.addSystem(WeaponRenderingSystem(orthoRenderer.batch))
+        engine.addSystem(RenderingSystem(this, orthoRenderer.batch))
 
 
         engine.addEntity(createPlayerEntity(
@@ -104,6 +114,7 @@ class GameScreen(newWorld: Boolean, game: Bagel): ScreenAdapter() {
 
     override fun render(delta: Float) {
         world.step(1/45f, 6, 2)
+        worldCleaner.update()
         mapRenderer.render()
         engine.update(delta)
         debugRenderer.render()
@@ -145,10 +156,9 @@ class GameScreen(newWorld: Boolean, game: Bagel): ScreenAdapter() {
                 .add(RunComponent())
                 .add(ParametersComponent(
                         HP = 100,
-                        acceleration = .04f,
-                        maxSpeed = 4f,
+                        acceleration = .02f,
+                        maxSpeed = 6f,
                         strength = 5,
-                        attackSpeed = .5f,
                         knockback = 0f,
                         nearAttackStrength = 0,
                         jumpVelocity = .12f,
@@ -160,20 +170,28 @@ class GameScreen(newWorld: Boolean, game: Bagel): ScreenAdapter() {
                 .add(BodyComponent(playerBody))
                 .add(EquipmentComponent())
                 .add(WeaponComponent(
-                        WeaponSystem.SWING,
-                        b2DWorldCreator.createSwordWeapon(playerBody),
-                        animCreator.create("Attack", 10, .05f, Animation.PlayMode.LOOP, atlas)))
+                        type = WeaponSystem.SWING,
+                        weaponBodyLeft = b2DWorldCreator.createSwordWeapon(PLAYER_WEAPON_BIT, OTHER_ENTITY_BIT, atlas.findRegion("Sword"))
+                                .createRevoluteJoint(playerBody, Vector2(-.025f, -.2f), Vector2(0f, -.1f)),
+                        weaponBodyRight = b2DWorldCreator.createSwordWeapon(PLAYER_WEAPON_BIT, OTHER_ENTITY_BIT, atlas.findRegion("Sword"))
+                                .createRevoluteJoint(playerBody, Vector2(.025f, -.2f), Vector2(0f, -.1f))))
                 .add(StateComponent(ImmutableArray<String>(Array.with(
-                        StateSwapSystem.AllStates.RUNNING,
-                        StateSwapSystem.AllStates.JUMPING,
-                        StateSwapSystem.AllStates.STANDING,
-                        StateSwapSystem.AllStates.ATTACKING,
-                        StateSwapSystem.AllStates.DEAD))))
+                        StateSwapSystem.RUNNING,
+                        StateSwapSystem.JUMPING,
+                        StateSwapSystem.STANDING,
+                        StateSwapSystem.ATTACKING,
+                        StateSwapSystem.DEAD,
+                        StateSwapSystem.WALKING,
+                        StateSwapSystem.JUMP_ATTACKING
+                ))))
                 .add(AnimationComponent(hashMapOf(
-                        StateSwapSystem.AllStates.RUNNING to animCreator.create("Run", 10, .075f, Animation.PlayMode.LOOP, atlas),
-                        StateSwapSystem.AllStates.JUMPING to animCreator.create("Jump", 10, .15f, Animation.PlayMode.LOOP, atlas),
-                        StateSwapSystem.AllStates.STANDING to animCreator.create("Idle", 10, .1f, Animation.PlayMode.LOOP, atlas),
-                        StateSwapSystem.AllStates.DEAD to animCreator.create("Dead", 10, .1f, Animation.PlayMode.LOOP, atlas)
+                        StateSwapSystem.RUNNING to animCreator.create("Run", 10, .075f, Animation.PlayMode.LOOP, atlas),
+                        StateSwapSystem.JUMPING to animCreator.create("Jump", 10, .15f, Animation.PlayMode.LOOP, atlas),
+                        StateSwapSystem.STANDING to animCreator.create("Idle", 10, .1f, Animation.PlayMode.LOOP, atlas),
+                        StateSwapSystem.DEAD to animCreator.create("Dead", 10, .1f, Animation.PlayMode.LOOP, atlas),
+                        StateSwapSystem.ATTACKING to animCreator.create("Attack", 7, .075f, Animation.PlayMode.LOOP, atlas),
+                        StateSwapSystem.WALKING to animCreator.create("Walk", 10, .075f, Animation.PlayMode.LOOP, atlas),
+                        StateSwapSystem.JUMP_ATTACKING to animCreator.create("JumpAttack", 10, .075f, Animation.PlayMode.LOOP, atlas)
                 )))
 
         return entity

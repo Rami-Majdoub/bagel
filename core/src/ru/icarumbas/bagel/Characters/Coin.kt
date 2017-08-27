@@ -1,6 +1,17 @@
 package ru.icarumbas.bagel.Characters
 
 /*
+import com.badlogic.gdx.graphics.g2d.Sprite
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.badlogic.gdx.physics.box2d.BodyDef
+import com.badlogic.gdx.physics.box2d.FixtureDef
+import com.badlogic.gdx.physics.box2d.PolygonShape
+import ru.icarumbas.GROUND_BIT
+import ru.icarumbas.PIX_PER_M
+import ru.icarumbas.PLATFORM_BIT
+import ru.icarumbas.PLAYER_BIT
+import kotlin.experimental.or
+
 class Coin {
 
     lateinit var coinSprite: Sprite

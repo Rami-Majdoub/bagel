@@ -7,7 +7,6 @@ import com.badlogic.gdx.physics.box2d.Body
 import ru.icarumbas.REG_ROOM_HEIGHT
 import ru.icarumbas.REG_ROOM_WIDTH
 import ru.icarumbas.bagel.components.other.PlayerComponent
-import ru.icarumbas.bagel.components.physics.BodyComponent
 import ru.icarumbas.bagel.components.rendering.SizeComponent
 import ru.icarumbas.bagel.screens.GameScreen
 import ru.icarumbas.bagel.utils.Mappers
@@ -17,18 +16,12 @@ class RoomChangingSystem : IteratingSystem {
 
     private val gs: GameScreen
 
-    constructor(gs: GameScreen) : super(Family.all(
-            PlayerComponent::class.java,
-            SizeComponent::class.java,
-            BodyComponent::class.java).get()) {
+    constructor(gs: GameScreen) : super(Family.all(PlayerComponent::class.java).get()) {
         this.gs = gs
     }
 
-    override fun processEntity(entity: Entity?, deltaTime: Float) {
-        val size = Mappers.size[entity]
-        val body = Mappers.body[entity]
-
-        checkRoomChange(size, body.body)
+    override fun processEntity(entity: Entity, deltaTime: Float) {
+        checkRoomChange(Mappers.size[entity], Mappers.body[entity].body)
     }
 
     fun checkRoomChange(pos: SizeComponent, body: Body) {

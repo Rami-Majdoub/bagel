@@ -15,10 +15,10 @@ import ru.icarumbas.bagel.screens.MainMenuScreen
 const val GROUND_BIT: Short = 2
 const val PLATFORM_BIT: Short = 4
 const val PLAYER_BIT: Short = 8
-const val WEAPON_BIT: Short = 16
+const val PLAYER_WEAPON_BIT: Short = 16
 const val KEY_OPEN_BIT: Short = 32
 const val OTHER_ENTITY_BIT: Short = 64
-
+const val OTHER_ENTITY_WEAPON_BI = 128
 
 const val PIX_PER_M = 100f
 const val REG_ROOM_HEIGHT = 1024f.div(PIX_PER_M)

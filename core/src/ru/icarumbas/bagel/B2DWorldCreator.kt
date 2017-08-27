@@ -13,7 +13,6 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
-import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef
 import com.badlogic.gdx.utils.Array
 import ru.icarumbas.*
 import ru.icarumbas.bagel.components.other.*
@@ -43,7 +42,7 @@ class B2DWorldCreator(private val assets: AssetManager, private val world: World
         fixtureDef.friction = .4f
         fixtureDef.density = .04f
         fixtureDef.filter.categoryBits = PLAYER_BIT
-        fixtureDef.filter.maskBits = GROUND_BIT or PLATFORM_BIT or OTHER_ENTITY_BIT or WEAPON_BIT
+        fixtureDef.filter.maskBits = GROUND_BIT or PLATFORM_BIT or OTHER_ENTITY_BIT or PLAYER_WEAPON_BIT
 
         playerBody.createFixture(fixtureDef)
         shape.dispose()
@@ -63,17 +62,7 @@ class B2DWorldCreator(private val assets: AssetManager, private val world: World
 
     }
 
-    fun createJoint(bodyA: Body, bodyB: Body, anchorA: Vector2, anchorB: Vector2): Joint{
-        val joint = RevoluteJointDef()
-        joint.bodyA = bodyA
-        joint.bodyB = bodyB
-        joint.localAnchorA.set(anchorA.x, anchorA.y)
-        joint.localAnchorB.set(anchorB.x, anchorB.y)
-//        joint.enableMotor = true
-        return world.createJoint(joint)
-    }
-
-    fun createSwordWeapon(playerBody: Body): Body{
+    fun createSwordWeapon(categoryBit: Short, maskBit: Short, texture: TextureRegion): Body{
 
         val bodyDef = BodyDef()
         bodyDef.type = BodyDef.BodyType.DynamicBody
@@ -81,19 +70,22 @@ class B2DWorldCreator(private val assets: AssetManager, private val world: World
         val weaponBody = world.createBody(bodyDef)
 
         val fixtureDef = FixtureDef()
-        fixtureDef.filter.categoryBits = WEAPON_BIT
-        fixtureDef.filter.maskBits = OTHER_ENTITY_BIT
+        fixtureDef.filter.categoryBits = categoryBit
+        fixtureDef.filter.maskBits = maskBit
 
         val shape = PolygonShape()
-        shape.setAsBox(.01f, 1f)
+        shape.setAsBox(
+                texture.regionWidth / PIX_PER_M / 2,
+                texture.regionHeight / PIX_PER_M / 2,
+                Vector2(texture.regionWidth / PIX_PER_M / 2, texture.regionHeight / PIX_PER_M / 2),
+                0f)
         fixtureDef.shape = shape
         fixtureDef.density = .001f
         weaponBody.createFixture(fixtureDef)
-        createJoint(playerBody, weaponBody, Vector2(-.3f, 0f), Vector2(0f, -.5f))
+        weaponBody.isActive = false
 
-       /* val rightWeaponBody = world.createBody(bodyDef)
-        rightWeaponBody.createFixture(fixtureDef)
-        createJoint(playerBody, rightWeaponBody, Vector2(.3f, 0f), Vector2(0f, -.5f))*/
+
+        weaponBody.userData = texture
 
         shape.dispose()
         return weaponBody
@@ -199,8 +191,8 @@ class B2DWorldCreator(private val assets: AssetManager, private val world: World
                         }
                         )))
                 .add(SizeComponent(
-                        rectangle.width / PIX_PER_M,
-                        rectangle.height / PIX_PER_M))
+                        64 / PIX_PER_M,
+                        64 / PIX_PER_M))
                 .add(DamageComponent())
                 .add(ParametersComponent(5))
                 .add(CoinDropComponent(2))

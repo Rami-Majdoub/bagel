@@ -11,8 +11,7 @@ import ru.icarumbas.bagel.components.physics.StaticComponent
 import ru.icarumbas.bagel.components.rendering.AnimationComponent
 import ru.icarumbas.bagel.screens.GameScreen
 import ru.icarumbas.bagel.systems.other.StateSwapSystem
-import ru.icarumbas.bagel.utils.Mappers
-import ru.icarumbas.bagel.utils.inView
+import ru.icarumbas.bagel.utils.*
 
 
 class AnimationSystem : IteratingSystem {
@@ -21,8 +20,6 @@ class AnimationSystem : IteratingSystem {
     private val state = Mappers.state
     private val weapon = Mappers.weapon
     private val body = Mappers.body
-    private val ai = Mappers.ai
-    private val run = Mappers.run
 
     private val gs: GameScreen
 
@@ -41,50 +38,45 @@ class AnimationSystem : IteratingSystem {
 
         val textureReg = body[e].body.userData as TextureRegion
 
-        if (ai.has(e)) {
-            if (ai[e].isPlayerRight && textureReg.isFlipX) {
+            if (e.rotatedRight() && textureReg.isFlipX) {
                 textureReg.flip(true, false)
             } else
-                if (!ai[e].isPlayerRight && textureReg.isFlipX) {
+                if (!e.rotatedRight() && !textureReg.isFlipX) {
                     textureReg.flip(true, false)
                 }
-        }
-
-        if (run.has(e)) {
-            if (run[e].lastRight && textureReg.isFlipX) {
-                textureReg.flip(true, false)
-            } else
-                if (!run[e].lastRight && !textureReg.isFlipX) {
-                    textureReg.flip(true, false)
-                }
-        }
     }
 
-    override fun processEntity(entity: Entity, deltaTime: Float) {
+    override fun processEntity(e: Entity, deltaTime: Float) {
 
-        state[entity].stateTime += deltaTime
+        state[e].stateTime += deltaTime
 
-        if (entity.inView(gs.currentMapId, gs.rooms)) {
-            if (anim[entity].animations.containsKey(state[entity].currentState)) {
-                body[entity].body.userData =
-                                anim[entity].
-                                animations[state[entity].
-                                currentState]!!.
-                                getKeyFrame(state[entity].stateTime, true)
+        if (e.inView(gs.currentMapId, gs.rooms)) {
+            if (state[e].currentState == StateSwapSystem.ATTACKING) {
 
-            } else {
-                if (state[entity].currentState == StateSwapSystem.ATTACKING) {
-                    if (weapon.has(entity)) {
-                        weapon[entity].weaponBody?.userData = weapon[entity].weaponAnimation?.getKeyFrame(weapon[entity].stateTimer)
-                        weapon[entity].bulletBodies?.forEach {
-                            it.userData = weapon[entity].bulletAnimation?.getKeyFrame(weapon[entity].stateTimer)
-                        }
-                    }
+                val frame = if (e.rotatedRight()){
+                    weapon[e].weaponBodyRight?.angleInDegrees()!!.div(PI_DIV_7).toInt() * -1
+                } else {
+                    weapon[e].weaponBodyLeft?.angleInDegrees()!!.div(PI_DIV_7).toInt()
                 }
+                body[e].body.userData = anim[e].animations[state[e].currentState]!!.keyFrames.get(frame)
+
+            } else
+                if (anim[e].animations.containsKey(state[e].currentState)) {
+                    body[e].body.userData =
+                                    anim[e].
+                                    animations[state[e].
+                                    currentState]!!.
+                                    getKeyFrame(state[e].stateTime, true)
+
+                }
+
+            if (weapon.has(e))
+            weapon[e].bulletBodies?.forEach {
+                it.userData = weapon[e].bulletAnimation?.getKeyFrame(weapon[e].stateTimer)
             }
+
+            flip(e)
+
         }
-
-        flip(entity)
-
     }
 }

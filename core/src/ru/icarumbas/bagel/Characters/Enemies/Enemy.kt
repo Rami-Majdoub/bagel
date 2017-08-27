@@ -109,7 +109,7 @@ abstract class Enemy {/*
             coin = Coin(gameScreen.game.assetManager.get("Packs/RoomObjects.txt", TextureAtlas::class.java))
             coin!!.createCoins(body!!, gameScreen.world, coins, MathUtils.random(3))
 
-            gameScreen.worldContactListener.deleteList.add(body!!)
+            gameScreen.worldContactListener.entityDeleteList.add(body!!)
             sprite = null
             body = null
             killed = true

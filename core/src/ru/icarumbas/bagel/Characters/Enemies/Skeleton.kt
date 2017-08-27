@@ -12,7 +12,7 @@ class Skeleton {/*
 
 
     var appeared = false
-    var attacking = false
+    var readyAttack = false
     var attackTimer = 0f
 
 
@@ -45,7 +45,7 @@ class Skeleton {/*
             if (HP <= 0 || currentState == GameScreen.State.Dead) {
                 return GameScreen.State.Dead
             } else
-                if (attacking) return GameScreen.State.Attacking
+                if (readyAttack) return GameScreen.State.Attacking
                 else
                     if (body!!.linearVelocity.x != 0f) return GameScreen.State.Running
                     else
@@ -81,11 +81,11 @@ class Skeleton {/*
         {
             attackTimer += delta
             if (attackTimer > 1.5f) {
-                attacking = true
+                readyAttack = true
                 attackTimer = 0f
             } else {
-                if (attackAnimation!!.isAnimationFinished(attackTimer) && attacking) {
-                    attacking = false
+                if (attackAnimation!!.isAnimationFinished(attackTimer) && readyAttack) {
+                    readyAttack = false
                     attack(player)
                 }
             }
@@ -94,7 +94,7 @@ class Skeleton {/*
             if (!attackAnimation!!.isAnimationFinished(attackTimer))
                 attackTimer+=delta
             else
-                attacking = false
+                readyAttack = false
         }
 
         if (lastState != currentState) {

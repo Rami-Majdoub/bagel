@@ -4,13 +4,8 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.Contact
-import com.badlogic.gdx.physics.box2d.ContactImpulse
-import com.badlogic.gdx.physics.box2d.ContactListener
-import com.badlogic.gdx.physics.box2d.Manifold
-import ru.icarumbas.GROUND_BIT
-import ru.icarumbas.PLATFORM_BIT
-import ru.icarumbas.PLAYER_BIT
+import com.badlogic.gdx.physics.box2d.*
+import ru.icarumbas.*
 import ru.icarumbas.bagel.components.physics.BodyComponent
 import ru.icarumbas.bagel.screens.scenes.Hud
 import ru.icarumbas.bagel.utils.Mappers
@@ -19,9 +14,13 @@ import kotlin.experimental.or
 class ContactSystem : ContactListener, IteratingSystem {
 
     private val hud: Hud
+    private val pl = Mappers.player
+    private val body = Mappers.body
+    private val damage = Mappers.damage
+    private val params = Mappers.params
+    private val weapon = Mappers.weapon
 
-
-    constructor(hud: Hud) : super(Family.all(BodyComponent::class.java).get()) {
+    constructor(hud: Hud, bodyDeleteList: ArrayList<Body>) : super(Family.all(BodyComponent::class.java).get()) {
         this.hud = hud
     }
 
@@ -43,29 +42,46 @@ class ContactSystem : ContactListener, IteratingSystem {
         var entityB = Entity()
 
         entities.forEach {
-            if (Mappers.body[it].body == contact.fixtureA.body) entityA = it
-            if (Mappers.body[it].body == contact.fixtureB.body) entityB = it
+            if (body[it].body == contact.fixtureA.body) entityA = it
+            if (body[it].body == contact.fixtureB.body) entityB = it
+            if (weapon.has(it)) {
+                if (weapon[it].weaponBodyRight == contact.fixtureA.body
+                        || weapon[it].weaponBodyLeft == contact.fixtureA.body)
+                    entityA = it
+                if (weapon[it].weaponBodyRight == contact.fixtureB.body
+                        || weapon[it].weaponBodyLeft == contact.fixtureB.body)
+                    entityB = it
+            }
         }
 
         when (contact.fixtureA.filterData.categoryBits or contact.fixtureB.filterData.categoryBits) {
             PLAYER_BIT or PLATFORM_BIT -> {
-                if (Mappers.player.has(entityA)) {
-                    if (Mappers.body[entityA].body.position.y < Mappers.body[entityB].body.position.y + .7 || hud.isDownPressed()) {
+                if (pl.has(entityA)) {
+                    if (body[entityA].body.position.y < body[entityB].body.position.y + .7 || hud.isDownPressed()) {
                         contact.isEnabled = false
                     }
                 } else {
-                    if (Mappers.body[entityB].body.position.y < Mappers.body[entityA].body.position.y + .7 || hud.isDownPressed()) {
+                    if (body[entityB].body.position.y < body[entityA].body.position.y + .7 || hud.isDownPressed()) {
                         contact.isEnabled = false
                     }
                 }
             }
 
             PLAYER_BIT or GROUND_BIT -> {
-                if (Mappers.player.has(entityA)) {
-                    Mappers.player[entityA].collidingWithGround = true
+                if (pl.has(entityA)) {
+                    pl[entityA].collidingWithGround = true
                 } else {
-                    Mappers.player[entityB].collidingWithGround = true
+                    pl[entityB].collidingWithGround = true
                 }
+            }
+
+            PLAYER_WEAPON_BIT or OTHER_ENTITY_BIT -> {
+                if (pl.has(entityA)) {
+                    damage[entityB].damage += params[entityA].strength
+                } else {
+                    damage[entityA].damage += params[entityB].strength
+                }
+                contact.isEnabled = false
             }
 
 
@@ -81,10 +97,10 @@ class ContactSystem : ContactListener, IteratingSystem {
              PLAYER_BIT or COIN_BIT -> {
                  contact.isEnabled = false
 
-                 if (deleteList.isEmpty()) {
+                 if (entityDeleteList.isEmpty()) {
                      gameScreen.game.assetManager["Sounds/coinpickup.wav", Sound::class.java].play()
 
-                     deleteList.add(otherBody)
+                     entityDeleteList.add(otherBody)
                      gameScreen.rooms[gameScreen.currentMap].mapObjects.forEach {
                          if (it is Chest && it.coins.contains(otherBody)) it.coins.remove(otherBody) else
                              if (it is BreakableMapObject && it.coins.contains(otherBody)) it.coins.remove(otherBody)

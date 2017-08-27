@@ -21,9 +21,14 @@ class StateSwapSystem : IteratingSystem {
         val STANDING = "STANDING"
         val DEAD = "DEAD"
         val ATTACKING = "ATTACKING"
+        val WALKING = "WALKING"
+        val JUMP_ATTACKING = "JUMP-ATTACKING"
     }
 
     private val state = Mappers.state
+    private val params = Mappers.params
+    private val weapon = Mappers.weapon
+    private val body = Mappers.body
     private val gs: GameScreen
 
 
@@ -34,30 +39,44 @@ class StateSwapSystem : IteratingSystem {
         this.gs = gs
     }
 
+
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (entity.inView(gs.currentMapId, gs.rooms)) {
-            if (state[entity].states.contains(DEAD) && Mappers.params[entity].HP <= 0) {
+            if (state[entity].states.contains(DEAD) && params[entity].HP <= 0) {
                 if (state[entity].currentState != DEAD) state[entity].stateTime = 0f
                 state[entity].currentState = DEAD
             } else
-                if (state[entity].states.contains(ATTACKING) && Mappers.weapon[entity].attacking) {
-                    if (state[entity].currentState != ATTACKING) state[entity].stateTime = 0f
-                    state[entity].currentState = ATTACKING
+                if (state[entity].states.contains(JUMP_ATTACKING) && weapon[entity].attacking &&
+                        (body[entity].body.linearVelocity.y > .00001f ||
+                        body[entity].body.linearVelocity.y < -.00001f)
+                        ) {
+                    if (state[entity].currentState != JUMP_ATTACKING) state[entity].stateTime = 0f
+                    state[entity].currentState = JUMP_ATTACKING
                 } else
-                    if (state[entity].states.contains(JUMPING) &&
-                            Mappers.body[entity].body.linearVelocity.y > .00001f ||
-                            Mappers.body[entity].body.linearVelocity.y < -.00001f) {
-                        if (state[entity].currentState != JUMPING) state[entity].stateTime = 0f
-                        state[entity].currentState = JUMPING
+                    if (state[entity].states.contains(ATTACKING) && weapon[entity].attacking) {
+                        if (state[entity].currentState != ATTACKING) state[entity].stateTime = 0f
+                        state[entity].currentState = ATTACKING
                     } else
-                        if (state[entity].states.contains(RUNNING) &&
-                                MathUtils.round(Mappers.body[entity].body.linearVelocity.x) != 0) {
-                            if (state[entity].currentState != RUNNING) state[entity].stateTime = 0f
-                            state[entity].currentState = RUNNING
-                        } else {
-                            if (state[entity].currentState != STANDING) state[entity].stateTime = 0f
-                            state[entity].currentState = STANDING
-                        }
+                        if (state[entity].states.contains(JUMPING) &&
+                                body[entity].body.linearVelocity.y > .00001f ||
+                                body[entity].body.linearVelocity.y < -.00001f) {
+                            if (state[entity].currentState != JUMPING) state[entity].stateTime = 0f
+                            state[entity].currentState = JUMPING
+                        } else
+                            if (state[entity].states.contains(RUNNING) &&
+                                    MathUtils.round(body[entity].body.linearVelocity.x) != 0 &&
+                                    Math.abs(body[entity].body.linearVelocity.x) > params[entity].maxSpeed - .5f) {
+                                if (state[entity].currentState != RUNNING) state[entity].stateTime = 0f
+                                state[entity].currentState = RUNNING
+                            } else
+                                if (state[entity].states.contains(WALKING) &&
+                                        MathUtils.round(body[entity].body.linearVelocity.x) != 0){
+                                    if (state[entity].currentState != WALKING) state[entity].stateTime = 0f
+                                    state[entity].currentState = WALKING
+                                } else {
+                                        if (state[entity].currentState != STANDING) state[entity].stateTime = 0f
+                                        state[entity].currentState = STANDING
+                                        }
         }
     }
 }

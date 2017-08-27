@@ -19,7 +19,7 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
 
     private val stepSound: Sound
 
-    var attacking = false
+    var readyAttack = false
     var canDamage = false
 
     var collidingWithGround = false
@@ -143,7 +143,7 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
 
         if (lastState != currentState) {
             if (currentState == State.Attacking) {
-                attacking = true
+                readyAttack = true
             }
             stateTimer = 0f
         }
@@ -155,7 +155,7 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
         }
 
         if (attackAnimation.animationDuration < stateTimer && currentState == State.Attacking) {
-            attacking = false
+            readyAttack = false
             attackSoundPlayed = false
         }
 
@@ -252,7 +252,7 @@ class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : S
     fun getState(hud: Hud): State {
         if (HP <= 0) return State.Dead
          else
-        if (attacking) return State.Attacking else
+        if (readyAttack) return State.Attacking else
         if (playerBody.linearVelocity.y > 1.5f) return State.Jumping else
         if ((hud.touchpad.knobX < hud.touchpad.width / 2 || hud.touchpad.knobX > hud.touchpad.width / 2)) {
             return State.Running
