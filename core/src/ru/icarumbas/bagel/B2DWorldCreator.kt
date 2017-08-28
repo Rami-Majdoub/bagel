@@ -62,7 +62,7 @@ class B2DWorldCreator(private val assets: AssetManager, private val world: World
 
     }
 
-    fun createSwordWeapon(categoryBit: Short, maskBit: Short, texture: TextureRegion): Body{
+    fun createSwordWeapon(categoryBit: Short, maskBit: Short, texture: TextureRegion, size: Vector2): Body{
 
         val bodyDef = BodyDef()
         bodyDef.type = BodyDef.BodyType.DynamicBody
@@ -74,11 +74,7 @@ class B2DWorldCreator(private val assets: AssetManager, private val world: World
         fixtureDef.filter.maskBits = maskBit
 
         val shape = PolygonShape()
-        shape.setAsBox(
-                texture.regionWidth / PIX_PER_M / 2,
-                texture.regionHeight / PIX_PER_M / 2,
-                Vector2(texture.regionWidth / PIX_PER_M / 2, texture.regionHeight / PIX_PER_M / 2),
-                0f)
+        shape.setAsBox(size.x / 2, size.y / 2, Vector2(size.x / 2, size.y / 2), 0f)
         fixtureDef.shape = shape
         fixtureDef.density = .001f
         weaponBody.createFixture(fixtureDef)

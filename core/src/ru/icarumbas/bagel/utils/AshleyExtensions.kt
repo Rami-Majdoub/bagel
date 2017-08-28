@@ -9,11 +9,13 @@ private val static = Mappers.static
 private val pl = Mappers.player
 private val ai = Mappers.ai
 private val run = Mappers.run
+private val plWeapon = Mappers.plWeapon
+
 
 fun Entity.inView(currentMapId: Int, rooms: ArrayList<Room>): Boolean {
          return (id.has(this) && id[this].id == currentMapId) ||
                  (static.has(this) && static[this].mapPath == rooms[currentMapId].path) ||
-                 pl.has(this)
+                 pl.has(this) || plWeapon.has(this)
 }
 
 fun Entity.rotatedRight(): Boolean{

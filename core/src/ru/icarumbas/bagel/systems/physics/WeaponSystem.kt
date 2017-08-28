@@ -19,6 +19,7 @@ class WeaponSystem : IteratingSystem {
     val ai = Mappers.ai
     val player = Mappers.player
     val weapon = Mappers.weapon
+    val body = Mappers.body
 
     companion object WeaponTypes{
         val SWING = 0
@@ -37,24 +38,24 @@ class WeaponSystem : IteratingSystem {
         when (weapon[e].type) {
             SWING -> {
                 if (e.rotatedRight()) {
-                    if (weapon[e].weaponBodyRight?.angleInDegrees()!! > 0){
-                        weapon[e].weaponBodyRight?.setTransform(
-                                weapon[e].weaponBodyRight?.position?.x!!,
-                                weapon[e].weaponBodyRight?.position?.y!!,
+                    if (body[weapon[e].entityRight].body.angleInDegrees() > 0){
+                        body[weapon[e].entityRight].body.setTransform(
+                                body[weapon[e].entityRight].body.position.x,
+                                body[weapon[e].entityRight].body.position.y,
                                 -.1f)
-                        weapon[e].weaponBodyRight?.setLinearVelocity(0f, 0f)
-                        weapon[e].weaponBodyRight?.isActive = false
+                        body[weapon[e].entityRight].body.setLinearVelocity(0f, 0f)
+                        body[weapon[e].entityRight].body.isActive = false
                         weapon[e].attacking = false
 
                     }
                 } else {
-                    if (weapon[e].weaponBodyLeft?.angleInDegrees()!! < 0){
-                        weapon[e].weaponBodyLeft?.setTransform(
-                                weapon[e].weaponBodyLeft?.position?.x!!,
-                                weapon[e].weaponBodyLeft?.position?.y!!,
+                    if (body[weapon[e].entityLeft].body.angleInDegrees() < 0){
+                        body[weapon[e].entityLeft].body.setTransform(
+                                body[weapon[e].entityLeft].body.position.x,
+                                body[weapon[e].entityLeft].body.position.y,
                                 .1f)
-                        weapon[e].weaponBodyLeft?.setLinearVelocity(0f, 0f)
-                        weapon[e].weaponBodyLeft?.isActive = false
+                        body[weapon[e].entityLeft].body.setLinearVelocity(0f, 0f)
+                        body[weapon[e].entityLeft].body.isActive = false
                         weapon[e].attacking = false
                     }
                 }
@@ -76,11 +77,11 @@ class WeaponSystem : IteratingSystem {
             when (weapon[e].type) {
                 SWING -> {
                     if (e.rotatedRight()) {
-                        weapon[e].weaponBodyRight?.isActive = true
-                        weapon[e].weaponBodyRight?.applyAngularImpulse(-.00025f, true)
+                        body[weapon[e].entityRight].body.isActive = true
+                        body[weapon[e].entityRight].body.applyAngularImpulse(-.00025f, true)
                     } else {
-                        weapon[e].weaponBodyLeft?.isActive = true
-                        weapon[e].weaponBodyLeft?.applyAngularImpulse(.00025f, true)
+                        body[weapon[e].entityLeft].body.isActive = true
+                        body[weapon[e].entityLeft].body.applyAngularImpulse(.00025f, true)
                     }
                 }
 

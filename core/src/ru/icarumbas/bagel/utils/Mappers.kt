@@ -30,5 +30,6 @@ class Mappers {
         val equipment   =       ComponentMapper.getFor(EquipmentComponent::class.java)!!
         val params      =       ComponentMapper.getFor(ParametersComponent::class.java)!!
         val weapon      =       ComponentMapper.getFor(WeaponComponent::class.java)!!
+        val plWeapon    =       ComponentMapper.getFor(PlayerWeaponMarkerComponent::class.java)!!
     }
 }

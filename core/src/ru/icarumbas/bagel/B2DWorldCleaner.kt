@@ -20,8 +20,8 @@ class B2DWorldCleaner(val entityDeleteList: ArrayList<Entity>,
         entityDeleteList.forEach {
             world.destroyBody(body[it].body)
             if (weapon.has(it)){
-                world.destroyBody(weapon[it].weaponBodyLeft)
-                world.destroyBody(weapon[it].weaponBodyRight)
+                world.destroyBody(body[weapon[it].entityLeft].body)
+                world.destroyBody(body[weapon[it].entityRight].body)
             }
             engine.removeEntity(it)
         }

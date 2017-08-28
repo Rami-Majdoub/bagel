@@ -5,7 +5,9 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.math.MathUtils
 import ru.icarumbas.bagel.components.other.PlayerComponent
+import ru.icarumbas.bagel.components.other.PlayerWeaponMarkerComponent
 import ru.icarumbas.bagel.components.other.RoomIdComponent
 import ru.icarumbas.bagel.components.physics.BodyComponent
 import ru.icarumbas.bagel.components.physics.StaticComponent
@@ -31,6 +33,7 @@ class RenderingSystem : IteratingSystem {
             SizeComponent::class.java,
             BodyComponent::class.java)
             .one(
+                    PlayerWeaponMarkerComponent::class.java,
                     PlayerComponent::class.java,
                     RoomIdComponent::class.java,
                     StaticComponent::class.java
@@ -43,7 +46,7 @@ class RenderingSystem : IteratingSystem {
     override fun update(deltaTime: Float) {
         super.update(deltaTime)
 
-        entities.filter { it.inView(gs.currentMapId, gs.rooms) }.forEach {
+        entities.filter { it.inView(gs.currentMapId, gs.rooms) && body[it].body.isActive}.forEach {
 
             batch.begin()
 
@@ -51,8 +54,13 @@ class RenderingSystem : IteratingSystem {
                     (body[it].body.userData as TextureRegion),
                     body[it].body.position.x - size[it].width/2,
                     body[it].body.position.y - size[it].height/2,
+                    size[it].width/2,
+                    size[it].height/2,
                     size[it].width,
-                    size[it].height)
+                    size[it].height,
+                    1f,
+                    1f,
+                    body[it].body.angle * MathUtils.radiansToDegrees)
 
             batch.end()
         }

@@ -50,6 +50,8 @@ class GameScreen(newWorld: Boolean, game: Bagel): ScreenAdapter() {
     val playerBody: Body
     private val mapRenderer: MapRenderer
     private val worldCleaner: B2DWorldCleaner
+    private lateinit var weaponEntityRight: Entity
+    private lateinit var weaponEntityLeft: Entity
 
     init {
 
@@ -92,7 +94,7 @@ class GameScreen(newWorld: Boolean, game: Bagel): ScreenAdapter() {
         // Rendering
         engine.addSystem(AnimationSystem(this))
         engine.addSystem(ViewportSystem(viewport, this))
-        engine.addSystem(WeaponRenderingSystem(orthoRenderer.batch))
+//        engine.addSystem(WeaponRenderingSystem(orthoRenderer.batch))
         engine.addSystem(RenderingSystem(this, orthoRenderer.batch))
 
 
@@ -151,6 +153,21 @@ class GameScreen(newWorld: Boolean, game: Bagel): ScreenAdapter() {
                                    b2DWorldCreator: B2DWorldCreator): Entity {
 
 
+        weaponEntityLeft = Entity()
+                .add(BodyComponent(b2DWorldCreator.createSwordWeapon(PLAYER_WEAPON_BIT, OTHER_ENTITY_BIT, atlas.findRegion("Sword"), Vector2(.28f, 1.15f))
+                        .createRevoluteJoint(playerBody, Vector2(-.025f, -.2f), Vector2(0f, -.1f))))
+                .add(SizeComponent(28 / PIX_PER_M, 115 / PIX_PER_M))
+                .add(PlayerWeaponMarkerComponent())
+        engine.addEntity(weaponEntityLeft)
+
+
+        weaponEntityRight = Entity()
+                .add(BodyComponent(b2DWorldCreator.createSwordWeapon(PLAYER_WEAPON_BIT, OTHER_ENTITY_BIT, atlas.findRegion("Sword"), Vector2(.28f, 1.15f))
+                        .createRevoluteJoint(playerBody, Vector2(.025f, -.2f), Vector2(0f, -.1f))))
+                .add(SizeComponent(28 / PIX_PER_M, 115 / PIX_PER_M))
+                .add(PlayerWeaponMarkerComponent())
+        engine.addEntity(weaponEntityRight)
+
         val entity = Entity()
                 .add(PlayerComponent(0))
                 .add(RunComponent())
@@ -171,10 +188,8 @@ class GameScreen(newWorld: Boolean, game: Bagel): ScreenAdapter() {
                 .add(EquipmentComponent())
                 .add(WeaponComponent(
                         type = WeaponSystem.SWING,
-                        weaponBodyLeft = b2DWorldCreator.createSwordWeapon(PLAYER_WEAPON_BIT, OTHER_ENTITY_BIT, atlas.findRegion("Sword"))
-                                .createRevoluteJoint(playerBody, Vector2(-.025f, -.2f), Vector2(0f, -.1f)),
-                        weaponBodyRight = b2DWorldCreator.createSwordWeapon(PLAYER_WEAPON_BIT, OTHER_ENTITY_BIT, atlas.findRegion("Sword"))
-                                .createRevoluteJoint(playerBody, Vector2(.025f, -.2f), Vector2(0f, -.1f))))
+                        entityLeft = weaponEntityLeft,
+                        entityRight = weaponEntityRight))
                 .add(StateComponent(ImmutableArray<String>(Array.with(
                         StateSwapSystem.RUNNING,
                         StateSwapSystem.JUMPING,

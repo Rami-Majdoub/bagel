@@ -1,5 +1,5 @@
 package ru.icarumbas.bagel.systems.rendering
-
+/*
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
@@ -86,6 +86,6 @@ class WeaponRenderingSystem : IteratingSystem{
         batch.end()
 
 
-    }
+    }*/
 
-}
+//}

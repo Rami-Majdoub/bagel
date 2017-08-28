@@ -54,9 +54,9 @@ class AnimationSystem : IteratingSystem {
             if (state[e].currentState == StateSwapSystem.ATTACKING) {
 
                 val frame = if (e.rotatedRight()){
-                    weapon[e].weaponBodyRight?.angleInDegrees()!!.div(PI_DIV_7).toInt() * -1
+                    body[weapon[e].entityRight].body.angleInDegrees().div(PI_DIV_7).toInt() * -1
                 } else {
-                    weapon[e].weaponBodyLeft?.angleInDegrees()!!.div(PI_DIV_7).toInt()
+                    body[weapon[e].entityLeft].body.angleInDegrees().div(PI_DIV_7).toInt()
                 }
                 body[e].body.userData = anim[e].animations[state[e].currentState]!!.keyFrames.get(frame)
 

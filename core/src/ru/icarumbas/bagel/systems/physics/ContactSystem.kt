@@ -45,11 +45,11 @@ class ContactSystem : ContactListener, IteratingSystem {
             if (body[it].body == contact.fixtureA.body) entityA = it
             if (body[it].body == contact.fixtureB.body) entityB = it
             if (weapon.has(it)) {
-                if (weapon[it].weaponBodyRight == contact.fixtureA.body
-                        || weapon[it].weaponBodyLeft == contact.fixtureA.body)
+                if (body[weapon[it].entityRight].body == contact.fixtureA.body
+                        || body[weapon[it].entityLeft].body == contact.fixtureA.body)
                     entityA = it
-                if (weapon[it].weaponBodyRight == contact.fixtureB.body
-                        || weapon[it].weaponBodyLeft == contact.fixtureB.body)
+                if (body[weapon[it].entityRight].body == contact.fixtureB.body
+                        || body[weapon[it].entityLeft].body == contact.fixtureB.body)
                     entityB = it
             }
         }
