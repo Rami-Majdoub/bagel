@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.MathUtils
+import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.components.other.PlayerComponent
 import ru.icarumbas.bagel.components.other.RoomIdComponent
 import ru.icarumbas.bagel.components.other.StateComponent
@@ -29,19 +30,19 @@ class StateSwapSystem : IteratingSystem {
     private val params = Mappers.params
     private val weapon = Mappers.weapon
     private val body = Mappers.body
-    private val gs: GameScreen
+    private val rm: RoomManager
 
 
-    constructor(gs: GameScreen) : super(Family.all(StateComponent::class.java).one(
+    constructor(rm: RoomManager) : super(Family.all(StateComponent::class.java).one(
             PlayerComponent::class.java,
             RoomIdComponent::class.java,
             StaticComponent::class.java).get()) {
-        this.gs = gs
+        this.rm = rm
     }
 
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        if (entity.inView(gs.currentMapId, gs.rooms)) {
+        if (entity.inView(rm)) {
             if (state[entity].states.contains(DEAD) && params[entity].HP <= 0) {
                 if (state[entity].currentState != DEAD) state[entity].stateTime = 0f
                 state[entity].currentState = DEAD

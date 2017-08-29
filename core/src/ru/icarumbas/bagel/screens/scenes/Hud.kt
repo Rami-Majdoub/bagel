@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad
 import com.badlogic.gdx.utils.viewport.StretchViewport
+import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.screens.GameScreen
 
 
@@ -101,13 +102,13 @@ class Hud: InputListener(){
 
     }
 
-    fun draw(gameScreen: GameScreen) {
+    fun draw(rm: RoomManager) {
         stage.draw()
-        update(gameScreen)
+        update(rm)
     }
 
-    private fun update(gameScreen: GameScreen) {
-        currentRoom.setText("${gameScreen.currentMapId}")
+    private fun update(rm: RoomManager) {
+        currentRoom.setText("${rm.currentMapId}")
         getDirection()
         fps.setText("FPS: ${Gdx.graphics.framesPerSecond}")
         //openButton.isVisible = gameScreen.worldContactListener.touchedOpeningItem

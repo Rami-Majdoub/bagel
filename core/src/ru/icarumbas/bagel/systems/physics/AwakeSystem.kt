@@ -3,6 +3,7 @@ package ru.icarumbas.bagel.systems.physics
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
+import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.components.other.RoomIdComponent
 import ru.icarumbas.bagel.components.physics.BodyComponent
 import ru.icarumbas.bagel.components.physics.StaticComponent
@@ -15,30 +16,30 @@ class AwakeSystem : IteratingSystem {
     private val roomId = Mappers.roomId
     private val staticMarker = Mappers.static
 
-    private val gs: GameScreen
+    private val rm: RoomManager
 
     private var lastMapId = -1
 
 
-    constructor(gs: GameScreen) : super(Family.all(
+    constructor(rm: RoomManager) : super(Family.all(
             BodyComponent::class.java).one(
             RoomIdComponent::class.java,
             StaticComponent::class.java).get()) {
 
-        this.gs = gs
+        this.rm = rm
     }
 
     override fun update(deltaTime: Float) {
-        if (lastMapId != gs.currentMapId) {
+        if (lastMapId != rm.currentMapId) {
             super.update(deltaTime)
-            lastMapId = gs.currentMapId
+            lastMapId = rm.currentMapId
         }
     }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (staticMarker.has(entity))
-        body[entity].body.isActive = staticMarker[entity].mapPath == gs.rooms[gs.currentMapId].path
+        body[entity].body.isActive = staticMarker[entity].mapPath == rm.path()
         if (roomId.has(entity))
-        body[entity].body.isActive = roomId[entity].id == gs.currentMapId
+        body[entity].body.isActive = roomId[entity].id == rm.currentMapId
     }
 }

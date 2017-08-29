@@ -1,5 +1,5 @@
 GuyKnight.png
-size: 1782, 1913
+size: 1809, 1921
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
@@ -409,72 +409,79 @@ Sword
   orig: 28, 115
   offset: 0, 0
   index: -1
-Walk (1)
+Sword2
   rotate: false
   xy: 1, 1633
+  size: 93, 287
+  orig: 93, 287
+  offset: 0, 0
+  index: -1
+Walk (1)
+  rotate: false
+  xy: 96, 1633
   size: 173, 267
   orig: 245, 295
   offset: 37, 14
   index: -1
 Walk (2)
   rotate: false
-  xy: 176, 1633
+  xy: 271, 1633
   size: 169, 277
   orig: 245, 295
   offset: 37, 4
   index: -1
 Walk (3)
   rotate: false
-  xy: 347, 1633
+  xy: 442, 1633
   size: 165, 279
   orig: 245, 295
   offset: 37, 4
   index: -1
 Walk (4)
   rotate: false
-  xy: 514, 1633
+  xy: 609, 1633
   size: 166, 270
   orig: 245, 295
   offset: 31, 14
   index: -1
 Walk (5)
   rotate: false
-  xy: 682, 1633
+  xy: 777, 1633
   size: 167, 270
   orig: 245, 295
   offset: 35, 13
   index: -1
 Walk (6)
   rotate: false
-  xy: 851, 1633
+  xy: 946, 1633
   size: 169, 267
   orig: 245, 295
   offset: 37, 14
   index: -1
 Walk (7)
   rotate: false
-  xy: 1022, 1633
+  xy: 1117, 1633
   size: 169, 275
   orig: 245, 295
   offset: 35, 6
   index: -1
 Walk (8)
   rotate: false
-  xy: 1193, 1633
+  xy: 1288, 1633
   size: 171, 274
   orig: 245, 295
   offset: 28, 8
   index: -1
 Walk (9)
   rotate: false
-  xy: 1366, 1633
+  xy: 1461, 1633
   size: 172, 267
   orig: 245, 295
   offset: 21, 16
   index: -1
 Walk (10)
   rotate: false
-  xy: 1540, 1633
+  xy: 1635, 1633
   size: 173, 269
   orig: 245, 295
   offset: 37, 12

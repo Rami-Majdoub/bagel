@@ -6,8 +6,9 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.MathUtils
+import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.components.other.PlayerComponent
-import ru.icarumbas.bagel.components.other.PlayerWeaponMarkerComponent
+import ru.icarumbas.bagel.components.other.AlwaysRenderingMarkerComponent
 import ru.icarumbas.bagel.components.other.RoomIdComponent
 import ru.icarumbas.bagel.components.physics.BodyComponent
 import ru.icarumbas.bagel.components.physics.StaticComponent
@@ -22,31 +23,29 @@ class RenderingSystem : IteratingSystem {
     private val size = Mappers.size
     private val body = Mappers.body
 
-    private val gs : GameScreen
+    private val rm: RoomManager
     private val batch: Batch
     private val entities = ArrayList<Entity>()
 
 
-
-
-    constructor(gs: GameScreen, batch: Batch) : super(Family.all(
+    constructor(rm: RoomManager, batch: Batch) : super(Family.all(
             SizeComponent::class.java,
             BodyComponent::class.java)
             .one(
-                    PlayerWeaponMarkerComponent::class.java,
+                    AlwaysRenderingMarkerComponent::class.java,
                     PlayerComponent::class.java,
                     RoomIdComponent::class.java,
                     StaticComponent::class.java
             ).get()) {
 
-        this.gs = gs
+        this.rm = rm
         this.batch = batch
     }
 
     override fun update(deltaTime: Float) {
         super.update(deltaTime)
 
-        entities.filter { it.inView(gs.currentMapId, gs.rooms) && body[it].body.isActive}.forEach {
+        entities.filter { it.inView(rm) && body[it].body.isActive}.forEach {
 
             batch.begin()
 

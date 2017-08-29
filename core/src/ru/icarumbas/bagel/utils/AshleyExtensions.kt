@@ -2,6 +2,7 @@ package ru.icarumbas.bagel.utils
 
 import com.badlogic.ashley.core.Entity
 import ru.icarumbas.bagel.Room
+import ru.icarumbas.bagel.RoomManager
 
 
 private val id = Mappers.roomId
@@ -12,9 +13,9 @@ private val run = Mappers.run
 private val plWeapon = Mappers.plWeapon
 
 
-fun Entity.inView(currentMapId: Int, rooms: ArrayList<Room>): Boolean {
-         return (id.has(this) && id[this].id == currentMapId) ||
-                 (static.has(this) && static[this].mapPath == rooms[currentMapId].path) ||
+fun Entity.inView(rm: RoomManager): Boolean {
+         return (id.has(this) && id[this].id == rm.currentMapId) ||
+                 (static.has(this) && static[this].mapPath == rm.path()) ||
                  pl.has(this) || plWeapon.has(this)
 }
 

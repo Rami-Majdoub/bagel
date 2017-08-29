@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.components.other.PlayerComponent
 import ru.icarumbas.bagel.components.other.RoomIdComponent
 import ru.icarumbas.bagel.components.other.StateComponent
@@ -21,17 +22,17 @@ class AnimationSystem : IteratingSystem {
     private val weapon = Mappers.weapon
     private val body = Mappers.body
 
-    private val gs: GameScreen
+    private val rm: RoomManager
 
 
-    constructor(gs: GameScreen) : super(Family.all(
+    constructor(rm: RoomManager) : super(Family.all(
             AnimationComponent::class.java,
             StateComponent::class.java)
             .one(
             PlayerComponent::class.java,
             RoomIdComponent::class.java,
             StaticComponent::class.java).get()) {
-        this.gs = gs
+        this.rm = rm
     }
 
     fun flip(e: Entity) {
@@ -50,7 +51,7 @@ class AnimationSystem : IteratingSystem {
 
         state[e].stateTime += deltaTime
 
-        if (e.inView(gs.currentMapId, gs.rooms)) {
+        if (e.inView(rm)) {
             if (state[e].currentState == StateSwapSystem.ATTACKING) {
 
                 val frame = if (e.rotatedRight()){

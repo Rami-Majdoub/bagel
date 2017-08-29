@@ -11,5 +11,6 @@ data class ParametersComponent(var HP: Int,
                                var nearAttackStrength: Int = 0,
                                var jumpVelocity: Float = 0f,
                                val maxJumps: Int = 1,
+                               val attackSpeed: Float = 0f,
                                val mass: Int = 0
                                ) : Component

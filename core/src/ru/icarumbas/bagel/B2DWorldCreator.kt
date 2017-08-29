@@ -48,16 +48,15 @@ class B2DWorldCreator(private val assets: AssetManager, private val world: World
         shape.dispose()
 
         val circleShape = CircleShape()
-        fixtureDef.shape = circleShape
         circleShape.radius = .29f
         circleShape.position = Vector2(0f, -.4f)
         fixtureDef.friction = 1.5f
+        fixtureDef.shape = circleShape
 
         playerBody.createFixture(fixtureDef)
         circleShape.dispose()
 
         playerBody.isFixedRotation = true
-
         return playerBody
 
     }
@@ -74,7 +73,7 @@ class B2DWorldCreator(private val assets: AssetManager, private val world: World
         fixtureDef.filter.maskBits = maskBit
 
         val shape = PolygonShape()
-        shape.setAsBox(size.x / 2, size.y / 2, Vector2(size.x / 2, size.y / 2), 0f)
+        shape.setAsBox(size.x / 2, size.y / 2)
         fixtureDef.shape = shape
         fixtureDef.density = .001f
         weaponBody.createFixture(fixtureDef)
@@ -155,23 +154,20 @@ class B2DWorldCreator(private val assets: AssetManager, private val world: World
                       roomId: Int) {
         val layer = assets.get(roomPath, TiledMap::class.java).layers[objectPath]
 
-        if (layer != null)
-            layer.objects
-                    .filterIsInstance<RectangleMapObject>()
-                    .forEach {
-                        engine.addEntity(when(objectPath){
-                            "boxes" -> createBoxEntity(it.rectangle, roomId)
-                            "chandeliers" -> createChandelierEntity(it.rectangle, roomId)
-                            "chests" -> Entity()
-                            "statues" -> Entity()
-                            "spikeTraps" -> Entity()
-                            "spikes" -> Entity()
-                            "portalDoor" -> Entity()
-                            "chairs" -> Entity()
-                            "tables" -> Entity()
-                            else -> throw Exception("NO SUCH CLASS")
-                        })
-                    }
+        layer?.objects?.filterIsInstance<RectangleMapObject>()?.forEach {
+            engine.addEntity(when(objectPath){
+                "boxes" -> createBoxEntity(it.rectangle, roomId)
+                "chandeliers" -> createChandelierEntity(it.rectangle, roomId)
+                "chests" -> Entity()
+                "statues" -> Entity()
+                "spikeTraps" -> Entity()
+                "spikes" -> Entity()
+                "portalDoor" -> Entity()
+                "chairs" -> Entity()
+                "tables" -> Entity()
+                else -> throw Exception("NO SUCH CLASS")
+            })
+        }
     }
 
     private fun createBoxEntity(rectangle: Rectangle, roomId: Int): Entity {
