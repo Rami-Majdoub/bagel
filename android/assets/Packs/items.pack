@@ -1,0 +1,397 @@
+items.png
+size: 1788, 1064
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Banner (1)
+  rotate: false
+  xy: 135, 285
+  size: 126, 180
+  orig: 126, 180
+  offset: 0, 0
+  index: -1
+Banner (2)
+  rotate: false
+  xy: 263, 285
+  size: 126, 180
+  orig: 126, 180
+  offset: 0, 0
+  index: -1
+Banner (3)
+  rotate: false
+  xy: 1181, 285
+  size: 126, 208
+  orig: 126, 208
+  offset: 0, 0
+  index: -1
+Banner (4)
+  rotate: false
+  xy: 1489, 285
+  size: 126, 208
+  orig: 126, 208
+  offset: 0, 0
+  index: -1
+Barrel
+  rotate: false
+  xy: 1122, 121
+  size: 119, 133
+  orig: 119, 133
+  offset: 0, 0
+  index: -1
+Big Door (1)
+  rotate: false
+  xy: 626, 777
+  size: 269, 286
+  orig: 269, 286
+  offset: 0, 0
+  index: -1
+Big Door (2)
+  rotate: false
+  xy: 1168, 777
+  size: 269, 286
+  orig: 269, 286
+  offset: 0, 0
+  index: -1
+Big Door (3)
+  rotate: false
+  xy: 1439, 777
+  size: 270, 286
+  orig: 270, 286
+  offset: 0, 0
+  index: -1
+Big Door (4)
+  rotate: false
+  xy: 897, 777
+  size: 269, 286
+  orig: 269, 286
+  offset: 0, 0
+  index: -1
+Big Door (5)
+  rotate: false
+  xy: 355, 777
+  size: 269, 286
+  orig: 269, 286
+  offset: 0, 0
+  index: -1
+Book (1)
+  rotate: false
+  xy: 27, 1
+  size: 12, 30
+  orig: 12, 30
+  offset: 0, 0
+  index: -1
+Book (2)
+  rotate: false
+  xy: 41, 1
+  size: 8, 30
+  orig: 8, 30
+  offset: 0, 0
+  index: -1
+Book (3)
+  rotate: false
+  xy: 1, 1
+  size: 12, 26
+  orig: 12, 26
+  offset: 0, 0
+  index: -1
+Book (4)
+  rotate: false
+  xy: 15, 1
+  size: 10, 30
+  orig: 10, 30
+  offset: 0, 0
+  index: -1
+Candle (1)
+  rotate: false
+  xy: 1309, 285
+  size: 178, 208
+  orig: 178, 208
+  offset: 0, 0
+  index: -1
+Candle (2)
+  rotate: false
+  xy: 1000, 285
+  size: 179, 208
+  orig: 179, 208
+  offset: 0, 0
+  index: -1
+Candle (3)
+  rotate: false
+  xy: 640, 285
+  size: 178, 208
+  orig: 178, 208
+  offset: 0, 0
+  index: -1
+Candle (4)
+  rotate: false
+  xy: 820, 285
+  size: 178, 208
+  orig: 178, 208
+  offset: 0, 0
+  index: -1
+Chair (1)
+  rotate: false
+  xy: 978, 121
+  size: 70, 128
+  orig: 70, 128
+  offset: 0, 0
+  index: -1
+Chair (2)
+  rotate: false
+  xy: 1050, 121
+  size: 70, 128
+  orig: 70, 128
+  offset: 0, 0
+  index: -1
+Chandelier (1)
+  rotate: false
+  xy: 246, 121
+  size: 242, 120
+  orig: 242, 120
+  offset: 0, 0
+  index: -1
+Chandelier (2)
+  rotate: false
+  xy: 734, 121
+  size: 242, 120
+  orig: 242, 120
+  offset: 0, 0
+  index: -1
+Chandelier (3)
+  rotate: false
+  xy: 490, 121
+  size: 242, 120
+  orig: 242, 120
+  offset: 0, 0
+  index: -1
+Chandelier (4)
+  rotate: false
+  xy: 1, 121
+  size: 243, 120
+  orig: 243, 120
+  offset: 0, 0
+  index: -1
+Chest (1)
+  rotate: false
+  xy: 278, 1
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+Chest (2)
+  rotate: false
+  xy: 376, 1
+  size: 96, 101
+  orig: 96, 101
+  offset: 0, 0
+  index: -1
+Chest (3)
+  rotate: false
+  xy: 474, 1
+  size: 96, 106
+  orig: 96, 106
+  offset: 0, 0
+  index: -1
+Chest (4)
+  rotate: false
+  xy: 747, 1
+  size: 96, 108
+  orig: 96, 108
+  offset: 0, 0
+  index: -1
+Crate
+  rotate: false
+  xy: 572, 1
+  size: 106, 106
+  orig: 106, 106
+  offset: 0, 0
+  index: -1
+Cupboard (1)
+  rotate: false
+  xy: 391, 285
+  size: 247, 205
+  orig: 247, 205
+  offset: 0, 0
+  index: -1
+Cupboard (2)
+  rotate: false
+  xy: 173, 777
+  size: 180, 256
+  orig: 180, 256
+  offset: 0, 0
+  index: -1
+IronDoor (1)
+  rotate: false
+  xy: 1549, 531
+  size: 170, 244
+  orig: 170, 244
+  offset: 0, 0
+  index: -1
+IronDoor (2)
+  rotate: false
+  xy: 517, 531
+  size: 170, 244
+  orig: 170, 244
+  offset: 0, 0
+  index: -1
+IronDoor (3)
+  rotate: false
+  xy: 689, 531
+  size: 170, 244
+  orig: 170, 244
+  offset: 0, 0
+  index: -1
+IronDoor (4)
+  rotate: false
+  xy: 861, 531
+  size: 170, 244
+  orig: 170, 244
+  offset: 0, 0
+  index: -1
+IronDoor (5)
+  rotate: false
+  xy: 1205, 531
+  size: 170, 244
+  orig: 170, 244
+  offset: 0, 0
+  index: -1
+IronDoor (6)
+  rotate: false
+  xy: 1, 777
+  size: 170, 244
+  orig: 170, 244
+  offset: 0, 0
+  index: -1
+Lighting (1)
+  rotate: false
+  xy: 1243, 121
+  size: 98, 154
+  orig: 98, 154
+  offset: 0, 0
+  index: -1
+Lighting (2)
+  rotate: false
+  xy: 1343, 121
+  size: 98, 154
+  orig: 98, 154
+  offset: 0, 0
+  index: -1
+Lighting (3)
+  rotate: false
+  xy: 1443, 121
+  size: 98, 154
+  orig: 98, 154
+  offset: 0, 0
+  index: -1
+Lighting (4)
+  rotate: false
+  xy: 1543, 121
+  size: 98, 154
+  orig: 98, 154
+  offset: 0, 0
+  index: -1
+Table
+  rotate: false
+  xy: 51, 1
+  size: 131, 69
+  orig: 131, 69
+  offset: 0, 0
+  index: -1
+Torch (1)
+  rotate: false
+  xy: 845, 1
+  size: 178, 111
+  orig: 178, 111
+  offset: 0, 0
+  index: -1
+Torch (2)
+  rotate: false
+  xy: 1025, 1
+  size: 178, 114
+  orig: 178, 114
+  offset: 0, 0
+  index: -1
+Torch (3)
+  rotate: false
+  xy: 1385, 1
+  size: 178, 118
+  orig: 178, 118
+  offset: 0, 0
+  index: -1
+Torch (4)
+  rotate: false
+  xy: 1205, 1
+  size: 178, 116
+  orig: 178, 116
+  offset: 0, 0
+  index: -1
+Vase (1)
+  rotate: false
+  xy: 1, 285
+  size: 132, 171
+  orig: 132, 171
+  offset: 0, 0
+  index: -1
+Vase (2)
+  rotate: false
+  xy: 680, 1
+  size: 65, 106
+  orig: 65, 106
+  offset: 0, 0
+  index: -1
+Vase (3)
+  rotate: false
+  xy: 1643, 121
+  size: 120, 162
+  orig: 120, 162
+  offset: 0, 0
+  index: -1
+Vase (4)
+  rotate: false
+  xy: 184, 1
+  size: 92, 72
+  orig: 92, 72
+  offset: 0, 0
+  index: -1
+Wood Door (1)
+  rotate: false
+  xy: 173, 531
+  size: 170, 244
+  orig: 170, 244
+  offset: 0, 0
+  index: -1
+Wood Door (2)
+  rotate: false
+  xy: 1, 531
+  size: 170, 244
+  orig: 170, 244
+  offset: 0, 0
+  index: -1
+Wood Door (3)
+  rotate: false
+  xy: 1617, 285
+  size: 170, 244
+  orig: 170, 244
+  offset: 0, 0
+  index: -1
+Wood Door (4)
+  rotate: false
+  xy: 345, 531
+  size: 170, 244
+  orig: 170, 244
+  offset: 0, 0
+  index: -1
+Wood Door (5)
+  rotate: false
+  xy: 1033, 531
+  size: 170, 244
+  orig: 170, 244
+  offset: 0, 0
+  index: -1
+Wood Door (6)
+  rotate: false
+  xy: 1377, 531
+  size: 170, 244
+  orig: 170, 244
+  offset: 0, 0
+  index: -1

@@ -1,7 +1,7 @@
 package ru.icarumbas.bagel.Characters
 
 import com.badlogic.gdx.graphics.g2d.Sprite
-import ru.icarumbas.bagel.AnimationCreator
+import ru.icarumbas.bagel.creators.AnimationCreator
 import ru.icarumbas.bagel.screens.GameScreen
 
 class Player(val gameScreen: GameScreen, animationCreator: AnimationCreator) : Sprite() {

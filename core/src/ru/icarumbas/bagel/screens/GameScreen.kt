@@ -22,12 +22,15 @@ import ru.icarumbas.bagel.systems.physics.AwakeSystem
 import ru.icarumbas.bagel.systems.physics.ContactSystem
 import ru.icarumbas.bagel.systems.physics.WeaponSystem
 import ru.icarumbas.bagel.systems.rendering.AnimationSystem
-import ru.icarumbas.bagel.systems.rendering.MapRenderer
+import ru.icarumbas.bagel.MapRenderer
 import ru.icarumbas.bagel.systems.rendering.RenderingSystem
 import ru.icarumbas.bagel.systems.rendering.ViewportSystem
 import ru.icarumbas.bagel.systems.velocity.JumpingSystem
 import ru.icarumbas.bagel.systems.velocity.RunningSystem
-import ru.icarumbas.bagel.EntityCreator
+import ru.icarumbas.bagel.creators.EntityCreator
+import ru.icarumbas.bagel.creators.AnimationCreator
+import ru.icarumbas.bagel.creators.B2DWorldCreator
+import ru.icarumbas.bagel.creators.WorldCreator
 
 
 class GameScreen(newWorld: Boolean, game: Bagel): ScreenAdapter() {
@@ -37,89 +40,89 @@ class GameScreen(newWorld: Boolean, game: Bagel): ScreenAdapter() {
     private val debugRenderer: DebugRenderer
     private val engine = Engine()
     private val mapRenderer: MapRenderer
-    private val worldCleaner: B2DWorldCleaner
-    private val entityCeator: EntityCreator
+    private val worldCleaner: WorldCleaner
+    private val entityCreator: EntityCreator
     private val rm: RoomManager
 
     init {
 
-        val b2DWorldCreator = B2DWorldCreator(game.assetManager, world)
+        val b2DWorldCreator = B2DWorldCreator(world)
         val animationCreator = AnimationCreator(game.assetManager)
         val worldCreator = WorldCreator(game.assetManager)
-        rm = RoomManager(ArrayList())
+        entityCreator = EntityCreator(b2DWorldCreator, animationCreator)
+        rm = RoomManager(ArrayList(), game.assetManager, entityCreator)
 
-        if (newWorld) rm.createNewWorld(worldCreator, b2DWorldCreator, game.assetManager, engine) else rm.continueWorld()
+        if (newWorld) rm.createNewWorld(worldCreator, game.assetManager) else rm.continueWorld()
+        rm.loadEntities(engine)
 
         val viewport = FitViewport(REG_ROOM_WIDTH, REG_ROOM_HEIGHT, OrthographicCamera(REG_ROOM_WIDTH, REG_ROOM_HEIGHT))
         val orthoRenderer = OrthogonalTiledMapRenderer(game.assetManager.get(rm.path()), 0.01f)
 
         mapRenderer = MapRenderer(orthoRenderer, rm, game.assetManager, viewport)
         debugRenderer = DebugRenderer(Box2DDebugRenderer(), world, viewport)
-        entityCeator = EntityCreator()
 
         val playerBody = b2DWorldCreator.createPlayerBody()
         val coins = ArrayList<Body>()
         val entityDeleteList = ArrayList<Entity>()
         val bodyDeleteList = ArrayList<Body>()
 
-        worldCleaner = B2DWorldCleaner(entityDeleteList, bodyDeleteList, engine, world)
+        worldCleaner = WorldCleaner(entityDeleteList, bodyDeleteList, engine, world)
 
         val contactSystem = ContactSystem(hud, bodyDeleteList)
         world.setContactListener(contactSystem)
 
-        // Other
-        engine.addSystem(RoomChangingSystem(rm))
-        engine.addSystem(StateSwapSystem(rm))
-        engine.addSystem(HealthSystem(rm, world, coins, entityDeleteList))
-
-        // Velocity
-        engine.addSystem(RunningSystem(hud))
-        engine.addSystem(JumpingSystem(hud))
-
-        // Physic
-        engine.addSystem(AwakeSystem(rm))
-        engine.addSystem(contactSystem)
-        engine.addSystem(WeaponSystem(hud))
-
-        // Rendering
-        engine.addSystem(AnimationSystem(rm))
-        engine.addSystem(ViewportSystem(viewport, rm))
-        engine.addSystem(RenderingSystem(rm, orthoRenderer.batch))
-
-        val weaponEntityLeft = entityCeator.createSwingWeaponEntity(
+        val weaponEntityLeft = entityCreator.createSwingWeaponEntity(
                 path = "Sword2",
                 atlas = game.assetManager["Packs/GuyKnight.pack", TextureAtlas::class.java],
-                width = 45,
-                height = 200,
+                width = 30,
+                height = 100,
                 playerBody = playerBody,
                 b2DWorldCreator = b2DWorldCreator,
                 anchorA = Vector2(-.1f, -.3f),
-                anchorB = Vector2(0f, -.75f))
+                anchorB = Vector2(0f, -.5f))
 
-        val weaponEntityRight = entityCeator.createSwingWeaponEntity(
+        val weaponEntityRight = entityCreator.createSwingWeaponEntity(
                 path = "Sword2",
                 atlas = game.assetManager["Packs/GuyKnight.pack", TextureAtlas::class.java],
-                width = 45,
-                height = 200,
+                width = 30,
+                height = 100,
                 playerBody = playerBody,
                 b2DWorldCreator = b2DWorldCreator,
                 anchorA = Vector2(.1f, -.3f),
-                anchorB = Vector2(0f, -.75f))
+                anchorB = Vector2(0f, -.5f))
 
-        engine.addEntity(weaponEntityRight)
-        engine.addEntity(weaponEntityLeft)
-        engine.addEntity(entityCeator.createPlayerEntity(
-                animationCreator,
-                game.assetManager["Packs/GuyKnight.pack", TextureAtlas::class.java],
-                playerBody,
-                weaponEntityLeft,
-                weaponEntityRight))
+        with (engine) {
+
+            // Other
+            addSystem(RoomChangingSystem(rm))
+            addSystem(StateSwapSystem(rm))
+            addSystem(HealthSystem(rm, world, coins, entityDeleteList))
+
+            // Velocity
+            addSystem(RunningSystem(hud))
+            addSystem(JumpingSystem(hud))
+
+            // Physic
+            addSystem(AwakeSystem(rm))
+            addSystem(contactSystem)
+            addSystem(WeaponSystem(hud))
+
+            // Rendering
+            addSystem(AnimationSystem(rm))
+            addSystem(ViewportSystem(viewport, rm))
+            addSystem(RenderingSystem(rm, orthoRenderer.batch))
 
 
-        (0..TILED_MAPS_TOTAL).forEach {
-            b2DWorldCreator.loadGround("Maps/Map$it.tmx", "ground", GROUND_BIT, engine)
-            b2DWorldCreator.loadGround("Maps/Map$it.tmx", "platform", PLATFORM_BIT, engine)
+            addEntity(weaponEntityRight)
+            addEntity(weaponEntityLeft)
+            addEntity(entityCreator.createPlayerEntity(
+                    animationCreator,
+                    game.assetManager["Packs/GuyKnight.pack", TextureAtlas::class.java],
+                    playerBody,
+                    weaponEntityLeft,
+                    weaponEntityRight))
         }
+
 
         Gdx.input.inputProcessor = hud.stage
 

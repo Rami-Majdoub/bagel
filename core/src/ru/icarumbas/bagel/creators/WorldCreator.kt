@@ -1,4 +1,4 @@
-package ru.icarumbas.bagel
+package ru.icarumbas.bagel.creators
 
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.maps.tiled.TiledMap
@@ -6,6 +6,8 @@ import com.badlogic.gdx.math.MathUtils
 import ru.icarumbas.REG_ROOM_HEIGHT
 import ru.icarumbas.REG_ROOM_WIDTH
 import ru.icarumbas.TILED_MAPS_TOTAL
+import ru.icarumbas.bagel.Room
+import ru.icarumbas.bagel.RoomManager
 
 class WorldCreator (val assetManager: AssetManager){
 
@@ -13,7 +15,7 @@ class WorldCreator (val assetManager: AssetManager){
     private lateinit var mesh: Array<IntArray>
     private val stringSides = arrayOf("Left", "Up", "Down", "Right")
     private var newRoom = Room()
-    private var roomCounter = 0
+    private var roomsTotal = 0
     private var meshCheckSides = IntArray(8)
 
     fun createWorld(worldSize: Int, rm: RoomManager){
@@ -50,9 +52,9 @@ class WorldCreator (val assetManager: AssetManager){
     private fun rand(values: Int): Int {
         val random = MathUtils.random(1000)
         return if (random < zeroRoomChance) {
-            MathUtils.random(0, 3)
+            MathUtils.random(0, 0)
         } else
-            MathUtils.random(4, values)
+            MathUtils.random(0, values)
     }
 
     private fun checkFit(side: String, meshX: Int, meshY: Int, mapRoomWidth: Int, mapRoomHeight: Int): Boolean {
@@ -74,7 +76,7 @@ class WorldCreator (val assetManager: AssetManager){
 
     private fun chooseMap(path: String = "", side: String, count: Int, meshX: Int, meshY: Int, rm: RoomManager): Room {
 
-        newRoom = rm.createRoom(assetManager, "$path${rand(TILED_MAPS_TOTAL)}.tmx", roomCounter)
+        newRoom = rm.createRoom(assetManager, "$path${rand(TILED_MAPS_TOTAL)}.tmx", roomsTotal)
 
         val mapRoomWidth = (newRoom.width / REG_ROOM_WIDTH).toInt()
         val mapRoomHeight = (newRoom.height / REG_ROOM_HEIGHT).toInt()
@@ -126,7 +128,7 @@ class WorldCreator (val assetManager: AssetManager){
     }
 
     fun drawMesh(count: Int, meshX: Int, meshY: Int){
-        println("Count: $count, Size: $roomCounter")
+        println("Count: $count, Size: $roomsTotal")
 
         mesh.forEach {
             x -> x.forEach { y ->
@@ -137,36 +139,36 @@ class WorldCreator (val assetManager: AssetManager){
 
     }
 
-    //TODO("Rename all this fucking values. ")
-    fun generateRoom(path: String,
-                     side: String,
-                     previousMapLink: Int,
-                     count: Int,
-                     closestX: Int,
-                     closestY: Int,
-                     placeX: Int,
-                     placeY: Int,
-                     linkX: Int,
-                     linkY: Int,
-                     linkXB: Int,
-                     linkYB: Int,
-                     rm: RoomManager)
+    //TODO("Rename this bullshit")
+    private fun generateRoom(path: String,
+                             sideName: String,
+                             previousPassLink: Int,
+                             count: Int,
+                             stepX: Int,
+                             stepY: Int,
+                             countMeshX: Int,
+                             countMeshY: Int,
+                             meshClosestX: Int,
+                             meshClosestY: Int,
+                             meshClosestX2: Int,
+                             meshClosestY2: Int,
+                             rm: RoomManager)
     {
 
         // Check that room have gate to create specific map
-        if (assetManager.get(rm.path(), TiledMap::class.java).properties.get(side) == "Yes") {
+        if (assetManager.get(rm.path(count), TiledMap::class.java).properties.get(sideName) == "Yes") {
             // X and y positions on mesh. For big maps part of it
-            val meshX = rm.rooms[count].meshCoords[placeX]
-            val meshY = rm.rooms[count].meshCoords[placeY]
+            val meshX = rm.rooms[count].meshCoords[countMeshX]
+            val meshY = rm.rooms[count].meshCoords[countMeshY]
 
 
             // Check that mesh don't have another room with it's coordinates
-            if (mesh[meshY + closestY][meshX + closestX] == 0) {
+            if (mesh[meshY + stepY][meshX + stepX] == 0) {
                 if (zeroRoomChance < 750) zeroRoomChance += 15
-                roomCounter++
-                rm.rooms.add(chooseMap(path, side, count, meshX, meshY, rm))
-                rm.rooms[roomCounter].meshCoords = intArrayOf(meshX + meshCheckSides[0], meshY + meshCheckSides[1], meshX + meshCheckSides[6], meshY + meshCheckSides[7])
-                rm.rooms[count].passes[previousMapLink] = roomCounter
+                roomsTotal++
+                rm.rooms.add(chooseMap(path, sideName, count, meshX, meshY, rm))
+                rm.rooms[roomsTotal].meshCoords = intArrayOf(meshX + meshCheckSides[0], meshY + meshCheckSides[1], meshX + meshCheckSides[6], meshY + meshCheckSides[7])
+                rm.rooms[count].passes[previousPassLink] = roomsTotal
 
                 // Fill mesh on new room's coordinates
                 for (i in 0..7 step 2) mesh[meshY + meshCheckSides[i + 1]][meshX + meshCheckSides[i]] = 1
@@ -179,10 +181,10 @@ class WorldCreator (val assetManager: AssetManager){
             else {
                 // Search in mapLinks room with collided coordinates
                 for (it in rm.rooms) {
-                    if (meshX + closestX == it.meshCoords[linkX] && meshY + closestY == it.meshCoords[linkY] ||
-                        meshX + closestX == it.meshCoords[linkXB] && meshY + closestY == it.meshCoords[linkYB]) {
+                    if (meshX + stepX == it.meshCoords[meshClosestX] && meshY + stepY == it.meshCoords[meshClosestY] ||
+                        meshX + stepX == it.meshCoords[meshClosestX2] && meshY + stepY == it.meshCoords[meshClosestY2]) {
                         // Add link to main room
-                        rm.rooms[count].passes[previousMapLink] = rm.rooms.indexOf(it)
+                        rm.rooms[count].passes[previousPassLink] = rm.rooms.indexOf(it)
                         return
                     }
                 }

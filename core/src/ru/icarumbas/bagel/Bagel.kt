@@ -17,13 +17,17 @@ const val PLATFORM_BIT: Short = 4
 const val PLAYER_BIT: Short = 8
 const val PLAYER_WEAPON_BIT: Short = 16
 const val KEY_OPEN_BIT: Short = 32
-const val OTHER_ENTITY_BIT: Short = 64
-const val OTHER_ENTITY_WEAPON_BI = 128
+const val BREAKABLE_BIT: Short = 64
+const val AI_WEAPON_BI: Short = 128
+const val AI_BIT: Short = 256
+const val TAKE_BIT: Short = 512
+const val STATIC_BIT: Short = 1024
+
 
 const val PIX_PER_M = 100f
-const val REG_ROOM_HEIGHT = 1024f.div(PIX_PER_M)
-const val REG_ROOM_WIDTH = 1536f.div(PIX_PER_M)
-const val TILED_MAPS_TOTAL = 10
+const val REG_ROOM_HEIGHT = 768f.div(PIX_PER_M)
+const val REG_ROOM_WIDTH = 1152f.div(PIX_PER_M)
+const val TILED_MAPS_TOTAL = 0
 
 
 class Bagel: Game() {
@@ -39,7 +43,7 @@ class Bagel: Game() {
         // Rooms
         assetManager.setLoader(TiledMap::class.java, TmxMapLoader(InternalFileHandleResolver()))
         (0..TILED_MAPS_TOTAL).forEach {
-            assetManager.load("Maps/Map$it.tmx", TiledMap::class.java)
+            assetManager.load("Maps/New/map$it.tmx", TiledMap::class.java)
         }
 
         // Texture Atlases
@@ -48,6 +52,8 @@ class Bagel: Game() {
         assetManager.load("Packs/GuyKnight.pack", TextureAtlas::class.java)
         assetManager.load("Packs/Main_Menu.txt", TextureAtlas::class.java)
         assetManager.load("Packs/Enemies.txt", TextureAtlas::class.java)
+        assetManager.load("Packs/items.pack", TextureAtlas::class.java)
+
 
 
 

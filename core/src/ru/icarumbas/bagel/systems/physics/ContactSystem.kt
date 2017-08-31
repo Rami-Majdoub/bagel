@@ -75,7 +75,7 @@ class ContactSystem : ContactListener, IteratingSystem {
                 }
             }
 
-            PLAYER_WEAPON_BIT or OTHER_ENTITY_BIT -> {
+            PLAYER_WEAPON_BIT or BREAKABLE_BIT -> {
                 if (pl.has(entityA)) {
                     damage[entityB].damage += params[entityA].strength
                 } else {
@@ -84,6 +84,14 @@ class ContactSystem : ContactListener, IteratingSystem {
                 contact.isEnabled = false
             }
 
+            PLAYER_BIT or TAKE_BIT -> {
+                if (pl.has(entityA)) {
+
+                } else {
+
+                }
+                contact.isEnabled = false
+            }
 
 
         }

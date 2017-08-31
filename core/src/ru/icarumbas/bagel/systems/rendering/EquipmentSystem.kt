@@ -1,4 +1,4 @@
-package ru.icarumbas.bagel.components.rendering
+package ru.icarumbas.bagel.systems.rendering
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
@@ -10,8 +10,8 @@ import ru.icarumbas.bagel.utils.Mappers
 
 class EquipmentSystem : IteratingSystem {
 
-    val params = Mappers.params
-    val equip = Mappers.equipment
+    private val params = Mappers.params
+    private val equip = Mappers.equipment
 
 
     companion object EquipmentTypes {

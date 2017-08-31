@@ -1,12 +1,13 @@
 package ru.icarumbas.bagel
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion
-import ru.icarumbas.bagel.components.rendering.EquipmentSystem
+import com.badlogic.ashley.core.Component
+import ru.icarumbas.bagel.systems.rendering.EquipmentSystem
 
-class Equip(val texture: TextureRegion,
-            val type : EquipmentSystem.EquipmentTypes,
-            val hpUpgrade: Float = 1f,
-            val strengthUpgrade: Float = 1f,
-            val speedUpgrade: Float = 1f,
-            val knockBackUpgrade: Float = 1f,
-            val attackSpeed: Float = 1f)
+class Equip(
+        val type : EquipmentSystem.EquipmentTypes,
+        val component: Component,
+        val hpUp: Float = 1f,
+        val strengthUp: Float = 1f,
+        val speedUp: Float = 1f,
+        val knockBackUp: Float = 1f,
+        val attackSpeedUp: Float = 1f)

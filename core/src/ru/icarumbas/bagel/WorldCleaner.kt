@@ -7,10 +7,10 @@ import com.badlogic.gdx.physics.box2d.World
 import ru.icarumbas.bagel.utils.Mappers
 
 
-class B2DWorldCleaner(val entityDeleteList: ArrayList<Entity>,
-                      val bodyDeleteList: ArrayList<Body>,
-                      val engine: Engine,
-                      val world: World){
+class WorldCleaner(val entityDeleteList: ArrayList<Entity>,
+                   val bodyDeleteList: ArrayList<Body>,
+                   private val engine: Engine,
+                   private val world: World){
 
     private val weapon = Mappers.weapon
     private val body = Mappers.body
