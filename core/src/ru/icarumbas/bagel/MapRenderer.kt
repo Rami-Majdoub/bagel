@@ -2,8 +2,6 @@ package ru.icarumbas.bagel
 
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.utils.viewport.Viewport
@@ -33,11 +31,6 @@ class MapRenderer {
     private fun update() {
         if (lastMapId != rm.currentMapId) {
             renderer.map = assetManager[rm.rooms[rm.currentMapId].path, TiledMap::class.java]
-            renderer.map.tileSets.forEach {
-                it.forEach {
-                    it.textureRegion.texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear)
-                }
-            }
             lastMapId = rm.currentMapId
         }
 

@@ -43,7 +43,9 @@ class Bagel: Game() {
         // Rooms
         assetManager.setLoader(TiledMap::class.java, TmxMapLoader(InternalFileHandleResolver()))
         (0 until TILED_MAPS_TOTAL).forEach {
-            assetManager.load("Maps/New/map$it.tmx", TiledMap::class.java)
+            assetManager.load("Maps/New/map$it.tmx", TiledMap::class.java, TmxMapLoader.Parameters().apply {
+                generateMipMaps = true
+            })
         }
 
         // Texture Atlases
