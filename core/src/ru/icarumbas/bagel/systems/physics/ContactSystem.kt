@@ -4,7 +4,10 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.*
+import com.badlogic.gdx.physics.box2d.Contact
+import com.badlogic.gdx.physics.box2d.ContactImpulse
+import com.badlogic.gdx.physics.box2d.ContactListener
+import com.badlogic.gdx.physics.box2d.Manifold
 import ru.icarumbas.*
 import ru.icarumbas.bagel.components.physics.BodyComponent
 import ru.icarumbas.bagel.screens.scenes.Hud
@@ -17,12 +20,17 @@ class ContactSystem : ContactListener, IteratingSystem {
     private val pl = Mappers.player
     private val body = Mappers.body
     private val damage = Mappers.damage
-    private val params = Mappers.params
     private val weapon = Mappers.weapon
 
-    constructor(hud: Hud, bodyDeleteList: ArrayList<Body>) : super(Family.all(BodyComponent::class.java).get()) {
+    private lateinit var playerEntity: Entity
+    private lateinit var contactEntityA: Entity
+    private lateinit var contactEntityB: Entity
+
+    constructor(hud: Hud) : super(Family.all(BodyComponent::class.java).get()) {
         this.hud = hud
     }
+
+    override fun update(deltaTime: Float) {}
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
 
@@ -38,58 +46,49 @@ class ContactSystem : ContactListener, IteratingSystem {
 
     override fun preSolve(contact: Contact, oldManifold: Manifold) {
 
-        var entityA = Entity()
-        var entityB = Entity()
-
         entities.forEach {
-            if (body[it].body == contact.fixtureA.body) entityA = it
-            if (body[it].body == contact.fixtureB.body) entityB = it
-            if (weapon.has(it)) {
-                if (body[weapon[it].entityRight].body == contact.fixtureA.body
-                        || body[weapon[it].entityLeft].body == contact.fixtureA.body)
-                    entityA = it
-                if (body[weapon[it].entityRight].body == contact.fixtureB.body
-                        || body[weapon[it].entityLeft].body == contact.fixtureB.body)
-                    entityB = it
-            }
+            if (body[it].body == contact.fixtureA.body) contactEntityA = it
+            if (body[it].body == contact.fixtureB.body) contactEntityB = it
+            if (pl.has(it)) playerEntity = it
         }
+
 
         when (contact.fixtureA.filterData.categoryBits or contact.fixtureB.filterData.categoryBits) {
             PLAYER_BIT or PLATFORM_BIT -> {
-                if (pl.has(entityA)) {
-                    if (body[entityA].body.position.y < body[entityB].body.position.y + .7 || hud.isDownPressed()) {
+                if (playerEntity == contactEntityA) {
+                    if (body[contactEntityA].body.position.y < body[contactEntityB].body.position.y + .6 || hud.isDownPressed()) {
                         contact.isEnabled = false
                     }
                 } else {
-                    if (body[entityB].body.position.y < body[entityA].body.position.y + .7 || hud.isDownPressed()) {
+                    if (body[contactEntityB].body.position.y < body[contactEntityA].body.position.y + .6 || hud.isDownPressed()) {
                         contact.isEnabled = false
                     }
                 }
             }
 
             PLAYER_BIT or GROUND_BIT -> {
-                if (pl.has(entityA)) {
-                    pl[entityA].collidingWithGround = true
+                if (playerEntity == contactEntityA) {
+                    pl[contactEntityA].collidingWithGround = true
                 } else {
-                    pl[entityB].collidingWithGround = true
+                    pl[contactEntityB].collidingWithGround = true
                 }
             }
 
             PLAYER_WEAPON_BIT or BREAKABLE_BIT -> {
-                if (pl.has(entityA)) {
-                    damage[entityB].damage += params[entityA].strength
+                if (weapon[playerEntity].entityLeft == contactEntityA || weapon[playerEntity].entityRight == contactEntityA) {
+                    damage[contactEntityB].damage += weapon[playerEntity].strength
                 } else {
-                    damage[entityA].damage += params[entityB].strength
+                    damage[contactEntityA].damage += weapon[playerEntity].strength
                 }
                 contact.isEnabled = false
             }
 
             PLAYER_BIT or TAKE_BIT -> {
-                if (pl.has(entityA)) {
+                /*if (pl.has(entityA)) {
 
                 } else {
 
-                }
+                }*/
                 contact.isEnabled = false
             }
 

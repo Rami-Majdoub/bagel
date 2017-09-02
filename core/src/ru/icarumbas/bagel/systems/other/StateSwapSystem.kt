@@ -5,11 +5,10 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.MathUtils
 import ru.icarumbas.bagel.RoomManager
-import ru.icarumbas.bagel.components.other.PlayerComponent
+import ru.icarumbas.bagel.components.other.AlwaysRenderingMarkerComponent
 import ru.icarumbas.bagel.components.other.RoomIdComponent
 import ru.icarumbas.bagel.components.other.StateComponent
 import ru.icarumbas.bagel.components.physics.StaticComponent
-import ru.icarumbas.bagel.screens.GameScreen
 import ru.icarumbas.bagel.utils.Mappers
 import ru.icarumbas.bagel.utils.inView
 
@@ -27,14 +26,15 @@ class StateSwapSystem : IteratingSystem {
     }
 
     private val state = Mappers.state
-    private val params = Mappers.params
+    private val damage = Mappers.damage
+    private val run = Mappers.run
     private val weapon = Mappers.weapon
     private val body = Mappers.body
     private val rm: RoomManager
 
 
     constructor(rm: RoomManager) : super(Family.all(StateComponent::class.java).one(
-            PlayerComponent::class.java,
+            AlwaysRenderingMarkerComponent::class.java,
             RoomIdComponent::class.java,
             StaticComponent::class.java).get()) {
         this.rm = rm
@@ -43,7 +43,7 @@ class StateSwapSystem : IteratingSystem {
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (entity.inView(rm)) {
-            if (state[entity].states.contains(DEAD) && params[entity].HP <= 0) {
+            if (state[entity].states.contains(DEAD) && damage[entity].HP <= 0) {
                 if (state[entity].currentState != DEAD) state[entity].stateTime = 0f
                 state[entity].currentState = DEAD
             } else
@@ -66,7 +66,7 @@ class StateSwapSystem : IteratingSystem {
                         } else
                             if (state[entity].states.contains(RUNNING) &&
                                     MathUtils.round(body[entity].body.linearVelocity.x) != 0 &&
-                                    Math.abs(body[entity].body.linearVelocity.x) > params[entity].maxSpeed - .5f) {
+                                    Math.abs(body[entity].body.linearVelocity.x) > run[entity].maxSpeed - .5f) {
                                 if (state[entity].currentState != RUNNING) state[entity].stateTime = 0f
                                 state[entity].currentState = RUNNING
                             } else

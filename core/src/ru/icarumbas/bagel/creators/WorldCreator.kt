@@ -31,19 +31,19 @@ class WorldCreator (val assetManager: AssetManager){
         for (i in 0..worldSize) {
             if (i == rm.size()) break
 
-            generateRoom("Maps/Map", "Right", 2, i, 1, 0, 2, 1, 0, 1, 0, 3, rm)
-            generateRoom("Maps/Map", "Left", 0, i, -1, 0, 0, 1, 2, 1, 2, 3, rm)
-            generateRoom("Maps/Map", "Up", 1, i, 0, -1, 0, 3, 0, 1, 2, 1, rm)
-            generateRoom("Maps/Map", "Down", 3, i, 0, 1, 0, 1, 0, 3, 2, 3, rm)
+            generateRoom("Maps/New/map", "Right", 2, i, 1, 0, 2, 1, 0, 1, 0, 3, rm)
+            generateRoom("Maps/New/map", "Left", 0, i, -1, 0, 0, 1, 2, 1, 2, 3, rm)
+            generateRoom("Maps/New/map", "Up", 1, i, 0, -1, 0, 3, 0, 1, 2, 1, rm)
+            generateRoom("Maps/New/map", "Down", 3, i, 0, 1, 0, 1, 0, 3, 2, 3, rm)
 
 
             if (rm.height(i) != REG_ROOM_HEIGHT) {
-                generateRoom("Maps/Map", "Right", 6, i, 1, 0, 2, 3, 0, 3, 0, 1, rm)
-                generateRoom("Maps/Map", "Left", 4, i, -1, 0, 0, 3, 2, 3, 2, 1, rm)
+                generateRoom("Maps/New/map", "Right", 6, i, 1, 0, 2, 3, 0, 3, 0, 1, rm)
+                generateRoom("Maps/New/map", "Left", 4, i, -1, 0, 0, 3, 2, 3, 2, 1, rm)
             }
             if (rm.width(i) != REG_ROOM_WIDTH) {
-                generateRoom("Maps/Map", "Up", 5, i, 0, -1, 2, 3, 2, 1, 0, 1, rm)
-                generateRoom("Maps/Map", "Down", 7, i, 0, 1, 2, 1, 2, 3, 0, 3, rm)
+                generateRoom("Maps/New/map", "Up", 5, i, 0, -1, 2, 3, 2, 1, 0, 1, rm)
+                generateRoom("Maps/New/map", "Down", 7, i, 0, 1, 2, 1, 2, 3, 0, 3, rm)
             }
 
         }
@@ -52,7 +52,7 @@ class WorldCreator (val assetManager: AssetManager){
     private fun rand(values: Int): Int {
         val random = MathUtils.random(1000)
         return if (random < zeroRoomChance) {
-            MathUtils.random(0, 0)
+            MathUtils.random(0, values)
         } else
             MathUtils.random(0, values)
     }
@@ -76,7 +76,7 @@ class WorldCreator (val assetManager: AssetManager){
 
     private fun chooseMap(path: String = "", side: String, count: Int, meshX: Int, meshY: Int, rm: RoomManager): Room {
 
-        newRoom = rm.createRoom(assetManager, "$path${rand(TILED_MAPS_TOTAL)}.tmx", roomsTotal)
+        newRoom = rm.createRoom(assetManager, "$path${rand(TILED_MAPS_TOTAL-1)}.tmx", roomsTotal)
 
         val mapRoomWidth = (newRoom.width / REG_ROOM_WIDTH).toInt()
         val mapRoomHeight = (newRoom.height / REG_ROOM_HEIGHT).toInt()

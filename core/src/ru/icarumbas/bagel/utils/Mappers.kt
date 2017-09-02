@@ -28,7 +28,6 @@ class Mappers {
         val jump        =       ComponentMapper.getFor(JumpComponent::class.java)!!
         val run         =       ComponentMapper.getFor(RunComponent::class.java)!!
         val equipment   =       ComponentMapper.getFor(EquipmentComponent::class.java)!!
-        val params      =       ComponentMapper.getFor(ParametersComponent::class.java)!!
         val weapon      =       ComponentMapper.getFor(WeaponComponent::class.java)!!
         val plWeapon    =       ComponentMapper.getFor(AlwaysRenderingMarkerComponent::class.java)!!
     }

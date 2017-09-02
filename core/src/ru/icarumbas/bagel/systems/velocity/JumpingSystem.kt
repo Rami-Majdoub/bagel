@@ -4,8 +4,6 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.Vector2
-import ru.icarumbas.bagel.components.other.ParametersComponent
-import ru.icarumbas.bagel.components.physics.BodyComponent
 import ru.icarumbas.bagel.components.velocity.JumpComponent
 import ru.icarumbas.bagel.screens.scenes.Hud
 import ru.icarumbas.bagel.systems.other.StateSwapSystem
@@ -16,18 +14,14 @@ class JumpingSystem : IteratingSystem {
 
     private val body = Mappers.body
     private val jump = Mappers.jump
-    private val params = Mappers.params
     private val hud: Hud
 
-    constructor(hud: Hud) : super(Family.all(
-            BodyComponent::class.java,
-            JumpComponent::class.java,
-            ParametersComponent::class.java).get()) {
+    constructor(hud: Hud) : super(Family.all(JumpComponent::class.java).get()) {
         this.hud = hud
     }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        if (params[entity].maxJumps > jump[entity].jumps && body[entity].body.linearVelocity.y < 3.5f) {
+        if (jump[entity].maxJumps > jump[entity].jumps && body[entity].body.linearVelocity.y < 3.5f) {
             if (Mappers.player.has(entity) && hud.isUpPressed()) {
                 jump(entity)
             }
@@ -54,9 +48,9 @@ class JumpingSystem : IteratingSystem {
 
     fun jump(e: Entity) {
         if (jump[e].jumps == 0)
-            body[e].body.applyLinearImpulse(Vector2(0f, params[e].jumpVelocity), body[e].body.worldCenter, true)
+            body[e].body.applyLinearImpulse(Vector2(0f, jump[e].jumpVelocity), body[e].body.worldCenter, true)
         else
-            body[e].body.applyLinearImpulse(Vector2(0f, params[e].jumpVelocity / 2), body[e].body.worldCenter, true)
+            body[e].body.applyLinearImpulse(Vector2(0f, jump[e].jumpVelocity / 2), body[e].body.worldCenter, true)
 
         jump[e].jumps++
     }

@@ -3,4 +3,4 @@ package ru.icarumbas.bagel.components.velocity
 import com.badlogic.ashley.core.Component
 
 
-data class JumpComponent(var jumps: Int = 0) : Component
+data class JumpComponent(var jumpVelocity: Float = 0f, val maxJumps: Int = 1, var jumps: Int = 0) : Component

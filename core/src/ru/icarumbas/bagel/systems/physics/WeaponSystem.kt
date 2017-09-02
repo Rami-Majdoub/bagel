@@ -20,7 +20,6 @@ class WeaponSystem : IteratingSystem {
     private val player = Mappers.player
     private val weapon = Mappers.weapon
     private val body = Mappers.body
-    private val params = Mappers.params
 
     companion object WeaponTypes{
         val SWING = 0
@@ -83,14 +82,14 @@ class WeaponSystem : IteratingSystem {
                                 body[e].body.position.y,
                                 -.1f)
                         body[weapon[e].entityRight].body.isActive = true
-                        body[weapon[e].entityRight].body.applyAngularImpulse(-params[e].attackSpeed, true)
+                        body[weapon[e].entityRight].body.applyAngularImpulse(-weapon[e].attackSpeed, true)
                     } else {
                         body[weapon[e].entityLeft].body.setTransform(
                                 body[e].body.position.x,
                                 body[e].body.position.y,
                                 .1f)
                         body[weapon[e].entityLeft].body.isActive = true
-                        body[weapon[e].entityLeft].body.applyAngularImpulse(params[e].attackSpeed, true)
+                        body[weapon[e].entityLeft].body.applyAngularImpulse(weapon[e].attackSpeed, true)
                     }
                 }
 

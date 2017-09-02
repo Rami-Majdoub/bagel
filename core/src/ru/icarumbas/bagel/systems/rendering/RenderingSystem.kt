@@ -7,13 +7,11 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.MathUtils
 import ru.icarumbas.bagel.RoomManager
-import ru.icarumbas.bagel.components.other.PlayerComponent
 import ru.icarumbas.bagel.components.other.AlwaysRenderingMarkerComponent
 import ru.icarumbas.bagel.components.other.RoomIdComponent
 import ru.icarumbas.bagel.components.physics.BodyComponent
 import ru.icarumbas.bagel.components.physics.StaticComponent
 import ru.icarumbas.bagel.components.rendering.SizeComponent
-import ru.icarumbas.bagel.screens.GameScreen
 import ru.icarumbas.bagel.utils.Mappers
 import ru.icarumbas.bagel.utils.inView
 
@@ -33,7 +31,6 @@ class RenderingSystem : IteratingSystem {
             BodyComponent::class.java)
             .one(
                     AlwaysRenderingMarkerComponent::class.java,
-                    PlayerComponent::class.java,
                     RoomIdComponent::class.java,
                     StaticComponent::class.java
             ).get()) {

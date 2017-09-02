@@ -73,11 +73,26 @@ class B2DWorldCreator(private val world: World) {
         return weaponBody
     }
 
+    /*fun defineMapObjectBody(obj: MapObject, type: BodyDef.BodyType, cBit: Short): Body{
+        return when (obj) {
+            is RectangleMapObject -> defineMapObjectBody(
+                    obj,
+                    type,
+                    cBit,
+                    obj.rectangle.width / PIX_PER_M,
+                    obj.rectangle.height / PIX_PER_M)
+            is PolylineMapObject -> defineMapObjectBody(obj, type, cBit)
+            else -> throw Exception("Unknown object type")
+        }
+    }*/
+
     fun defineMapObjectBody(obj: MapObject,
                             type: BodyDef.BodyType,
                             cBit: Short,
-                            tex: TextureRegion? = null,
+                            width: Float = 0f,
+                            height: Float = 0f,
                             mBit: Short = -1,
+                            tex: TextureRegion? = null,
                             gravity: Float = 0f): Body{
 
 
@@ -113,12 +128,12 @@ class B2DWorldCreator(private val world: World) {
 
                 val rect = obj.rectangle
 
-                def.position.x = (rect.x + rect.width / 2f) / PIX_PER_M
-                def.position.y = (rect.y + rect.height / 2f) / PIX_PER_M
+                def.position.x = rect.x / PIX_PER_M + width / 2
+                def.position.y = rect.y / PIX_PER_M + height / 2
                 def.type = BodyDef.BodyType.StaticBody
 
                 val polygonShape = PolygonShape()
-                polygonShape.setAsBox(rect.width / 2f / PIX_PER_M, rect.height / 2f / PIX_PER_M)
+                polygonShape.setAsBox(width / 2f, height / 2f)
                 fixtureDef.shape = polygonShape
 
                 val body = world.createBody(def)

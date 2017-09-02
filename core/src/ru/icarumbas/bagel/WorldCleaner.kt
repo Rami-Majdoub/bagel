@@ -2,13 +2,11 @@ package ru.icarumbas.bagel
 
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
-import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.World
 import ru.icarumbas.bagel.utils.Mappers
 
 
-class WorldCleaner(val entityDeleteList: ArrayList<Entity>,
-                   val bodyDeleteList: ArrayList<Body>,
+class WorldCleaner(private val entityDeleteList: ArrayList<Entity>,
                    private val engine: Engine,
                    private val world: World){
 
@@ -28,14 +26,7 @@ class WorldCleaner(val entityDeleteList: ArrayList<Entity>,
         entityDeleteList.clear()
     }
 
-    private fun deleteBodies(){
-        bodyDeleteList.forEach {
-            world.destroyBody(it)
-        }
-    }
-
     fun update(){
         deleteEntities()
-        deleteBodies()
     }
 }

@@ -27,7 +27,7 @@ const val STATIC_BIT: Short = 1024
 const val PIX_PER_M = 100f
 const val REG_ROOM_HEIGHT = 768f.div(PIX_PER_M)
 const val REG_ROOM_WIDTH = 1152f.div(PIX_PER_M)
-const val TILED_MAPS_TOTAL = 0
+const val TILED_MAPS_TOTAL = 2
 
 
 class Bagel: Game() {
@@ -42,7 +42,7 @@ class Bagel: Game() {
 
         // Rooms
         assetManager.setLoader(TiledMap::class.java, TmxMapLoader(InternalFileHandleResolver()))
-        (0..TILED_MAPS_TOTAL).forEach {
+        (0 until TILED_MAPS_TOTAL).forEach {
             assetManager.load("Maps/New/map$it.tmx", TiledMap::class.java)
         }
 

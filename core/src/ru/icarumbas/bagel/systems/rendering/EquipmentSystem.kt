@@ -4,13 +4,11 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import ru.icarumbas.bagel.components.other.EquipmentComponent
-import ru.icarumbas.bagel.components.other.ParametersComponent
 import ru.icarumbas.bagel.utils.Mappers
 
 
 class EquipmentSystem : IteratingSystem {
 
-    private val params = Mappers.params
     private val equip = Mappers.equipment
 
 
@@ -22,9 +20,7 @@ class EquipmentSystem : IteratingSystem {
         val ACCESSORY = "ACCESSORY"
     }
 
-    constructor() : super(Family.all(
-            EquipmentComponent::class.java,
-            ParametersComponent::class.java).get())
+    constructor() : super(Family.all(EquipmentComponent::class.java).get())
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
 
