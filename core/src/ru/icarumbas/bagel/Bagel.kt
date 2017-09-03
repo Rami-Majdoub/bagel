@@ -27,7 +27,7 @@ const val STATIC_BIT: Short = 1024
 const val PIX_PER_M = 100f
 const val REG_ROOM_HEIGHT = 768f.div(PIX_PER_M)
 const val REG_ROOM_WIDTH = 1152f.div(PIX_PER_M)
-const val TILED_MAPS_TOTAL = 2
+const val TILED_MAPS_TOTAL = 3
 
 
 class Bagel: Game() {

@@ -53,8 +53,8 @@ class GameScreen(newWorld: Boolean, game: Bagel): ScreenAdapter() {
         val b2DWorldCreator = B2DWorldCreator(world)
         val animationCreator = AnimationCreator(game.assetManager)
         val worldCreator = WorldCreator(game.assetManager)
-        entityCreator = EntityCreator(b2DWorldCreator, animationCreator)
-        rm = RoomManager(ArrayList(), game.assetManager, entityCreator, engine)
+        entityCreator = EntityCreator(b2DWorldCreator)
+        rm = RoomManager(ArrayList(), game.assetManager, entityCreator, engine, animationCreator)
 
         if (newWorld) rm.createNewWorld(worldCreator, game.assetManager) else rm.continueWorld()
         rm.loadEntities()

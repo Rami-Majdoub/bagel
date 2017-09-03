@@ -5,6 +5,8 @@ import com.badlogic.ashley.utils.ImmutableArray
 import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.maps.MapObject
+import com.badlogic.gdx.maps.objects.PolylineMapObject
+import com.badlogic.gdx.maps.objects.RectangleMapObject
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
@@ -26,8 +28,7 @@ import ru.icarumbas.bagel.utils.createRevoluteJoint
 import kotlin.experimental.or
 
 
-class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
-                    private val animCreator: AnimationCreator){
+class EntityCreator(private val b2DWorldCreator: B2DWorldCreator){
 
     fun createSwingWeaponEntity(path: String,
                                 atlas: TextureAtlas,
@@ -94,7 +95,23 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
     fun createGroundEntity(obj: MapObject, path: String, bit: Short): Entity{
         return Entity()
                 .add(StaticComponent(path))
-                .add(BodyComponent(b2DWorldCreator.defineMapObjectBody(obj, BodyDef.BodyType.StaticBody, bit)))
+                .add(when (obj) {
+                    is RectangleMapObject -> {
+                        BodyComponent(b2DWorldCreator.defineMapObjectBody(
+                                obj,
+                                BodyDef.BodyType.StaticBody,
+                                bit,
+                                obj.rectangle.width / PIX_PER_M,
+                                obj.rectangle.height / PIX_PER_M))
+                    }
+                    is PolylineMapObject -> {
+                        BodyComponent(b2DWorldCreator.defineMapObjectBody(
+                                obj,
+                                BodyDef.BodyType.StaticBody,
+                                bit))
+                    }
+                    else -> throw Exception()
+                })
 
     }
 
@@ -123,23 +140,16 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
 
     }
 
-    fun createMapObjectStaticAnimationEntity(obj: MapObject,
+    fun createMapObjectStaticEntity(obj: MapObject,
                                     roomPath: String,
                                     atlas: TextureAtlas,
                                     path: String,
                                     width: Int,
                                     height: Int,
-                                    animSpeed: Float,
-                                    animCount: Int,
                                     bType: BodyDef.BodyType,
                                     cBit: Short,
                                     mBit: Short): Entity{
         return createMapObjectEntity(obj, atlas, path, width, height, bType, cBit, mBit)
-                .add(AnimationComponent(hashMapOf(
-                        StateSwapSystem.STANDING to animCreator.create(path, animCount, animSpeed, Animation.PlayMode.LOOP, atlas))
-                ))
-                .add(StateComponent(ImmutableArray<String>(Array.with(
-                        StateSwapSystem.AllStates.STANDING))))
                 .add(StaticComponent(roomPath))
 
 
@@ -155,10 +165,5 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 ): Entity{
         return createMapObjectEntity(obj, atlas, path, width, height, bType, BREAKABLE_BIT, PLAYER_WEAPON_BIT)
                 .add(RoomIdComponent(id))
-                .add(StateComponent(ImmutableArray<String>(Array.with(
-                        StateSwapSystem.AllStates.DEAD))))
-                .add(DamageComponent(5))
-
-
     }
 }

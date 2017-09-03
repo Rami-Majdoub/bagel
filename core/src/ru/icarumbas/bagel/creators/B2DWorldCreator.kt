@@ -73,18 +73,6 @@ class B2DWorldCreator(private val world: World) {
         return weaponBody
     }
 
-    /*fun defineMapObjectBody(obj: MapObject, type: BodyDef.BodyType, cBit: Short): Body{
-        return when (obj) {
-            is RectangleMapObject -> defineMapObjectBody(
-                    obj,
-                    type,
-                    cBit,
-                    obj.rectangle.width / PIX_PER_M,
-                    obj.rectangle.height / PIX_PER_M)
-            is PolylineMapObject -> defineMapObjectBody(obj, type, cBit)
-            else -> throw Exception("Unknown object type")
-        }
-    }*/
 
     fun defineMapObjectBody(obj: MapObject,
                             type: BodyDef.BodyType,
@@ -121,6 +109,8 @@ class B2DWorldCreator(private val world: World) {
                 body.gravityScale = gravity
                 body.userData = tex
                 body.isActive = false
+
+                chainShape.dispose()
                 return body
 
             }
@@ -141,6 +131,8 @@ class B2DWorldCreator(private val world: World) {
                 body.gravityScale = gravity
                 body.userData = tex
                 body.isActive = false
+
+                polygonShape.dispose()
                 return body
 
             }

@@ -1,25 +1,33 @@
 package ru.icarumbas.bagel
 
 import com.badlogic.ashley.core.Engine
-import com.badlogic.ashley.core.Entity
+import com.badlogic.ashley.utils.ImmutableArray
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.maps.objects.RectangleMapObject
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.physics.box2d.BodyDef
+import com.badlogic.gdx.utils.Array
 import ru.icarumbas.GROUND_BIT
 import ru.icarumbas.PLATFORM_BIT
 import ru.icarumbas.STATIC_BIT
 import ru.icarumbas.TILED_MAPS_TOTAL
+import ru.icarumbas.bagel.components.other.DamageComponent
+import ru.icarumbas.bagel.components.other.StateComponent
+import ru.icarumbas.bagel.components.rendering.AnimationComponent
+import ru.icarumbas.bagel.creators.AnimationCreator
 import ru.icarumbas.bagel.creators.EntityCreator
 import ru.icarumbas.bagel.creators.WorldCreator
+import ru.icarumbas.bagel.systems.other.StateSwapSystem
 
 
 class RoomManager(val rooms: ArrayList<Room>,
                   private val assets: AssetManager,
                   private val entityCreator: EntityCreator,
-                  private val engine: Engine){
+                  private val engine: Engine,
+                  private val animCreator: AnimationCreator){
 
     var currentMapId = 0
 
@@ -46,6 +54,10 @@ class RoomManager(val rooms: ArrayList<Room>,
 
         rooms.forEach {
             loadIdMamObject(it.path, it.id, "vase", assets["Packs/items.pack", TextureAtlas::class.java])
+            loadIdMamObject(it.path, it.id, "chair1", assets["Packs/items.pack", TextureAtlas::class.java])
+            loadIdMamObject(it.path, it.id, "chair2", assets["Packs/items.pack", TextureAtlas::class.java])
+            loadIdMamObject(it.path, it.id, "table", assets["Packs/items.pack", TextureAtlas::class.java])
+            loadIdMamObject(it.path, it.id, "chandelier", assets["Packs/items.pack", TextureAtlas::class.java])
         }
 
     }
@@ -74,9 +86,67 @@ class RoomManager(val rooms: ArrayList<Room>,
                             "Vase ($r)",
                             size.first,
                             size.second,
-                            roomId, BodyDef.BodyType.StaticBody)
+                            roomId,
+                            BodyDef.BodyType.StaticBody)
+                            .add(DamageComponent(5))
+                            .add(StateComponent(ImmutableArray(Array.with(StateSwapSystem.DEAD))))
                 }
-                else -> throw Exception("NO SUCH CLASS")
+
+                "chair1" -> {
+                    entityCreator.createMapObjectIdEntity(
+                            it,
+                            atlas,
+                            "Chair (1)",
+                            70,
+                            128,
+                            roomId,
+                            BodyDef.BodyType.StaticBody)
+                            .add(DamageComponent(5))
+                            .add(StateComponent(ImmutableArray(Array.with(StateSwapSystem.DEAD))))
+                }
+
+                "chair2" -> {
+                    entityCreator.createMapObjectIdEntity(
+                            it,
+                            atlas,
+                            "Chair (2)",
+                            70,
+                            128,
+                            roomId,
+                            BodyDef.BodyType.StaticBody)
+                            .add(DamageComponent(5))
+                            .add(StateComponent(ImmutableArray(Array.with(StateSwapSystem.DEAD))))
+                }
+
+                "table" -> {
+                    entityCreator.createMapObjectIdEntity(
+                            it,
+                            atlas,
+                            "Table",
+                            137,
+                            69,
+                            roomId,
+                            BodyDef.BodyType.StaticBody)
+                            .add(DamageComponent(5))
+                            .add(StateComponent(ImmutableArray(Array.with(StateSwapSystem.DEAD))))
+                }
+
+                "chandelier" -> {
+                    entityCreator.createMapObjectIdEntity(
+                            it,
+                            atlas,
+                            "Chandelier",
+                            243,
+                            120,
+                            roomId,
+                            BodyDef.BodyType.StaticBody)
+                            .add(DamageComponent(5))
+                            .add(AnimationComponent(hashMapOf(StateSwapSystem.STANDING to
+                                    animCreator.create("Chandelier", 4, .125f, Animation.PlayMode.LOOP, atlas))))
+                            .add(StateComponent(ImmutableArray(Array.with(StateSwapSystem.STANDING, StateSwapSystem.DEAD))))
+                }
+
+                else -> throw Exception("NO SUCH CLASS: $objectPath")
             })
         }
     }
@@ -89,16 +159,23 @@ class RoomManager(val rooms: ArrayList<Room>,
 
         layer?.objects?.forEach {
             engine.addEntity(when(objectPath){
-                "spikeTraps" -> Entity()
-                "spikes" -> Entity()
-                "portalDoor" -> Entity()
-                "lighting" -> entityCreator.createMapObjectStaticAnimationEntity(
-                        it, roomPath, atlas!!, "Lighting", 98, 154, .125f, 4, BodyDef.BodyType.StaticBody, STATIC_BIT, -1)
-                "torch" -> entityCreator.createMapObjectStaticAnimationEntity(
-                        it, roomPath, atlas!!, "Torch", 178, 116, .125f, 4, BodyDef.BodyType.StaticBody, STATIC_BIT, -1)
+                "lighting" -> {
+                    entityCreator.createMapObjectStaticEntity(
+                            it, roomPath, atlas!!, "Lighting", 98, 154, BodyDef.BodyType.StaticBody, STATIC_BIT, -1)
+                            .add(AnimationComponent(hashMapOf(StateSwapSystem.STANDING to
+                                    animCreator.create("Lighting", 4, .125f, Animation.PlayMode.LOOP, atlas))))
+                            .add(StateComponent(ImmutableArray(Array.with(StateSwapSystem.STANDING))))
+                }
+                "torch" -> {
+                    entityCreator.createMapObjectStaticEntity(
+                            it, roomPath, atlas!!, "Torch", 178, 116, BodyDef.BodyType.StaticBody, STATIC_BIT, -1)
+                            .add(AnimationComponent(hashMapOf(StateSwapSystem.STANDING to
+                                    animCreator.create("Torch", 4, .125f, Animation.PlayMode.LOOP, atlas))))
+                            .add(StateComponent(ImmutableArray(Array.with(StateSwapSystem.STANDING))))
+                }
                 "ground" -> entityCreator.createGroundEntity(it, roomPath, GROUND_BIT)
                 "platform" -> entityCreator.createGroundEntity(it, roomPath, PLATFORM_BIT)
-                else -> throw Exception("NO SUCH CLASS")
+                else -> throw Exception("NO SUCH CLASS $objectPath")
             })
         }
     }
