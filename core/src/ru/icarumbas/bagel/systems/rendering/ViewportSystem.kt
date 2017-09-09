@@ -8,7 +8,6 @@ import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.components.other.PlayerComponent
 import ru.icarumbas.bagel.components.physics.BodyComponent
 import ru.icarumbas.bagel.components.rendering.SizeComponent
-import ru.icarumbas.bagel.screens.GameScreen
 import ru.icarumbas.bagel.utils.Mappers
 
 

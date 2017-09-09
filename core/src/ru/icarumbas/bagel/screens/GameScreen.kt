@@ -15,10 +15,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport
 import ru.icarumbas.Bagel
 import ru.icarumbas.REG_ROOM_HEIGHT
 import ru.icarumbas.REG_ROOM_WIDTH
-import ru.icarumbas.bagel.DebugRenderer
-import ru.icarumbas.bagel.MapRenderer
-import ru.icarumbas.bagel.RoomManager
-import ru.icarumbas.bagel.WorldCleaner
+import ru.icarumbas.bagel.*
 import ru.icarumbas.bagel.creators.AnimationCreator
 import ru.icarumbas.bagel.creators.B2DWorldCreator
 import ru.icarumbas.bagel.creators.EntityCreator
@@ -47,6 +44,7 @@ class GameScreen(newWorld: Boolean, game: Bagel): ScreenAdapter() {
     private val worldCleaner: WorldCleaner
     private val entityCreator: EntityCreator
     private val rm: RoomManager
+    private val orthoRenderer: OrthogonalTiledMapRenderer
 
     init {
 
@@ -60,7 +58,7 @@ class GameScreen(newWorld: Boolean, game: Bagel): ScreenAdapter() {
         rm.loadEntities()
 
         val viewport = FitViewport(REG_ROOM_WIDTH, REG_ROOM_HEIGHT, OrthographicCamera(REG_ROOM_WIDTH, REG_ROOM_HEIGHT))
-        val orthoRenderer = OrthogonalTiledMapRenderer(game.assetManager.get(rm.path()), 0.01f)
+        orthoRenderer = OrthogonalTiledMapRenderer(game.assetManager.get(rm.path()), 0.01f)
 
         mapRenderer = MapRenderer(orthoRenderer, rm, game.assetManager, viewport)
         debugRenderer = DebugRenderer(Box2DDebugRenderer(), world, viewport)
@@ -113,6 +111,7 @@ class GameScreen(newWorld: Boolean, game: Bagel): ScreenAdapter() {
             // Rendering
             addSystem(AnimationSystem(rm))
             addSystem(ViewportSystem(viewport, rm))
+            addSystem(ShaderSystem(orthoRenderer.batch, viewport))
             addSystem(RenderingSystem(rm, orthoRenderer.batch))
 
 
