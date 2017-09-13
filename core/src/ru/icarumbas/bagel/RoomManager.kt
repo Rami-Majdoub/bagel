@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.maps.objects.RectangleMapObject
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.MathUtils
+import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.utils.Array
 import ru.icarumbas.GROUND_BIT
@@ -21,13 +22,17 @@ import ru.icarumbas.bagel.creators.AnimationCreator
 import ru.icarumbas.bagel.creators.EntityCreator
 import ru.icarumbas.bagel.creators.WorldCreator
 import ru.icarumbas.bagel.systems.other.StateSwapSystem
+import ru.icarumbas.bagel.utils.Mappers
+import ru.icarumbas.bagel.utils.SerializedMapObject
 
 
 class RoomManager(val rooms: ArrayList<Room>,
                   private val assets: AssetManager,
                   private val entityCreator: EntityCreator,
                   private val engine: Engine,
-                  private val animCreator: AnimationCreator){
+                  private val animCreator: AnimationCreator,
+                  private val serializedObjects: ArrayList<SerializedMapObject>,
+                  private val worldIO: WorldIO){
 
     var currentMapId = 0
 
@@ -43,36 +48,54 @@ class RoomManager(val rooms: ArrayList<Room>,
 
     fun mesh(cell: Int, id: Int = currentMapId) = rooms[id].meshCoords[cell]
 
-    fun loadEntities(){
-
+    private fun createStaticEntities(){
         (0 until TILED_MAPS_TOTAL).forEach {
-            loadStaticMapObject("Maps/New/map$it.tmx", "lighting", assets["Packs/items.pack", TextureAtlas::class.java])
-            loadStaticMapObject("Maps/New/map$it.tmx", "torch", assets["Packs/items.pack", TextureAtlas::class.java])
+            loadStaticMapObject("Maps/New/map$it.tmx", "lighting")
+            loadStaticMapObject("Maps/New/map$it.tmx", "torch")
             loadStaticMapObject("Maps/New/map$it.tmx", "ground")
             loadStaticMapObject("Maps/New/map$it.tmx", "platform")
         }
+    }
+
+    private fun createIdEntities(){
 
         rooms.forEach {
-            loadIdMamObject(it.path, it.id, "vase", assets["Packs/items.pack", TextureAtlas::class.java])
-            loadIdMamObject(it.path, it.id, "chair1", assets["Packs/items.pack", TextureAtlas::class.java])
-            loadIdMamObject(it.path, it.id, "chair2", assets["Packs/items.pack", TextureAtlas::class.java])
-            loadIdMamObject(it.path, it.id, "table", assets["Packs/items.pack", TextureAtlas::class.java])
-            loadIdMamObject(it.path, it.id, "chandelier", assets["Packs/items.pack", TextureAtlas::class.java])
+            createIdMapObject(it.path, it.id, "vase", 4)
+            createIdMapObject(it.path, it.id, "chair1", 2)
+            createIdMapObject(it.path, it.id, "chair2", 2)
+            createIdMapObject(it.path, it.id, "table", 2)
+            createIdMapObject(it.path, it.id, "chandelier")
+            createIdMapObject(it.path, it.id, "window", 2)
         }
 
     }
 
-    private fun loadIdMamObject(
-            roomPath: String,
-            roomId: Int,
-            objectPath: String,
-            atlas: TextureAtlas) {
-        val layer = assets.get(roomPath, TiledMap::class.java).layers[objectPath]
+    private fun createIdMapObject(roomPath: String,
+                        roomId: Int,
+                        objectPath: String,
+                        r: Int = 1,
+                        atlas: TextureAtlas = assets["Packs/items.pack", TextureAtlas::class.java]){
 
+        val layer = assets.get(roomPath, TiledMap::class.java).layers[objectPath]
         layer?.objects?.filterIsInstance<RectangleMapObject>()?.forEach {
+            val r = MathUtils.random(1, r)
+            if (loadIdMapObject(roomId, it.rectangle, objectPath, atlas, r)){
+                serializedObjects.add(SerializedMapObject(roomId, it.rectangle, objectPath, r))
+                Mappers.roomId[engine.entities.last()].serialized = serializedObjects.last()
+            }
+
+        }
+
+    }
+
+    private fun loadIdMapObject(roomId: Int,
+                                rect: Rectangle,
+                                objectPath: String,
+                                atlas: TextureAtlas,
+                                r: Int): Boolean {
+
             engine.addEntity(when(objectPath){
                 "vase" -> {
-                    val r = MathUtils.random(1, 4)
                     val size = when (r) {
                         1 -> Pair(132, 171)
                         2 -> Pair(65, 106)
@@ -81,7 +104,7 @@ class RoomManager(val rooms: ArrayList<Room>,
                     }
 
                     entityCreator.createMapObjectIdEntity(
-                            it,
+                            rect,
                             atlas,
                             "Vase ($r)",
                             size.first,
@@ -92,9 +115,21 @@ class RoomManager(val rooms: ArrayList<Room>,
                             .add(StateComponent(ImmutableArray(Array.with(StateSwapSystem.DEAD))))
                 }
 
-                "chair1" -> {
+                "window" -> {
                     entityCreator.createMapObjectIdEntity(
-                            it,
+                            rect,
+                            atlas,
+                            "Window Small ($r)",
+                            86,
+                            169,
+                            roomId,
+                            BodyDef.BodyType.StaticBody)
+                }
+
+                "chair1" -> {
+                    if (r == 2) return false
+                    entityCreator.createMapObjectIdEntity(
+                            rect,
                             atlas,
                             "Chair (1)",
                             70,
@@ -106,8 +141,9 @@ class RoomManager(val rooms: ArrayList<Room>,
                 }
 
                 "chair2" -> {
+                    if (r == 2) return false
                     entityCreator.createMapObjectIdEntity(
-                            it,
+                            rect,
                             atlas,
                             "Chair (2)",
                             70,
@@ -119,8 +155,9 @@ class RoomManager(val rooms: ArrayList<Room>,
                 }
 
                 "table" -> {
+                    if (r == 2) return false
                     entityCreator.createMapObjectIdEntity(
-                            it,
+                            rect,
                             atlas,
                             "Table",
                             137,
@@ -133,7 +170,7 @@ class RoomManager(val rooms: ArrayList<Room>,
 
                 "chandelier" -> {
                     entityCreator.createMapObjectIdEntity(
-                            it,
+                            rect,
                             atlas,
                             "Chandelier",
                             243,
@@ -143,17 +180,20 @@ class RoomManager(val rooms: ArrayList<Room>,
                             .add(DamageComponent(5))
                             .add(AnimationComponent(hashMapOf(StateSwapSystem.STANDING to
                                     animCreator.create("Chandelier", 4, .125f, Animation.PlayMode.LOOP, atlas))))
-                            .add(StateComponent(ImmutableArray(Array.with(StateSwapSystem.STANDING, StateSwapSystem.DEAD))))
+                            .add(StateComponent(
+                                    ImmutableArray(Array.with(StateSwapSystem.STANDING, StateSwapSystem.DEAD)),
+                                    MathUtils.random()
+                                    ))
                 }
 
                 else -> throw Exception("NO SUCH CLASS: $objectPath")
             })
-        }
+        return true
     }
 
     private fun loadStaticMapObject(roomPath: String,
                                     objectPath: String,
-                                    atlas: TextureAtlas? = null){
+                                    atlas: TextureAtlas = assets["Packs/items.pack", TextureAtlas::class.java]){
 
         val layer = assets.get(roomPath, TiledMap::class.java).layers[objectPath]
 
@@ -161,17 +201,19 @@ class RoomManager(val rooms: ArrayList<Room>,
             engine.addEntity(when(objectPath){
                 "lighting" -> {
                     entityCreator.createMapObjectStaticEntity(
-                            it, roomPath, atlas!!, "Lighting", 98, 154, BodyDef.BodyType.StaticBody, STATIC_BIT, -1)
+                            (it as RectangleMapObject).rectangle, roomPath, atlas, "Lighting", 98, 154, BodyDef.BodyType.StaticBody, STATIC_BIT, -1)
                             .add(AnimationComponent(hashMapOf(StateSwapSystem.STANDING to
                                     animCreator.create("Lighting", 4, .125f, Animation.PlayMode.LOOP, atlas))))
-                            .add(StateComponent(ImmutableArray(Array.with(StateSwapSystem.STANDING))))
+                            .add(StateComponent(ImmutableArray(Array.with(StateSwapSystem.STANDING)),
+                                    MathUtils.random()))
                 }
                 "torch" -> {
                     entityCreator.createMapObjectStaticEntity(
-                            it, roomPath, atlas!!, "Torch", 178, 116, BodyDef.BodyType.StaticBody, STATIC_BIT, -1)
+                            (it as RectangleMapObject).rectangle, roomPath, atlas, "Torch", 178, 116, BodyDef.BodyType.StaticBody, STATIC_BIT, -1)
                             .add(AnimationComponent(hashMapOf(StateSwapSystem.STANDING to
                                     animCreator.create("Torch", 4, .125f, Animation.PlayMode.LOOP, atlas))))
-                            .add(StateComponent(ImmutableArray(Array.with(StateSwapSystem.STANDING))))
+                            .add(StateComponent(ImmutableArray(Array.with(StateSwapSystem.STANDING)),
+                                    MathUtils.random()))
                 }
                 "ground" -> entityCreator.createGroundEntity(it, roomPath, GROUND_BIT)
                 "platform" -> entityCreator.createGroundEntity(it, roomPath, PLATFORM_BIT)
@@ -188,15 +230,16 @@ class RoomManager(val rooms: ArrayList<Room>,
         rooms.add(createRoom(assetManager, "Maps/New/map0.tmx", 0))
         rooms[currentMapId].meshCoords = intArrayOf(25, 25, 25, 25)
         worldCreator.createWorld(100, this)
+        createStaticEntities()
+        createIdEntities()
     }
 
     fun continueWorld() {
-        /*rooms = game.worldIO.loadRoomsFromJson("roomsFile.Json")
-        currentMap = game.worldIO.preferences.getInteger("CurrentMap")
-        player.money = game.worldIO.preferences.getInteger("Money")
-        game.worldIO.loadLastPlayerState(player)
-        player.HP = game.worldIO.preferences.getInteger("HP")*/
-
+        worldIO.loadWorld(serializedObjects, rooms)
+        serializedObjects.forEach{
+            loadIdMapObject(it.roomId, it.rect, it.objectPath, assets["Packs/items.pack", TextureAtlas::class.java], it.rand)
+        }
+        createStaticEntities()
     }
 
 }

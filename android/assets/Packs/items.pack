@@ -1,88 +1,88 @@
 items.png
-size: 1788, 1064
+size: 1808, 1073
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 Banner (1)
   rotate: false
-  xy: 135, 285
+  xy: 263, 294
   size: 126, 180
   orig: 126, 180
   offset: 0, 0
   index: -1
 Banner (2)
   rotate: false
-  xy: 263, 285
+  xy: 135, 294
   size: 126, 180
   orig: 126, 180
   offset: 0, 0
   index: -1
 Banner (3)
   rotate: false
-  xy: 1181, 285
+  xy: 1309, 294
   size: 126, 208
   orig: 126, 208
   offset: 0, 0
   index: -1
 Banner (4)
   rotate: false
-  xy: 1489, 285
+  xy: 640, 294
   size: 126, 208
   orig: 126, 208
   offset: 0, 0
   index: -1
 Barrel
   rotate: false
-  xy: 1122, 121
+  xy: 878, 123
   size: 119, 133
   orig: 119, 133
   offset: 0, 0
   index: -1
 Big Door (1)
   rotate: false
-  xy: 626, 777
+  xy: 1169, 786
   size: 269, 286
   orig: 269, 286
   offset: 0, 0
   index: -1
 Big Door (2)
   rotate: false
-  xy: 1168, 777
+  xy: 1440, 786
   size: 269, 286
   orig: 269, 286
   offset: 0, 0
   index: -1
 Big Door (3)
   rotate: false
-  xy: 1439, 777
+  xy: 897, 786
   size: 270, 286
   orig: 270, 286
   offset: 0, 0
   index: -1
 Big Door (4)
   rotate: false
-  xy: 897, 777
+  xy: 355, 786
   size: 269, 286
   orig: 269, 286
   offset: 0, 0
   index: -1
 Big Door (5)
   rotate: false
-  xy: 355, 777
+  xy: 626, 786
   size: 269, 286
   orig: 269, 286
   offset: 0, 0
   index: -1
 Book (1)
   rotate: false
-  xy: 27, 1
+  xy: 25, 1
   size: 12, 30
   orig: 12, 30
   offset: 0, 0
   index: -1
 Book (2)
   rotate: false
-  xy: 41, 1
+  xy: 15, 1
   size: 8, 30
   orig: 8, 30
   offset: 0, 0
@@ -96,77 +96,77 @@ Book (3)
   index: -1
 Book (4)
   rotate: false
-  xy: 15, 1
+  xy: 39, 1
   size: 10, 30
   orig: 10, 30
   offset: 0, 0
   index: -1
 Candle (1)
   rotate: false
-  xy: 1309, 285
+  xy: 1437, 294
   size: 178, 208
   orig: 178, 208
   offset: 0, 0
   index: -1
 Candle (2)
   rotate: false
-  xy: 1000, 285
+  xy: 948, 294
   size: 179, 208
   orig: 179, 208
   offset: 0, 0
   index: -1
 Candle (3)
   rotate: false
-  xy: 640, 285
+  xy: 1129, 294
   size: 178, 208
   orig: 178, 208
   offset: 0, 0
   index: -1
 Candle (4)
   rotate: false
-  xy: 820, 285
+  xy: 768, 294
   size: 178, 208
   orig: 178, 208
   offset: 0, 0
   index: -1
 Chair (1)
   rotate: false
-  xy: 978, 121
+  xy: 806, 123
   size: 70, 128
   orig: 70, 128
   offset: 0, 0
   index: -1
 Chair (2)
   rotate: false
-  xy: 1050, 121
+  xy: 734, 123
   size: 70, 128
   orig: 70, 128
   offset: 0, 0
   index: -1
 Chandelier (1)
   rotate: false
-  xy: 246, 121
+  xy: 1565, 1
   size: 242, 120
   orig: 242, 120
   offset: 0, 0
   index: -1
 Chandelier (2)
   rotate: false
-  xy: 734, 121
+  xy: 490, 123
   size: 242, 120
   orig: 242, 120
   offset: 0, 0
   index: -1
 Chandelier (3)
   rotate: false
-  xy: 490, 121
+  xy: 1, 123
   size: 242, 120
   orig: 242, 120
   offset: 0, 0
   index: -1
 Chandelier (4)
   rotate: false
-  xy: 1, 121
+  xy: 245, 123
   size: 243, 120
   orig: 243, 120
   offset: 0, 0
@@ -187,7 +187,7 @@ Chest (2)
   index: -1
 Chest (3)
   rotate: false
-  xy: 474, 1
+  xy: 541, 1
   size: 96, 106
   orig: 96, 106
   offset: 0, 0
@@ -201,91 +201,91 @@ Chest (4)
   index: -1
 Crate
   rotate: false
-  xy: 572, 1
+  xy: 639, 1
   size: 106, 106
   orig: 106, 106
   offset: 0, 0
   index: -1
 Cupboard (1)
   rotate: false
-  xy: 391, 285
+  xy: 391, 294
   size: 247, 205
   orig: 247, 205
   offset: 0, 0
   index: -1
 Cupboard (2)
   rotate: false
-  xy: 173, 777
+  xy: 173, 786
   size: 180, 256
   orig: 180, 256
   offset: 0, 0
   index: -1
 IronDoor (1)
   rotate: false
-  xy: 1549, 531
+  xy: 1377, 540
   size: 170, 244
   orig: 170, 244
   offset: 0, 0
   index: -1
 IronDoor (2)
   rotate: false
-  xy: 517, 531
+  xy: 1033, 540
   size: 170, 244
   orig: 170, 244
   offset: 0, 0
   index: -1
 IronDoor (3)
   rotate: false
-  xy: 689, 531
+  xy: 689, 540
   size: 170, 244
   orig: 170, 244
   offset: 0, 0
   index: -1
 IronDoor (4)
   rotate: false
-  xy: 861, 531
+  xy: 1, 786
   size: 170, 244
   orig: 170, 244
   offset: 0, 0
   index: -1
 IronDoor (5)
   rotate: false
-  xy: 1205, 531
+  xy: 1549, 540
   size: 170, 244
   orig: 170, 244
   offset: 0, 0
   index: -1
 IronDoor (6)
   rotate: false
-  xy: 1, 777
+  xy: 1205, 540
   size: 170, 244
   orig: 170, 244
   offset: 0, 0
   index: -1
 Lighting (1)
   rotate: false
-  xy: 1243, 121
+  xy: 1299, 123
   size: 98, 154
   orig: 98, 154
   offset: 0, 0
   index: -1
 Lighting (2)
   rotate: false
-  xy: 1343, 121
+  xy: 1099, 123
   size: 98, 154
   orig: 98, 154
   offset: 0, 0
   index: -1
 Lighting (3)
   rotate: false
-  xy: 1443, 121
+  xy: 999, 123
   size: 98, 154
   orig: 98, 154
   offset: 0, 0
   index: -1
 Lighting (4)
   rotate: false
-  xy: 1543, 121
+  xy: 1199, 123
   size: 98, 154
   orig: 98, 154
   offset: 0, 0
@@ -327,21 +327,21 @@ Torch (4)
   index: -1
 Vase (1)
   rotate: false
-  xy: 1, 285
+  xy: 1, 294
   size: 132, 171
   orig: 132, 171
   offset: 0, 0
   index: -1
 Vase (2)
   rotate: false
-  xy: 680, 1
+  xy: 474, 1
   size: 65, 106
   orig: 65, 106
   offset: 0, 0
   index: -1
 Vase (3)
   rotate: false
-  xy: 1643, 121
+  xy: 1399, 123
   size: 120, 162
   orig: 120, 162
   offset: 0, 0
@@ -353,44 +353,58 @@ Vase (4)
   orig: 92, 72
   offset: 0, 0
   index: -1
+Window Small (1)
+  rotate: false
+  xy: 1609, 123
+  size: 86, 169
+  orig: 86, 169
+  offset: 0, 0
+  index: -1
+Window Small (2)
+  rotate: false
+  xy: 1521, 123
+  size: 86, 169
+  orig: 86, 169
+  offset: 0, 0
+  index: -1
 Wood Door (1)
   rotate: false
-  xy: 173, 531
+  xy: 1617, 294
   size: 170, 244
   orig: 170, 244
   offset: 0, 0
   index: -1
 Wood Door (2)
   rotate: false
-  xy: 1, 531
+  xy: 173, 540
   size: 170, 244
   orig: 170, 244
   offset: 0, 0
   index: -1
 Wood Door (3)
   rotate: false
-  xy: 1617, 285
+  xy: 517, 540
   size: 170, 244
   orig: 170, 244
   offset: 0, 0
   index: -1
 Wood Door (4)
   rotate: false
-  xy: 345, 531
+  xy: 1, 540
   size: 170, 244
   orig: 170, 244
   offset: 0, 0
   index: -1
 Wood Door (5)
   rotate: false
-  xy: 1033, 531
+  xy: 345, 540
   size: 170, 244
   orig: 170, 244
   offset: 0, 0
   index: -1
 Wood Door (6)
   rotate: false
-  xy: 1377, 531
+  xy: 861, 540
   size: 170, 244
   orig: 170, 244
   offset: 0, 0

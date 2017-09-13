@@ -34,7 +34,7 @@ class AnimationSystem : IteratingSystem {
         this.rm = rm
     }
 
-    fun flip(e: Entity) {
+    private fun flip(e: Entity) {
 
         val textureReg = body[e].body.userData as TextureRegion
 

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.maps.MapObject
 import com.badlogic.gdx.maps.objects.PolylineMapObject
 import com.badlogic.gdx.maps.objects.RectangleMapObject
+import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
@@ -97,15 +98,15 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator){
                 .add(StaticComponent(path))
                 .add(when (obj) {
                     is RectangleMapObject -> {
-                        BodyComponent(b2DWorldCreator.defineMapObjectBody(
-                                obj,
+                        BodyComponent(b2DWorldCreator.defineRectangleMapObjectBody(
+                                obj.rectangle,
                                 BodyDef.BodyType.StaticBody,
                                 bit,
                                 obj.rectangle.width / PIX_PER_M,
                                 obj.rectangle.height / PIX_PER_M))
                     }
                     is PolylineMapObject -> {
-                        BodyComponent(b2DWorldCreator.defineMapObjectBody(
+                        BodyComponent(b2DWorldCreator.definePolylineMapObjectBody(
                                 obj,
                                 BodyDef.BodyType.StaticBody,
                                 bit))
@@ -115,7 +116,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator){
 
     }
 
-    fun createMapObjectEntity(obj: MapObject,
+    fun createMapObjectEntity(rect: Rectangle,
                                     atlas: TextureAtlas,
                                     path: String,
                                     width: Int,
@@ -124,8 +125,8 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator){
                                     cBit: Short,
                                     mBit: Short): Entity{
         return Entity()
-                .add(BodyComponent(b2DWorldCreator.defineMapObjectBody(
-                        obj,
+                .add(BodyComponent(b2DWorldCreator.defineRectangleMapObjectBody(
+                        rect,
                         bType,
                         cBit,
                         width / PIX_PER_M,
@@ -140,7 +141,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator){
 
     }
 
-    fun createMapObjectStaticEntity(obj: MapObject,
+    fun createMapObjectStaticEntity(rect: Rectangle,
                                     roomPath: String,
                                     atlas: TextureAtlas,
                                     path: String,
@@ -149,13 +150,13 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator){
                                     bType: BodyDef.BodyType,
                                     cBit: Short,
                                     mBit: Short): Entity{
-        return createMapObjectEntity(obj, atlas, path, width, height, bType, cBit, mBit)
+        return createMapObjectEntity(rect, atlas, path, width, height, bType, cBit, mBit)
                 .add(StaticComponent(roomPath))
 
 
     }
 
-    fun createMapObjectIdEntity(obj: MapObject,
+    fun createMapObjectIdEntity(rect: Rectangle,
                                 atlas: TextureAtlas,
                                 path: String,
                                 width: Int,
@@ -163,7 +164,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator){
                                 id: Int,
                                 bType: BodyDef.BodyType
                                 ): Entity{
-        return createMapObjectEntity(obj, atlas, path, width, height, bType, BREAKABLE_BIT, PLAYER_WEAPON_BIT)
+        return createMapObjectEntity(rect, atlas, path, width, height, bType, BREAKABLE_BIT, PLAYER_WEAPON_BIT)
                 .add(RoomIdComponent(id))
     }
 }

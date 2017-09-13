@@ -1,9 +1,8 @@
 package ru.icarumbas.bagel.creators
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.maps.MapObject
 import com.badlogic.gdx.maps.objects.PolylineMapObject
-import com.badlogic.gdx.maps.objects.RectangleMapObject
+import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.*
 import ru.icarumbas.*
@@ -73,8 +72,36 @@ class B2DWorldCreator(private val world: World) {
         return weaponBody
     }
 
+    fun definePolylineMapObjectBody(obj: PolylineMapObject,
+                                type: BodyDef.BodyType,
+                                cBit: Short,
+                                mBit: Short = -1): Body{
+        val def = BodyDef()
+        def.type = type
 
-    fun defineMapObjectBody(obj: MapObject,
+        val fixtureDef = FixtureDef()
+        fixtureDef.restitution = .1f
+        fixtureDef.friction = 1f
+        fixtureDef.filter.categoryBits = cBit
+        fixtureDef.filter.maskBits = mBit
+
+        val vertices = obj.polyline.transformedVertices.clone()
+
+        for (x in vertices.indices) vertices[x] /= PIX_PER_M
+
+        val chainShape = ChainShape()
+        chainShape.createChain(vertices)
+        fixtureDef.shape = chainShape
+
+        val body = world.createBody(def)
+        body.createFixture(fixtureDef)
+        body.isActive = false
+
+        chainShape.dispose()
+        return body
+    }
+
+    fun defineRectangleMapObjectBody(rect: Rectangle,
                             type: BodyDef.BodyType,
                             cBit: Short,
                             width: Float = 0f,
@@ -93,52 +120,22 @@ class B2DWorldCreator(private val world: World) {
         fixtureDef.filter.categoryBits = cBit
         fixtureDef.filter.maskBits = mBit
 
-        when (obj) {
-            is PolylineMapObject -> {
+        def.position.x = rect.x / PIX_PER_M + width / 2
+        def.position.y = rect.y / PIX_PER_M + height / 2
+        def.type = BodyDef.BodyType.StaticBody
 
-                val vertices = obj.polyline.transformedVertices.clone()
+        val polygonShape = PolygonShape()
+        polygonShape.setAsBox(width / 2f, height / 2f)
+        fixtureDef.shape = polygonShape
 
-                for (x in vertices.indices) vertices[x] /= PIX_PER_M
+        val body = world.createBody(def)
+        body.createFixture(fixtureDef)
+        body.gravityScale = gravity
+        body.userData = tex
+        body.isActive = false
 
-                val chainShape = ChainShape()
-                chainShape.createChain(vertices)
-                fixtureDef.shape = chainShape
-
-                val body = world.createBody(def)
-                body.createFixture(fixtureDef)
-                body.gravityScale = gravity
-                body.userData = tex
-                body.isActive = false
-
-                chainShape.dispose()
-                return body
-
-            }
-            is RectangleMapObject -> {
-
-                val rect = obj.rectangle
-
-                def.position.x = rect.x / PIX_PER_M + width / 2
-                def.position.y = rect.y / PIX_PER_M + height / 2
-                def.type = BodyDef.BodyType.StaticBody
-
-                val polygonShape = PolygonShape()
-                polygonShape.setAsBox(width / 2f, height / 2f)
-                fixtureDef.shape = polygonShape
-
-                val body = world.createBody(def)
-                body.createFixture(fixtureDef)
-                body.gravityScale = gravity
-                body.userData = tex
-                body.isActive = false
-
-                polygonShape.dispose()
-                return body
-
-            }
-            else -> throw Exception("Unknown object type")
-        }
-
+        polygonShape.dispose()
+        return body
     }
 
 }

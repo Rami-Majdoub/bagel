@@ -57,10 +57,9 @@ class MainMenuScreen(private val game: Bagel) : ScreenAdapter() {
         val newGame = Label("New Game", labelStyle)
         table.add(newGame).row()
 
-       /* if (game.worldIO.preferences.getBoolean("CanContinueWorld")) {
-            val continueGame = Label("Continue", labelStyle)
-            table.add(continueGame).row()
-        }*/
+        val continueGame = Label("Continue", labelStyle)
+        table.add(continueGame).row()
+
 
         val options = Label("Options", labelStyle)
         table.add(options)

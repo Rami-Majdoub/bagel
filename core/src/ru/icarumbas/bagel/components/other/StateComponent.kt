@@ -6,5 +6,6 @@ import ru.icarumbas.bagel.systems.other.StateSwapSystem
 
 
 data class StateComponent(var states: ImmutableArray<String>,
-                          var currentState: String = StateSwapSystem.STANDING,
-                          var stateTime: Float = 0f) : Component
+                          var stateTime: Float = 0f,
+                          var currentState: String = StateSwapSystem.STANDING
+                          ) : Component

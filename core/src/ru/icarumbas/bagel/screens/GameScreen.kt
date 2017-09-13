@@ -32,9 +32,10 @@ import ru.icarumbas.bagel.systems.rendering.RenderingSystem
 import ru.icarumbas.bagel.systems.rendering.ViewportSystem
 import ru.icarumbas.bagel.systems.velocity.JumpingSystem
 import ru.icarumbas.bagel.systems.velocity.RunningSystem
+import ru.icarumbas.bagel.utils.SerializedMapObject
 
 
-class GameScreen(newWorld: Boolean, game: Bagel): ScreenAdapter() {
+class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
 
     private val world = World(Vector2(0f, -9.8f), true)
     private val hud = Hud()
@@ -46,16 +47,18 @@ class GameScreen(newWorld: Boolean, game: Bagel): ScreenAdapter() {
     private val rm: RoomManager
     private val orthoRenderer: OrthogonalTiledMapRenderer
 
+    private val serializedObjects = ArrayList<SerializedMapObject>()
+    private val rooms = ArrayList<Room>()
+
     init {
 
         val b2DWorldCreator = B2DWorldCreator(world)
         val animationCreator = AnimationCreator(game.assetManager)
         val worldCreator = WorldCreator(game.assetManager)
         entityCreator = EntityCreator(b2DWorldCreator)
-        rm = RoomManager(ArrayList(), game.assetManager, entityCreator, engine, animationCreator)
+        rm = RoomManager(rooms, game.assetManager, entityCreator, engine, animationCreator, serializedObjects, game.worldIO)
 
         if (newWorld) rm.createNewWorld(worldCreator, game.assetManager) else rm.continueWorld()
-        rm.loadEntities()
 
         val viewport = FitViewport(REG_ROOM_WIDTH, REG_ROOM_HEIGHT, OrthographicCamera(REG_ROOM_WIDTH, REG_ROOM_HEIGHT))
         orthoRenderer = OrthogonalTiledMapRenderer(game.assetManager.get(rm.path()), 0.01f)
@@ -67,7 +70,7 @@ class GameScreen(newWorld: Boolean, game: Bagel): ScreenAdapter() {
         val coins = ArrayList<Body>()
         val entityDeleteList = ArrayList<Entity>()
 
-        worldCleaner = WorldCleaner(entityDeleteList, engine, world)
+        worldCleaner = WorldCleaner(entityDeleteList, engine, world, serializedObjects)
 
         val weaponEntityLeft = entityCreator.createSwingWeaponEntity(
                 path = "Sword2",
@@ -111,7 +114,6 @@ class GameScreen(newWorld: Boolean, game: Bagel): ScreenAdapter() {
             // Rendering
             addSystem(AnimationSystem(rm))
             addSystem(ViewportSystem(viewport, rm))
-            addSystem(ShaderSystem(orthoRenderer.batch, viewport))
             addSystem(RenderingSystem(rm, orthoRenderer.batch))
 
 
@@ -142,19 +144,7 @@ class GameScreen(newWorld: Boolean, game: Bagel): ScreenAdapter() {
     }
 
     override fun pause() {
-        /*game.worldIO.writeRoomsToJson("roomsFile.Json", rooms, false)
-
-        with(game.worldIO.preferences) {
-            putFloat("PlayerPositionX", player.playerBody.position.x)
-            putFloat("PlayerPositionY", player.playerBody.position.y)
-            putInteger("Money", player.money)
-            putInteger("CurrentMap", currentMap)
-            putInteger("HP", player.HP)
-            flush()
-        }
-
-    game.screen = MainMenuScreen(game)
-*/
+        game.worldIO.saveWorld(serializedObjects, rooms)
     }
 
     override fun resize(width: Int, height: Int) {
