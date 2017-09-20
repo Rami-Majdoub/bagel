@@ -3,7 +3,7 @@ package ru.icarumbas.bagel.systems.physics
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
-import ru.icarumbas.bagel.components.other.AiComponent
+import ru.icarumbas.bagel.components.other.AIComponent
 import ru.icarumbas.bagel.components.other.PlayerComponent
 import ru.icarumbas.bagel.components.other.WeaponComponent
 import ru.icarumbas.bagel.screens.scenes.Hud
@@ -16,9 +16,10 @@ class WeaponSystem : IteratingSystem {
 
     private val hud: Hud
 
-    private val ai = Mappers.ai
+    private val ai = Mappers.AI
     private val player = Mappers.player
     private val weapon = Mappers.weapon
+    private val attackMapper = Mappers.attack
     private val body = Mappers.body
 
     companion object WeaponTypes{
@@ -30,7 +31,7 @@ class WeaponSystem : IteratingSystem {
     constructor(hud: Hud) : super(Family.all(
             WeaponComponent::class.java).one(
             PlayerComponent::class.java,
-            AiComponent::class.java).get()) {
+            AIComponent::class.java).get()) {
         this.hud = hud
     }
 
@@ -45,7 +46,7 @@ class WeaponSystem : IteratingSystem {
                                 -.1f)
                         body[weapon[e].entityRight].body.setLinearVelocity(0f, 0f)
                         body[weapon[e].entityRight].body.isActive = false
-                        weapon[e].attacking = false
+                        attackMapper[e].attacking = false
 
                     }
                 } else {
@@ -56,7 +57,7 @@ class WeaponSystem : IteratingSystem {
                                 .1f)
                         body[weapon[e].entityLeft].body.setLinearVelocity(0f, 0f)
                         body[weapon[e].entityLeft].body.isActive = false
-                        weapon[e].attacking = false
+                        attackMapper[e].attacking = false
                     }
                 }
             }
@@ -72,8 +73,8 @@ class WeaponSystem : IteratingSystem {
     }
 
     private fun attack(e: Entity){
-        if (((player.has(e) && hud.attackButtonPressed) || (ai.has(e) && ai[e].readyAttack)) && !weapon[e].attacking) {
-            weapon[e].attacking = true
+        if (((player.has(e) && hud.attackButtonPressed) || (ai.has(e) && ai[e].readyAttack)) && !attackMapper[e].attacking) {
+            attackMapper[e].attacking = true
             when (weapon[e].type) {
                 SWING -> {
                     if (e.rotatedRight()) {
@@ -82,14 +83,14 @@ class WeaponSystem : IteratingSystem {
                                 body[e].body.position.y,
                                 -.1f)
                         body[weapon[e].entityRight].body.isActive = true
-                        body[weapon[e].entityRight].body.applyAngularImpulse(-weapon[e].attackSpeed, true)
+                        body[weapon[e].entityRight].body.applyAngularImpulse(-attackMapper[e].attackSpeed, true)
                     } else {
                         body[weapon[e].entityLeft].body.setTransform(
                                 body[e].body.position.x,
                                 body[e].body.position.y,
                                 .1f)
                         body[weapon[e].entityLeft].body.isActive = true
-                        body[weapon[e].entityLeft].body.applyAngularImpulse(weapon[e].attackSpeed, true)
+                        body[weapon[e].entityLeft].body.applyAngularImpulse(attackMapper[e].attackSpeed, true)
                     }
                 }
 

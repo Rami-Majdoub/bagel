@@ -14,6 +14,7 @@ import ru.icarumbas.bagel.utils.inView
 class HealthSystem : IteratingSystem {
 
     private val damage = Mappers.damage
+    private val body = Mappers.body
 
     private val rm: RoomManager
     private val world: World
@@ -31,11 +32,17 @@ class HealthSystem : IteratingSystem {
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (entity.inView(rm)) {
-            damage[entity].hitTimer += deltaTime
 
-            if (damage[entity].damage != 0 && damage[entity].hitTimer > .5f) {
+            if (damage[entity].damage != 0) {
                 damage[entity].HP -= damage[entity].damage
                 damage[entity].damage = 0
+                damage[entity].canBeAttacked = false
+            }
+
+            if (!damage[entity].knockback.isZero){
+                body[entity].body.applyLinearImpulse(damage[entity].knockback, body[entity].body.worldCenter, true)
+                damage[entity].knockback.set(0f, 0f)
+                damage[entity].canBeAttacked = false
             }
 
             if (damage[entity].HP <= 0){

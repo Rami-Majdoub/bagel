@@ -21,6 +21,7 @@ import ru.icarumbas.bagel.creators.B2DWorldCreator
 import ru.icarumbas.bagel.creators.EntityCreator
 import ru.icarumbas.bagel.creators.WorldCreator
 import ru.icarumbas.bagel.screens.scenes.Hud
+import ru.icarumbas.bagel.systems.other.AISystem
 import ru.icarumbas.bagel.systems.other.HealthSystem
 import ru.icarumbas.bagel.systems.other.RoomChangingSystem
 import ru.icarumbas.bagel.systems.other.StateSwapSystem
@@ -44,6 +45,7 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
     private val mapRenderer: MapRenderer
     private val worldCleaner: WorldCleaner
     private val entityCreator: EntityCreator
+    private val playerEntity: Entity
     private val rm: RoomManager
     private val orthoRenderer: OrthogonalTiledMapRenderer
 
@@ -92,7 +94,14 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
                 anchorA = Vector2(.1f, -.3f),
                 anchorB = Vector2(0f, -.5f))
 
-        val contactSystem = ContactSystem(hud)
+        playerEntity = entityCreator.createPlayerEntity(
+                animationCreator,
+                game.assetManager["Packs/GuyKnight.pack", TextureAtlas::class.java],
+                playerBody,
+                weaponEntityLeft,
+                weaponEntityRight)
+
+        val contactSystem = ContactSystem(hud, playerEntity)
         world.setContactListener(contactSystem)
 
         with (engine) {
@@ -101,6 +110,7 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
             addSystem(RoomChangingSystem(rm))
             addSystem(StateSwapSystem(rm))
             addSystem(HealthSystem(rm, world, coins, entityDeleteList))
+            addSystem(AISystem(playerEntity))
 
             // Velocity
             addSystem(RunningSystem(hud))
@@ -119,12 +129,7 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
 
             addEntity(weaponEntityRight)
             addEntity(weaponEntityLeft)
-            addEntity(entityCreator.createPlayerEntity(
-                    animationCreator,
-                    game.assetManager["Packs/GuyKnight.pack", TextureAtlas::class.java],
-                    playerBody,
-                    weaponEntityLeft,
-                    weaponEntityRight))
+            addEntity(playerEntity)
         }
 
 
@@ -132,6 +137,7 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
 
         println("Size of rooms: ${rm.size()}")
         println("World bodies count: ${world.bodyCount}")
+        println("Entities size: ${engine.entities.size()}")
     }
 
     override fun render(delta: Float) {

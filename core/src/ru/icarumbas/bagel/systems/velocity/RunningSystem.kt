@@ -35,6 +35,6 @@ class RunningSystem : IteratingSystem {
         }
     }
 
-    fun applyImpulse(body: Body, speedX: Float, speedY: Float) =
+    private fun applyImpulse(body: Body, speedX: Float, speedY: Float) =
             body.applyLinearImpulse(Vector2(speedX, speedY), body.worldCenter, true)
 }

@@ -66,7 +66,7 @@ class AnimationSystem : IteratingSystem {
                                     anim[e].
                                     animations[state[e].
                                     currentState]!!.
-                                    getKeyFrame(state[e].stateTime, true)
+                                    getKeyFrame(state[e].stateTime)
 
                 }
 

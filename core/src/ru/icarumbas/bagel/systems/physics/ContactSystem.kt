@@ -17,17 +17,21 @@ import kotlin.experimental.or
 class ContactSystem : ContactListener, IteratingSystem {
 
     private val hud: Hud
-    private val pl = Mappers.player
     private val body = Mappers.body
     private val damage = Mappers.damage
     private val weapon = Mappers.weapon
+    private val attack = Mappers.attack
+    private val ai = Mappers.AI
+    private val pl = Mappers.player
 
-    private lateinit var playerEntity: Entity
+    private val playerEntity: Entity
     private lateinit var contactEntityA: Entity
     private lateinit var contactEntityB: Entity
 
-    constructor(hud: Hud) : super(Family.all(BodyComponent::class.java).get()) {
+
+    constructor(hud: Hud, playerEntity: Entity) : super(Family.all(BodyComponent::class.java).get()) {
         this.hud = hud
+        this.playerEntity = playerEntity
     }
 
     override fun update(deltaTime: Float) {}
@@ -49,7 +53,6 @@ class ContactSystem : ContactListener, IteratingSystem {
         entities.forEach {
             if (body[it].body == contact.fixtureA.body) contactEntityA = it
             if (body[it].body == contact.fixtureB.body) contactEntityB = it
-            if (pl.has(it)) playerEntity = it
         }
 
 
@@ -67,19 +70,28 @@ class ContactSystem : ContactListener, IteratingSystem {
             }
 
             PLAYER_BIT or GROUND_BIT -> {
-                if (playerEntity == contactEntityA) {
-                    pl[contactEntityA].collidingWithGround = true
-                } else {
-                    pl[contactEntityB].collidingWithGround = true
-                }
+                pl[playerEntity].collidingWithGround = true
             }
 
-            PLAYER_WEAPON_BIT or BREAKABLE_BIT -> {
+            WEAPON_BIT or BREAKABLE_BIT, WEAPON_BIT or AI_BIT -> {
+
                 if (weapon[playerEntity].entityLeft == contactEntityA || weapon[playerEntity].entityRight == contactEntityA) {
-                    damage[contactEntityB].damage += weapon[playerEntity].strength
-                } else {
-                    damage[contactEntityA].damage += weapon[playerEntity].strength
+                    if (damage[contactEntityB].canBeAttacked) {
+                        damage[contactEntityB].damage += attack[playerEntity].strength
+
+                        damage[contactEntityB].knockback.add(attack[playerEntity].knockback)
+                        if (ai[contactEntityB].isPlayerRight) damage[contactEntityB].knockback.scl(-1f, 1f)
+                    }
+                } else
+                if (weapon[playerEntity].entityLeft == contactEntityB || weapon[playerEntity].entityRight == contactEntityB) {
+                    if (damage[contactEntityA].canBeAttacked) {
+                        damage[contactEntityA].damage += attack[playerEntity].strength
+
+                        damage[contactEntityA].knockback.add(attack[playerEntity].knockback)
+                        if (ai[contactEntityA].isPlayerRight) damage[contactEntityA].knockback.scl(-1f, 1f)
+                    }
                 }
+
                 contact.isEnabled = false
             }
 
@@ -177,23 +189,26 @@ class ContactSystem : ContactListener, IteratingSystem {
 
     override fun endContact(contact: Contact) {
 
-        var entityA = Entity()
-        var entityB = Entity()
-
         entities.forEach {
-            if (Mappers.body[it].body == contact.fixtureA.body) entityA = it
-            if (Mappers.body[it].body == contact.fixtureB.body) entityB = it
+            if (body[it].body == contact.fixtureA.body) contactEntityA = it
+            if (body[it].body == contact.fixtureB.body) contactEntityB = it
         }
 
         when (contact.fixtureA.filterData.categoryBits or contact.fixtureB.filterData.categoryBits) {
 
             PLAYER_BIT or GROUND_BIT -> {
-                if (Mappers.player.has(entityA)) {
-                    Mappers.player[entityA].collidingWithGround = false
-                } else {
-                    Mappers.player[entityB].collidingWithGround = false
-                }
+                pl[playerEntity].collidingWithGround = false
             }
+
+            WEAPON_BIT or BREAKABLE_BIT, WEAPON_BIT or AI_BIT -> {
+                if (ai.has(contactEntityB)) {
+                    damage[contactEntityB].canBeAttacked = true
+                } else
+                    if (ai.has(contactEntityA)) {
+                        damage[contactEntityA].canBeAttacked = true
+                    }
+            }
+
         }
 
 

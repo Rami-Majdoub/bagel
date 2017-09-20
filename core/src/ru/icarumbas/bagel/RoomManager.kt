@@ -9,21 +9,21 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Rectangle
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.BodyDef
 import com.badlogic.gdx.utils.Array
-import ru.icarumbas.GROUND_BIT
-import ru.icarumbas.PLATFORM_BIT
-import ru.icarumbas.STATIC_BIT
-import ru.icarumbas.TILED_MAPS_TOTAL
-import ru.icarumbas.bagel.components.other.DamageComponent
-import ru.icarumbas.bagel.components.other.StateComponent
+import ru.icarumbas.*
+import ru.icarumbas.bagel.components.other.*
+import ru.icarumbas.bagel.components.physics.StaticComponent
 import ru.icarumbas.bagel.components.rendering.AnimationComponent
+import ru.icarumbas.bagel.components.velocity.RunComponent
 import ru.icarumbas.bagel.creators.AnimationCreator
 import ru.icarumbas.bagel.creators.EntityCreator
 import ru.icarumbas.bagel.creators.WorldCreator
 import ru.icarumbas.bagel.systems.other.StateSwapSystem
 import ru.icarumbas.bagel.utils.Mappers
 import ru.icarumbas.bagel.utils.SerializedMapObject
+import kotlin.experimental.or
 
 
 class RoomManager(val rooms: ArrayList<Room>,
@@ -57,29 +57,17 @@ class RoomManager(val rooms: ArrayList<Room>,
         }
     }
 
-    private fun createIdEntities(){
+    private fun createIdEntity(roomPath: String,
+                               roomId: Int,
+                               objectPath: String,
+                               r: Int = 1,
+                               atlas: TextureAtlas = assets["Packs/items.pack", TextureAtlas::class.java]){
 
-        rooms.forEach {
-            createIdMapObject(it.path, it.id, "vase", 4)
-            createIdMapObject(it.path, it.id, "chair1", 2)
-            createIdMapObject(it.path, it.id, "chair2", 2)
-            createIdMapObject(it.path, it.id, "table", 2)
-            createIdMapObject(it.path, it.id, "chandelier")
-            createIdMapObject(it.path, it.id, "window", 2)
-        }
-
-    }
-
-    private fun createIdMapObject(roomPath: String,
-                        roomId: Int,
-                        objectPath: String,
-                        r: Int = 1,
-                        atlas: TextureAtlas = assets["Packs/items.pack", TextureAtlas::class.java]){
 
         val layer = assets.get(roomPath, TiledMap::class.java).layers[objectPath]
         layer?.objects?.filterIsInstance<RectangleMapObject>()?.forEach {
             val r = MathUtils.random(1, r)
-            if (loadIdMapObject(roomId, it.rectangle, objectPath, atlas, r)){
+            if (loadIdEntity(roomId, it.rectangle, objectPath, atlas, r)){
                 serializedObjects.add(SerializedMapObject(roomId, it.rectangle, objectPath, r))
                 Mappers.roomId[engine.entities.last()].serialized = serializedObjects.last()
             }
@@ -88,11 +76,11 @@ class RoomManager(val rooms: ArrayList<Room>,
 
     }
 
-    private fun loadIdMapObject(roomId: Int,
-                                rect: Rectangle,
-                                objectPath: String,
-                                atlas: TextureAtlas,
-                                r: Int): Boolean {
+    private fun loadIdEntity(roomId: Int,
+                             rect: Rectangle,
+                             objectPath: String,
+                             atlas: TextureAtlas,
+                             r: Int): Boolean {
 
             engine.addEntity(when(objectPath){
                 "vase" -> {
@@ -103,87 +91,153 @@ class RoomManager(val rooms: ArrayList<Room>,
                         else -> Pair(98, 72)
                     }
 
-                    entityCreator.createMapObjectIdEntity(
+                    entityCreator.createMapObjectEntity(
                             rect,
-                            atlas,
-                            "Vase ($r)",
                             size.first,
                             size.second,
-                            roomId,
-                            BodyDef.BodyType.StaticBody)
+                            BodyDef.BodyType.StaticBody,
+                            BREAKABLE_BIT,
+                            WEAPON_BIT,
+                            atlas.findRegion("Vase ($r)"))
                             .add(DamageComponent(5))
                             .add(StateComponent(ImmutableArray(Array.with(StateSwapSystem.DEAD))))
+                            .add(RoomIdComponent(roomId))
                 }
 
                 "window" -> {
-                    entityCreator.createMapObjectIdEntity(
+                    entityCreator.createMapObjectEntity(
                             rect,
-                            atlas,
-                            "Window Small ($r)",
                             86,
                             169,
-                            roomId,
-                            BodyDef.BodyType.StaticBody)
+                            BodyDef.BodyType.StaticBody,
+                            BREAKABLE_BIT,
+                            WEAPON_BIT,
+                            atlas.findRegion("Window Small ($r)"))
+                            .add(RoomIdComponent(roomId))
+
                 }
 
                 "chair1" -> {
                     if (r == 2) return false
-                    entityCreator.createMapObjectIdEntity(
+                    entityCreator.createMapObjectEntity(
                             rect,
-                            atlas,
-                            "Chair (1)",
                             70,
                             128,
-                            roomId,
-                            BodyDef.BodyType.StaticBody)
+                            BodyDef.BodyType.StaticBody,
+                            BREAKABLE_BIT,
+                            WEAPON_BIT,
+                            atlas.findRegion("Chair (1)"))
                             .add(DamageComponent(5))
                             .add(StateComponent(ImmutableArray(Array.with(StateSwapSystem.DEAD))))
+                            .add(RoomIdComponent(roomId))
+
                 }
 
                 "chair2" -> {
                     if (r == 2) return false
-                    entityCreator.createMapObjectIdEntity(
+                    entityCreator.createMapObjectEntity(
                             rect,
-                            atlas,
-                            "Chair (2)",
                             70,
                             128,
-                            roomId,
-                            BodyDef.BodyType.StaticBody)
+                            BodyDef.BodyType.StaticBody,
+                            BREAKABLE_BIT,
+                            WEAPON_BIT,
+                            atlas.findRegion("Chair (2)"))
                             .add(DamageComponent(5))
                             .add(StateComponent(ImmutableArray(Array.with(StateSwapSystem.DEAD))))
+                            .add(RoomIdComponent(roomId))
+
                 }
 
                 "table" -> {
                     if (r == 2) return false
-                    entityCreator.createMapObjectIdEntity(
+                    entityCreator.createMapObjectEntity(
                             rect,
-                            atlas,
-                            "Table",
                             137,
                             69,
-                            roomId,
-                            BodyDef.BodyType.StaticBody)
+                            BodyDef.BodyType.StaticBody,
+                            BREAKABLE_BIT,
+                            WEAPON_BIT,
+                            atlas.findRegion("Table"))
                             .add(DamageComponent(5))
                             .add(StateComponent(ImmutableArray(Array.with(StateSwapSystem.DEAD))))
+                            .add(RoomIdComponent(roomId))
+
                 }
 
                 "chandelier" -> {
-                    entityCreator.createMapObjectIdEntity(
+                    entityCreator.createMapObjectEntity(
                             rect,
-                            atlas,
-                            "Chandelier",
                             243,
                             120,
-                            roomId,
-                            BodyDef.BodyType.StaticBody)
+                            BodyDef.BodyType.StaticBody,
+                            BREAKABLE_BIT,
+                            WEAPON_BIT)
                             .add(DamageComponent(5))
                             .add(AnimationComponent(hashMapOf(StateSwapSystem.STANDING to
-                                    animCreator.create("Chandelier", 4, .125f, Animation.PlayMode.LOOP, atlas))))
+                                    animCreator.create("Chandelier", 4, .125f, atlas))))
                             .add(StateComponent(
                                     ImmutableArray(Array.with(StateSwapSystem.STANDING, StateSwapSystem.DEAD)),
                                     MathUtils.random()
                                     ))
+                            .add(RoomIdComponent(roomId))
+
+                }
+
+                "groundEnemy" -> {
+                    val skeletonAtlas = assets["Packs/Skeleton.pack", TextureAtlas::class.java]
+                    when (r) {
+                        1, 2, 3, 4, 5 -> {
+                            entityCreator.createMapObjectEntity(
+                                    rect,
+                                    128,
+                                    228,
+                                    BodyDef.BodyType.DynamicBody,
+                                    AI_BIT,
+                                    WEAPON_BIT or GROUND_BIT or PLATFORM_BIT)
+                                    .add(DamageComponent(2 * roomId + 1))
+                                    .add(AnimationComponent(hashMapOf(
+                                            StateSwapSystem.STANDING to Animation(
+                                                    .125f,
+                                                    skeletonAtlas.findRegions("idle"),
+                                                    Animation.PlayMode.LOOP),
+                                            StateSwapSystem.ATTACKING to Animation(
+                                                    .125f,
+                                                    skeletonAtlas.findRegions("hit"),
+                                                    Animation.PlayMode.LOOP),
+                                            StateSwapSystem.DEAD to Animation(
+                                                    .125f,
+                                                    skeletonAtlas.findRegions("die"),
+                                                    Animation.PlayMode.NORMAL),
+                                            StateSwapSystem.APPEARING to Animation(
+                                                    .125f,
+                                                    skeletonAtlas.findRegions("appear"),
+                                                    Animation.PlayMode.LOOP),
+                                            StateSwapSystem.RUNNING to Animation(
+                                                    .125f,
+                                                    skeletonAtlas.findRegions("go"),
+                                                    Animation.PlayMode.LOOP))
+                                    ))
+                                    .add(StateComponent(
+                                            ImmutableArray(Array.with(
+                                                    StateSwapSystem.STANDING,
+                                                    StateSwapSystem.ATTACKING,
+                                                    StateSwapSystem.DEAD,
+                                                    StateSwapSystem.APPEARING,
+                                                    StateSwapSystem.RUNNING))
+                                    ))
+                                    .add(AttackComponent(
+                                            strength = 2 * roomId + 1,
+                                            attackSpeed = 1f,
+                                            nearAttackStrength = 2 * roomId + 1,
+                                            knockback = Vector2(.1f, .1f)))
+                                    .add(RoomIdComponent(roomId))
+                                    .add(RunComponent(.4f, 4f))
+                                    .add(AIComponent())
+
+                        }
+                        else -> return false
+                    }
                 }
 
                 else -> throw Exception("NO SUCH CLASS: $objectPath")
@@ -200,20 +254,35 @@ class RoomManager(val rooms: ArrayList<Room>,
         layer?.objects?.forEach {
             engine.addEntity(when(objectPath){
                 "lighting" -> {
-                    entityCreator.createMapObjectStaticEntity(
-                            (it as RectangleMapObject).rectangle, roomPath, atlas, "Lighting", 98, 154, BodyDef.BodyType.StaticBody, STATIC_BIT, -1)
+                    entityCreator.createMapObjectEntity(
+                            (it as RectangleMapObject).rectangle,
+                            98,
+                            154,
+                            BodyDef.BodyType.StaticBody,
+                            STATIC_BIT,
+                            -1,
+                            atlas.findRegion("Lighting"))
                             .add(AnimationComponent(hashMapOf(StateSwapSystem.STANDING to
-                                    animCreator.create("Lighting", 4, .125f, Animation.PlayMode.LOOP, atlas))))
+                                    animCreator.create("Lighting", 4, .125f, atlas))))
                             .add(StateComponent(ImmutableArray(Array.with(StateSwapSystem.STANDING)),
                                     MathUtils.random()))
+                            .add(StaticComponent(roomPath))
                 }
                 "torch" -> {
-                    entityCreator.createMapObjectStaticEntity(
-                            (it as RectangleMapObject).rectangle, roomPath, atlas, "Torch", 178, 116, BodyDef.BodyType.StaticBody, STATIC_BIT, -1)
+                    entityCreator.createMapObjectEntity(
+                            (it as RectangleMapObject).rectangle,
+                            178,
+                            116,
+                            BodyDef.BodyType.StaticBody,
+                            STATIC_BIT,
+                            -1,
+                            atlas.findRegion("Torch"))
                             .add(AnimationComponent(hashMapOf(StateSwapSystem.STANDING to
-                                    animCreator.create("Torch", 4, .125f, Animation.PlayMode.LOOP, atlas))))
+                                    animCreator.create("Torch", 4, .125f, atlas))))
                             .add(StateComponent(ImmutableArray(Array.with(StateSwapSystem.STANDING)),
                                     MathUtils.random()))
+                            .add(StaticComponent(roomPath))
+
                 }
                 "ground" -> entityCreator.createGroundEntity(it, roomPath, GROUND_BIT)
                 "platform" -> entityCreator.createGroundEntity(it, roomPath, PLATFORM_BIT)
@@ -231,15 +300,24 @@ class RoomManager(val rooms: ArrayList<Room>,
         rooms[currentMapId].meshCoords = intArrayOf(25, 25, 25, 25)
         worldCreator.createWorld(100, this)
         createStaticEntities()
-        createIdEntities()
+
+        rooms.forEach {
+            createIdEntity(it.path, it.id, "vase", 4)
+            createIdEntity(it.path, it.id, "chair1", 3)
+            createIdEntity(it.path, it.id, "chair2", 3)
+            createIdEntity(it.path, it.id, "table", 3)
+            createIdEntity(it.path, it.id, "chandelier")
+            createIdEntity(it.path, it.id, "window", 2)
+            createIdEntity(it.path, it.id, "groundEnemy", 5)
+        }
     }
 
     fun continueWorld() {
         worldIO.loadWorld(serializedObjects, rooms)
-        serializedObjects.forEach{
-            loadIdMapObject(it.roomId, it.rect, it.objectPath, assets["Packs/items.pack", TextureAtlas::class.java], it.rand)
-        }
         createStaticEntities()
+        serializedObjects.forEach{
+            loadIdEntity(it.roomId, it.rect, it.objectPath, assets["Packs/items.pack", TextureAtlas::class.java], it.rand)
+        }
     }
 
 }

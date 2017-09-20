@@ -2,7 +2,7 @@ package ru.icarumbas.bagel.systems.rendering
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
-import com.badlogic.ashley.systems.IteratingSystem
+import com.badlogic.ashley.systems.SortedIteratingSystem
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.MathUtils
@@ -13,10 +13,11 @@ import ru.icarumbas.bagel.components.physics.BodyComponent
 import ru.icarumbas.bagel.components.physics.StaticComponent
 import ru.icarumbas.bagel.components.rendering.SizeComponent
 import ru.icarumbas.bagel.utils.Mappers
+import ru.icarumbas.bagel.utils.RenderingComparator
 import ru.icarumbas.bagel.utils.inView
 
 
-class RenderingSystem : IteratingSystem {
+class RenderingSystem : SortedIteratingSystem {
 
     private val size = Mappers.size
     private val body = Mappers.body
@@ -27,13 +28,13 @@ class RenderingSystem : IteratingSystem {
 
 
     constructor(rm: RoomManager, batch: Batch) : super(Family.all(
-            SizeComponent::class.java,
-            BodyComponent::class.java)
+                    SizeComponent::class.java,
+                    BodyComponent::class.java)
             .one(
                     AlwaysRenderingMarkerComponent::class.java,
                     RoomIdComponent::class.java,
                     StaticComponent::class.java
-            ).get()) {
+            ).get(), RenderingComparator()) {
 
         this.rm = rm
         this.batch = batch

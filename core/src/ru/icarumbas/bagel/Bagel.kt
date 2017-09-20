@@ -15,10 +15,9 @@ import ru.icarumbas.bagel.screens.MainMenuScreen
 const val GROUND_BIT: Short = 2
 const val PLATFORM_BIT: Short = 4
 const val PLAYER_BIT: Short = 8
-const val PLAYER_WEAPON_BIT: Short = 16
+const val WEAPON_BIT: Short = 16
 const val KEY_OPEN_BIT: Short = 32
 const val BREAKABLE_BIT: Short = 64
-const val AI_WEAPON_BI: Short = 128
 const val AI_BIT: Short = 256
 const val TAKE_BIT: Short = 512
 const val STATIC_BIT: Short = 1024
@@ -50,13 +49,13 @@ class Bagel: Game() {
 
         // Texture Atlases
         assetManager.setLoader(TextureAtlas::class.java, TextureAtlasLoader(InternalFileHandleResolver()))
-        assetManager.load("Packs/RoomObjects.txt", TextureAtlas::class.java)
         assetManager.load("Packs/GuyKnight.pack", TextureAtlas::class.java)
         assetManager.load("Packs/Main_Menu.txt", TextureAtlas::class.java)
-        assetManager.load("Packs/Enemies.txt", TextureAtlas::class.java)
         assetManager.load("Packs/items.pack", TextureAtlas::class.java)
-
-
+        assetManager.load("Packs/Skeleton.pack", TextureAtlas::class.java)
+        assetManager.load("Packs/Golem.pack", TextureAtlas::class.java)
+        assetManager.load("Packs/Vamp.pack", TextureAtlas::class.java)
+        assetManager.load("Packs/Zombie.pack", TextureAtlas::class.java)
 
 
         // Sounds

@@ -23,12 +23,13 @@ class StateSwapSystem : IteratingSystem {
         val ATTACKING = "ATTACKING"
         val WALKING = "WALKING"
         val JUMP_ATTACKING = "JUMP-ATTACKING"
+        val APPEARING = "APPEARING"
     }
 
     private val state = Mappers.state
     private val damage = Mappers.damage
     private val run = Mappers.run
-    private val weapon = Mappers.weapon
+    private val attack = Mappers.attack
     private val body = Mappers.body
     private val rm: RoomManager
 
@@ -47,14 +48,14 @@ class StateSwapSystem : IteratingSystem {
                 if (state[entity].currentState != DEAD) state[entity].stateTime = 0f
                 state[entity].currentState = DEAD
             } else
-                if (state[entity].states.contains(JUMP_ATTACKING) && weapon[entity].attacking &&
+                if (state[entity].states.contains(JUMP_ATTACKING) && attack[entity].attacking &&
                         (body[entity].body.linearVelocity.y > .00001f ||
                         body[entity].body.linearVelocity.y < -.00001f)
                         ) {
                     if (state[entity].currentState != JUMP_ATTACKING) state[entity].stateTime = 0f
                     state[entity].currentState = JUMP_ATTACKING
                 } else
-                    if (state[entity].states.contains(ATTACKING) && weapon[entity].attacking) {
+                    if (state[entity].states.contains(ATTACKING) && attack[entity].attacking) {
                         if (state[entity].currentState != ATTACKING) state[entity].stateTime = 0f
                         state[entity].currentState = ATTACKING
                     } else

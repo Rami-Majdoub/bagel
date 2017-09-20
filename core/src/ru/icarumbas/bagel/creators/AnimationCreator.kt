@@ -12,8 +12,10 @@ class AnimationCreator(val assetManager: AssetManager){
     fun create(path: String,
                count: Int,
                animSpeed: Float,
-               animPlaymode: Animation.PlayMode,
-               atlas: TextureAtlas): Animation<TextureRegion> {
+               atlas: TextureAtlas,
+               animPlaymode: Animation.PlayMode = Animation.PlayMode.LOOP): Animation<TextureRegion> {
+
+
         val frames = Array<TextureRegion>(count)
 
         (1..count).forEach {

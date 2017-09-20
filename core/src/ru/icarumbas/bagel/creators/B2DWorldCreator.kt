@@ -28,7 +28,7 @@ class B2DWorldCreator(private val world: World) {
         fixtureDef.friction = .4f
         fixtureDef.density = .04f
         fixtureDef.filter.categoryBits = PLAYER_BIT
-        fixtureDef.filter.maskBits = GROUND_BIT or PLATFORM_BIT or PLAYER_WEAPON_BIT
+        fixtureDef.filter.maskBits = GROUND_BIT or PLATFORM_BIT or WEAPON_BIT
 
         playerBody.createFixture(fixtureDef)
         shape.dispose()
@@ -108,11 +108,14 @@ class B2DWorldCreator(private val world: World) {
                             height: Float = 0f,
                             mBit: Short = -1,
                             tex: TextureRegion? = null,
-                            gravity: Float = 0f): Body{
+                            gravity: Float = 1f): Body{
 
 
         val def = BodyDef()
         def.type = type
+        def.position.x = rect.x / PIX_PER_M + width / 2
+        def.position.y = rect.y / PIX_PER_M + height / 2
+        val body = world.createBody(def)
 
         val fixtureDef = FixtureDef()
         fixtureDef.restitution = .1f
@@ -120,15 +123,10 @@ class B2DWorldCreator(private val world: World) {
         fixtureDef.filter.categoryBits = cBit
         fixtureDef.filter.maskBits = mBit
 
-        def.position.x = rect.x / PIX_PER_M + width / 2
-        def.position.y = rect.y / PIX_PER_M + height / 2
-        def.type = BodyDef.BodyType.StaticBody
-
         val polygonShape = PolygonShape()
         polygonShape.setAsBox(width / 2f, height / 2f)
         fixtureDef.shape = polygonShape
 
-        val body = world.createBody(def)
         body.createFixture(fixtureDef)
         body.gravityScale = gravity
         body.userData = tex
