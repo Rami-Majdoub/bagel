@@ -15,11 +15,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad
 import com.badlogic.gdx.utils.viewport.StretchViewport
 import ru.icarumbas.bagel.RoomManager
-import ru.icarumbas.bagel.screens.GameScreen
+import ru.icarumbas.bagel.utils.Mappers
 
 
-class Hud: InputListener(){
+class Hud(val playerEntity: com.badlogic.ashley.core.Entity): InputListener(){
 
+    private val damage = Mappers.damage
     val stage: Stage
     var touchedOnce = false
     private var touchpad: Touchpad
@@ -111,6 +112,7 @@ class Hud: InputListener(){
         currentRoom.setText("${rm.currentMapId}")
         getDirection()
         fps.setText("FPS: ${Gdx.graphics.framesPerSecond}")
+        hp.setText("HP: ${damage[playerEntity].HP}")
         //openButton.isVisible = gameScreen.worldContactListener.touchedOpeningItem
     }
 

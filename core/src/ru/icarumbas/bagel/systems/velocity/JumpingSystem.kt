@@ -6,7 +6,7 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.Vector2
 import ru.icarumbas.bagel.components.velocity.JumpComponent
 import ru.icarumbas.bagel.screens.scenes.Hud
-import ru.icarumbas.bagel.systems.other.StateSwapSystem
+import ru.icarumbas.bagel.systems.other.StateSystem
 import ru.icarumbas.bagel.utils.Mappers
 
 
@@ -35,7 +35,7 @@ class JumpingSystem : IteratingSystem {
     fun relax(e: Entity){
         // Here i took only player's situation
 
-        if (Mappers.state[e].currentState != StateSwapSystem.JUMPING) {
+        if (Mappers.state[e].currentState != StateSystem.JUMPING) {
             if (Mappers.player.has(e)) {
                 if (!hud.isUpPressed() || !Mappers.player[e].collidingWithGround){
                     jump[e].jumps = 0

@@ -3,6 +3,7 @@ package ru.icarumbas.bagel.components.other
 import com.badlogic.ashley.core.Component
 
 
-data class AIComponent(var isPlayerRight: Boolean = false,
+data class AIComponent(var isPlayerRight: Boolean = true,
+                       var isPlayerNear: Boolean = false,
                        var isPlayerUp: Boolean = false,
-                       var readyAttack: Boolean = false) : Component
+                       var appeared: Boolean = false) : Component

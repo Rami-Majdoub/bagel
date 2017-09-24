@@ -24,7 +24,7 @@ import ru.icarumbas.bagel.screens.scenes.Hud
 import ru.icarumbas.bagel.systems.other.AISystem
 import ru.icarumbas.bagel.systems.other.HealthSystem
 import ru.icarumbas.bagel.systems.other.RoomChangingSystem
-import ru.icarumbas.bagel.systems.other.StateSwapSystem
+import ru.icarumbas.bagel.systems.other.StateSystem
 import ru.icarumbas.bagel.systems.physics.AwakeSystem
 import ru.icarumbas.bagel.systems.physics.ContactSystem
 import ru.icarumbas.bagel.systems.physics.WeaponSystem
@@ -39,7 +39,7 @@ import ru.icarumbas.bagel.utils.SerializedMapObject
 class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
 
     private val world = World(Vector2(0f, -9.8f), true)
-    private val hud = Hud()
+    private val hud: Hud
     private val debugRenderer: DebugRenderer
     private val engine = Engine()
     private val mapRenderer: MapRenderer
@@ -57,8 +57,8 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         val b2DWorldCreator = B2DWorldCreator(world)
         val animationCreator = AnimationCreator(game.assetManager)
         val worldCreator = WorldCreator(game.assetManager)
-        entityCreator = EntityCreator(b2DWorldCreator)
-        rm = RoomManager(rooms, game.assetManager, entityCreator, engine, animationCreator, serializedObjects, game.worldIO)
+        entityCreator = EntityCreator(b2DWorldCreator, game.assetManager, engine, animationCreator)
+        rm = RoomManager(rooms, game.assetManager, entityCreator, engine, serializedObjects, game.worldIO)
 
         if (newWorld) rm.createNewWorld(worldCreator, game.assetManager) else rm.continueWorld()
 
@@ -74,33 +74,13 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
 
         worldCleaner = WorldCleaner(entityDeleteList, engine, world, serializedObjects)
 
-        val weaponEntityLeft = entityCreator.createSwingWeaponEntity(
-                path = "Sword2",
-                atlas = game.assetManager["Packs/GuyKnight.pack", TextureAtlas::class.java],
-                width = 30,
-                height = 100,
-                playerBody = playerBody,
-                b2DWorldCreator = b2DWorldCreator,
-                anchorA = Vector2(-.1f, -.3f),
-                anchorB = Vector2(0f, -.5f))
-
-        val weaponEntityRight = entityCreator.createSwingWeaponEntity(
-                path = "Sword2",
-                atlas = game.assetManager["Packs/GuyKnight.pack", TextureAtlas::class.java],
-                width = 30,
-                height = 100,
-                playerBody = playerBody,
-                b2DWorldCreator = b2DWorldCreator,
-                anchorA = Vector2(.1f, -.3f),
-                anchorB = Vector2(0f, -.5f))
-
         playerEntity = entityCreator.createPlayerEntity(
                 animationCreator,
                 game.assetManager["Packs/GuyKnight.pack", TextureAtlas::class.java],
-                playerBody,
-                weaponEntityLeft,
-                weaponEntityRight)
+                playerBody)
 
+
+        hud = Hud(playerEntity)
         val contactSystem = ContactSystem(hud, playerEntity)
         world.setContactListener(contactSystem)
 
@@ -108,9 +88,9 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
 
             // Other
             addSystem(RoomChangingSystem(rm))
-            addSystem(StateSwapSystem(rm))
+            addSystem(StateSystem(rm))
             addSystem(HealthSystem(rm, world, coins, entityDeleteList))
-            addSystem(AISystem(playerEntity))
+            addSystem(AISystem(playerEntity, rm))
 
             // Velocity
             addSystem(RunningSystem(hud))
@@ -119,16 +99,13 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
             // Physic
             addSystem(AwakeSystem(rm))
             addSystem(contactSystem)
-            addSystem(WeaponSystem(hud))
+            addSystem(WeaponSystem(hud, rm))
 
             // Rendering
             addSystem(AnimationSystem(rm))
             addSystem(ViewportSystem(viewport, rm))
             addSystem(RenderingSystem(rm, orthoRenderer.batch))
 
-
-            addEntity(weaponEntityRight)
-            addEntity(weaponEntityLeft)
             addEntity(playerEntity)
         }
 

@@ -6,6 +6,7 @@ import com.badlogic.ashley.systems.SortedIteratingSystem
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.MathUtils
+import ru.icarumbas.PIX_PER_M
 import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.components.other.AlwaysRenderingMarkerComponent
 import ru.icarumbas.bagel.components.other.RoomIdComponent
@@ -43,7 +44,12 @@ class RenderingSystem : SortedIteratingSystem {
     override fun update(deltaTime: Float) {
         super.update(deltaTime)
 
-        entities.filter { it.inView(rm) && body[it].body.isActive}.forEach {
+        entities.filter { it.inView(rm) && body[it].body.isActive && body[it].body.userData != null}.forEach {
+
+            if (body[it].body.userData != null) {
+                size[it].height = (body[it].body.userData as TextureRegion).regionHeight / PIX_PER_M * size[it].scale
+                size[it].width = (body[it].body.userData as TextureRegion).regionWidth / PIX_PER_M * size[it].scale
+            }
 
             batch.begin()
 
@@ -65,8 +71,8 @@ class RenderingSystem : SortedIteratingSystem {
         entities.clear()
     }
 
-    override fun processEntity(entity: Entity, deltaTime: Float) {
-        entities.add(entity)
+    override fun processEntity(e: Entity, deltaTime: Float) {
+        entities.add(e)
     }
 
 

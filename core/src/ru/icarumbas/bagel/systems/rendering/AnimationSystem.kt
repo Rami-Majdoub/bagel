@@ -10,7 +10,7 @@ import ru.icarumbas.bagel.components.other.RoomIdComponent
 import ru.icarumbas.bagel.components.other.StateComponent
 import ru.icarumbas.bagel.components.physics.StaticComponent
 import ru.icarumbas.bagel.components.rendering.AnimationComponent
-import ru.icarumbas.bagel.systems.other.StateSwapSystem
+import ru.icarumbas.bagel.systems.other.StateSystem
 import ru.icarumbas.bagel.utils.*
 
 
@@ -20,6 +20,7 @@ class AnimationSystem : IteratingSystem {
     private val state = Mappers.state
     private val weapon = Mappers.weapon
     private val body = Mappers.body
+    private val size = Mappers.size
 
     private val rm: RoomManager
 
@@ -36,7 +37,8 @@ class AnimationSystem : IteratingSystem {
 
     private fun flip(e: Entity) {
 
-        val textureReg = body[e].body.userData as TextureRegion
+        if (body[e].body.userData != null) {
+            val textureReg = body[e].body.userData as TextureRegion
 
             if (e.rotatedRight() && textureReg.isFlipX) {
                 textureReg.flip(true, false)
@@ -44,14 +46,15 @@ class AnimationSystem : IteratingSystem {
                 if (!e.rotatedRight() && !textureReg.isFlipX) {
                     textureReg.flip(true, false)
                 }
+        }
     }
 
     override fun processEntity(e: Entity, deltaTime: Float) {
 
-        state[e].stateTime += deltaTime
-
         if (e.inView(rm)) {
-            if (state[e].currentState == StateSwapSystem.ATTACKING) {
+            state[e].stateTime += deltaTime
+
+            if (state[e].currentState == StateSystem.ATTACKING) {
 
                 val frame = if (e.rotatedRight()){
                     body[weapon[e].entityRight].body.angleInDegrees().div(PI_DIV_7).toInt() * -1
@@ -76,6 +79,7 @@ class AnimationSystem : IteratingSystem {
             }
 
             flip(e)
+
 
         }
     }

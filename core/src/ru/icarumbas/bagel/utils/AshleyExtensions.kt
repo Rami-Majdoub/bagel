@@ -20,7 +20,7 @@ fun Entity.inView(rm: RoomManager): Boolean {
 
 fun Entity.rotatedRight(): Boolean{
     return when {
-        ai.has(this) -> !ai[this].isPlayerRight
+        ai.has(this) -> ai[this].isPlayerRight
         run.has(this) -> run[this].lastRight
         else -> true
     }

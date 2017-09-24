@@ -47,7 +47,7 @@ class B2DWorldCreator(private val world: World) {
 
     }
 
-    fun createSwordWeapon(categoryBit: Short, maskBit: Short, texture: TextureRegion, size: Vector2): Body{
+    fun createSwordWeapon(categoryBit: Short, maskBit: Short, texture: TextureRegion?, size: Vector2): Body{
 
         val bodyDef = BodyDef()
         bodyDef.type = BodyDef.BodyType.DynamicBody
@@ -103,9 +103,9 @@ class B2DWorldCreator(private val world: World) {
 
     fun defineRectangleMapObjectBody(rect: Rectangle,
                             type: BodyDef.BodyType,
-                            cBit: Short,
                             width: Float = 0f,
                             height: Float = 0f,
+                            cBit: Short,
                             mBit: Short = -1,
                             tex: TextureRegion? = null,
                             gravity: Float = 1f): Body{

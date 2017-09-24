@@ -52,10 +52,10 @@ class Bagel: Game() {
         assetManager.load("Packs/GuyKnight.pack", TextureAtlas::class.java)
         assetManager.load("Packs/Main_Menu.txt", TextureAtlas::class.java)
         assetManager.load("Packs/items.pack", TextureAtlas::class.java)
-        assetManager.load("Packs/Skeleton.pack", TextureAtlas::class.java)
-        assetManager.load("Packs/Golem.pack", TextureAtlas::class.java)
-        assetManager.load("Packs/Vamp.pack", TextureAtlas::class.java)
-        assetManager.load("Packs/Zombie.pack", TextureAtlas::class.java)
+        assetManager.load("Packs/Enemies/Skeleton.pack", TextureAtlas::class.java)
+        assetManager.load("Packs/Enemies/Golem.pack", TextureAtlas::class.java)
+        assetManager.load("Packs/Enemies/Vamp.pack", TextureAtlas::class.java)
+        assetManager.load("Packs/Enemies/Zombie.pack", TextureAtlas::class.java)
 
 
         // Sounds
