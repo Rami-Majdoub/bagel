@@ -68,7 +68,6 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         mapRenderer = MapRenderer(orthoRenderer, rm, game.assetManager, viewport)
         debugRenderer = DebugRenderer(Box2DDebugRenderer(), world, viewport)
 
-        val playerBody = b2DWorldCreator.createPlayerBody()
         val coins = ArrayList<Body>()
         val entityDeleteList = ArrayList<Entity>()
 
@@ -77,7 +76,7 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         playerEntity = entityCreator.createPlayerEntity(
                 animationCreator,
                 game.assetManager["Packs/GuyKnight.pack", TextureAtlas::class.java],
-                playerBody)
+                b2DWorldCreator.createPlayerBody())
 
 
         hud = Hud(playerEntity)
@@ -88,8 +87,8 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
 
             // Other
             addSystem(RoomChangingSystem(rm))
-            addSystem(StateSystem(rm))
             addSystem(HealthSystem(rm, world, coins, entityDeleteList))
+            addSystem(StateSystem(rm))
             addSystem(AISystem(playerEntity, rm))
 
             // Velocity
@@ -102,8 +101,8 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
             addSystem(WeaponSystem(hud, rm))
 
             // Rendering
-            addSystem(AnimationSystem(rm))
             addSystem(ViewportSystem(viewport, rm))
+            addSystem(AnimationSystem(rm))
             addSystem(RenderingSystem(rm, orthoRenderer.batch))
 
             addEntity(playerEntity)

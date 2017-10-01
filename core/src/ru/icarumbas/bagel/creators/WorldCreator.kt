@@ -9,7 +9,7 @@ import ru.icarumbas.TILED_MAPS_TOTAL
 import ru.icarumbas.bagel.Room
 import ru.icarumbas.bagel.RoomManager
 
-class WorldCreator (val assetManager: AssetManager){
+class WorldCreator (private val assetManager: AssetManager){
 
     private var zeroRoomChance = 0
     private lateinit var mesh: Array<IntArray>
@@ -31,19 +31,19 @@ class WorldCreator (val assetManager: AssetManager){
         for (i in 0..worldSize) {
             if (i == rm.size()) break
 
-            generateRoom("Maps/New/map", "Right", 2, i, 1, 0, 2, 1, 0, 1, 0, 3, rm)
-            generateRoom("Maps/New/map", "Left", 0, i, -1, 0, 0, 1, 2, 1, 2, 3, rm)
-            generateRoom("Maps/New/map", "Up", 1, i, 0, -1, 0, 3, 0, 1, 2, 1, rm)
-            generateRoom("Maps/New/map", "Down", 3, i, 0, 1, 0, 1, 0, 3, 2, 3, rm)
+            generateRoom("Right", 2, i, 1, 0, 2, 1, 0, 1, 0, 3, rm)
+            generateRoom("Left", 0, i, -1, 0, 0, 1, 2, 1, 2, 3, rm)
+            generateRoom("Up", 1, i, 0, -1, 0, 3, 0, 1, 2, 1, rm)
+            generateRoom( "Down", 3, i, 0, 1, 0, 1, 0, 3, 2, 3, rm)
 
 
             if (rm.height(i) != REG_ROOM_HEIGHT) {
-                generateRoom("Maps/New/map", "Right", 6, i, 1, 0, 2, 3, 0, 3, 0, 1, rm)
-                generateRoom("Maps/New/map", "Left", 4, i, -1, 0, 0, 3, 2, 3, 2, 1, rm)
+                generateRoom("Right", 6, i, 1, 0, 2, 3, 0, 3, 0, 1, rm)
+                generateRoom( "Left", 4, i, -1, 0, 0, 3, 2, 3, 2, 1, rm)
             }
             if (rm.width(i) != REG_ROOM_WIDTH) {
-                generateRoom("Maps/New/map", "Up", 5, i, 0, -1, 2, 3, 2, 1, 0, 1, rm)
-                generateRoom("Maps/New/map", "Down", 7, i, 0, 1, 2, 1, 2, 3, 0, 3, rm)
+                generateRoom("Up", 5, i, 0, -1, 2, 3, 2, 1, 0, 1, rm)
+                generateRoom( "Down", 7, i, 0, 1, 2, 1, 2, 3, 0, 3, rm)
             }
 
         }
@@ -74,9 +74,9 @@ class WorldCreator (val assetManager: AssetManager){
                 (mesh[meshY + meshCheckSides[7]][meshX + meshCheckSides[6]] == 0)
     }
 
-    private fun chooseMap(path: String = "", side: String, count: Int, meshX: Int, meshY: Int, rm: RoomManager): Room {
+    private fun chooseMap(side: String, count: Int, meshX: Int, meshY: Int, rm: RoomManager): Room {
 
-        newRoom = rm.createRoom(assetManager, "$path${rand(TILED_MAPS_TOTAL-1)}.tmx", roomsTotal)
+        newRoom = rm.createRoom(assetManager, "Maps/Map${rand(TILED_MAPS_TOTAL-1)}.tmx", roomsTotal)
 
         val mapRoomWidth = (newRoom.width / REG_ROOM_WIDTH).toInt()
         val mapRoomHeight = (newRoom.height / REG_ROOM_HEIGHT).toInt()
@@ -112,7 +112,7 @@ class WorldCreator (val assetManager: AssetManager){
                           && assetManager.get(newRoom.path, TiledMap::class.java).properties.get(stringSides[place]) == "Yes") ||
                             (assetManager.get(it.path, TiledMap::class.java).properties.get(stringSides[3 - place]) == "Yes"
                           && assetManager.get(newRoom.path, TiledMap::class.java).properties.get(stringSides[place]) != "Yes")) {
-                            chooseMap(path, side, count, meshX, meshY, rm)
+                            chooseMap(side, count, meshX, meshY, rm)
                         }
 
                     }
@@ -122,7 +122,7 @@ class WorldCreator (val assetManager: AssetManager){
             }
 
         }
-        else chooseMap(path, side, count, meshX, meshY, rm)
+        else chooseMap(side, count, meshX, meshY, rm)
 
         return newRoom
     }
@@ -139,8 +139,7 @@ class WorldCreator (val assetManager: AssetManager){
 
     }
 
-    //TODO("Rename this bullshit")
-    private fun generateRoom(path: String,
+    private fun generateRoom(
                              sideName: String,
                              previousPassLink: Int,
                              count: Int,
@@ -166,7 +165,7 @@ class WorldCreator (val assetManager: AssetManager){
             if (mesh[meshY + stepY][meshX + stepX] == 0) {
                 if (zeroRoomChance < 750) zeroRoomChance += 15
                 roomsTotal++
-                rm.rooms.add(chooseMap(path, sideName, count, meshX, meshY, rm))
+                rm.rooms.add(chooseMap(sideName, count, meshX, meshY, rm))
                 rm.rooms[roomsTotal].meshCoords = intArrayOf(meshX + meshCheckSides[0], meshY + meshCheckSides[1], meshX + meshCheckSides[6], meshY + meshCheckSides[7])
                 rm.rooms[count].passes[previousPassLink] = roomsTotal
 

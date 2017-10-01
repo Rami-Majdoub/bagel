@@ -47,20 +47,20 @@ class RenderingSystem : SortedIteratingSystem {
         entities.filter { it.inView(rm) && body[it].body.isActive && body[it].body.userData != null}.forEach {
 
             if (body[it].body.userData != null) {
-                size[it].height = (body[it].body.userData as TextureRegion).regionHeight / PIX_PER_M * size[it].scale
-                size[it].width = (body[it].body.userData as TextureRegion).regionWidth / PIX_PER_M * size[it].scale
+                size[it].spriteSize.y = (body[it].body.userData as TextureRegion).regionHeight / PIX_PER_M * size[it].scale
+                size[it].spriteSize.x = (body[it].body.userData as TextureRegion).regionWidth / PIX_PER_M * size[it].scale
             }
 
             batch.begin()
 
             batch.draw(
                     (body[it].body.userData as TextureRegion),
-                    body[it].body.position.x - size[it].width/2,
-                    body[it].body.position.y - size[it].height/2,
-                    size[it].width/2,
-                    size[it].height/2,
-                    size[it].width,
-                    size[it].height,
+                    body[it].body.position.x - size[it].spriteSize.x / 2,
+                    body[it].body.position.y - size[it].rectSize.y / 2,
+                    size[it].spriteSize.x / 2,
+                    size[it].spriteSize.y / 2,
+                    size[it].spriteSize.x,
+                    size[it].spriteSize.y,
                     1f,
                     1f,
                     body[it].body.angle * MathUtils.radiansToDegrees)

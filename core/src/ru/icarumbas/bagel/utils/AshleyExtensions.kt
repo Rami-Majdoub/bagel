@@ -8,7 +8,6 @@ private val id = Mappers.roomId
 private val static = Mappers.static
 private val pl = Mappers.player
 private val ai = Mappers.AI
-private val run = Mappers.run
 private val plWeapon = Mappers.alwaysRender
 
 
@@ -21,7 +20,7 @@ fun Entity.inView(rm: RoomManager): Boolean {
 fun Entity.rotatedRight(): Boolean{
     return when {
         ai.has(this) -> ai[this].isPlayerRight
-        run.has(this) -> run[this].lastRight
+        pl.has(this) -> pl[this].lastRight
         else -> true
     }
 }

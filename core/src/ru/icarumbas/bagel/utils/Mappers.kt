@@ -15,7 +15,7 @@ class Mappers {
 
     companion object Mappers {
 
-        val damage          =       ComponentMapper.getFor(DamageComponent::class.java)!!
+        val damage          =       ComponentMapper.getFor(HealthComponent::class.java)!!
         val player          =       ComponentMapper.getFor(PlayerComponent::class.java)!!
         val roomId          =       ComponentMapper.getFor(RoomIdComponent::class.java)!!
         val state           =       ComponentMapper.getFor(StateComponent::class.java)!!
@@ -30,5 +30,6 @@ class Mappers {
         val weapon          =       ComponentMapper.getFor(WeaponComponent::class.java)!!
         val alwaysRender    =       ComponentMapper.getFor(AlwaysRenderingMarkerComponent::class.java)!!
         val AI              =       ComponentMapper.getFor(AIComponent::class.java)!!
+        val inActive        =       ComponentMapper.getFor(InactiveMarkerComponent::class.java)!!
     }
 }

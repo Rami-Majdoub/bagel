@@ -6,4 +6,5 @@ import com.badlogic.ashley.core.Component
 data class AIComponent(var isPlayerRight: Boolean = true,
                        var isPlayerNear: Boolean = false,
                        var isPlayerUp: Boolean = false,
-                       var appeared: Boolean = false) : Component
+                       var appeared: Boolean = false,
+                       var coldown: Float = 0f) : Component

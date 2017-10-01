@@ -36,10 +36,10 @@ class RoomManager(val rooms: ArrayList<Room>,
 
     private fun createStaticEntities(){
         (0 until TILED_MAPS_TOTAL).forEach {
-            entityCreator.loadStaticMapObject("Maps/New/map$it.tmx", "lighting")
-            entityCreator.loadStaticMapObject("Maps/New/map$it.tmx", "torch")
-            entityCreator.loadStaticMapObject("Maps/New/map$it.tmx", "ground")
-            entityCreator.loadStaticMapObject("Maps/New/map$it.tmx", "platform")
+            entityCreator.loadStaticMapObject("Maps/Map$it.tmx", "lighting")
+            entityCreator.loadStaticMapObject("Maps/Map$it.tmx", "torch")
+            entityCreator.loadStaticMapObject("Maps/Map$it.tmx", "ground")
+            entityCreator.loadStaticMapObject("Maps/Map$it.tmx", "platform")
         }
     }
 
@@ -67,7 +67,7 @@ class RoomManager(val rooms: ArrayList<Room>,
     }
 
     fun createNewWorld(worldCreator: WorldCreator, assetManager: AssetManager) {
-        rooms.add(createRoom(assetManager, "Maps/New/map0.tmx", 0))
+        rooms.add(createRoom(assetManager, "Maps/Map0.tmx", 0))
         rooms[currentMapId].meshCoords = intArrayOf(25, 25, 25, 25)
         worldCreator.createWorld(100, this)
         createStaticEntities()

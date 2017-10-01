@@ -46,21 +46,20 @@ class StateSystem : IteratingSystem {
 
     override fun processEntity(e: Entity, deltaTime: Float) {
         if (e.inView(rm)) {
-            if (state[e].states.contains(APPEARING) && !ai[e].appeared && (ai[e].isPlayerNear || state[e].currentState == APPEARING)) {
-                if (state[e].currentState != APPEARING) state[e].stateTime = 0f
-                state[e].currentState = APPEARING
+            if (state[e].states.contains(DEAD) && damage[e].HP <= 0) {
+                if (state[e].currentState != DEAD) state[e].stateTime = 0f
+                state[e].currentState = DEAD
             } else
-                if (state[e].states.contains(APPEARING) && !ai[e].appeared) {
-                    state[e].currentState = NULL
+                if (state[e].states.contains(APPEARING) && !ai[e].appeared && (ai[e].isPlayerNear || state[e].currentState == APPEARING)) {
+                    if (state[e].currentState != APPEARING) state[e].stateTime = 0f
+                    state[e].currentState = APPEARING
                 } else
-                    if (state[e].states.contains(DEAD) && damage[e].HP <= 0) {
-                        if (state[e].currentState != DEAD) state[e].stateTime = 0f
-                        state[e].currentState = DEAD
+                    if (state[e].states.contains(APPEARING) && !ai[e].appeared) {
+                        state[e].currentState = NULL
                     } else
                         if (state[e].states.contains(JUMP_ATTACKING) && weapon[e].attacking &&
                                 (body[e].body.linearVelocity.y > .00001f ||
-                                body[e].body.linearVelocity.y < -.00001f)
-                                ) {
+                                body[e].body.linearVelocity.y < -.00001f)) {
                             if (state[e].currentState != JUMP_ATTACKING) state[e].stateTime = 0f
                             state[e].currentState = JUMP_ATTACKING
                         } else
@@ -81,7 +80,7 @@ class StateSystem : IteratingSystem {
                                         state[e].currentState = RUNNING
                                     } else
                                         if (state[e].states.contains(WALKING) &&
-                                                MathUtils.round(body[e].body.linearVelocity.x) != 0){
+                                                body[e].body.linearVelocity.x != 0f){
                                             if (state[e].currentState != WALKING) state[e].stateTime = 0f
                                             state[e].currentState = WALKING
                                         } else {

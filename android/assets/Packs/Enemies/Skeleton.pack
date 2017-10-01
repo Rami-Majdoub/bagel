@@ -2,165 +2,144 @@
 Skeleton.png
 size: 2048,2048
 format: RGBA8888
-filter: Linear, Linear
+filter: Linear,Linear
 repeat: none
-appear
-  rotate: false
-  xy: 918, 1172
-  size: 260, 332
-  orig: 260, 332
-  offset: 0, 0
-  index: 7
-appear
-  rotate: false
-  xy: 1180, 1172
-  size: 260, 332
-  orig: 260, 332
-  offset: 0, 0
-  index: 8
-appear
-  rotate: false
-  xy: 1578, 786
-  size: 260, 332
-  orig: 260, 332
-  offset: 0, 0
-  index: 9
-appear
-  rotate: false
-  xy: 1772, 1172
-  size: 260, 332
-  orig: 260, 332
-  offset: 0, 0
-  index: 10
-appear
-  rotate: false
-  xy: 1780, 1558
-  size: 260, 332
-  orig: 260, 332
-  offset: 0, 0
-  index: 1
-appear
-  rotate: false
-  xy: 1774, 86
-  size: 260, 332
-  orig: 260, 332
-  offset: 0, 0
-  index: 2
 die
   rotate: false
-  xy: 2, 1526
-  size: 456, 364
-  orig: 456, 364
+  xy: 2, 1546
+  size: 456, 384
+  orig: 456, 384
   offset: 0, 0
-  index: 1
+  index: 2
 die
   rotate: false
   xy: 2, 1160
-  size: 456, 364
-  orig: 456, 364
+  size: 456, 384
+  orig: 456, 384
   offset: 0, 0
-  index: 2
+  index: 1
 die
   rotate: false
-  xy: 460, 1140
-  size: 456, 364
-  orig: 456, 364
+  xy: 460, 1546
+  size: 456, 384
+  orig: 456, 384
   offset: 0, 0
   index: 3
 die
   rotate: false
-  xy: 2, 794
-  size: 456, 364
-  orig: 456, 364
+  xy: 2, 774
+  size: 456, 384
+  orig: 456, 384
   offset: 0, 0
-  index: 6
+  index: 4
 die
   rotate: false
-  xy: 918, 806
-  size: 456, 364
-  orig: 456, 364
+  xy: 460, 1160
+  size: 456, 384
+  orig: 456, 384
   offset: 0, 0
   index: 5
 die
   rotate: false
-  xy: 460, 774
-  size: 456, 364
-  orig: 456, 364
-  offset: 0, 0
-  index: 4
-go
-  rotate: false
-  xy: 662, 408
-  size: 224, 364
-  orig: 224, 364
-  offset: 0, 0
-  index: 2
-go
-  rotate: false
-  xy: 662, 42
-  size: 224, 364
-  orig: 224, 364
+  xy: 918, 1546
+  size: 456, 384
+  orig: 456, 384
   offset: 0, 0
   index: 6
 go
   rotate: false
-  xy: 1548, 54
-  size: 224, 364
-  orig: 224, 364
-  offset: 0, 0
-  index: 4
-go
-  rotate: false
-  xy: 1578, 420
-  size: 224, 364
-  orig: 224, 364
-  offset: 0, 0
-  index: 1
-go
-  rotate: false
-  xy: 1804, 420
-  size: 224, 364
-  orig: 224, 364
-  offset: 0, 0
-  index: 7
-hit
-  rotate: false
-  xy: 790, 1506
+  xy: 918, 1160
   size: 328, 384
   orig: 328, 384
   offset: 0, 0
   index: 8
+go
+  rotate: false
+  xy: 662, 388
+  size: 328, 384
+  orig: 328, 384
+  offset: 0, 0
+  index: 5
+go
+  rotate: false
+  xy: 1120, 774
+  size: 328, 384
+  orig: 328, 384
+  offset: 0, 0
+  index: 3
+go
+  rotate: false
+  xy: 1578, 1160
+  size: 328, 384
+  orig: 328, 384
+  offset: 0, 0
+  index: 4
+go
+  rotate: false
+  xy: 662, 2
+  size: 328, 384
+  orig: 328, 384
+  offset: 0, 0
+  index: 2
+go
+  rotate: false
+  xy: 992, 388
+  size: 328, 384
+  orig: 328, 384
+  offset: 0, 0
+  index: 1
+go
+  rotate: false
+  xy: 1450, 774
+  size: 328, 384
+  orig: 328, 384
+  offset: 0, 0
+  index: 7
+go
+  rotate: false
+  xy: 1652, 2
+  size: 328, 384
+  orig: 328, 384
+  offset: 0, 0
+  index: 6
+hit
+  rotate: false
+  xy: 1376, 1546
+  size: 328, 384
+  orig: 328, 384
+  offset: 0, 0
+  index: 1
+hit
+  rotate: false
+  xy: 2, 2
+  size: 328, 384
+  orig: 328, 384
+  offset: 0, 0
+  index: 2
 hit
   rotate: false
   xy: 332, 388
   size: 328, 384
   orig: 328, 384
   offset: 0, 0
-  index: 2
-hit
-  rotate: false
-  xy: 1248, 420
-  size: 328, 384
-  orig: 328, 384
-  offset: 0, 0
   index: 3
 hit
   rotate: false
-  xy: 1442, 1120
+  xy: 790, 774
   size: 328, 384
   orig: 328, 384
   offset: 0, 0
   index: 4
 hit
   rotate: false
-  xy: 1450, 1506
+  xy: 1248, 1160
   size: 328, 384
   orig: 328, 384
   offset: 0, 0
   index: 5
 hit
   rotate: false
-  xy: 888, 34
+  xy: 1706, 1546
   size: 328, 384
   orig: 328, 384
   offset: 0, 0
@@ -174,105 +153,126 @@ hit
   index: 7
 hit
   rotate: false
-  xy: 1218, 47
-  size: 328, 371
-  orig: 328, 371
-  offset: 0, 0
-  index: 1
-idle
-  rotate: false
-  xy: 460, 1506
+  xy: 1652, 388
   size: 328, 384
   orig: 328, 384
   offset: 0, 0
-  index: 4
+  index: 8
 idle
   rotate: false
-  xy: 1120, 1506
-  size: 328, 384
-  orig: 328, 384
-  offset: 0, 0
-  index: 5
-idle
-  rotate: false
-  xy: 1120, 1506
+  xy: 2, 388
   size: 328, 384
   orig: 328, 384
   offset: 0, 0
   index: 3
 idle
   rotate: false
-  xy: 2, 408
+  xy: 2, 388
   size: 328, 384
   orig: 328, 384
   offset: 0, 0
-  index: 1
+  index: 5
 idle
   rotate: false
-  xy: 918, 420
+  xy: 460, 774
+  size: 328, 384
+  orig: 328, 384
+  offset: 0, 0
+  index: 6
+idle
+  rotate: false
+  xy: 992, 2
   size: 328, 384
   orig: 328, 384
   offset: 0, 0
   index: 2
 idle
   rotate: false
-  xy: 2, 22
+  xy: 1322, 388
   size: 328, 384
   orig: 328, 384
   offset: 0, 0
-  index: 6
+  index: 4
+idle
+  rotate: false
+  xy: 1322, 2
+  size: 328, 384
+  orig: 328, 384
+  offset: 0, 0
+  index: 1
 
 Skeleton2.png
-size: 2048,512
+size: 2048,1024
 format: RGBA8888
-filter: Nearest,Nearest
+filter: Linear,Linear
 repeat: none
 appear
   rotate: false
-  xy: 2, 34
-  size: 260, 332
-  orig: 260, 332
+  xy: 2, 356
+  size: 328, 352
+  orig: 328, 352
+  offset: 0, 0
+  index: 1
+appear
+  rotate: false
+  xy: 2, 2
+  size: 328, 352
+  orig: 328, 352
+  offset: 0, 0
+  index: 2
+appear
+  rotate: false
+  xy: 332, 356
+  size: 328, 352
+  orig: 328, 352
   offset: 0, 0
   index: 3
 appear
   rotate: false
-  xy: 264, 34
-  size: 260, 332
-  orig: 260, 332
+  xy: 332, 2
+  size: 328, 352
+  orig: 328, 352
   offset: 0, 0
   index: 4
 appear
   rotate: false
-  xy: 526, 34
-  size: 260, 332
-  orig: 260, 332
+  xy: 662, 356
+  size: 328, 352
+  orig: 328, 352
   offset: 0, 0
   index: 5
 appear
   rotate: false
-  xy: 788, 34
-  size: 260, 332
-  orig: 260, 332
+  xy: 662, 2
+  size: 328, 352
+  orig: 328, 352
   offset: 0, 0
   index: 6
-go
+appear
   rotate: false
-  xy: 1050, 2
-  size: 224, 364
-  orig: 224, 364
+  xy: 992, 356
+  size: 328, 352
+  orig: 328, 352
+  offset: 0, 0
+  index: 7
+appear
+  rotate: false
+  xy: 992, 2
+  size: 328, 352
+  orig: 328, 352
   offset: 0, 0
   index: 8
-go
+appear
   rotate: false
-  xy: 1276, 2
-  size: 224, 364
-  orig: 224, 364
+  xy: 1322, 356
+  size: 328, 352
+  orig: 328, 352
   offset: 0, 0
-  index: 3
-go
+  index: 9
+appear
   rotate: false
-  xy: 1502, 2
-  size: 224, 364
-  orig: 224, 364
+  xy: 1322, 2
+  size: 328, 352
+  orig: 328, 352
   offset: 0, 0
-  index: 5
+  index: 10

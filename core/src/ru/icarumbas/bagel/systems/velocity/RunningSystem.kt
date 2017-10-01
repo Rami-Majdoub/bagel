@@ -14,6 +14,8 @@ class RunningSystem : IteratingSystem {
 
     private val body = Mappers.body
     private val run = Mappers.run
+    private val pl = Mappers.player
+    private val ai = Mappers.AI
     private val hud: Hud
 
     constructor(hud: Hud) : super(Family.all(RunComponent::class.java).get()) {
@@ -22,16 +24,23 @@ class RunningSystem : IteratingSystem {
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (Math.abs(body[entity].body.linearVelocity.x) <= run[entity].maxSpeed) {
-            if (Mappers.player.has(entity)) {
+            if (pl.has(entity)) {
                 if (hud.isRightPressed()) {
                     applyImpulse(body[entity].body, run[entity].acceleration, 0f)
-                    run[entity].lastRight = true
+                    pl[entity].lastRight = true
                 }
                 if (hud.isLeftPressed()) {
                     applyImpulse(body[entity].body, -run[entity].acceleration, 0f)
-                    run[entity].lastRight = false
+                    pl[entity].lastRight = false
                 }
             }
+            if (ai.has(entity) && ai[entity].appeared && !ai[entity].isPlayerNear && ai[entity].coldown > 1){
+                if (ai[entity].isPlayerRight)
+                    applyImpulse(body[entity].body, run[entity].acceleration, 0f)
+                else
+                    applyImpulse(body[entity].body, -run[entity].acceleration, 0f)
+            }
+
         }
     }
 

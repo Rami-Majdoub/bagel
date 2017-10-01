@@ -30,10 +30,10 @@ class AISystem: IteratingSystem {
 
     private fun isPlayerNear(e: Entity): Boolean {
         with (body[playerEntity].body.position) {
-            return  x >= body[e].body.position.x - 1.5f &&
-                    x <= body[e].body.position.x + 1.5f &&
-                    y >= body[e].body.position.y - 1 &&
-                    y <= body[e].body.position.y + 1
+            return  x >= body[e].body.position.x - size[e].rectSize.x &&
+                    x <= body[e].body.position.x + size[e].rectSize.x &&
+                    y >= body[e].body.position.y - size[e].rectSize.y / 2 &&
+                    y <= body[e].body.position.y + size[e].rectSize.y / 2
         }
     }
 
@@ -41,6 +41,8 @@ class AISystem: IteratingSystem {
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (entity.inView(rm)) {
+            ai[entity].coldown += deltaTime
+
             ai[entity].isPlayerRight = isPlayerRight(entity)
             ai[entity].isPlayerNear = isPlayerNear(entity)
 

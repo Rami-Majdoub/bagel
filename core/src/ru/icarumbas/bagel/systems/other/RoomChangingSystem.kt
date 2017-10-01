@@ -79,14 +79,14 @@ class RoomChangingSystem : IteratingSystem {
 
                 if (side == "Left") {
                     if (prevY == Y11) body.setTransform(rm.width(newId),
-                            rm.height(newId) - REG_ROOM_HEIGHT / 2 - size.height / 2, 0f)
-                    else body.setTransform(rm.width(newId), REG_ROOM_HEIGHT / 2 - size.height / 2, 0f)
+                            rm.height(newId) - REG_ROOM_HEIGHT / 2 - size.spriteSize.y / 2, 0f)
+                    else body.setTransform(rm.width(newId), REG_ROOM_HEIGHT / 2 - size.spriteSize.y / 2, 0f)
                 }
                 if (side == "Right") {
                     if (prevY == Y11)
-                        body.setTransform(0f, rm.height(newId) - REG_ROOM_HEIGHT / 2 - size.height / 2, 0f)
+                        body.setTransform(0f, rm.height(newId) - REG_ROOM_HEIGHT / 2 - size.spriteSize.y / 2, 0f)
                     else
-                        body.setTransform(0f, REG_ROOM_HEIGHT / 2 - size.height / 2, 0f)
+                        body.setTransform(0f, REG_ROOM_HEIGHT / 2 - size.spriteSize.y / 2, 0f)
                 }
             }
 

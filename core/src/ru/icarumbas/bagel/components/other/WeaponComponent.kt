@@ -11,7 +11,6 @@ import com.badlogic.gdx.physics.box2d.Body
 data class WeaponComponent(val type: Int,
                            var strength: Int = 0,
                            var attackSpeed: Float = 0f,
-                           var nearAttackStrength: Int = 0,
                            var knockback: Vector2 = Vector2(0f, 0f),
                            val entityLeft: Entity,
                            val entityRight: Entity,

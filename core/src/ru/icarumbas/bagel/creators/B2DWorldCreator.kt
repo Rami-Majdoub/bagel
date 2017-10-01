@@ -20,7 +20,7 @@ class B2DWorldCreator(private val world: World) {
         val playerBody = world.createBody(bodyDef)
 
         val shape = PolygonShape()
-        shape.setAsBox(.25f, .4f)
+        shape.setAsBox(25 / PIX_PER_M, 40 / PIX_PER_M)
 
         val fixtureDef = FixtureDef()
         fixtureDef.shape = shape

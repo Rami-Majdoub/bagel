@@ -9,7 +9,7 @@ class WorldIO {
 
 
     private val json = Json()
-    val preferences = Gdx.app.getPreferences("Bagel preferences")!!
+    val pref = Gdx.app.getPreferences("game preferences")!!
 
     init {
         json.setUsePrototypes(false)
@@ -23,7 +23,6 @@ class WorldIO {
     fun saveWorld(serializedObjects: ArrayList<SerializedMapObject>, rooms: ArrayList<Room>){
         Gdx.files.local("items.json").writeString(json.toJson(serializedObjects), false)
         Gdx.files.local("rooms.json").writeString(json.toJson(rooms), false)
-
     }
 }
 

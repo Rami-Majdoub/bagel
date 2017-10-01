@@ -49,6 +49,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                         AI_BIT or BREAKABLE_BIT or PLAYER_BIT,
                         atlas?.findRegion(path),
                         Vector2(width / PIX_PER_M, height / PIX_PER_M)).createRevoluteJoint(mainBody, anchorA, anchorB)))
+                .add(InactiveMarkerComponent())
 
         engine.addEntity(weaponEntity)
         return weaponEntity
@@ -61,16 +62,15 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
         return Entity()
                 .add(PlayerComponent(0))
                 .add(RunComponent(.01f, 6f))
-                .add(SizeComponent(.425f))
+                .add(SizeComponent(Vector2(25 / PIX_PER_M, 100 / PIX_PER_M), .425f))
                 .add(JumpComponent(.07f, 5))
-                .add(DamageComponent(100))
+                .add(HealthComponent(100))
                 .add(BodyComponent(playerBody))
                 .add(EquipmentComponent())
                 .add(WeaponComponent(
                         type = WeaponSystem.SWING,
-                        strength = 5,
+                        strength = 15,
                         attackSpeed = .00025f,
-                        nearAttackStrength = 0,
                         knockback = Vector2(1.5f, 1f),
                         entityLeft = createSwingWeaponEntity(
                                 width = 30,
@@ -82,7 +82,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 path = "Sword2",
                                 atlas = assets["Packs/GuyKnight.pack", TextureAtlas::class.java])
                                 .add(AlwaysRenderingMarkerComponent())
-                                .add(SizeComponent(.5f)),
+                                .add(SizeComponent(Vector2(30 / PIX_PER_M, 100 / PIX_PER_M), .5f)),
                         entityRight = createSwingWeaponEntity(
                                 width = 30,
                                 height = 100,
@@ -93,7 +93,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 path = "Sword2",
                                 atlas = assets["Packs/GuyKnight.pack", TextureAtlas::class.java])
                                 .add(AlwaysRenderingMarkerComponent())
-                                .add(SizeComponent(.5f))))
+                                .add(SizeComponent(Vector2(30 / PIX_PER_M, 100 / PIX_PER_M), .5f))))
                 .add(StateComponent(ImmutableArray<String>(Array.with(
                         StateSystem.RUNNING,
                         StateSystem.JUMPING,
@@ -164,10 +164,9 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 BREAKABLE_BIT,
                                 WEAPON_BIT,
                                 atlas.findRegion("Vase ($r)"))))
-                        .add(DamageComponent(5))
-                        .add(StateComponent(ImmutableArray(Array.with(StateSystem.DEAD))))
+                        .add(HealthComponent(5))
                         .add(RoomIdComponent(roomId))
-                        .add(SizeComponent())
+                        .add(SizeComponent(Vector2(size.first / PIX_PER_M, size.second / PIX_PER_M)))
             }
 
             "window" -> {
@@ -181,7 +180,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                         WEAPON_BIT,
                         atlas.findRegion("Window Small ($r)"))))
                         .add(RoomIdComponent(roomId))
-                        .add(SizeComponent())
+                        .add(SizeComponent(Vector2(86 / PIX_PER_M, 169 / PIX_PER_M)))
 
 
             }
@@ -197,10 +196,9 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                         BREAKABLE_BIT,
                         WEAPON_BIT,
                         atlas.findRegion("Chair (1)"))))
-                        .add(DamageComponent(5))
-                        .add(StateComponent(ImmutableArray(Array.with(StateSystem.DEAD))))
+                        .add(HealthComponent(5))
                         .add(RoomIdComponent(roomId))
-                        .add(SizeComponent())
+                        .add(SizeComponent(Vector2(70 / PIX_PER_M, 128 / PIX_PER_M)))
 
 
             }
@@ -216,10 +214,9 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                         BREAKABLE_BIT,
                         WEAPON_BIT,
                         atlas.findRegion("Chair (2)"))))
-                        .add(DamageComponent(5))
-                        .add(StateComponent(ImmutableArray(Array.with(StateSystem.DEAD))))
+                        .add(HealthComponent(5))
                         .add(RoomIdComponent(roomId))
-                        .add(SizeComponent())
+                        .add(SizeComponent(Vector2(70 / PIX_PER_M, 128 / PIX_PER_M)))
 
 
             }
@@ -235,10 +232,9 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                         BREAKABLE_BIT,
                         WEAPON_BIT,
                         atlas.findRegion("Table"))))
-                        .add(DamageComponent(5))
-                        .add(StateComponent(ImmutableArray(Array.with(StateSystem.DEAD))))
+                        .add(HealthComponent(5))
                         .add(RoomIdComponent(roomId))
-                        .add(SizeComponent())
+                        .add(SizeComponent(Vector2(137 / PIX_PER_M, 69 / PIX_PER_M)))
 
 
             }
@@ -252,24 +248,25 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                         120 / PIX_PER_M,
                         BREAKABLE_BIT,
                         WEAPON_BIT)))
-                        .add(DamageComponent(5))
+                        .add(HealthComponent(5))
                         .add(AnimationComponent(hashMapOf(StateSystem.STANDING to
                                 animCreator.create("Chandelier", 4, .125f, atlas))))
                         .add(StateComponent(
-                                ImmutableArray(Array.with(StateSystem.STANDING, StateSystem.DEAD)),
+                                ImmutableArray(Array.with(StateSystem.STANDING)),
                                 MathUtils.random()
                         ))
                         .add(RoomIdComponent(roomId))
-                        .add(SizeComponent())
+                        .add(SizeComponent(Vector2(243 / PIX_PER_M, 120 / PIX_PER_M)))
 
 
             }
 
             "groundEnemy" -> {
-                val skeletonAtlas = assets["Packs/Enemies/Skeleton.pack", TextureAtlas::class.java]
-                when (r) {
-                    1, 2, 3, 4, 5 -> {
 
+                when (r) {
+                    1, 4, 5 -> {
+
+                        val skeletonAtlas = assets["Packs/Enemies/Skeleton.pack", TextureAtlas::class.java]
                         val body = b2DWorldCreator.defineRectangleMapObjectBody(
                                 rect,
                                 BodyDef.BodyType.DynamicBody,
@@ -280,7 +277,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
 
                         Entity()
                                 .add(BodyComponent(body))
-                                .add(DamageComponent(2 * roomId + 1))
+                                .add(HealthComponent(roomId + 20))
                                 .add(AnimationComponent(hashMapOf(
                                         StateSystem.STANDING to Animation(
                                                 .125f,
@@ -298,7 +295,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                                 .1f,
                                                 skeletonAtlas.findRegions("appear"),
                                                 Animation.PlayMode.LOOP),
-                                        StateSystem.RUNNING to Animation(
+                                        StateSystem.WALKING to Animation(
                                                 .125f,
                                                 skeletonAtlas.findRegions("go"),
                                                 Animation.PlayMode.LOOP))
@@ -309,18 +306,17 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                                 StateSystem.ATTACKING,
                                                 StateSystem.DEAD,
                                                 StateSystem.APPEARING,
-                                                StateSystem.RUNNING))
+                                                StateSystem.WALKING))
                                 ))
                                 .add(RoomIdComponent(roomId))
-                                .add(RunComponent(.4f, 4f))
+                                .add(RunComponent(.25f, 1f))
                                 .add(AIComponent())
-                                .add(SizeComponent(.65f))
+                                .add(SizeComponent(Vector2(85 / PIX_PER_M, 260 / PIX_PER_M), .65f))
                                 .add(WeaponComponent(
                                         type = WeaponSystem.SWING,
-                                        strength = 2 * roomId + 1,
-                                        attackSpeed = .00001f,
-                                        nearAttackStrength = 2 * roomId + 1,
-                                        knockback = Vector2(.1f, .1f),
+                                        strength = roomId + 15,
+                                        attackSpeed = .000005f,
+                                        knockback = Vector2(.05f, .05f),
                                         entityLeft = createSwingWeaponEntity(
                                                 35,
                                                 125,
@@ -336,6 +332,77 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                                 b2DWorldCreator,
                                                 Vector2(.1f, -.3f),
                                                 Vector2(0f, -.5f))
+                                                .add(RoomIdComponent(roomId))))
+
+                    }
+                    2, 3 -> {
+
+                        val golemAtlas = assets["Packs/Enemies/Golem.pack", TextureAtlas::class.java]
+                        val body = b2DWorldCreator.defineRectangleMapObjectBody(
+                                rect,
+                                BodyDef.BodyType.DynamicBody,
+                                160 / PIX_PER_M,
+                                230 / PIX_PER_M,
+                                AI_BIT,
+                                WEAPON_BIT or GROUND_BIT or PLATFORM_BIT)
+
+                        Entity()
+                                .add(BodyComponent(body))
+                                .add(HealthComponent(roomId + 30))
+                                .add(AnimationComponent(hashMapOf(
+                                        StateSystem.STANDING to Animation(
+                                                .125f,
+                                                golemAtlas.findRegions("idle"),
+                                                Animation.PlayMode.LOOP),
+                                        StateSystem.ATTACKING to Animation(
+                                                .125f,
+                                                golemAtlas.findRegions("hit"),
+                                                Animation.PlayMode.LOOP),
+                                        StateSystem.DEAD to Animation(
+                                                .15f,
+                                                golemAtlas.findRegions("die"),
+                                                Animation.PlayMode.NORMAL),
+                                        StateSystem.APPEARING to Animation(
+                                                .1f,
+                                                golemAtlas.findRegions("appear"),
+                                                Animation.PlayMode.LOOP),
+                                        StateSystem.WALKING to Animation(
+                                                .1f,
+                                                golemAtlas.findRegions("idle"),
+                                                Animation.PlayMode.LOOP))
+                                ))
+                                .add(StateComponent(
+                                        ImmutableArray(Array.with(
+                                                StateSystem.STANDING,
+                                                StateSystem.ATTACKING,
+                                                StateSystem.DEAD,
+                                                StateSystem.APPEARING,
+                                                StateSystem.WALKING))
+                                ))
+                                .add(RoomIdComponent(roomId))
+                                .add(RunComponent(.5f, .5f))
+                                .add(AIComponent())
+                                .add(SizeComponent(Vector2(160 / PIX_PER_M, 230 / PIX_PER_M), .65f))
+                                .add(WeaponComponent(
+                                        type = WeaponSystem.SWING,
+                                        strength = roomId + 5,
+                                        attackSpeed = .00001f,
+                                        knockback = Vector2(.125f, .125f),
+                                        entityLeft = createSwingWeaponEntity(
+                                                50,
+                                                165,
+                                                body,
+                                                b2DWorldCreator,
+                                                Vector2(-0f, -.3f),
+                                                Vector2(0f, -.8f))
+                                                .add(RoomIdComponent(roomId)),
+                                        entityRight = createSwingWeaponEntity(
+                                                50,
+                                                165,
+                                                body,
+                                                b2DWorldCreator,
+                                                Vector2(0f, -.3f),
+                                                Vector2(0f, -.8f))
                                                 .add(RoomIdComponent(roomId))))
 
                     }
@@ -371,7 +438,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                             .add(StateComponent(ImmutableArray(Array.with(StateSystem.STANDING)),
                                     MathUtils.random()))
                             .add(StaticComponent(roomPath))
-                            .add(SizeComponent())
+                            .add(SizeComponent(Vector2(98 / PIX_PER_M, 154 / PIX_PER_M)))
                 }
                 "torch" -> {
                     Entity()
@@ -388,7 +455,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                             .add(StateComponent(ImmutableArray(Array.with(StateSystem.STANDING)),
                                     MathUtils.random()))
                             .add(StaticComponent(roomPath))
-                            .add(SizeComponent())
+                            .add(SizeComponent(Vector2(178 / PIX_PER_M, 116 / PIX_PER_M)))
 
 
                 }

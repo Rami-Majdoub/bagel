@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef
 
-const val PI_DIV_7 = MathUtils.PI / 7f
 
 fun Body.createRevoluteJoint(bodyA: Body, anchorA: Vector2, anchorB: Vector2): Body {
     val joint = RevoluteJointDef()

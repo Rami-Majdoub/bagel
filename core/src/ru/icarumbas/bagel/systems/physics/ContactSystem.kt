@@ -12,6 +12,7 @@ import ru.icarumbas.*
 import ru.icarumbas.bagel.components.other.WeaponComponent
 import ru.icarumbas.bagel.components.physics.BodyComponent
 import ru.icarumbas.bagel.screens.scenes.Hud
+import ru.icarumbas.bagel.systems.other.StateSystem
 import ru.icarumbas.bagel.utils.Mappers
 import ru.icarumbas.bagel.utils.rotatedRight
 import kotlin.experimental.or
@@ -23,6 +24,7 @@ class ContactSystem : ContactListener, IteratingSystem {
     private val damage = Mappers.damage
     private val weapon = Mappers.weapon
     private val pl = Mappers.player
+    private val state = Mappers.state
 
     private val playerEntity: Entity
     private lateinit var defendingEntity: Entity
@@ -93,9 +95,10 @@ class ContactSystem : ContactListener, IteratingSystem {
 
                 findAttackerAndDefender()
 
-                if (damage[defendingEntity].canBeAttacked) {
-                    damage[defendingEntity].damage += weapon[attackingEntity].strength
-                    damage[defendingEntity].knockback.add(weapon[attackingEntity].knockback)
+                if (damage[defendingEntity].canBeAttacked &&
+                        !(state.has(defendingEntity) && state[defendingEntity].currentState == StateSystem.DEAD)) {
+                    damage[defendingEntity].damage = weapon[attackingEntity].strength
+                    damage[defendingEntity].knockback.set(weapon[attackingEntity].knockback)
                     if (!attackingEntity.rotatedRight())
                         damage[defendingEntity].knockback.scl(-1f, 1f)
                 }

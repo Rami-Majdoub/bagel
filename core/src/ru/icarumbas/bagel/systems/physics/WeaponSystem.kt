@@ -23,6 +23,7 @@ class WeaponSystem : IteratingSystem {
     private val player = Mappers.player
     private val weapon = Mappers.weapon
     private val body = Mappers.body
+    private val damage = Mappers.damage
 
     companion object WeaponTypes{
         val SWING = 0
@@ -50,6 +51,8 @@ class WeaponSystem : IteratingSystem {
                     body[weapon[e].entityRight].body.setLinearVelocity(0f, 0f)
                     body[weapon[e].entityRight].body.isActive = false
                     weapon[e].attacking = false
+                    if (ai.has(e)) ai[e].coldown = 0f
+
                 }
                 if (body[weapon[e].entityLeft].body.angleInDegrees() < 0){
 
@@ -61,6 +64,8 @@ class WeaponSystem : IteratingSystem {
                     body[weapon[e].entityLeft].body.setLinearVelocity(0f, 0f)
                     body[weapon[e].entityLeft].body.isActive = false
                     weapon[e].attacking = false
+                    if (ai.has(e)) ai[e].coldown = 0f
+
                 }
 
             }
@@ -76,9 +81,12 @@ class WeaponSystem : IteratingSystem {
     }
 
     private fun attack(e: Entity){
-        if (((player.has(e) && hud.attackButtonPressed)
+        if ((
+                (player.has(e) && hud.attackButtonPressed)
                 || (ai.has(e) && ai[e].isPlayerNear && ai[e].appeared))
-                && !weapon[e].attacking) {
+                && !weapon[e].attacking
+                && damage[e].HP > 0) {
+
 
             weapon[e].attacking = true
             when (weapon[e].type) {

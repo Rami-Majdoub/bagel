@@ -6,7 +6,7 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.World
 import ru.icarumbas.bagel.RoomManager
-import ru.icarumbas.bagel.components.other.DamageComponent
+import ru.icarumbas.bagel.components.other.HealthComponent
 import ru.icarumbas.bagel.utils.Mappers
 import ru.icarumbas.bagel.utils.inView
 
@@ -15,6 +15,8 @@ class HealthSystem : IteratingSystem {
 
     private val damage = Mappers.damage
     private val body = Mappers.body
+    private val anim = Mappers.animation
+    private val state = Mappers.state
 
     private val rm: RoomManager
     private val world: World
@@ -22,7 +24,7 @@ class HealthSystem : IteratingSystem {
     private val coins: ArrayList<Body>
 
     constructor(rm: RoomManager, world: World, coins: ArrayList<Body>, deleteList: ArrayList<Entity>) : super(Family.all(
-            DamageComponent::class.java).get()) {
+            HealthComponent::class.java).get()) {
 
         this.rm = rm
         this.world = world
@@ -30,23 +32,24 @@ class HealthSystem : IteratingSystem {
         this.deleteList = deleteList
     }
 
-    override fun processEntity(entity: Entity, deltaTime: Float) {
-        if (entity.inView(rm)) {
+    override fun processEntity(e: Entity, deltaTime: Float) {
+        if (e.inView(rm)) {
 
-            if (damage[entity].damage != 0) {
-                damage[entity].HP -= damage[entity].damage
-                damage[entity].damage = 0
-                damage[entity].canBeAttacked = false
+            damage[e].hitTimer += deltaTime
+
+            if (damage[e].HP <= 0 &&
+                    !(anim.has(e) && anim[e].animations.contains(StateSystem.DEAD) &&
+                            !anim[e].animations[StateSystem.DEAD]?.isAnimationFinished(state[e].stateTime)!!)){
+                deleteList.add(e)
             }
 
-            if (!damage[entity].knockback.isZero){
-                body[entity].body.applyLinearImpulse(damage[entity].knockback, body[entity].body.worldCenter, true)
-                damage[entity].knockback.set(0f, 0f)
-                damage[entity].canBeAttacked = false
-            }
-
-            if (damage[entity].HP <= 0){
-                deleteList.add(entity)
+            if ((damage[e].damage != 0 || !damage[e].knockback.isZero) && damage[e].hitTimer > .5) {
+                damage[e].HP -= damage[e].damage
+                damage[e].damage = 0
+                body[e].body.applyLinearImpulse(damage[e].knockback, body[e].body.worldCenter, true)
+                damage[e].knockback.set(0f, 0f)
+                damage[e].canBeAttacked = false
+                damage[e].hitTimer = 0f
             }
         }
     }
