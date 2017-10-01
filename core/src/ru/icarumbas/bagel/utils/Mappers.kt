@@ -9,6 +9,7 @@ import ru.icarumbas.bagel.components.rendering.SizeComponent
 import ru.icarumbas.bagel.components.velocity.FlyComponent
 import ru.icarumbas.bagel.components.velocity.JumpComponent
 import ru.icarumbas.bagel.components.velocity.RunComponent
+import ru.icarumbas.bagel.components.velocity.TeleportComponent
 
 
 class Mappers {
@@ -31,5 +32,6 @@ class Mappers {
         val alwaysRender    =       ComponentMapper.getFor(AlwaysRenderingMarkerComponent::class.java)!!
         val AI              =       ComponentMapper.getFor(AIComponent::class.java)!!
         val inActive        =       ComponentMapper.getFor(InactiveMarkerComponent::class.java)!!
+        val teleport        =       ComponentMapper.getFor(TeleportComponent::class.java)!!
     }
 }

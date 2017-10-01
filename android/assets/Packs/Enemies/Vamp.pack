@@ -6,238 +6,244 @@ filter: Linear,Linear
 repeat: none
 appear
   rotate: false
-  xy: 0, 0
-  size: 332, 380
-  orig: 332, 380
-  offset: 0, 0
-  index: 7
-appear
-  rotate: false
-  xy: 512, 384
-  size: 332, 380
-  orig: 332, 380
-  offset: 0, 0
-  index: 5
-appear
-  rotate: false
-  xy: 1024, 768
-  size: 332, 380
-  orig: 332, 380
-  offset: 0, 0
-  index: 6
-appear
-  rotate: false
-  xy: 1356, 768
-  size: 332, 380
-  orig: 332, 380
-  offset: 0, 0
-  index: 3
-appear
-  rotate: false
-  xy: 1688, 768
-  size: 332, 380
-  orig: 332, 380
-  offset: 0, 0
-  index: 8
-appear
-  rotate: false
-  xy: 332, 0
-  size: 332, 380
-  orig: 332, 380
+  xy: 2, 774
+  size: 512, 384
+  orig: 512, 384
   offset: 0, 0
   index: 4
 appear
   rotate: false
-  xy: 844, 384
-  size: 332, 380
-  orig: 332, 380
-  offset: 0, 0
-  index: 9
-appear
-  rotate: false
-  xy: 664, 4
-  size: 332, 380
-  orig: 332, 380
-  offset: 0, 0
-  index: 10
-appear
-  rotate: false
-  xy: 1176, 388
-  size: 332, 380
-  orig: 332, 380
-  offset: 0, 0
-  index: 11
-appear
-  rotate: false
-  xy: 1508, 388
-  size: 332, 380
-  orig: 332, 380
-  offset: 0, 0
-  index: 12
-appear
-  rotate: false
-  xy: 996, 4
-  size: 332, 380
-  orig: 332, 380
-  offset: 0, 0
-  index: 1
-appear
-  rotate: false
-  xy: 1328, 8
-  size: 332, 380
-  orig: 332, 380
-  offset: 0, 0
-  index: 2
-go
-  rotate: false
-  xy: 1840, 432
-  size: 188, 336
-  orig: 188, 336
-  offset: 0, 0
-  index: 6
-go
-  rotate: false
-  xy: 1660, 52
-  size: 188, 336
-  orig: 188, 336
-  offset: 0, 0
-  index: 1
-go
-  rotate: false
-  xy: 1848, 96
-  size: 188, 336
-  orig: 188, 336
-  offset: 0, 0
-  index: 2
-hit
-  rotate: false
-  xy: 0, 1532
+  xy: 516, 1160
   size: 512, 384
   orig: 512, 384
   offset: 0, 0
   index: 9
-hit
+appear
   rotate: false
-  xy: 0, 1148
+  xy: 1030, 1546
+  size: 512, 384
+  orig: 512, 384
+  offset: 0, 0
+  index: 11
+appear
+  rotate: false
+  xy: 2, 388
+  size: 512, 384
+  orig: 512, 384
+  offset: 0, 0
+  index: 7
+appear
+  rotate: false
+  xy: 1030, 1160
+  size: 512, 384
+  orig: 512, 384
+  offset: 0, 0
+  index: 2
+appear
+  rotate: false
+  xy: 516, 388
+  size: 512, 384
+  orig: 512, 384
+  offset: 0, 0
+  index: 8
+go
+  rotate: false
+  xy: 516, 774
+  size: 512, 384
+  orig: 512, 384
+  offset: 0, 0
+  index: 1
+go
+  rotate: false
+  xy: 2, 2
+  size: 512, 384
+  orig: 512, 384
+  offset: 0, 0
+  index: 3
+go
+  rotate: false
+  xy: 1030, 774
+  size: 512, 384
+  orig: 512, 384
+  offset: 0, 0
+  index: 4
+go
+  rotate: false
+  xy: 516, 2
+  size: 512, 384
+  orig: 512, 384
+  offset: 0, 0
+  index: 6
+go
+  rotate: false
+  xy: 1030, 388
+  size: 512, 384
+  orig: 512, 384
+  offset: 0, 0
+  index: 7
+go
+  rotate: false
+  xy: 1030, 2
   size: 512, 384
   orig: 512, 384
   offset: 0, 0
   index: 8
 hit
   rotate: false
-  xy: 512, 1532
+  xy: 2, 1546
+  size: 512, 384
+  orig: 512, 384
+  offset: 0, 0
+  index: 9
+hit
+  rotate: false
+  xy: 2, 1160
   size: 512, 384
   orig: 512, 384
   offset: 0, 0
   index: 10
 hit
   rotate: false
-  xy: 0, 764
+  xy: 516, 1546
   size: 512, 384
   orig: 512, 384
   offset: 0, 0
   index: 11
-hit
+
+Vamp2.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+appear
   rotate: false
-  xy: 512, 1148
+  xy: 2, 1546
+  size: 512, 384
+  orig: 512, 384
+  offset: 0, 0
+  index: 10
+appear
+  rotate: false
+  xy: 516, 1546
   size: 512, 384
   orig: 512, 384
   offset: 0, 0
   index: 12
-hit
+appear
   rotate: false
-  xy: 512, 1148
+  xy: 2, 774
   size: 512, 384
   orig: 512, 384
   offset: 0, 0
-  index: 3
+  index: 1
+appear
+  rotate: false
+  xy: 516, 2
+  size: 512, 384
+  orig: 512, 384
+  offset: 0, 0
+  index: 6
+appear
+  rotate: false
+  xy: 1030, 2
+  size: 512, 384
+  orig: 512, 384
+  offset: 0, 0
+  index: 5
+go
+  rotate: false
+  xy: 2, 1160
+  size: 512, 384
+  orig: 512, 384
+  offset: 0, 0
+  index: 5
+go
+  rotate: false
+  xy: 1030, 388
+  size: 512, 384
+  orig: 512, 384
+  offset: 0, 0
+  index: 2
 hit
   rotate: false
-  xy: 1024, 1532
+  xy: 516, 1160
+  size: 512, 384
+  orig: 512, 384
+  offset: 0, 0
+  index: 1
+hit
+  rotate: false
+  xy: 1030, 1546
+  size: 512, 384
+  orig: 512, 384
+  offset: 0, 0
+  index: 2
+hit
+  rotate: false
+  xy: 1030, 1546
   size: 512, 384
   orig: 512, 384
   offset: 0, 0
   index: 13
 hit
   rotate: false
-  xy: 1024, 1532
+  xy: 2, 388
   size: 512, 384
   orig: 512, 384
   offset: 0, 0
-  index: 2
+  index: 3
 hit
   rotate: false
-  xy: 1536, 1532
+  xy: 2, 388
   size: 512, 384
   orig: 512, 384
   offset: 0, 0
-  index: 1
+  index: 12
 hit
   rotate: false
-  xy: 0, 380
+  xy: 516, 774
   size: 512, 384
   orig: 512, 384
   offset: 0, 0
   index: 4
 hit
   rotate: false
-  xy: 512, 764
+  xy: 1030, 1160
   size: 512, 384
   orig: 512, 384
   offset: 0, 0
   index: 5
 hit
   rotate: false
-  xy: 1024, 1148
+  xy: 2, 2
   size: 512, 384
   orig: 512, 384
   offset: 0, 0
   index: 6
 hit
   rotate: false
-  xy: 1536, 1148
+  xy: 516, 388
   size: 512, 384
   orig: 512, 384
   offset: 0, 0
   index: 7
+hit
+  rotate: false
+  xy: 1030, 774
+  size: 512, 384
+  orig: 512, 384
+  offset: 0, 0
+  index: 8
 
-Vamp2.png
+Vamp3.png
 size: 1024,512
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-go
+appear
   rotate: false
-  xy: 0, 0
-  size: 188, 336
-  orig: 188, 336
-  offset: 0, 0
-  index: 4
-go
-  rotate: false
-  xy: 188, 0
-  size: 188, 336
-  orig: 188, 336
-  offset: 0, 0
-  index: 5
-go
-  rotate: false
-  xy: 376, 0
-  size: 188, 336
-  orig: 188, 336
+  xy: 2, 2
+  size: 512, 384
+  orig: 512, 384
   offset: 0, 0
   index: 3
-go
-  rotate: false
-  xy: 564, 0
-  size: 188, 336
-  orig: 188, 336
-  offset: 0, 0
-  index: 7
-go
-  rotate: false
-  xy: 752, 0
-  size: 188, 336
-  orig: 188, 336
-  offset: 0, 0
-  index: 8

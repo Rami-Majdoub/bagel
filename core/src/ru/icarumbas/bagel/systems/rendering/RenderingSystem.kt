@@ -16,6 +16,7 @@ import ru.icarumbas.bagel.components.rendering.SizeComponent
 import ru.icarumbas.bagel.utils.Mappers
 import ru.icarumbas.bagel.utils.RenderingComparator
 import ru.icarumbas.bagel.utils.inView
+import ru.icarumbas.bagel.utils.rotatedRight
 
 
 class RenderingSystem : SortedIteratingSystem {
@@ -55,7 +56,7 @@ class RenderingSystem : SortedIteratingSystem {
 
             batch.draw(
                     (body[it].body.userData as TextureRegion),
-                    body[it].body.position.x - size[it].spriteSize.x / 2,
+                    body[it].body.position.x - if (it.rotatedRight()) size[it].rectSize.x / 2 else size[it].spriteSize.x - size[it].rectSize.x / 2,
                     body[it].body.position.y - size[it].rectSize.y / 2,
                     size[it].spriteSize.x / 2,
                     size[it].spriteSize.y / 2,

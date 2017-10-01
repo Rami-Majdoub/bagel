@@ -14,7 +14,7 @@ class WorldCreator (private val assetManager: AssetManager){
     private var zeroRoomChance = 0
     private lateinit var mesh: Array<IntArray>
     private val stringSides = arrayOf("Left", "Up", "Down", "Right")
-    private var newRoom = Room()
+    private lateinit var newRoom: Room
     private var roomsTotal = 0
     private var meshCheckSides = IntArray(8)
 
@@ -127,7 +127,7 @@ class WorldCreator (private val assetManager: AssetManager){
         return newRoom
     }
 
-    fun drawMesh(count: Int, meshX: Int, meshY: Int){
+    private fun drawMesh(count: Int){
         println("Count: $count, Size: $roomsTotal")
 
         mesh.forEach {
@@ -172,7 +172,7 @@ class WorldCreator (private val assetManager: AssetManager){
                 // Fill mesh on new room's coordinates
                 for (i in 0..7 step 2) mesh[meshY + meshCheckSides[i + 1]][meshX + meshCheckSides[i]] = 1
 
-                drawMesh(count, meshX, meshY)
+                drawMesh(count)
 
             }
 

@@ -22,23 +22,23 @@ class RunningSystem : IteratingSystem {
         this.hud = hud
     }
 
-    override fun processEntity(entity: Entity, deltaTime: Float) {
-        if (Math.abs(body[entity].body.linearVelocity.x) <= run[entity].maxSpeed) {
-            if (pl.has(entity)) {
+    override fun processEntity(e: Entity, deltaTime: Float) {
+        if (Math.abs(body[e].body.linearVelocity.x) <= run[e].maxSpeed) {
+            if (pl.has(e)) {
                 if (hud.isRightPressed()) {
-                    applyImpulse(body[entity].body, run[entity].acceleration, 0f)
-                    pl[entity].lastRight = true
+                    applyImpulse(body[e].body, run[e].acceleration, 0f)
+                    pl[e].lastRight = true
                 }
                 if (hud.isLeftPressed()) {
-                    applyImpulse(body[entity].body, -run[entity].acceleration, 0f)
-                    pl[entity].lastRight = false
+                    applyImpulse(body[e].body, -run[e].acceleration, 0f)
+                    pl[e].lastRight = false
                 }
             }
-            if (ai.has(entity) && ai[entity].appeared && !ai[entity].isPlayerNear && ai[entity].coldown > 1){
-                if (ai[entity].isPlayerRight)
-                    applyImpulse(body[entity].body, run[entity].acceleration, 0f)
+            if (ai.has(e) && ai[e].appeared && !ai[e].isPlayerNear && ai[e].coldown > ai[e].refreshSpeed){
+                if (ai[e].isPlayerRight)
+                    applyImpulse(body[e].body, run[e].acceleration, 0f)
                 else
-                    applyImpulse(body[entity].body, -run[entity].acceleration, 0f)
+                    applyImpulse(body[e].body, -run[e].acceleration, 0f)
             }
 
         }

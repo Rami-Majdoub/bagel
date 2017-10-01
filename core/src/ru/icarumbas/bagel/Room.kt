@@ -14,6 +14,7 @@ class Room {
     var passes = Array(8){-1}
     lateinit var meshCoords: IntArray
 
+    // Serialization
     constructor()
 
     constructor(assetManager: AssetManager, path: String, id: Int){

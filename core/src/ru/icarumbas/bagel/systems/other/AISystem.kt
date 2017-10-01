@@ -30,8 +30,8 @@ class AISystem: IteratingSystem {
 
     private fun isPlayerNear(e: Entity): Boolean {
         with (body[playerEntity].body.position) {
-            return  x >= body[e].body.position.x - size[e].rectSize.x &&
-                    x <= body[e].body.position.x + size[e].rectSize.x &&
+            return  x >= body[e].body.position.x - ai[e].attackDistance &&
+                    x <= body[e].body.position.x + ai[e].attackDistance &&
                     y >= body[e].body.position.y - size[e].rectSize.y / 2 &&
                     y <= body[e].body.position.y + size[e].rectSize.y / 2
         }
@@ -45,6 +45,8 @@ class AISystem: IteratingSystem {
 
             ai[entity].isPlayerRight = isPlayerRight(entity)
             ai[entity].isPlayerNear = isPlayerNear(entity)
+
+
 
             // isAppeared?
             if (anim[entity].animations[StateSystem.APPEARING]?.isAnimationFinished(state[entity].stateTime)!!

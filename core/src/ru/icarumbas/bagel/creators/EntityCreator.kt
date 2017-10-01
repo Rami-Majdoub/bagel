@@ -24,6 +24,7 @@ import ru.icarumbas.bagel.components.rendering.AnimationComponent
 import ru.icarumbas.bagel.components.rendering.SizeComponent
 import ru.icarumbas.bagel.components.velocity.JumpComponent
 import ru.icarumbas.bagel.components.velocity.RunComponent
+import ru.icarumbas.bagel.components.velocity.TeleportComponent
 import ru.icarumbas.bagel.systems.other.StateSystem
 import ru.icarumbas.bagel.systems.physics.WeaponSystem
 import ru.icarumbas.bagel.utils.createRevoluteJoint
@@ -62,7 +63,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
         return Entity()
                 .add(PlayerComponent(0))
                 .add(RunComponent(.01f, 6f))
-                .add(SizeComponent(Vector2(25 / PIX_PER_M, 100 / PIX_PER_M), .425f))
+                .add(SizeComponent(Vector2(50 / PIX_PER_M, 100 / PIX_PER_M), .425f))
                 .add(JumpComponent(.07f, 5))
                 .add(HealthComponent(100))
                 .add(BodyComponent(playerBody))
@@ -264,7 +265,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
             "groundEnemy" -> {
 
                 when (r) {
-                    1, 4, 5 -> {
+                    1 -> {
 
                         val skeletonAtlas = assets["Packs/Enemies/Skeleton.pack", TextureAtlas::class.java]
                         val body = b2DWorldCreator.defineRectangleMapObjectBody(
@@ -310,8 +311,8 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 ))
                                 .add(RoomIdComponent(roomId))
                                 .add(RunComponent(.25f, 1f))
-                                .add(AIComponent())
-                                .add(SizeComponent(Vector2(85 / PIX_PER_M, 260 / PIX_PER_M), .65f))
+                                .add(AIComponent(1f, 1f))
+                                .add(SizeComponent(Vector2(180 / PIX_PER_M, 260 / PIX_PER_M), .65f))
                                 .add(WeaponComponent(
                                         type = WeaponSystem.SWING,
                                         strength = roomId + 15,
@@ -319,29 +320,30 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                         knockback = Vector2(.05f, .05f),
                                         entityLeft = createSwingWeaponEntity(
                                                 35,
-                                                125,
+                                                135,
                                                 body,
                                                 b2DWorldCreator,
-                                                Vector2(-.1f, -.3f),
+                                                Vector2(0f, -.3f),
                                                 Vector2(0f, -.5f))
                                                 .add(RoomIdComponent(roomId)),
                                         entityRight = createSwingWeaponEntity(
                                                 35,
-                                                125,
+                                                135,
                                                 body,
                                                 b2DWorldCreator,
-                                                Vector2(.1f, -.3f),
+                                                Vector2(0f, -.3f),
                                                 Vector2(0f, -.5f))
                                                 .add(RoomIdComponent(roomId))))
 
                     }
-                    2, 3 -> {
+
+                    2 -> {
 
                         val golemAtlas = assets["Packs/Enemies/Golem.pack", TextureAtlas::class.java]
                         val body = b2DWorldCreator.defineRectangleMapObjectBody(
                                 rect,
                                 BodyDef.BodyType.DynamicBody,
-                                160 / PIX_PER_M,
+                                230 / PIX_PER_M,
                                 230 / PIX_PER_M,
                                 AI_BIT,
                                 WEAPON_BIT or GROUND_BIT or PLATFORM_BIT)
@@ -381,8 +383,8 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 ))
                                 .add(RoomIdComponent(roomId))
                                 .add(RunComponent(.5f, .5f))
-                                .add(AIComponent())
-                                .add(SizeComponent(Vector2(160 / PIX_PER_M, 230 / PIX_PER_M), .65f))
+                                .add(AIComponent(2f, 2f))
+                                .add(SizeComponent(Vector2(230 / PIX_PER_M, 230 / PIX_PER_M), .65f))
                                 .add(WeaponComponent(
                                         type = WeaponSystem.SWING,
                                         strength = roomId + 5,
@@ -390,22 +392,171 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                         knockback = Vector2(.125f, .125f),
                                         entityLeft = createSwingWeaponEntity(
                                                 50,
-                                                165,
-                                                body,
-                                                b2DWorldCreator,
-                                                Vector2(-0f, -.3f),
-                                                Vector2(0f, -.8f))
-                                                .add(RoomIdComponent(roomId)),
-                                        entityRight = createSwingWeaponEntity(
-                                                50,
-                                                165,
+                                                215,
                                                 body,
                                                 b2DWorldCreator,
                                                 Vector2(0f, -.3f),
-                                                Vector2(0f, -.8f))
+                                                Vector2(0f, -1f))
+                                                .add(RoomIdComponent(roomId)),
+                                        entityRight = createSwingWeaponEntity(
+                                                50,
+                                                215,
+                                                body,
+                                                b2DWorldCreator,
+                                                Vector2(0f, -.3f),
+                                                Vector2(0f, -1f))
                                                 .add(RoomIdComponent(roomId))))
 
                     }
+
+                    3 -> {
+                        val zombieAtlas = assets["Packs/Enemies/Zombie.pack", TextureAtlas::class.java]
+                        val body = b2DWorldCreator.defineRectangleMapObjectBody(
+                                rect,
+                                BodyDef.BodyType.DynamicBody,
+                                85 / PIX_PER_M,
+                                200 / PIX_PER_M,
+                                AI_BIT,
+                                WEAPON_BIT or GROUND_BIT or PLATFORM_BIT)
+
+                        Entity()
+                                .add(BodyComponent(body))
+                                .add(HealthComponent(roomId + 15))
+                                .add(AnimationComponent(hashMapOf(
+                                        StateSystem.STANDING to Animation(
+                                                .125f,
+                                                zombieAtlas.findRegions("idle"),
+                                                Animation.PlayMode.LOOP),
+                                        StateSystem.ATTACKING to Animation(
+                                                .125f,
+                                                zombieAtlas.findRegions("hit"),
+                                                Animation.PlayMode.LOOP),
+                                        StateSystem.DEAD to Animation(
+                                                .125f,
+                                                zombieAtlas.findRegions("die"),
+                                                Animation.PlayMode.NORMAL),
+                                        StateSystem.APPEARING to Animation(
+                                                .1f,
+                                                zombieAtlas.findRegions("appear"),
+                                                Animation.PlayMode.LOOP),
+                                        StateSystem.WALKING to Animation(
+                                                .1f,
+                                                zombieAtlas.findRegions("go"),
+                                                Animation.PlayMode.LOOP))
+                                ))
+                                .add(StateComponent(
+                                        ImmutableArray(Array.with(
+                                                StateSystem.STANDING,
+                                                StateSystem.ATTACKING,
+                                                StateSystem.DEAD,
+                                                StateSystem.APPEARING,
+                                                StateSystem.WALKING))
+                                ))
+                                .add(RoomIdComponent(roomId))
+                                .add(RunComponent(.25f, 2f))
+                                .add(AIComponent(.5f, 1f))
+                                .add(SizeComponent(Vector2(85 / PIX_PER_M, 210 / PIX_PER_M), .65f))
+                                .add(WeaponComponent(
+                                        type = WeaponSystem.SWING,
+                                        strength = roomId + 10,
+                                        attackSpeed = .0000025f,
+                                        knockback = Vector2(.01f, .01f),
+                                        entityLeft = createSwingWeaponEntity(
+                                                35,
+                                                110,
+                                                body,
+                                                b2DWorldCreator,
+                                                Vector2(0f, -.3f),
+                                                Vector2(0f, -.5f))
+                                                .add(RoomIdComponent(roomId)),
+                                        entityRight = createSwingWeaponEntity(
+                                                35,
+                                                110,
+                                                body,
+                                                b2DWorldCreator,
+                                                Vector2(0f, -.3f),
+                                                Vector2(0f, -.5f))
+                                                .add(RoomIdComponent(roomId))))
+
+                    }
+
+                    4 -> {
+                        val vampAtlas = assets["Packs/Enemies/Vamp.pack", TextureAtlas::class.java]
+                        val body = b2DWorldCreator.defineRectangleMapObjectBody(
+                                rect,
+                                BodyDef.BodyType.DynamicBody,
+                                85 / PIX_PER_M,
+                                200 / PIX_PER_M,
+                                AI_BIT,
+                                WEAPON_BIT or GROUND_BIT or PLATFORM_BIT)
+
+                        Entity()
+                                .add(BodyComponent(body))
+                                .add(HealthComponent(roomId + 10))
+                                .add(AnimationComponent(hashMapOf(
+                                        StateSystem.STANDING to Animation(
+                                                .125f,
+                                                vampAtlas.findRegions("go"),
+                                                Animation.PlayMode.LOOP),
+                                        StateSystem.ATTACKING to Animation(
+                                                .125f,
+                                                vampAtlas.findRegions("hit"),
+                                                Animation.PlayMode.LOOP),
+                                        StateSystem.DEAD to Animation(
+                                                .125f,
+                                                vampAtlas.findRegions("appear"),
+                                                Animation.PlayMode.NORMAL),
+                                        StateSystem.APPEARING to Animation(
+                                                .1f,
+                                                vampAtlas.findRegions("appear").apply { reverse() },
+                                                Animation.PlayMode.LOOP),
+                                        StateSystem.WALKING to Animation(
+                                                .1f,
+                                                vampAtlas.findRegions("go"),
+                                                Animation.PlayMode.LOOP),
+                                        StateSystem.DISAPPEARING to Animation(
+                                                .1f,
+                                                vampAtlas.findRegions("appear"),
+                                                Animation.PlayMode.LOOP))
+                                ))
+                                .add(StateComponent(
+                                        ImmutableArray(Array.with(
+                                                StateSystem.STANDING,
+                                                StateSystem.ATTACKING,
+                                                StateSystem.DEAD,
+                                                StateSystem.APPEARING,
+                                                StateSystem.WALKING,
+                                                StateSystem.DISAPPEARING))
+                                ))
+                                .add(RoomIdComponent(roomId))
+                                .add(RunComponent(.225f, .75f))
+                                .add(AIComponent(1.5f, 2f))
+                                .add(SizeComponent(Vector2(85 / PIX_PER_M, 210 / PIX_PER_M), .65f))
+                                .add(WeaponComponent(
+                                        type = WeaponSystem.SWING,
+                                        strength = roomId + 20,
+                                        attackSpeed = .000001f,
+                                        knockback = Vector2(.05f, .05f),
+                                        entityLeft = createSwingWeaponEntity(
+                                                35,
+                                                220,
+                                                body,
+                                                b2DWorldCreator,
+                                                Vector2(0f, -.3f),
+                                                Vector2(0f, -1f))
+                                                .add(RoomIdComponent(roomId)),
+                                        entityRight = createSwingWeaponEntity(
+                                                35,
+                                                220,
+                                                body,
+                                                b2DWorldCreator,
+                                                Vector2(0f, -.3f),
+                                                Vector2(0f, -1f))
+                                                .add(RoomIdComponent(roomId))))
+                                .add(TeleportComponent())
+
+                    }
+                    5 -> return false
                     else -> return false
                 }
             }

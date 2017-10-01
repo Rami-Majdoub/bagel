@@ -33,6 +33,7 @@ import ru.icarumbas.bagel.systems.rendering.RenderingSystem
 import ru.icarumbas.bagel.systems.rendering.ViewportSystem
 import ru.icarumbas.bagel.systems.velocity.JumpingSystem
 import ru.icarumbas.bagel.systems.velocity.RunningSystem
+import ru.icarumbas.bagel.systems.velocity.TeleportSystem
 import ru.icarumbas.bagel.utils.SerializedMapObject
 
 
@@ -94,6 +95,7 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
             // Velocity
             addSystem(RunningSystem(hud))
             addSystem(JumpingSystem(hud))
+            addSystem(TeleportSystem(playerEntity, rm))
 
             // Physic
             addSystem(AwakeSystem(rm))
