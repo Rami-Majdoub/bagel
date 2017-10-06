@@ -3,7 +3,10 @@ package ru.icarumbas.bagel.utils
 import com.badlogic.ashley.core.ComponentMapper
 import ru.icarumbas.bagel.components.other.*
 import ru.icarumbas.bagel.components.physics.BodyComponent
+import ru.icarumbas.bagel.components.physics.InactiveMarkerComponent
 import ru.icarumbas.bagel.components.physics.StaticComponent
+import ru.icarumbas.bagel.components.physics.WeaponComponent
+import ru.icarumbas.bagel.components.rendering.AlwaysRenderingMarkerComponent
 import ru.icarumbas.bagel.components.rendering.AnimationComponent
 import ru.icarumbas.bagel.components.rendering.SizeComponent
 import ru.icarumbas.bagel.components.velocity.FlyComponent
@@ -33,5 +36,6 @@ class Mappers {
         val AI              =       ComponentMapper.getFor(AIComponent::class.java)!!
         val inActive        =       ComponentMapper.getFor(InactiveMarkerComponent::class.java)!!
         val teleport        =       ComponentMapper.getFor(TeleportComponent::class.java)!!
+        val attack          =       ComponentMapper.getFor(AttackComponent::class.java)!!
     }
 }

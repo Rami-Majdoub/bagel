@@ -40,6 +40,7 @@ class RoomManager(val rooms: ArrayList<Room>,
             entityCreator.loadStaticMapObject("Maps/Map$it.tmx", "torch")
             entityCreator.loadStaticMapObject("Maps/Map$it.tmx", "ground")
             entityCreator.loadStaticMapObject("Maps/Map$it.tmx", "platform")
+            entityCreator.loadStaticMapObject("Maps/Map$it.tmx", "spikes")
         }
     }
 
@@ -67,19 +68,24 @@ class RoomManager(val rooms: ArrayList<Room>,
     }
 
     fun createNewWorld(worldCreator: WorldCreator, assetManager: AssetManager) {
-        rooms.add(createRoom(assetManager, "Maps/Map0.tmx", 0))
+        rooms.add(createRoom(assetManager, "Maps/Map${MathUtils.random(TILED_MAPS_TOTAL-1)}.tmx", 0))
         rooms[currentMapId].meshCoords = intArrayOf(25, 25, 25, 25)
         worldCreator.createWorld(100, this)
         createStaticEntities()
 
         rooms.forEach {
-            createIdEntity(it.path, it.id, "vase", 4)
+            createIdEntity(it.path, it.id, "vase", 5)
             createIdEntity(it.path, it.id, "chair1", 3)
             createIdEntity(it.path, it.id, "chair2", 3)
             createIdEntity(it.path, it.id, "table", 3)
             createIdEntity(it.path, it.id, "chandelier")
             createIdEntity(it.path, it.id, "window", 2)
             createIdEntity(it.path, it.id, "groundEnemy", 5)
+            createIdEntity(it.path, it.id, "crateBarrel", 3)
+            createIdEntity(it.path, it.id, "smallBanner", 2)
+            createIdEntity(it.path, it.id, "chest", 2)
+            createIdEntity(it.path, it.id, "candle")
+//            createIdEntity(it.path, it.id, "door")
         }
     }
 

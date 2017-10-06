@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="18" height="12" tilewidth="64" tileheight="64" nextobjectid="8">
+
+ <properties>
+   <property name="Height" value="768"/>
+   <property name="Down" value="Yes"/>
+   <property name="Right" value="Yes"/>
+   <property name="Width" value="1152"/>
+  </properties>
+
+ <tileset firstgid="1" name="tiles" tilewidth="64" tileheight="64" tilecount="105" columns="15">
+  <image source="tiles.png" width="989" height="450"/>
+ </tileset>
+ <tileset firstgid="106" name="items" tilewidth="64" tileheight="64" tilecount="400" columns="20">
+  <image source="items.png" width="1280" height="1280"/>
+ </tileset>
+ <layer name="Слой тайлов 1" width="18" height="12">
+  <data encoding="csv">
+19,19,18,19,20,19,20,19,19,19,19,18,19,18,19,20,19,19,
+19,19,64,64,64,64,64,64,64,64,64,64,64,64,64,64,64,19,
+19,19,9,10,10,10,10,10,10,10,10,10,10,10,10,10,11,19,
+19,19,24,25,25,25,25,25,25,25,25,25,25,25,25,25,26,19,
+19,19,39,40,40,40,40,15,25,25,25,25,25,25,25,25,43,10,
+18,19,4,4,5,4,5,24,25,25,25,25,25,25,25,25,25,25,
+19,19,64,64,64,64,64,24,25,25,25,25,25,25,25,25,25,25,
+19,19,9,10,10,10,10,45,25,25,13,40,40,40,40,40,40,40,
+19,20,24,25,25,25,25,25,25,25,26,3,4,5,5,3,4,5,
+19,19,24,25,25,25,25,25,25,25,26,19,18,19,20,19,19,19,
+19,20,39,40,40,40,40,15,25,25,26,19,19,18,19,20,19,19,
+19,20,3,4,5,4,5,24,25,25,26,18,19,20,19,18,19,20
+</data>
+ </layer>
+ <layer name="Слой тайлов 2" width="18" height="12">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,292,293,294,295,0,
+0,0,0,0,0,0,0,103,103,0,0,0,0,312,313,314,315,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,332,333,334,335,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,352,353,354,355,0,
+0,0,0,0,0,0,0,0,0,105,105,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,103,103,104,105,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup name="ground">
+  <object id="1" x="448" y="768">
+   <polyline points="0,0 0,-64 -320,-64 -320,-320 0,-320 0,-448 -320,-448 -320,-640 640,-640 640,-512 896,-512 896,-256 256,-256 256,0"/>
+  </object>
+ </objectgroup>
+ <objectgroup name="platform">
+  <object id="2" x="448" y="320" width="128.381" height="28.0834"/>
+  <object id="3" x="576" y="512" width="128.622" height="29.1499"/>
+  <object id="4" x="448" y="704" width="255.213" height="28.8072"/>
+ </objectgroup>
+ <objectgroup name="chest">
+  <object id="5" x="128" y="256" width="64" height="64"/>
+ </objectgroup>
+ <objectgroup name="door">
+  <object id="6" x="192" y="640" width="64" height="64"/>
+ </objectgroup>
+ <objectgroup name="torch">
+  <object id="7" x="576" y="192" width="192" height="128"/>
+ </objectgroup>
+</map>

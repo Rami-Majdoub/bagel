@@ -2,10 +2,8 @@ package ru.icarumbas
 
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.assets.loaders.SoundLoader
 import com.badlogic.gdx.assets.loaders.TextureAtlasLoader
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
-import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
@@ -21,12 +19,13 @@ const val BREAKABLE_BIT: Short = 64
 const val AI_BIT: Short = 256
 const val TAKE_BIT: Short = 512
 const val STATIC_BIT: Short = 1024
+const val SHARP_BIT: Short = 2048
 
 
 const val PIX_PER_M = 100f
 const val REG_ROOM_HEIGHT = 768f.div(PIX_PER_M)
 const val REG_ROOM_WIDTH = 1152f.div(PIX_PER_M)
-const val TILED_MAPS_TOTAL = 3
+const val TILED_MAPS_TOTAL = 13
 
 
 class Bagel: Game() {
@@ -57,8 +56,7 @@ class Bagel: Game() {
         assetManager.load("Packs/Enemies/Vamp.pack", TextureAtlas::class.java)
         assetManager.load("Packs/Enemies/Zombie.pack", TextureAtlas::class.java)
 
-
-        // Sounds
+        /*// Sounds
         assetManager.setLoader(Sound::class.java, SoundLoader(InternalFileHandleResolver()))
         assetManager.load("Sounds/openchest.wav", Sound::class.java)
         assetManager.load("Sounds/coinpickup.wav", Sound::class.java)
@@ -67,8 +65,7 @@ class Bagel: Game() {
         assetManager.load("Sounds/crateBreak0.wav", Sound::class.java)
         assetManager.load("Sounds/crateBreak1.wav", Sound::class.java)
         assetManager.load("Sounds/steps.wav", Sound::class.java)
-        assetManager.load("Sounds/sword.wav", Sound::class.java)
-
+        assetManager.load("Sounds/sword.wav", Sound::class.java)*/
 
         assetManager.finishLoading()
 

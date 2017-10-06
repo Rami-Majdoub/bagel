@@ -84,6 +84,7 @@ class MainMenuScreen(private val game: Bagel) : ScreenAdapter() {
     }
 
     override fun render(delta: Float) {
+
         stateTimer += delta
         batch.begin()
         back.draw(batch)
@@ -98,4 +99,5 @@ class MainMenuScreen(private val game: Bagel) : ScreenAdapter() {
         font.dispose()
         stage.dispose()
     }
+
 }

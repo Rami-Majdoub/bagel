@@ -8,10 +8,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.MathUtils
 import ru.icarumbas.PIX_PER_M
 import ru.icarumbas.bagel.RoomManager
-import ru.icarumbas.bagel.components.other.AlwaysRenderingMarkerComponent
 import ru.icarumbas.bagel.components.other.RoomIdComponent
 import ru.icarumbas.bagel.components.physics.BodyComponent
 import ru.icarumbas.bagel.components.physics.StaticComponent
+import ru.icarumbas.bagel.components.rendering.AlwaysRenderingMarkerComponent
 import ru.icarumbas.bagel.components.rendering.SizeComponent
 import ru.icarumbas.bagel.utils.Mappers
 import ru.icarumbas.bagel.utils.RenderingComparator

@@ -26,7 +26,6 @@ import ru.icarumbas.bagel.systems.other.HealthSystem
 import ru.icarumbas.bagel.systems.other.RoomChangingSystem
 import ru.icarumbas.bagel.systems.other.StateSystem
 import ru.icarumbas.bagel.systems.physics.AwakeSystem
-import ru.icarumbas.bagel.systems.physics.ContactSystem
 import ru.icarumbas.bagel.systems.physics.WeaponSystem
 import ru.icarumbas.bagel.systems.rendering.AnimationSystem
 import ru.icarumbas.bagel.systems.rendering.RenderingSystem
@@ -56,7 +55,7 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
     init {
 
         val b2DWorldCreator = B2DWorldCreator(world)
-        val animationCreator = AnimationCreator(game.assetManager)
+        val animationCreator = AnimationCreator()
         val worldCreator = WorldCreator(game.assetManager)
         entityCreator = EntityCreator(b2DWorldCreator, game.assetManager, engine, animationCreator)
         rm = RoomManager(rooms, game.assetManager, entityCreator, engine, serializedObjects, game.worldIO)
@@ -79,10 +78,10 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
                 game.assetManager["Packs/GuyKnight.pack", TextureAtlas::class.java],
                 b2DWorldCreator.createPlayerBody())
 
-
         hud = Hud(playerEntity)
-        val contactSystem = ContactSystem(hud, playerEntity)
-        world.setContactListener(contactSystem)
+
+        val contactListener = BodyContactListener(hud, playerEntity, engine)
+        world.setContactListener(contactListener)
 
         with (engine) {
 
@@ -99,7 +98,6 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
 
             // Physic
             addSystem(AwakeSystem(rm))
-            addSystem(contactSystem)
             addSystem(WeaponSystem(hud, rm))
 
             // Rendering

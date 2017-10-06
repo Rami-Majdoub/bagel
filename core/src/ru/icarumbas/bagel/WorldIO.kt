@@ -9,7 +9,7 @@ class WorldIO {
 
 
     private val json = Json()
-    val pref = Gdx.app.getPreferences("game preferences")!!
+//    val pref = Gdx.app.getPreferences("game preferences")!!
 
     init {
         json.setUsePrototypes(false)

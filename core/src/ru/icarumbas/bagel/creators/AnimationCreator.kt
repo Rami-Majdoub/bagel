@@ -1,12 +1,11 @@
 package ru.icarumbas.bagel.creators
 
-import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.utils.Array
 
-class AnimationCreator(val assetManager: AssetManager){
+class AnimationCreator(){
 
     // Single sprites
     fun create(path: String,

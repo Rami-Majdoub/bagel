@@ -3,6 +3,7 @@ package ru.icarumbas.bagel.systems.other
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import ru.icarumbas.REG_ROOM_HEIGHT
 import ru.icarumbas.REG_ROOM_WIDTH
@@ -15,6 +16,8 @@ import ru.icarumbas.bagel.utils.Mappers
 class RoomChangingSystem : IteratingSystem {
 
     private val rm: RoomManager
+    private val body = Mappers.body
+    private val pl = Mappers.player
 
     constructor(rm: RoomManager) : super(Family.all(PlayerComponent::class.java).get()) {
         this.rm = rm
@@ -22,6 +25,12 @@ class RoomChangingSystem : IteratingSystem {
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
         checkRoomChange(Mappers.size[entity], Mappers.body[entity].body)
+
+        // Fake contact = collide with platforms
+        if (pl.has(entity)) {
+            body[entity].body.applyLinearImpulse(Vector2(0f, -.00001f), body[entity].body.localPoint2, true)
+            body[entity].body.applyLinearImpulse(Vector2(0f, .00001f), body[entity].body.localPoint2, true)
+        }
     }
 
     private fun checkRoomChange(pos: SizeComponent, body: Body) {

@@ -6,10 +6,10 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.MathUtils
 import ru.icarumbas.bagel.RoomManager
-import ru.icarumbas.bagel.components.other.AlwaysRenderingMarkerComponent
 import ru.icarumbas.bagel.components.other.RoomIdComponent
 import ru.icarumbas.bagel.components.other.StateComponent
 import ru.icarumbas.bagel.components.physics.StaticComponent
+import ru.icarumbas.bagel.components.rendering.AlwaysRenderingMarkerComponent
 import ru.icarumbas.bagel.components.rendering.AnimationComponent
 import ru.icarumbas.bagel.systems.other.StateSystem
 import ru.icarumbas.bagel.utils.Mappers
@@ -77,11 +77,6 @@ class AnimationSystem : IteratingSystem {
                                     getKeyFrame(state[e].stateTime)
 
                 }
-
-            if (weapon.has(e))
-            weapon[e].bulletBodies?.forEach {
-                it.userData = weapon[e].bulletAnimation?.getKeyFrame(weapon[e].stateTimer)
-            }
 
             flip(e)
         }

@@ -75,8 +75,10 @@ class WorldCreator (private val assetManager: AssetManager){
     }
 
     private fun chooseMap(side: String, count: Int, meshX: Int, meshY: Int, rm: RoomManager): Room {
-
         newRoom = rm.createRoom(assetManager, "Maps/Map${rand(TILED_MAPS_TOTAL-1)}.tmx", roomsTotal)
+
+        println(side)
+        println("$meshX X, $meshY Y")
 
         val mapRoomWidth = (newRoom.width / REG_ROOM_WIDTH).toInt()
         val mapRoomHeight = (newRoom.height / REG_ROOM_HEIGHT).toInt()
@@ -121,8 +123,10 @@ class WorldCreator (private val assetManager: AssetManager){
                 place = 0
             }
 
+        } else {
+            println("++++++++++")
+            chooseMap(side, count, meshX, meshY, rm)
         }
-        else chooseMap(side, count, meshX, meshY, rm)
 
         return newRoom
     }
@@ -132,7 +136,9 @@ class WorldCreator (private val assetManager: AssetManager){
 
         mesh.forEach {
             x -> x.forEach { y ->
-                if (y == 1) print("* ") else print("  ")
+            if (x.indexOf(y) == 25 && mesh.indexOf(x) == 25) print("# ")
+            else
+            if (y == 1) print("* ") else print("  ")
             }
             println()
         }

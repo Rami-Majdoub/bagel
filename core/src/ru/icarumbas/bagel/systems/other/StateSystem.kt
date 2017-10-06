@@ -5,10 +5,10 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.MathUtils
 import ru.icarumbas.bagel.RoomManager
-import ru.icarumbas.bagel.components.other.AlwaysRenderingMarkerComponent
 import ru.icarumbas.bagel.components.other.RoomIdComponent
 import ru.icarumbas.bagel.components.other.StateComponent
 import ru.icarumbas.bagel.components.physics.StaticComponent
+import ru.icarumbas.bagel.components.rendering.AlwaysRenderingMarkerComponent
 import ru.icarumbas.bagel.utils.Mappers
 import ru.icarumbas.bagel.utils.inView
 
@@ -26,6 +26,7 @@ class StateSystem : IteratingSystem {
         val APPEARING = "APPEARING"
         val NULL = "NULL"
         val DISAPPEARING = "DISAPPEAR"
+        val OPENING = "OPENING"
     }
 
     private val state = Mappers.state
@@ -91,9 +92,13 @@ class StateSystem : IteratingSystem {
                                                     body[e].body.linearVelocity.x != 0f){
                                                 if (state[e].currentState != WALKING) state[e].stateTime = 0f
                                                 state[e].currentState = WALKING
-                                            } else {
-                                                    if (state[e].currentState != STANDING) state[e].stateTime = 0f
-                                                    state[e].currentState = STANDING
+                                            } else
+                                                if (state[e].states.contains(OPENING)) {
+                                                    if (state[e].currentState != OPENING) state[e].stateTime = 0f
+                                                    state[e].currentState = OPENING
+                                                } else {
+                                                        if (state[e].currentState != STANDING) state[e].stateTime = 0f
+                                                        state[e].currentState = STANDING
                                                     }
         }
     }

@@ -1,30 +1,33 @@
-package ru.icarumbas.bagel.systems.physics
+package ru.icarumbas.bagel
 
+import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
-import com.badlogic.ashley.systems.IteratingSystem
-import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Contact
 import com.badlogic.gdx.physics.box2d.ContactImpulse
 import com.badlogic.gdx.physics.box2d.ContactListener
 import com.badlogic.gdx.physics.box2d.Manifold
 import ru.icarumbas.*
-import ru.icarumbas.bagel.components.other.WeaponComponent
 import ru.icarumbas.bagel.components.physics.BodyComponent
+import ru.icarumbas.bagel.components.physics.WeaponComponent
 import ru.icarumbas.bagel.screens.scenes.Hud
 import ru.icarumbas.bagel.systems.other.StateSystem
 import ru.icarumbas.bagel.utils.Mappers
 import ru.icarumbas.bagel.utils.rotatedRight
 import kotlin.experimental.or
 
-class ContactSystem : ContactListener, IteratingSystem {
+class BodyContactListener : ContactListener {
 
     private val hud: Hud
+    private val engine: Engine
     private val body = Mappers.body
     private val damage = Mappers.damage
     private val weapon = Mappers.weapon
     private val pl = Mappers.player
     private val state = Mappers.state
+    private val attack = Mappers.attack
+    private val ai = Mappers.AI
+    private val size = Mappers.size
 
     private val playerEntity: Entity
     private lateinit var defendingEntity: Entity
@@ -33,32 +36,30 @@ class ContactSystem : ContactListener, IteratingSystem {
     private lateinit var contactEntityB: Entity
 
 
-    constructor(hud: Hud, playerEntity: Entity) : super(Family.all(BodyComponent::class.java).get()) {
+    constructor(hud: Hud, playerEntity: Entity, engine: Engine) {
         this.hud = hud
         this.playerEntity = playerEntity
+        this.engine = engine
     }
 
     private fun findAttackerAndDefender() {
         engine.getEntitiesFor(Family.all(WeaponComponent::class.java).get()).forEach{
 
-            if (weapon[it].entityLeft == contactEntityA || weapon[it].entityRight == contactEntityA){
+            if (weapon[it].entityLeft === contactEntityA || weapon[it].entityRight === contactEntityA){
                 attackingEntity = it
                 defendingEntity = contactEntityB
             }
-            if (weapon[it].entityLeft == contactEntityB || weapon[it].entityRight == contactEntityB){
+            if (weapon[it].entityLeft === contactEntityB || weapon[it].entityRight === contactEntityB){
                 attackingEntity = it
                 defendingEntity = contactEntityA
             }
-
         }
     }
 
-    override fun processEntity(entity: Entity, deltaTime: Float) {
-
-        // Fake contact = collide with platforms
-        if (Mappers.player.has(entity)) {
-            Mappers.body[entity].body.applyLinearImpulse(Vector2(0f, -.00001f), Mappers.body[entity].body.localPoint2, true)
-            Mappers.body[entity].body.applyLinearImpulse(Vector2(0f, .00001f), Mappers.body[entity].body.localPoint2, true)
+    private fun findContactEntities(contact: Contact){
+        engine.getEntitiesFor(Family.all(BodyComponent::class.java).get()).forEach {
+            if (body[it].body == contact.fixtureA.body) contactEntityA = it
+            if (body[it].body == contact.fixtureB.body) contactEntityB = it
         }
     }
 
@@ -66,21 +67,33 @@ class ContactSystem : ContactListener, IteratingSystem {
      }
 
     override fun preSolve(contact: Contact, oldManifold: Manifold) {
-
-        entities.forEach {
-            if (body[it].body == contact.fixtureA.body) contactEntityA = it
-            if (body[it].body == contact.fixtureB.body) contactEntityB = it
-        }
-
+        findContactEntities(contact)
 
         when (contact.fixtureA.filterData.categoryBits or contact.fixtureB.filterData.categoryBits) {
             PLAYER_BIT or PLATFORM_BIT -> {
+
                 if (playerEntity == contactEntityA) {
-                    if (body[contactEntityA].body.position.y < body[contactEntityB].body.position.y + .6 || hud.isDownPressed()) {
+                    if (body[contactEntityA].body.position.y <
+                            body[contactEntityB].body.position.y + size[contactEntityB].rectSize.y * 2|| hud.isDownPressed()) {
                         contact.isEnabled = false
                     }
                 } else {
-                    if (body[contactEntityB].body.position.y < body[contactEntityA].body.position.y + .6 || hud.isDownPressed()) {
+                    if (body[contactEntityB].body.position.y <
+                            body[contactEntityA].body.position.y + size[contactEntityA].rectSize.y * 2 || hud.isDownPressed()) {
+                        contact.isEnabled = false
+                    }
+                }
+            }
+
+            AI_BIT or PLATFORM_BIT -> {
+                if (ai.has(contactEntityA)) {
+                    if (body[contactEntityA].body.position.y <
+                            body[contactEntityB].body.position.y + size[contactEntityB].rectSize.y / 2 + size[playerEntity].rectSize.y / 2) {
+                        contact.isEnabled = false
+                    }
+                } else {
+                    if (body[contactEntityB].body.position.y <
+                            body[contactEntityA].body.position.y + size[contactEntityA].rectSize.y / 2 + size[playerEntity].rectSize.y / 2) {
                         contact.isEnabled = false
                     }
                 }
@@ -97,21 +110,15 @@ class ContactSystem : ContactListener, IteratingSystem {
 
                 if (damage[defendingEntity].canBeAttacked &&
                         !(state.has(defendingEntity) && state[defendingEntity].currentState == StateSystem.DEAD)) {
-                    damage[defendingEntity].damage = weapon[attackingEntity].strength
-                    damage[defendingEntity].knockback.set(weapon[attackingEntity].knockback)
+                    damage[defendingEntity].damage = attack[attackingEntity].strength
+                    damage[defendingEntity].knockback.set(attack[attackingEntity].knockback)
                     if (!attackingEntity.rotatedRight())
                         damage[defendingEntity].knockback.scl(-1f, 1f)
                 }
-
             }
 
-            PLAYER_BIT or TAKE_BIT -> {
-                /*if (pl.has(entityA)) {
+            SHARP_BIT or PLAYER_BIT, SHARP_BIT or AI_BIT -> {
 
-                } else {
-
-                }*/
-                contact.isEnabled = false
             }
         }
      }
@@ -120,10 +127,7 @@ class ContactSystem : ContactListener, IteratingSystem {
 
     override fun endContact(contact: Contact) {
 
-        entities.forEach {
-            if (body[it].body == contact.fixtureA.body) contactEntityA = it
-            if (body[it].body == contact.fixtureB.body) contactEntityB = it
-        }
+        findContactEntities(contact)
 
         when (contact.fixtureA.filterData.categoryBits or contact.fixtureB.filterData.categoryBits) {
 
