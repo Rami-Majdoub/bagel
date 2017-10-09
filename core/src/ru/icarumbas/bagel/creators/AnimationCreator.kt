@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.utils.Array
 
-class AnimationCreator(){
+class AnimationCreator{
 
     // Single sprites
     fun create(path: String,

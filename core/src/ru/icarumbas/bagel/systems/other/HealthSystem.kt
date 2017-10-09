@@ -3,6 +3,8 @@ package ru.icarumbas.bagel.systems.other
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
+import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.World
 import ru.icarumbas.bagel.RoomManager
@@ -17,6 +19,7 @@ class HealthSystem : IteratingSystem {
     private val body = Mappers.body
     private val anim = Mappers.animation
     private val state = Mappers.state
+    private val texture = Mappers.texture
 
     private val rm: RoomManager
     private val world: World
@@ -37,19 +40,23 @@ class HealthSystem : IteratingSystem {
 
             damage[e].hitTimer += deltaTime
 
+            if (damage[e].hitTimer > .1f){
+                texture[e].color = Color.WHITE
+            }
+
             if (damage[e].HP <= 0 &&
                     !(anim.has(e) && anim[e].animations.contains(StateSystem.DEAD) &&
                             !anim[e].animations[StateSystem.DEAD]?.isAnimationFinished(state[e].stateTime)!!)){
                 deleteList.add(e)
             }
 
-            if ((damage[e].damage != 0 || !damage[e].knockback.isZero) && damage[e].hitTimer > .5) {
+            if ((damage[e].damage != 0 || !damage[e].knockback.isZero)) {
                 damage[e].HP -= damage[e].damage
                 damage[e].damage = 0
                 body[e].body.applyLinearImpulse(damage[e].knockback, body[e].body.worldCenter, true)
                 damage[e].knockback.set(0f, 0f)
-                damage[e].canBeAttacked = false
                 damage[e].hitTimer = 0f
+                texture[e].color = Color.RED
             }
         }
     }

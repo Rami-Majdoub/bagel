@@ -44,7 +44,6 @@ class WeaponSystem : IteratingSystem {
             SWING -> {
                 if (body[weapon[e].entityRight].body.angleInDegrees() > 0){
 
-
                     body[weapon[e].entityRight].body.setTransform(
                             body[weapon[e].entityRight].body.position.x,
                             body[weapon[e].entityRight].body.position.y,
@@ -52,6 +51,8 @@ class WeaponSystem : IteratingSystem {
                     body[weapon[e].entityRight].body.setLinearVelocity(0f, 0f)
                     body[weapon[e].entityRight].body.isActive = false
                     weapon[e].attacking = false
+                    if (ai.has(e)) ai[e].coldown = 0f
+
                 }
                 if (body[weapon[e].entityLeft].body.angleInDegrees() < 0){
 
@@ -63,6 +64,8 @@ class WeaponSystem : IteratingSystem {
                     body[weapon[e].entityLeft].body.setLinearVelocity(0f, 0f)
                     body[weapon[e].entityLeft].body.isActive = false
                     weapon[e].attacking = false
+                    if (ai.has(e)) ai[e].coldown = 0f
+
                 }
 
             }
@@ -80,12 +83,13 @@ class WeaponSystem : IteratingSystem {
     private fun attack(e: Entity){
         if ((
                 (player.has(e) && hud.attackButtonPressed)
-                || (ai.has(e) && ai[e].appeared && ai[e].isPlayerNear && ai[e].coldown > ai[e].refreshSpeed))
+                || (ai.has(e) && ai[e].appeared && ai[e].coldown > ai[e].refreshSpeed))
                 && !weapon[e].attacking
                 && damage[e].HP > 0) {
 
 
             weapon[e].attacking = true
+
             when (weapon[e].type) {
                 SWING -> {
 
@@ -96,7 +100,6 @@ class WeaponSystem : IteratingSystem {
                                 -.2f)
                         body[weapon[e].entityRight].body.isActive = true
                         body[weapon[e].entityRight].body.applyAngularImpulse(-weapon[e].attackSpeed, true)
-                        if (ai.has(e)) ai[e].coldown = 0f
                     } else {
                         body[weapon[e].entityLeft].body.setTransform(
                                 body[e].body.position.x,
@@ -104,7 +107,6 @@ class WeaponSystem : IteratingSystem {
                                 .2f)
                         body[weapon[e].entityLeft].body.isActive = true
                         body[weapon[e].entityLeft].body.applyAngularImpulse(weapon[e].attackSpeed, true)
-                        if (ai.has(e)) ai[e].coldown = 0f
                     }
                 }
 

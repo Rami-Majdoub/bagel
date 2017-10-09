@@ -28,7 +28,7 @@ class B2DWorldCreator(private val world: World) {
         fixtureDef.friction = .4f
         fixtureDef.density = .04f
         fixtureDef.filter.categoryBits = PLAYER_BIT
-        fixtureDef.filter.maskBits = GROUND_BIT or PLATFORM_BIT or WEAPON_BIT
+        fixtureDef.filter.maskBits = GROUND_BIT or PLATFORM_BIT or WEAPON_BIT or SHARP_BIT
 
         playerBody.createFixture(fixtureDef)
         shape.dispose()
@@ -47,7 +47,7 @@ class B2DWorldCreator(private val world: World) {
 
     }
 
-    fun createSwordWeapon(categoryBit: Short, maskBit: Short, texture: TextureRegion?, size: Vector2): Body{
+    fun createSwordWeapon(categoryBit: Short, maskBit: Short, size: Vector2): Body{
 
         val bodyDef = BodyDef()
         bodyDef.type = BodyDef.BodyType.DynamicBody
@@ -64,9 +64,6 @@ class B2DWorldCreator(private val world: World) {
         fixtureDef.density = .001f
         weaponBody.createFixture(fixtureDef)
         weaponBody.isActive = false
-
-
-        weaponBody.userData = texture
 
         shape.dispose()
         return weaponBody
@@ -107,7 +104,6 @@ class B2DWorldCreator(private val world: World) {
                             height: Float = 0f,
                             cBit: Short,
                             mBit: Short = -1,
-                            tex: TextureRegion? = null,
                             gravity: Float = 1f): Body{
 
 
@@ -129,7 +125,6 @@ class B2DWorldCreator(private val world: World) {
 
         body.createFixture(fixtureDef)
         body.gravityScale = gravity
-        body.userData = tex
         body.isActive = false
 
         polygonShape.dispose()

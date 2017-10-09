@@ -23,6 +23,7 @@ class AnimationSystem : IteratingSystem {
     private val anim = Mappers.animation
     private val state = Mappers.state
     private val weapon = Mappers.weapon
+    private val texture = Mappers.texture
     private val body = Mappers.body
 
     private val rm: RoomManager
@@ -40,13 +41,13 @@ class AnimationSystem : IteratingSystem {
 
     private fun flip(e: Entity) {
 
-        if (body[e].body.userData != null) {
-            val textureReg = body[e].body.userData as TextureRegion
+        if (texture[e].tex != null) {
+            val textureReg = texture[e].tex
 
-            if (e.rotatedRight() && textureReg.isFlipX) {
+            if (e.rotatedRight() && textureReg!!.isFlipX) {
                 textureReg.flip(true, false)
             } else
-                if (!e.rotatedRight() && !textureReg.isFlipX) {
+                if (!e.rotatedRight() && !textureReg!!.isFlipX) {
                     textureReg.flip(true, false)
                 }
         }
@@ -66,11 +67,11 @@ class AnimationSystem : IteratingSystem {
                     body[weapon[e].entityLeft].body.angleInDegrees().div(
                             MathUtils.PI / anim[e].animations[StateSystem.ATTACKING]!!.keyFrames.size).toInt()
                 }
-                body[e].body.userData = anim[e].animations[state[e].currentState]!!.keyFrames.get(frame)
+                texture[e].tex = anim[e].animations[state[e].currentState]!!.keyFrames.get(frame)
 
             } else
                 if (anim[e].animations.containsKey(state[e].currentState)) {
-                    body[e].body.userData =
+                    texture[e].tex =
                                     anim[e].
                                     animations[state[e].
                                     currentState]!!.

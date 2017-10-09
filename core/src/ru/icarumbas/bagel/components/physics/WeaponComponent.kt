@@ -4,8 +4,10 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 
 
-data class WeaponComponent(val type: Int,
-                           var attackSpeed: Float = 0f,
+class WeaponComponent(val type: Int,
+                           var attackSpeed: Float,
                            val entityLeft: Entity,
-                           val entityRight: Entity,
-                           var attacking: Boolean = false) : Component
+                           val entityRight: Entity) : Component {
+
+    var attacking: Boolean = false
+}

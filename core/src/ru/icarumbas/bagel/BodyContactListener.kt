@@ -56,6 +56,29 @@ class BodyContactListener : ContactListener {
         }
     }
 
+    private fun findAttackerAndDefenderForSharp(){
+        if (pl.has(contactEntityA) || ai.has(contactEntityA)) {
+            defendingEntity = contactEntityA
+            attackingEntity = contactEntityB
+        }
+
+        if (pl.has(contactEntityB) || ai.has(contactEntityB)) {
+            defendingEntity = contactEntityB
+            attackingEntity = contactEntityA
+        }
+    }
+
+    private fun attack(){
+        if (damage[defendingEntity].hitTimer > damage[defendingEntity].canBeDamagedTime &&
+                !(state.has(defendingEntity) && state[defendingEntity].currentState == StateSystem.DEAD)) {
+            damage[defendingEntity].damage = attack[attackingEntity].strength
+            damage[defendingEntity].knockback.set(attack[attackingEntity].knockback)
+            if (!attackingEntity.rotatedRight())
+                damage[defendingEntity].knockback.scl(-1f, 1f)
+            if (weapon.has(attackingEntity)) damage[defendingEntity].isWeaponContact = true
+        }
+    }
+
     private fun findContactEntities(contact: Contact){
         engine.getEntitiesFor(Family.all(BodyComponent::class.java).get()).forEach {
             if (body[it].body == contact.fixtureA.body) contactEntityA = it
@@ -107,18 +130,16 @@ class BodyContactListener : ContactListener {
                 contact.isEnabled = false
 
                 findAttackerAndDefender()
-
-                if (damage[defendingEntity].canBeAttacked &&
-                        !(state.has(defendingEntity) && state[defendingEntity].currentState == StateSystem.DEAD)) {
-                    damage[defendingEntity].damage = attack[attackingEntity].strength
-                    damage[defendingEntity].knockback.set(attack[attackingEntity].knockback)
-                    if (!attackingEntity.rotatedRight())
-                        damage[defendingEntity].knockback.scl(-1f, 1f)
+                if (!damage[defendingEntity].isWeaponContact) {
+                    attack()
                 }
             }
 
             SHARP_BIT or PLAYER_BIT, SHARP_BIT or AI_BIT -> {
+                contact.isEnabled = false
 
+                findAttackerAndDefenderForSharp()
+                attack()
             }
         }
      }
@@ -137,7 +158,7 @@ class BodyContactListener : ContactListener {
 
             WEAPON_BIT or BREAKABLE_BIT, WEAPON_BIT or AI_BIT, WEAPON_BIT or PLAYER_BIT -> {
                 findAttackerAndDefender()
-                damage[defendingEntity].canBeAttacked = true
+                damage[defendingEntity].isWeaponContact = false
             }
 
         }

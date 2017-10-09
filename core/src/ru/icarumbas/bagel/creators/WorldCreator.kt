@@ -49,13 +49,8 @@ class WorldCreator (private val assetManager: AssetManager){
         }
     }
 
-    private fun rand(values: Int): Int {
-        val random = MathUtils.random(1000)
-        return if (random < zeroRoomChance) {
-            MathUtils.random(0, values)
-        } else
-            MathUtils.random(0, values)
-    }
+    private fun rand(values: Int) = MathUtils.random(0, values)
+
 
     private fun checkFit(side: String, meshX: Int, meshY: Int, mapRoomWidth: Int, mapRoomHeight: Int): Boolean {
         meshCheckSides = when (side) {
@@ -124,7 +119,6 @@ class WorldCreator (private val assetManager: AssetManager){
             }
 
         } else {
-            println("++++++++++")
             chooseMap(side, count, meshX, meshY, rm)
         }
 
@@ -136,9 +130,7 @@ class WorldCreator (private val assetManager: AssetManager){
 
         mesh.forEach {
             x -> x.forEach { y ->
-            if (x.indexOf(y) == 25 && mesh.indexOf(x) == 25) print("# ")
-            else
-            if (y == 1) print("* ") else print("  ")
+                if (y == 1) print("* ") else print("  ")
             }
             println()
         }

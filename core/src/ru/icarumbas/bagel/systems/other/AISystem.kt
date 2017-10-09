@@ -41,12 +41,11 @@ class AISystem: IteratingSystem {
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (entity.inView(rm)) {
-            ai[entity].coldown += deltaTime
 
             ai[entity].isPlayerRight = isPlayerRight(entity)
             ai[entity].isPlayerNear = isPlayerNear(entity)
 
-
+            if (ai[entity].isPlayerNear || ai[entity].coldown > 0f) ai[entity].coldown += deltaTime
 
             // isAppeared?
             if (anim[entity].animations[StateSystem.APPEARING]?.isAnimationFinished(state[entity].stateTime)!!

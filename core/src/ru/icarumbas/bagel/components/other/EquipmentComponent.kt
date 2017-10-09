@@ -4,4 +4,4 @@ import com.badlogic.ashley.core.Component
 import ru.icarumbas.bagel.Equip
 
 
-data class EquipmentComponent(val equipment: ArrayList<Equip> = ArrayList()) : Component
+class EquipmentComponent(val equipment: ArrayList<Equip> = ArrayList()) : Component

@@ -25,7 +25,13 @@ const val SHARP_BIT: Short = 2048
 const val PIX_PER_M = 100f
 const val REG_ROOM_HEIGHT = 768f.div(PIX_PER_M)
 const val REG_ROOM_WIDTH = 1152f.div(PIX_PER_M)
-const val TILED_MAPS_TOTAL = 13
+const val TILED_MAPS_TOTAL = 17
+
+
+//TODO("Blood, stones, effects")
+//TODO("Attack target")
+//TODO("Golems, skeletons not affected by spikes. Golem destroys them')
+
 
 
 class Bagel: Game() {

@@ -5,7 +5,6 @@ import com.badlogic.ashley.utils.ImmutableArray
 import ru.icarumbas.bagel.systems.other.StateSystem
 
 
-data class StateComponent(var states: ImmutableArray<String>,
-                          var stateTime: Float = 0f,
-                          var currentState: String = StateSystem.STANDING
-                          ) : Component
+class StateComponent(var states: ImmutableArray<String>, var stateTime: Float = 0f) : Component {
+    var currentState: String = StateSystem.STANDING
+}

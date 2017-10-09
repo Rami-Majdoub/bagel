@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import ru.icarumbas.bagel.components.velocity.RunComponent
 import ru.icarumbas.bagel.screens.scenes.Hud
+import ru.icarumbas.bagel.systems.other.StateSystem
 import ru.icarumbas.bagel.utils.Mappers
 
 
@@ -16,6 +17,7 @@ class RunningSystem : IteratingSystem {
     private val run = Mappers.run
     private val pl = Mappers.player
     private val ai = Mappers.AI
+    private val state = Mappers.state
     private val hud: Hud
 
     constructor(hud: Hud) : super(Family.all(RunComponent::class.java).get()) {
@@ -34,7 +36,7 @@ class RunningSystem : IteratingSystem {
                     pl[e].lastRight = false
                 }
             }
-            if (ai.has(e) && ai[e].appeared && !ai[e].isPlayerNear && ai[e].coldown > ai[e].refreshSpeed){
+            if (ai.has(e) && ai[e].appeared && !ai[e].isPlayerNear && state[e].currentState != StateSystem.ATTACKING){
                 if (ai[e].isPlayerRight)
                     applyImpulse(body[e].body, run[e].acceleration, 0f)
                 else

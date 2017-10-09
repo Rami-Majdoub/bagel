@@ -4,4 +4,4 @@ import com.badlogic.ashley.core.Component
 import ru.icarumbas.bagel.utils.SerializedMapObject
 
 
-data class RoomIdComponent(val id: Int, var serialized: SerializedMapObject = SerializedMapObject()) : Component
+class RoomIdComponent(val id: Int, var serialized: SerializedMapObject = SerializedMapObject()) : Component

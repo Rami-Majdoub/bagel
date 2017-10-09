@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.Component
 import ru.icarumbas.bagel.Equip
 
 
-data class PlayerComponent(var money: Int,
-                           var collidingWithGround: Boolean = false,
-                           var inventory: ArrayList<Equip> = ArrayList(),
-                           var lastRight: Boolean = false) : Component
+class PlayerComponent(var money: Int) : Component {
+    var collidingWithGround: Boolean = false
+    var lastRight: Boolean = false
+}
