@@ -68,10 +68,10 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
         return Entity()
                 .add(TextureComponent())
                 .add(PlayerComponent(0))
-                .add(RunComponent(.01f, 6f))
+                .add(RunComponent(acceleration = .4f, maxSpeed = 6f))
                 .add(SizeComponent(Vector2(50 / PIX_PER_M, 105 / PIX_PER_M), .425f))
-                .add(JumpComponent(.07f, 5))
-                .add(HealthComponent(100, 1.5f))
+                .add(JumpComponent(jumpVelocity = 2f, maxJumps = 5))
+                .add(HealthComponent(HP = 100, canBeDamagedTime = 1f))
                 .add(BodyComponent(playerBody))
                 .add(EquipmentComponent())
                 .add(WeaponComponent(
@@ -320,10 +320,10 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 96 / PIX_PER_M,
                                 96 / PIX_PER_M,
                                 KEY_OPEN_BIT,
-                                WEAPON_BIT)))
+                                PLAYER_BIT)))
                         .add(RoomIdComponent(roomId))
                         .add(SizeComponent(Vector2(96 / PIX_PER_M, 96 / PIX_PER_M)))
-                        /*.add(AnimationComponent(hashMapOf(
+                        .add(AnimationComponent(hashMapOf(
                                 StateSystem.STANDING to
                                 animCreator.create("Chest", 1, .125f, atlas),
                             StateSystem.OPENING to
@@ -331,10 +331,52 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                         .add(StateComponent(
                                 ImmutableArray(Array.with(StateSystem.STANDING, StateSystem.OPENING)),
                                 0f
-                        ))*/
+                        ))
                         .add(TextureComponent(atlas.findRegion("Chest (1)")))
+                        .add(OpenComponent())
 
             }
+
+            "door" -> {
+
+                Entity()
+                        .add(BodyComponent(b2DWorldCreator.defineRectangleMapObjectBody(
+                                rect,
+                                BodyDef.BodyType.StaticBody,
+                                170 / PIX_PER_M,
+                                244 / PIX_PER_M,
+                                KEY_OPEN_BIT,
+                                PLAYER_BIT)))
+                        .add(RoomIdComponent(roomId))
+                        .add(SizeComponent(Vector2(170 / PIX_PER_M, 244 / PIX_PER_M)))
+                        .add(AnimationComponent(
+                                if (r == 1) {
+                                    hashMapOf(
+                                            StateSystem.STANDING to
+                                                    animCreator.create("IronDoor", 1, .125f, atlas),
+                                            StateSystem.OPENING to
+                                                    animCreator.create("IronDoor", 4, .125f, atlas)
+                                    )
+                                }
+                                else {
+                                    hashMapOf(
+                                            StateSystem.STANDING to
+                                                    animCreator.create("Wood Door", 1, .125f, atlas),
+                                            StateSystem.OPENING to
+                                                    animCreator.create("Wood Door", 4, .125f, atlas)
+                                    )
+                                }
+                        ))
+                        .add(StateComponent(
+                                ImmutableArray(Array.with(StateSystem.STANDING, StateSystem.OPENING)),
+                                0f
+                        ))
+                        .add(TextureComponent())
+                        .add(OpenComponent())
+                        .add(DoorComponent())
+
+            }
+
 
             "crateBarrel" -> {
                 if (r == 3) return false
@@ -373,7 +415,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
 
                         Entity()
                                 .add(BodyComponent(body))
-                                .add(HealthComponent(roomId + 20))
+                                .add(HealthComponent(roomId + 40))
                                 .add(AnimationComponent(hashMapOf(
                                         StateSystem.STANDING to Animation(
                                                 .125f,
@@ -406,7 +448,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 ))
                                 .add(RoomIdComponent(roomId))
                                 .add(RunComponent(.25f, 1f))
-                                .add(AIComponent(.5f, 1f))
+                                .add(AIComponent(refreshSpeed = MathUtils.random(.2f, .3f), attackDistance = 1f))
                                 .add(SizeComponent(Vector2(180 / PIX_PER_M, 260 / PIX_PER_M), .65f))
                                 .add(WeaponComponent(
                                         type = WeaponSystem.SWING,
@@ -427,7 +469,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                                 Vector2(0f, -.3f),
                                                 Vector2(0f, -.5f))
                                                 .add(RoomIdComponent(roomId))))
-                                .add(AttackComponent(strength = roomId + 15, knockback = Vector2(.05f, .05f)))
+                                .add(AttackComponent(strength = roomId + 15, knockback = Vector2(2.5f, 2.5f)))
                                 .add(TextureComponent())
 
 
@@ -446,7 +488,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
 
                         Entity()
                                 .add(BodyComponent(body))
-                                .add(HealthComponent(roomId + 30))
+                                .add(HealthComponent(roomId + 80))
                                 .add(AnimationComponent(hashMapOf(
                                         StateSystem.STANDING to Animation(
                                                 .125f,
@@ -479,7 +521,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 ))
                                 .add(RoomIdComponent(roomId))
                                 .add(RunComponent(.5f, .5f))
-                                .add(AIComponent(1f, 2f))
+                                .add(AIComponent(refreshSpeed = MathUtils.random(.45f, .55f), attackDistance = 2f))
                                 .add(SizeComponent(Vector2(230 / PIX_PER_M, 230 / PIX_PER_M), .65f))
                                 .add(WeaponComponent(
                                         type = WeaponSystem.SWING,
@@ -500,7 +542,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                                 Vector2(0f, -.3f),
                                                 Vector2(0f, -1f))
                                                 .add(RoomIdComponent(roomId))))
-                                .add(AttackComponent(strength = roomId + 5, knockback = Vector2(.125f, .125f)))
+                                .add(AttackComponent(strength = roomId + 25, knockback = Vector2(3.5f, 3.5f)))
                                 .add(TextureComponent())
 
 
@@ -518,7 +560,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
 
                         Entity()
                                 .add(BodyComponent(body))
-                                .add(HealthComponent(roomId + 15))
+                                .add(HealthComponent(roomId + 30))
                                 .add(AnimationComponent(hashMapOf(
                                         StateSystem.STANDING to Animation(
                                                 .125f,
@@ -551,8 +593,8 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 ))
                                 .add(RoomIdComponent(roomId))
                                 .add(RunComponent(.25f, 2f))
-                                .add(AIComponent(.25f, 1f))
-                                .add(SizeComponent(Vector2(85 / PIX_PER_M, 210 / PIX_PER_M), .65f))
+                                .add(AIComponent(refreshSpeed = MathUtils.random(.1f, .2f), attackDistance = 1f))
+                                .add(SizeComponent(Vector2(125 / PIX_PER_M, 210 / PIX_PER_M), .65f))
                                 .add(WeaponComponent(
                                         type = WeaponSystem.SWING,
                                         attackSpeed = .0000025f,
@@ -572,7 +614,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                                 Vector2(0f, -.3f),
                                                 Vector2(0f, -.5f))
                                                 .add(RoomIdComponent(roomId))))
-                                .add(AttackComponent(strength = roomId + 10, knockback = Vector2(.01f, .01f)))
+                                .add(AttackComponent(strength = roomId + 10, knockback = Vector2(2.5f, 2.5f)))
                                 .add(TextureComponent())
 
 
@@ -590,7 +632,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
 
                         Entity()
                                 .add(BodyComponent(body))
-                                .add(HealthComponent(roomId + 10))
+                                .add(HealthComponent(roomId + 20))
                                 .add(AnimationComponent(hashMapOf(
                                         StateSystem.STANDING to Animation(
                                                 .125f,
@@ -628,7 +670,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 ))
                                 .add(RoomIdComponent(roomId))
                                 .add(RunComponent(.225f, .75f))
-                                .add(AIComponent(.75f, 2f))
+                                .add(AIComponent(refreshSpeed = MathUtils.random(.4f, .5f), attackDistance = 2f))
                                 .add(SizeComponent(Vector2(85 / PIX_PER_M, 210 / PIX_PER_M), .65f))
                                 .add(WeaponComponent(
                                         type = WeaponSystem.SWING,
@@ -650,7 +692,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                                 Vector2(0f, -1f))
                                                 .add(RoomIdComponent(roomId))))
                                 .add(TeleportComponent())
-                                .add(AttackComponent(strength = roomId + 15, knockback = Vector2(.05f, .05f)))
+                                .add(AttackComponent(strength = roomId + 15, knockback = Vector2(1.5f, 1.5f)))
                                 .add(TextureComponent())
 
 

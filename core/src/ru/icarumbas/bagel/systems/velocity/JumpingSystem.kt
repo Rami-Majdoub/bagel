@@ -32,10 +32,10 @@ class JumpingSystem : IteratingSystem {
 
     //TODO("Entities except player climb on walls")
 
-    fun relax(e: Entity){
+    private fun relax(e: Entity){
         // Here i took only player's situation
 
-        if (Mappers.state[e].currentState != StateSystem.JUMPING) {
+        if (Mappers.state[e].currentState != StateSystem.JUMPING && Mappers.state[e].currentState != StateSystem.JUMP_ATTACKING) {
             if (Mappers.player.has(e)) {
                 if (!hud.isUpPressed() || !Mappers.player[e].collidingWithGround){
                     jump[e].jumps = 0
@@ -46,7 +46,7 @@ class JumpingSystem : IteratingSystem {
         }
     }
 
-    fun jump(e: Entity) {
+    private fun jump(e: Entity) {
         if (jump[e].jumps == 0)
             body[e].body.applyLinearImpulse(Vector2(0f, jump[e].jumpVelocity), body[e].body.worldCenter, true)
         else

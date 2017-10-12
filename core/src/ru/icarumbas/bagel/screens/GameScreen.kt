@@ -21,10 +21,7 @@ import ru.icarumbas.bagel.creators.B2DWorldCreator
 import ru.icarumbas.bagel.creators.EntityCreator
 import ru.icarumbas.bagel.creators.WorldCreator
 import ru.icarumbas.bagel.screens.scenes.Hud
-import ru.icarumbas.bagel.systems.other.AISystem
-import ru.icarumbas.bagel.systems.other.HealthSystem
-import ru.icarumbas.bagel.systems.other.RoomChangingSystem
-import ru.icarumbas.bagel.systems.other.StateSystem
+import ru.icarumbas.bagel.systems.other.*
 import ru.icarumbas.bagel.systems.physics.AwakeSystem
 import ru.icarumbas.bagel.systems.physics.WeaponSystem
 import ru.icarumbas.bagel.systems.rendering.AnimationSystem
@@ -71,12 +68,12 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         val coins = ArrayList<Body>()
         val entityDeleteList = ArrayList<Entity>()
 
-        worldCleaner = WorldCleaner(entityDeleteList, engine, world, serializedObjects)
-
         playerEntity = entityCreator.createPlayerEntity(
                 animationCreator,
                 game.assetManager["Packs/GuyKnight.pack", TextureAtlas::class.java],
                 b2DWorldCreator.createPlayerBody())
+
+        worldCleaner = WorldCleaner(entityDeleteList, engine, world, serializedObjects, playerEntity, game)
 
         hud = Hud(playerEntity)
 
@@ -90,6 +87,7 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
             addSystem(HealthSystem(rm, world, coins, entityDeleteList))
             addSystem(StateSystem(rm))
             addSystem(AISystem(playerEntity, rm))
+            addSystem(OpeningSystem(hud, rm, entityDeleteList))
 
             // Velocity
             addSystem(RunningSystem(hud))
@@ -114,6 +112,7 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         println("Size of rooms: ${rm.size()}")
         println("World bodies count: ${world.bodyCount}")
         println("Entities size: ${engine.entities.size()}")
+
     }
 
     override fun render(delta: Float) {

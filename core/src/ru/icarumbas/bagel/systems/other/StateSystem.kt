@@ -37,6 +37,7 @@ class StateSystem : IteratingSystem {
     private val rm: RoomManager
     private val ai = Mappers.AI
     private val teleport = Mappers.teleport
+    private val open = Mappers.open
 
 
     constructor(rm: RoomManager) : super(Family.all(StateComponent::class.java).one(
@@ -59,7 +60,7 @@ class StateSystem : IteratingSystem {
                 } else
                     if (state[e].states.contains(APPEARING) &&
                             !ai[e].appeared &&
-                            (ai[e].isPlayerNear || state[e].currentState == APPEARING || (teleport.has(e) && teleport[e].appearing))) {
+                            (ai[e].isTargetNear || state[e].currentState == APPEARING || (teleport.has(e) && teleport[e].appearing))) {
                         if (state[e].currentState != APPEARING) state[e].stateTime = 0f
                         state[e].currentState = APPEARING
                     } else
@@ -93,7 +94,7 @@ class StateSystem : IteratingSystem {
                                                 if (state[e].currentState != WALKING) state[e].stateTime = 0f
                                                 state[e].currentState = WALKING
                                             } else
-                                                if (state[e].states.contains(OPENING)) {
+                                                if (state[e].states.contains(OPENING) && open[e].opening) {
                                                     if (state[e].currentState != OPENING) state[e].stateTime = 0f
                                                     state[e].currentState = OPENING
                                                 } else {

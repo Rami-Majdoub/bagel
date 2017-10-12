@@ -1,12 +1,14 @@
 package ru.icarumbas.bagel.components.other
 
 import com.badlogic.ashley.core.Component
+import com.badlogic.ashley.core.Entity
 
 
-class AIComponent(var refreshSpeed: Float, var attackDistance: Float) : Component {
+class AIComponent(var refreshSpeed: Float, var attackDistance: Float, var entityTarget: Entity? = null) : Component {
 
-    var isPlayerRight: Boolean = true
-    var isPlayerNear: Boolean = false
+    var isTargetRight: Boolean = true
+    var isTargetNear: Boolean = false
+    var isTargetEqualX: Boolean = false
     var appeared: Boolean = false
     var coldown: Float = 0f
 }

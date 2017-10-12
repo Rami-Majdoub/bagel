@@ -1,6 +1,5 @@
 package ru.icarumbas.bagel.creators
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.maps.objects.PolylineMapObject
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
@@ -26,9 +25,9 @@ class B2DWorldCreator(private val world: World) {
         fixtureDef.shape = shape
         fixtureDef.restitution = .1f
         fixtureDef.friction = .4f
-        fixtureDef.density = .04f
+        fixtureDef.density = 1.5f
         fixtureDef.filter.categoryBits = PLAYER_BIT
-        fixtureDef.filter.maskBits = GROUND_BIT or PLATFORM_BIT or WEAPON_BIT or SHARP_BIT
+        fixtureDef.filter.maskBits = GROUND_BIT or PLATFORM_BIT or WEAPON_BIT or SHARP_BIT or KEY_OPEN_BIT
 
         playerBody.createFixture(fixtureDef)
         shape.dispose()
@@ -37,6 +36,7 @@ class B2DWorldCreator(private val world: World) {
         circleShape.radius = .25f
         circleShape.position = Vector2(0f, -.25f)
         fixtureDef.friction = 1.5f
+        fixtureDef.filter.categoryBits = PLAYER_FEET_BIT
         fixtureDef.shape = circleShape
 
         playerBody.createFixture(fixtureDef)
@@ -62,6 +62,7 @@ class B2DWorldCreator(private val world: World) {
         shape.setAsBox(size.x / 2, size.y / 2)
         fixtureDef.shape = shape
         fixtureDef.density = .001f
+        fixtureDef.isSensor = true
         weaponBody.createFixture(fixtureDef)
         weaponBody.isActive = false
 

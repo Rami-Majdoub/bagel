@@ -68,7 +68,7 @@ class RoomManager(val rooms: ArrayList<Room>,
     }
 
     fun createNewWorld(worldCreator: WorldCreator, assetManager: AssetManager) {
-        rooms.add(createRoom(assetManager, "Maps/Map${MathUtils.random(TILED_MAPS_TOTAL-1)}.tmx", 0))
+        rooms.add(createRoom(assetManager, "Maps/Map0.tmx", 0))
         rooms[currentMapId].meshCoords = intArrayOf(25, 25, 25, 25)
         worldCreator.createWorld(100, this)
         createStaticEntities()
@@ -80,13 +80,17 @@ class RoomManager(val rooms: ArrayList<Room>,
             createIdEntity(it.path, it.id, "table", 3)
             createIdEntity(it.path, it.id, "chandelier")
             createIdEntity(it.path, it.id, "window", 2)
-            createIdEntity(it.path, it.id, "groundEnemy", 5)
             createIdEntity(it.path, it.id, "crateBarrel", 3)
             createIdEntity(it.path, it.id, "smallBanner", 2)
             createIdEntity(it.path, it.id, "chest", 2)
             createIdEntity(it.path, it.id, "candle")
-//            createIdEntity(it.path, it.id, "door")
+            createIdEntity(it.path, it.id, "door", 2)
+            createIdEntity(it.path, it.id, "groundEnemy", 5)
+
         }
+
+        worldIO.prefs.putString("Continue", "Yes")
+        worldIO.prefs.flush()
     }
 
     fun continueWorld() {
@@ -94,6 +98,7 @@ class RoomManager(val rooms: ArrayList<Room>,
         createStaticEntities()
         serializedObjects.forEach{
             entityCreator.loadIdEntity(it.roomId, it.rect, it.objectPath, assets["Packs/items.pack", TextureAtlas::class.java], it.rand)
+            Mappers.roomId[engine.entities.last()].serialized = it
         }
     }
 

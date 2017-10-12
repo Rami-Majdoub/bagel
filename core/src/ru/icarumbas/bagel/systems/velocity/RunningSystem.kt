@@ -26,7 +26,7 @@ class RunningSystem : IteratingSystem {
 
     override fun processEntity(e: Entity, deltaTime: Float) {
         if (Math.abs(body[e].body.linearVelocity.x) <= run[e].maxSpeed) {
-            if (pl.has(e)) {
+            if (pl.has(e) && (!pl[e].collidingWithGround || pl[e].standindOnGround)) {
                 if (hud.isRightPressed()) {
                     applyImpulse(body[e].body, run[e].acceleration, 0f)
                     pl[e].lastRight = true
@@ -36,8 +36,13 @@ class RunningSystem : IteratingSystem {
                     pl[e].lastRight = false
                 }
             }
-            if (ai.has(e) && ai[e].appeared && !ai[e].isPlayerNear && state[e].currentState != StateSystem.ATTACKING){
-                if (ai[e].isPlayerRight)
+            if (ai.has(e) &&
+                ai[e].appeared &&
+                !ai[e].isTargetNear &&
+                state[e].currentState != StateSystem.ATTACKING &&
+                !ai[e].isTargetEqualX){
+
+                if (ai[e].isTargetRight)
                     applyImpulse(body[e].body, run[e].acceleration, 0f)
                 else
                     applyImpulse(body[e].body, -run[e].acceleration, 0f)

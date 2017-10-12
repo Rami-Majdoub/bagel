@@ -47,7 +47,8 @@ class WeaponSystem : IteratingSystem {
                     body[weapon[e].entityRight].body.setTransform(
                             body[weapon[e].entityRight].body.position.x,
                             body[weapon[e].entityRight].body.position.y,
-                            -.2f)
+                            -.15f)
+
                     body[weapon[e].entityRight].body.setLinearVelocity(0f, 0f)
                     body[weapon[e].entityRight].body.isActive = false
                     weapon[e].attacking = false
@@ -60,7 +61,8 @@ class WeaponSystem : IteratingSystem {
                     body[weapon[e].entityLeft].body.setTransform(
                             body[weapon[e].entityLeft].body.position.x,
                             body[weapon[e].entityLeft].body.position.y,
-                            .2f)
+                            .1f)
+
                     body[weapon[e].entityLeft].body.setLinearVelocity(0f, 0f)
                     body[weapon[e].entityLeft].body.isActive = false
                     weapon[e].attacking = false

@@ -12,7 +12,7 @@ class AnimationCreator{
                count: Int,
                animSpeed: Float,
                atlas: TextureAtlas,
-               animPlaymode: Animation.PlayMode = Animation.PlayMode.LOOP): Animation<TextureRegion> {
+               animPlaymode: Animation.PlayMode = Animation.PlayMode.LOOP): Animation<out TextureRegion> {
 
 
         val frames = Array<TextureRegion>(count)

@@ -28,6 +28,7 @@ class BodyContactListener : ContactListener {
     private val attack = Mappers.attack
     private val ai = Mappers.AI
     private val size = Mappers.size
+    private val open = Mappers.open
 
     private val playerEntity: Entity
     private lateinit var defendingEntity: Entity
@@ -41,6 +42,7 @@ class BodyContactListener : ContactListener {
         this.playerEntity = playerEntity
         this.engine = engine
     }
+
 
     private fun findAttackerAndDefender() {
         engine.getEntitiesFor(Family.all(WeaponComponent::class.java).get()).forEach{
@@ -69,13 +71,17 @@ class BodyContactListener : ContactListener {
     }
 
     private fun attack(){
-        if (damage[defendingEntity].hitTimer > damage[defendingEntity].canBeDamagedTime &&
-                !(state.has(defendingEntity) && state[defendingEntity].currentState == StateSystem.DEAD)) {
-            damage[defendingEntity].damage = attack[attackingEntity].strength
-            damage[defendingEntity].knockback.set(attack[attackingEntity].knockback)
-            if (!attackingEntity.rotatedRight())
-                damage[defendingEntity].knockback.scl(-1f, 1f)
-            if (weapon.has(attackingEntity)) damage[defendingEntity].isWeaponContact = true
+        if (damage[defendingEntity].hitTimer > damage[defendingEntity].canBeDamagedTime) {
+
+            if (!(state.has(defendingEntity) && state[defendingEntity].currentState == StateSystem.DEAD)) {
+
+                damage[defendingEntity].damage = attack[attackingEntity].strength
+                damage[defendingEntity].knockback.set(attack[attackingEntity].knockback)
+
+                if (!attackingEntity.rotatedRight())
+                    damage[defendingEntity].knockback.scl(-1f, 1f)
+                if (weapon.has(attackingEntity)) damage[defendingEntity].isWeaponContact = true
+            }
         }
     }
 
@@ -93,7 +99,8 @@ class BodyContactListener : ContactListener {
         findContactEntities(contact)
 
         when (contact.fixtureA.filterData.categoryBits or contact.fixtureB.filterData.categoryBits) {
-            PLAYER_BIT or PLATFORM_BIT -> {
+
+            PLAYER_BIT or PLATFORM_BIT, PLAYER_FEET_BIT or PLATFORM_BIT -> {
 
                 if (playerEntity == contactEntityA) {
                     if (body[contactEntityA].body.position.y <
@@ -106,6 +113,8 @@ class BodyContactListener : ContactListener {
                         contact.isEnabled = false
                     }
                 }
+                pl[playerEntity].standindOnGround = true
+
             }
 
             AI_BIT or PLATFORM_BIT -> {
@@ -126,25 +135,47 @@ class BodyContactListener : ContactListener {
                 pl[playerEntity].collidingWithGround = true
             }
 
-            WEAPON_BIT or BREAKABLE_BIT, WEAPON_BIT or AI_BIT, WEAPON_BIT or PLAYER_BIT -> {
-                contact.isEnabled = false
-
-                findAttackerAndDefender()
-                if (!damage[defendingEntity].isWeaponContact) {
-                    attack()
-                }
+            PLAYER_FEET_BIT or GROUND_BIT -> {
+                pl[playerEntity].standindOnGround = true
             }
 
-            SHARP_BIT or PLAYER_BIT, SHARP_BIT or AI_BIT -> {
+            SHARP_BIT or PLAYER_FEET_BIT, SHARP_BIT or AI_BIT, SHARP_BIT or PLAYER_BIT -> {
                 contact.isEnabled = false
 
                 findAttackerAndDefenderForSharp()
                 attack()
             }
+
+            PLAYER_BIT or KEY_OPEN_BIT -> {
+                contact.isEnabled = false
+
+                if (contactEntityA === playerEntity) {
+                    open[contactEntityB].isCollidingWithPlayer = true
+
+                } else {
+                    open[contactEntityA].isCollidingWithPlayer = true
+                }
+
+                hud.setOpenButtonVisibe(true)
+            }
         }
      }
 
-    override fun beginContact(contact: Contact) {}
+    override fun beginContact(contact: Contact) {
+        when (contact.fixtureA.filterData.categoryBits or contact.fixtureB.filterData.categoryBits) {
+
+            WEAPON_BIT or BREAKABLE_BIT, WEAPON_BIT or AI_BIT, WEAPON_BIT or PLAYER_BIT -> {
+                findContactEntities(contact)
+                findAttackerAndDefender()
+                if (!damage[defendingEntity].isWeaponContact) {
+                    attack()
+                    if (ai.has(defendingEntity)) ai[defendingEntity].entityTarget = attackingEntity
+                }
+            }
+
+        }
+
+    }
 
     override fun endContact(contact: Contact) {
 
@@ -156,9 +187,23 @@ class BodyContactListener : ContactListener {
                 pl[playerEntity].collidingWithGround = false
             }
 
+            PLAYER_FEET_BIT or GROUND_BIT, PLAYER_FEET_BIT or PLATFORM_BIT -> {
+                pl[playerEntity].standindOnGround = false
+            }
+
             WEAPON_BIT or BREAKABLE_BIT, WEAPON_BIT or AI_BIT, WEAPON_BIT or PLAYER_BIT -> {
                 findAttackerAndDefender()
                 damage[defendingEntity].isWeaponContact = false
+            }
+
+            PLAYER_BIT or KEY_OPEN_BIT -> {
+                if (contactEntityA === playerEntity) {
+                    open[contactEntityB].isCollidingWithPlayer = false
+                } else {
+                    open[contactEntityA].isCollidingWithPlayer = false
+                }
+
+                hud.setOpenButtonVisibe(false)
             }
 
         }

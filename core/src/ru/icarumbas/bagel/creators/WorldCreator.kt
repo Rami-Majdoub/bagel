@@ -72,9 +72,6 @@ class WorldCreator (private val assetManager: AssetManager){
     private fun chooseMap(side: String, count: Int, meshX: Int, meshY: Int, rm: RoomManager): Room {
         newRoom = rm.createRoom(assetManager, "Maps/Map${rand(TILED_MAPS_TOTAL-1)}.tmx", roomsTotal)
 
-        println(side)
-        println("$meshX X, $meshY Y")
-
         val mapRoomWidth = (newRoom.width / REG_ROOM_WIDTH).toInt()
         val mapRoomHeight = (newRoom.height / REG_ROOM_HEIGHT).toInt()
 

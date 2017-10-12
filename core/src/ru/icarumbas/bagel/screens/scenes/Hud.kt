@@ -18,7 +18,7 @@ import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.utils.Mappers
 
 
-class Hud(val playerEntity: com.badlogic.ashley.core.Entity): InputListener(){
+class Hud(private val playerEntity: com.badlogic.ashley.core.Entity): InputListener(){
 
     private val damage = Mappers.damage
     val stage: Stage
@@ -35,8 +35,8 @@ class Hud(val playerEntity: com.badlogic.ashley.core.Entity): InputListener(){
     private val fps: Label
     private val money: Label
 
-    val openButton = Image(Texture("open.png"))
-    val attackButton = Image(Texture("attackButton.png"))
+    private val openButton = Image(Texture("open.png"))
+    private val attackButton = Image(Texture("attackButton.png"))
 
     var openButtonPressed = false
     var attackButtonPressed = false
@@ -114,6 +114,10 @@ class Hud(val playerEntity: com.badlogic.ashley.core.Entity): InputListener(){
         fps.setText("FPS: ${Gdx.graphics.framesPerSecond}")
         hp.setText("HP: ${damage[playerEntity].HP}")
         //openButton.isVisible = gameScreen.worldContactListener.touchedOpeningItem
+    }
+
+    fun setOpenButtonVisibe(visible: Boolean) {
+        openButton.isVisible = visible
     }
 
     private fun getDirection() {

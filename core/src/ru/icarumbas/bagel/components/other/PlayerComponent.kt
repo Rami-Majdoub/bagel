@@ -6,5 +6,6 @@ import ru.icarumbas.bagel.Equip
 
 class PlayerComponent(var money: Int) : Component {
     var collidingWithGround: Boolean = false
+    var standindOnGround: Boolean = false
     var lastRight: Boolean = false
 }
