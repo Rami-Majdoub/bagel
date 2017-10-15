@@ -54,7 +54,7 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         val b2DWorldCreator = B2DWorldCreator(world)
         val animationCreator = AnimationCreator()
         val worldCreator = WorldCreator(game.assetManager)
-        entityCreator = EntityCreator(b2DWorldCreator, game.assetManager, engine, animationCreator)
+        entityCreator = EntityCreator(b2DWorldCreator, game.assetManager, engine, animationCreator, b2DWorldCreator.createPlayerBody())
         rm = RoomManager(rooms, game.assetManager, entityCreator, engine, serializedObjects, game.worldIO)
 
         if (newWorld) rm.createNewWorld(worldCreator, game.assetManager) else rm.continueWorld()
@@ -70,8 +70,7 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
 
         playerEntity = entityCreator.createPlayerEntity(
                 animationCreator,
-                game.assetManager["Packs/GuyKnight.pack", TextureAtlas::class.java],
-                b2DWorldCreator.createPlayerBody())
+                game.assetManager["Packs/GuyKnight.pack", TextureAtlas::class.java])
 
         worldCleaner = WorldCleaner(entityDeleteList, engine, world, serializedObjects, playerEntity, game)
 
@@ -88,6 +87,7 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
             addSystem(StateSystem(rm))
             addSystem(AISystem(playerEntity, rm))
             addSystem(OpeningSystem(hud, rm, entityDeleteList))
+            addSystem(LootSystem(hud, rm, playerEntity, entityDeleteList))
 
             // Velocity
             addSystem(RunningSystem(hud))
@@ -122,6 +122,7 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         engine.update(delta)
         debugRenderer.render()
         hud.draw(rm)
+
     }
 
     override fun pause() {

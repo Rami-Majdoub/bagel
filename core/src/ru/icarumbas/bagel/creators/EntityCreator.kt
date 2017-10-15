@@ -38,7 +38,8 @@ import kotlin.experimental.or
 class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                     private val assets: AssetManager,
                     private val engine: Engine,
-                    private val animCreator: AnimationCreator){
+                    private val animCreator: AnimationCreator,
+                    private val playerBody: Body){
 
     private fun createSwingWeaponEntity(width: Int,
                                 height: Int,
@@ -46,13 +47,15 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 b2DWorldCreator: B2DWorldCreator,
                                 anchorA: Vector2,
                                 anchorB: Vector2,
+                                speed: Float,
+                                maxSpeed: Float,
                                 path: String? = null,
                                 atlas: TextureAtlas? = null): Entity {
         val weaponEntity = Entity()
                 .add(BodyComponent(b2DWorldCreator.createSwordWeapon(
                         WEAPON_BIT,
                         AI_BIT or BREAKABLE_BIT or PLAYER_BIT,
-                        Vector2(width / PIX_PER_M, height / PIX_PER_M)).createRevoluteJoint(mainBody, anchorA, anchorB)))
+                        Vector2(width / PIX_PER_M, height / PIX_PER_M)).createRevoluteJoint(mainBody, anchorA, anchorB, maxSpeed, speed)))
                 .add(InactiveMarkerComponent())
                 .add(TextureComponent(atlas?.findRegion(path)))
 
@@ -62,8 +65,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
     }
 
     fun createPlayerEntity(animCreator: AnimationCreator,
-                           atlas: TextureAtlas,
-                           playerBody: Body): Entity {
+                           atlas: TextureAtlas): Entity {
 
         return Entity()
                 .add(TextureComponent())
@@ -71,34 +73,40 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                 .add(RunComponent(acceleration = .4f, maxSpeed = 6f))
                 .add(SizeComponent(Vector2(50 / PIX_PER_M, 105 / PIX_PER_M), .425f))
                 .add(JumpComponent(jumpVelocity = 2f, maxJumps = 5))
-                .add(HealthComponent(HP = 100, canBeDamagedTime = 1f))
+                .add(HealthComponent(
+                        HP = 100,
+                        canBeDamagedTime = 1f))
                 .add(BodyComponent(playerBody))
                 .add(EquipmentComponent())
                 .add(WeaponComponent(
                         type = WeaponSystem.SWING,
-                        attackSpeed = .00025f,
                         entityLeft = createSwingWeaponEntity(
                                 width = 30,
                                 height = 100,
                                 mainBody = playerBody,
                                 b2DWorldCreator = b2DWorldCreator,
-                                anchorA = Vector2(-.1f, -.3f),
-                                anchorB = Vector2(0f, -.5f),
-                                path = "Sword2",
-                                atlas = assets["Packs/GuyKnight.pack", TextureAtlas::class.java])
+                                anchorA = Vector2(0f, -.2f),
+                                anchorB = Vector2(0f, -1f),
+                                speed = 5f,
+                                maxSpeed = 3f,
+                                path = "eyes_sword",
+                                atlas = assets["Packs/weapons.pack", TextureAtlas::class.java])
                                 .add(AlwaysRenderingMarkerComponent())
-                                .add(SizeComponent(Vector2(30 / PIX_PER_M, 100 / PIX_PER_M), .5f)),
+                                .add(SizeComponent(Vector2(30 / PIX_PER_M, 150 / PIX_PER_M), .1f)),
                         entityRight = createSwingWeaponEntity(
                                 width = 30,
                                 height = 100,
                                 mainBody = playerBody,
                                 b2DWorldCreator = b2DWorldCreator,
-                                anchorA = Vector2(.1f, -.3f),
-                                anchorB = Vector2(0f, -.5f),
-                                path = "Sword2",
-                                atlas = assets["Packs/GuyKnight.pack", TextureAtlas::class.java])
+                                anchorA = Vector2(0f, -.2f),
+                                anchorB = Vector2(0f, -.8f),
+                                speed = -5f,
+                                maxSpeed = 3f,
+                                path = "eyes_sword",
+                                atlas = assets["Packs/weapons.pack", TextureAtlas::class.java])
                                 .add(AlwaysRenderingMarkerComponent())
-                                .add(SizeComponent(Vector2(30 / PIX_PER_M, 100 / PIX_PER_M), .5f))))
+                                .add(SizeComponent(Vector2(30 / PIX_PER_M, 150 / PIX_PER_M), .1f))))
+
                 .add(StateComponent(ImmutableArray<String>(Array.with(
                         StateSystem.RUNNING,
                         StateSystem.JUMPING,
@@ -333,7 +341,56 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 0f
                         ))
                         .add(TextureComponent(atlas.findRegion("Chest (1)")))
-                        .add(OpenComponent())
+                        .add(OpenComponent(arrayListOf(
+                                Entity()
+                                        .add(BodyComponent(b2DWorldCreator.defineRectangleMapObjectBody(
+                                                rect,
+                                                BodyDef.BodyType.DynamicBody,
+                                                30 / PIX_PER_M,
+                                                100 / PIX_PER_M,
+                                                LOOT_BIT,
+                                                PLAYER_BIT or PLAYER_FEET_BIT or GROUND_BIT,
+                                                false)))
+                                        .add(SizeComponent(Vector2(30 / PIX_PER_M, 100 / PIX_PER_M), 1.5f))
+                                        .add(TextureComponent(assets["Packs/weapons.pack", TextureAtlas::class.java].findRegion("sword1")))
+                                        .add(LootComponent(arrayListOf(
+                                                WeaponComponent(
+                                                        type = WeaponSystem.SWING,
+
+                                                        entityLeft = createSwingWeaponEntity(
+                                                                width = 30,
+                                                                height = 100,
+                                                                mainBody = playerBody,
+                                                                b2DWorldCreator = b2DWorldCreator,
+                                                                anchorA = Vector2(0f, -.2f),
+                                                                anchorB = Vector2(0f, -1f),
+                                                                speed = 5f,
+                                                                maxSpeed = 3f,
+                                                                path = "sword1",
+                                                                atlas = assets["Packs/weapons.pack", TextureAtlas::class.java])
+                                                                .add(AlwaysRenderingMarkerComponent())
+                                                                .add(SizeComponent(Vector2(5 / PIX_PER_M, 100 / PIX_PER_M), 2f)),
+
+                                                        entityRight = createSwingWeaponEntity(
+                                                                width = 30,
+                                                                height = 100,
+                                                                mainBody = playerBody,
+                                                                b2DWorldCreator = b2DWorldCreator,
+                                                                anchorA = Vector2(0f, -.2f),
+                                                                anchorB = Vector2(0f, -.8f),
+                                                                speed = -5f,
+                                                                maxSpeed = 3f,
+                                                                path = "sword1",
+                                                                atlas = assets["Packs/weapons.pack", TextureAtlas::class.java])
+                                                                .add(AlwaysRenderingMarkerComponent())
+                                                                .add(SizeComponent(Vector2(5 / PIX_PER_M, 100 / PIX_PER_M), 2f))
+                                                ),
+                                                AttackComponent(strength = 30, knockback = Vector2(2f, 2f))
+
+                                        )))
+
+                                        .add(RoomIdComponent(roomId))
+                        )))
 
             }
 
@@ -376,7 +433,6 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                         .add(DoorComponent())
 
             }
-
 
             "crateBarrel" -> {
                 if (r == 3) return false
@@ -452,14 +508,15 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 .add(SizeComponent(Vector2(180 / PIX_PER_M, 260 / PIX_PER_M), .65f))
                                 .add(WeaponComponent(
                                         type = WeaponSystem.SWING,
-                                        attackSpeed = .000005f,
                                         entityLeft = createSwingWeaponEntity(
                                                 35,
                                                 135,
                                                 body,
                                                 b2DWorldCreator,
                                                 Vector2(0f, -.3f),
-                                                Vector2(0f, -.5f))
+                                                Vector2(0f, -.5f),
+                                                speed = 4f,
+                                                maxSpeed = 2f)
                                                 .add(RoomIdComponent(roomId)),
                                         entityRight = createSwingWeaponEntity(
                                                 35,
@@ -467,7 +524,9 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                                 body,
                                                 b2DWorldCreator,
                                                 Vector2(0f, -.3f),
-                                                Vector2(0f, -.5f))
+                                                Vector2(0f, -.5f),
+                                                speed = -4f,
+                                                maxSpeed = 2f)
                                                 .add(RoomIdComponent(roomId))))
                                 .add(AttackComponent(strength = roomId + 15, knockback = Vector2(2.5f, 2.5f)))
                                 .add(TextureComponent())
@@ -525,14 +584,15 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 .add(SizeComponent(Vector2(230 / PIX_PER_M, 230 / PIX_PER_M), .65f))
                                 .add(WeaponComponent(
                                         type = WeaponSystem.SWING,
-                                        attackSpeed = .00001f,
                                         entityLeft = createSwingWeaponEntity(
                                                 50,
                                                 215,
                                                 body,
                                                 b2DWorldCreator,
                                                 Vector2(0f, -.3f),
-                                                Vector2(0f, -1f))
+                                                Vector2(0f, -1f),
+                                                speed = 4f,
+                                                maxSpeed = 2f)
                                                 .add(RoomIdComponent(roomId)),
                                         entityRight = createSwingWeaponEntity(
                                                 50,
@@ -540,7 +600,9 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                                 body,
                                                 b2DWorldCreator,
                                                 Vector2(0f, -.3f),
-                                                Vector2(0f, -1f))
+                                                Vector2(0f, -1f),
+                                                speed = -4f,
+                                                maxSpeed = 2f)
                                                 .add(RoomIdComponent(roomId))))
                                 .add(AttackComponent(strength = roomId + 25, knockback = Vector2(3.5f, 3.5f)))
                                 .add(TextureComponent())
@@ -579,7 +641,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                                 zombieAtlas.findRegions("appear"),
                                                 Animation.PlayMode.LOOP),
                                         StateSystem.WALKING to Animation(
-                                                .1f,
+                                                .075f,
                                                 zombieAtlas.findRegions("go"),
                                                 Animation.PlayMode.LOOP))
                                 ))
@@ -597,14 +659,15 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 .add(SizeComponent(Vector2(125 / PIX_PER_M, 210 / PIX_PER_M), .65f))
                                 .add(WeaponComponent(
                                         type = WeaponSystem.SWING,
-                                        attackSpeed = .0000025f,
                                         entityLeft = createSwingWeaponEntity(
                                                 35,
                                                 110,
                                                 body,
                                                 b2DWorldCreator,
                                                 Vector2(0f, -.3f),
-                                                Vector2(0f, -.5f))
+                                                Vector2(0f, -.5f),
+                                                speed = 4f,
+                                                maxSpeed = 2f)
                                                 .add(RoomIdComponent(roomId)),
                                         entityRight = createSwingWeaponEntity(
                                                 35,
@@ -612,7 +675,9 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                                 body,
                                                 b2DWorldCreator,
                                                 Vector2(0f, -.3f),
-                                                Vector2(0f, -.5f))
+                                                Vector2(0f, -.5f),
+                                                speed = -4f,
+                                                maxSpeed = 2f)
                                                 .add(RoomIdComponent(roomId))))
                                 .add(AttackComponent(strength = roomId + 10, knockback = Vector2(2.5f, 2.5f)))
                                 .add(TextureComponent())
@@ -670,18 +735,19 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 ))
                                 .add(RoomIdComponent(roomId))
                                 .add(RunComponent(.225f, .75f))
-                                .add(AIComponent(refreshSpeed = MathUtils.random(.4f, .5f), attackDistance = 2f))
+                                .add(AIComponent(refreshSpeed = MathUtils.random(.7f, 1f), attackDistance = 2f))
                                 .add(SizeComponent(Vector2(85 / PIX_PER_M, 210 / PIX_PER_M), .65f))
                                 .add(WeaponComponent(
                                         type = WeaponSystem.SWING,
-                                        attackSpeed = .000001f,
                                         entityLeft = createSwingWeaponEntity(
                                                 35,
                                                 220,
                                                 body,
                                                 b2DWorldCreator,
                                                 Vector2(0f, -.3f),
-                                                Vector2(0f, -1f))
+                                                Vector2(0f, -1f),
+                                                speed = 4f,
+                                                maxSpeed = 2f)
                                                 .add(RoomIdComponent(roomId)),
                                         entityRight = createSwingWeaponEntity(
                                                 35,
@@ -689,7 +755,9 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                                 body,
                                                 b2DWorldCreator,
                                                 Vector2(0f, -.3f),
-                                                Vector2(0f, -1f))
+                                                Vector2(0f, -1f),
+                                                speed = -4f,
+                                                maxSpeed = 2f)
                                                 .add(RoomIdComponent(roomId))))
                                 .add(TeleportComponent())
                                 .add(AttackComponent(strength = roomId + 15, knockback = Vector2(1.5f, 1.5f)))

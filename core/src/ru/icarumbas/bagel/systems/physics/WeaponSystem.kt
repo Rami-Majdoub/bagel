@@ -9,6 +9,11 @@ import ru.icarumbas.bagel.components.other.PlayerComponent
 import ru.icarumbas.bagel.components.physics.WeaponComponent
 import ru.icarumbas.bagel.screens.scenes.Hud
 import ru.icarumbas.bagel.utils.Mappers
+import ru.icarumbas.bagel.utils.Mappers.Mappers.AI
+import ru.icarumbas.bagel.utils.Mappers.Mappers.body
+import ru.icarumbas.bagel.utils.Mappers.Mappers.damage
+import ru.icarumbas.bagel.utils.Mappers.Mappers.player
+import ru.icarumbas.bagel.utils.Mappers.Mappers.weapon
 import ru.icarumbas.bagel.utils.angleInDegrees
 import ru.icarumbas.bagel.utils.inView
 import ru.icarumbas.bagel.utils.rotatedRight
@@ -18,12 +23,6 @@ class WeaponSystem : IteratingSystem {
 
     private val hud: Hud
     private val rm: RoomManager
-
-    private val ai = Mappers.AI
-    private val player = Mappers.player
-    private val weapon = Mappers.weapon
-    private val body = Mappers.body
-    private val damage = Mappers.damage
 
     companion object WeaponTypes{
         val SWING = 0
@@ -47,12 +46,12 @@ class WeaponSystem : IteratingSystem {
                     body[weapon[e].entityRight].body.setTransform(
                             body[weapon[e].entityRight].body.position.x,
                             body[weapon[e].entityRight].body.position.y,
-                            -.15f)
+                            -.1f)
 
                     body[weapon[e].entityRight].body.setLinearVelocity(0f, 0f)
                     body[weapon[e].entityRight].body.isActive = false
                     weapon[e].attacking = false
-                    if (ai.has(e)) ai[e].coldown = 0f
+                    if (AI.has(e)) AI[e].coldown = 0f
 
                 }
                 if (body[weapon[e].entityLeft].body.angleInDegrees() < 0){
@@ -66,7 +65,7 @@ class WeaponSystem : IteratingSystem {
                     body[weapon[e].entityLeft].body.setLinearVelocity(0f, 0f)
                     body[weapon[e].entityLeft].body.isActive = false
                     weapon[e].attacking = false
-                    if (ai.has(e)) ai[e].coldown = 0f
+                    if (AI.has(e)) AI[e].coldown = 0f
 
                 }
 
@@ -85,7 +84,7 @@ class WeaponSystem : IteratingSystem {
     private fun attack(e: Entity){
         if ((
                 (player.has(e) && hud.attackButtonPressed)
-                || (ai.has(e) && ai[e].appeared && ai[e].coldown > ai[e].refreshSpeed))
+                || (AI.has(e) && AI[e].appeared && AI[e].coldown > AI[e].refreshSpeed))
                 && !weapon[e].attacking
                 && damage[e].HP > 0) {
 
@@ -101,14 +100,12 @@ class WeaponSystem : IteratingSystem {
                                 body[e].body.position.y,
                                 -.2f)
                         body[weapon[e].entityRight].body.isActive = true
-                        body[weapon[e].entityRight].body.applyAngularImpulse(-weapon[e].attackSpeed, true)
                     } else {
                         body[weapon[e].entityLeft].body.setTransform(
                                 body[e].body.position.x,
                                 body[e].body.position.y,
                                 .2f)
                         body[weapon[e].entityLeft].body.isActive = true
-                        body[weapon[e].entityLeft].body.applyAngularImpulse(weapon[e].attackSpeed, true)
                     }
                 }
 

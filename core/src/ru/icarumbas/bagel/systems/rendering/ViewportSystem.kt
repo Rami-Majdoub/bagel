@@ -9,11 +9,11 @@ import ru.icarumbas.bagel.components.other.PlayerComponent
 import ru.icarumbas.bagel.components.physics.BodyComponent
 import ru.icarumbas.bagel.components.rendering.SizeComponent
 import ru.icarumbas.bagel.utils.Mappers
+import ru.icarumbas.bagel.utils.Mappers.Mappers.body
 
 
 class ViewportSystem : IteratingSystem {
 
-    private val body = Mappers.body
     private val rm: RoomManager
     private val viewport: Viewport
 

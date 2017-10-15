@@ -8,13 +8,12 @@ import ru.icarumbas.bagel.components.other.RoomIdComponent
 import ru.icarumbas.bagel.components.physics.BodyComponent
 import ru.icarumbas.bagel.components.physics.StaticComponent
 import ru.icarumbas.bagel.utils.Mappers
+import ru.icarumbas.bagel.utils.Mappers.Mappers.body
+import ru.icarumbas.bagel.utils.Mappers.Mappers.inActive
+import ru.icarumbas.bagel.utils.Mappers.Mappers.roomId
+import ru.icarumbas.bagel.utils.Mappers.Mappers.static
 
 class AwakeSystem : IteratingSystem {
-
-    private val body = Mappers.body
-    private val roomId = Mappers.roomId
-    private val staticMarker = Mappers.static
-    private val inactive = Mappers.inActive
 
     private val rm: RoomManager
 
@@ -37,9 +36,9 @@ class AwakeSystem : IteratingSystem {
     }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        if (staticMarker.has(entity))
-        body[entity].body.isActive = staticMarker[entity].mapPath == rm.path()
-        if (roomId.has(entity) && !inactive.has(entity))
+        if (static.has(entity))
+        body[entity].body.isActive = static[entity].mapPath == rm.path()
+        if (roomId.has(entity) && !inActive.has(entity))
         body[entity].body.isActive = roomId[entity].id == rm.currentMapId
     }
 }

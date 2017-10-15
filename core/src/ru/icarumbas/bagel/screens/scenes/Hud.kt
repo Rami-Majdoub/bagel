@@ -1,5 +1,6 @@
 package ru.icarumbas.bagel.screens.scenes
 
+import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
@@ -16,11 +17,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad
 import com.badlogic.gdx.utils.viewport.StretchViewport
 import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.utils.Mappers
+import ru.icarumbas.bagel.utils.Mappers.Mappers.damage
 
 
-class Hud(private val playerEntity: com.badlogic.ashley.core.Entity): InputListener(){
+class Hud(private val playerEntity: Entity): InputListener(){
 
-    private val damage = Mappers.damage
     val stage: Stage
     var touchedOnce = false
     private var touchpad: Touchpad
@@ -116,7 +117,7 @@ class Hud(private val playerEntity: com.badlogic.ashley.core.Entity): InputListe
         //openButton.isVisible = gameScreen.worldContactListener.touchedOpeningItem
     }
 
-    fun setOpenButtonVisibe(visible: Boolean) {
+    fun setOpenButtonVisible(visible: Boolean) {
         openButton.isVisible = visible
     }
 

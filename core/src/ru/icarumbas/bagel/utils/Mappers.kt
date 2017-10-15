@@ -37,7 +37,8 @@ class Mappers {
         val attack          =       ComponentMapper.getFor(AttackComponent::class.java)!!
         val texture         =       ComponentMapper.getFor(TextureComponent::class.java)!!
         val open            =       ComponentMapper.getFor(OpenComponent::class.java)!!
-        val door            =       ComponentMapper.getFor(OpenComponent::class.java)!!
+        val door            =       ComponentMapper.getFor(DoorComponent::class.java)!!
+        val loot            =       ComponentMapper.getFor(LootComponent::class.java)!!
 
 
     }

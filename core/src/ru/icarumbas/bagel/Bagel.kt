@@ -20,6 +20,7 @@ const val AI_BIT: Short = 256
 const val WEAPON_BIT: Short = 512
 const val STATIC_BIT: Short = 1024
 const val SHARP_BIT: Short = 2048
+const val LOOT_BIT: Short = 4096
 
 
 const val PIX_PER_M = 100f
@@ -31,7 +32,6 @@ const val TILED_MAPS_TOTAL = 17
 //TODO("Blood, stones, effects")
 //TODO("Golems, skeletons not affected by spikes. Golem destroys them')
 //TODO("Fix teleport")
-//TODO("DOORS")
 
 
 class Bagel: Game() {
@@ -61,9 +61,11 @@ class Bagel: Game() {
         assetManager.load("Packs/Enemies/Golem.pack", TextureAtlas::class.java)
         assetManager.load("Packs/Enemies/Vamp.pack", TextureAtlas::class.java)
         assetManager.load("Packs/Enemies/Zombie.pack", TextureAtlas::class.java)
+        assetManager.load("Packs/weapons.pack", TextureAtlas::class.java)
 
-        /*// Sounds
-        assetManager.setLoader(Sound::class.java, SoundLoader(InternalFileHandleResolver()))
+
+        // Sounds
+        /*assetManager.setLoader(Sound::class.java, SoundLoader(InternalFileHandleResolver()))
         assetManager.load("Sounds/openchest.wav", Sound::class.java)
         assetManager.load("Sounds/coinpickup.wav", Sound::class.java)
         assetManager.load("Sounds/spikes.wav", Sound::class.java)

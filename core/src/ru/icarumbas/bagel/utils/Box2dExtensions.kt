@@ -3,15 +3,27 @@ package ru.icarumbas.bagel.utils
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
+import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef
 
 
-fun Body.createRevoluteJoint(bodyA: Body, anchorA: Vector2, anchorB: Vector2): Body {
+fun Body.createRevoluteJoint(bodyA: Body, anchorA: Vector2, anchorB: Vector2, maxSpeed: Float, speed: Float): Body {
     val joint = RevoluteJointDef()
     joint.bodyA = bodyA
     joint.bodyB = this
     joint.localAnchorA.set(anchorA.x, anchorA.y)
     joint.localAnchorB.set(anchorB.x, anchorB.y)
+    joint.enableMotor = true
+    joint.motorSpeed = speed
+    joint.maxMotorTorque = maxSpeed
+    world.createJoint(joint)
+    return this
+}
+
+fun Body.createDistanceJoint(bodyA: Body): Body {
+    val joint = DistanceJointDef()
+    joint.bodyA = bodyA
+    joint.bodyB = this
     world.createJoint(joint)
     return this
 }

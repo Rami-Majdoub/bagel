@@ -13,18 +13,17 @@ import ru.icarumbas.bagel.components.rendering.AlwaysRenderingMarkerComponent
 import ru.icarumbas.bagel.components.rendering.AnimationComponent
 import ru.icarumbas.bagel.systems.other.StateSystem
 import ru.icarumbas.bagel.utils.Mappers
+import ru.icarumbas.bagel.utils.Mappers.Mappers.animation
+import ru.icarumbas.bagel.utils.Mappers.Mappers.body
+import ru.icarumbas.bagel.utils.Mappers.Mappers.state
+import ru.icarumbas.bagel.utils.Mappers.Mappers.texture
+import ru.icarumbas.bagel.utils.Mappers.Mappers.weapon
 import ru.icarumbas.bagel.utils.angleInDegrees
 import ru.icarumbas.bagel.utils.inView
 import ru.icarumbas.bagel.utils.rotatedRight
 
 
 class AnimationSystem : IteratingSystem {
-
-    private val anim = Mappers.animation
-    private val state = Mappers.state
-    private val weapon = Mappers.weapon
-    private val texture = Mappers.texture
-    private val body = Mappers.body
 
     private val rm: RoomManager
 
@@ -62,17 +61,17 @@ class AnimationSystem : IteratingSystem {
 
                 val frame = if (e.rotatedRight()){
                     body[weapon[e].entityRight].body.angleInDegrees().div(
-                            MathUtils.PI / anim[e].animations[StateSystem.ATTACKING]!!.keyFrames.size).toInt() * -1
+                            MathUtils.PI / animation[e].animations[StateSystem.ATTACKING]!!.keyFrames.size).toInt() * -1
                 } else {
                     body[weapon[e].entityLeft].body.angleInDegrees().div(
-                            MathUtils.PI / anim[e].animations[StateSystem.ATTACKING]!!.keyFrames.size).toInt()
+                            MathUtils.PI / animation[e].animations[StateSystem.ATTACKING]!!.keyFrames.size).toInt()
                 }
-                texture[e].tex = anim[e].animations[state[e].currentState]!!.keyFrames.get(frame)
+                texture[e].tex = animation[e].animations[state[e].currentState]!!.keyFrames.get(frame)
 
             } else
-                if (anim[e].animations.containsKey(state[e].currentState)) {
+                if (animation[e].animations.containsKey(state[e].currentState)) {
                     texture[e].tex =
-                                    anim[e].
+                                    animation[e].
                                     animations[state[e].
                                     currentState]!!.
                                     getKeyFrame(state[e].stateTime)

@@ -10,6 +10,14 @@ import ru.icarumbas.bagel.components.other.StateComponent
 import ru.icarumbas.bagel.components.physics.StaticComponent
 import ru.icarumbas.bagel.components.rendering.AlwaysRenderingMarkerComponent
 import ru.icarumbas.bagel.utils.Mappers
+import ru.icarumbas.bagel.utils.Mappers.Mappers.AI
+import ru.icarumbas.bagel.utils.Mappers.Mappers.body
+import ru.icarumbas.bagel.utils.Mappers.Mappers.damage
+import ru.icarumbas.bagel.utils.Mappers.Mappers.open
+import ru.icarumbas.bagel.utils.Mappers.Mappers.run
+import ru.icarumbas.bagel.utils.Mappers.Mappers.state
+import ru.icarumbas.bagel.utils.Mappers.Mappers.teleport
+import ru.icarumbas.bagel.utils.Mappers.Mappers.weapon
 import ru.icarumbas.bagel.utils.inView
 
 
@@ -29,15 +37,7 @@ class StateSystem : IteratingSystem {
         val OPENING = "OPENING"
     }
 
-    private val state = Mappers.state
-    private val damage = Mappers.damage
-    private val run = Mappers.run
-    private val weapon = Mappers.weapon
-    private val body = Mappers.body
     private val rm: RoomManager
-    private val ai = Mappers.AI
-    private val teleport = Mappers.teleport
-    private val open = Mappers.open
 
 
     constructor(rm: RoomManager) : super(Family.all(StateComponent::class.java).one(
@@ -59,12 +59,12 @@ class StateSystem : IteratingSystem {
                     state[e].currentState = DISAPPEARING
                 } else
                     if (state[e].states.contains(APPEARING) &&
-                            !ai[e].appeared &&
-                            (ai[e].isTargetNear || state[e].currentState == APPEARING || (teleport.has(e) && teleport[e].appearing))) {
+                            !AI[e].appeared &&
+                            (AI[e].isTargetNear || state[e].currentState == APPEARING || (teleport.has(e) && teleport[e].appearing))) {
                         if (state[e].currentState != APPEARING) state[e].stateTime = 0f
                         state[e].currentState = APPEARING
                     } else
-                        if (state[e].states.contains(APPEARING) && !ai[e].appeared) {
+                        if (state[e].states.contains(APPEARING) && !AI[e].appeared) {
                             state[e].currentState = NULL
                         } else
                             if (state[e].states.contains(JUMP_ATTACKING) && weapon[e].attacking &&

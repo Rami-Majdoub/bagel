@@ -68,7 +68,7 @@ class RoomManager(val rooms: ArrayList<Room>,
     }
 
     fun createNewWorld(worldCreator: WorldCreator, assetManager: AssetManager) {
-        rooms.add(createRoom(assetManager, "Maps/Map0.tmx", 0))
+        rooms.add(createRoom(assetManager, "Maps/Map9.tmx", 0))
         rooms[currentMapId].meshCoords = intArrayOf(25, 25, 25, 25)
         worldCreator.createWorld(100, this)
         createStaticEntities()

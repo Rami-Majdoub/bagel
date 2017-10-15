@@ -18,11 +18,6 @@ class MainMenuScreen(private val game: Bagel) : ScreenAdapter() {
 
     private val stage = Stage(StretchViewport(1920f, 1080f))
     private var font = BitmapFont()
-    lateinit private var animation: Animation<Any>
-    private val batch = SpriteBatch()
-    private var frame: Sprite = Sprite()
-    private var back: Sprite = Sprite()
-    private var stateTimer = 0f
 
     override fun resize(width: Int, height: Int) {
         stage.viewport.update(width, height)
@@ -32,26 +27,13 @@ class MainMenuScreen(private val game: Bagel) : ScreenAdapter() {
 
         Gdx.input.inputProcessor = stage
 
-        back = Sprite(game.assetManager.get("Packs/Main_Menu.txt", TextureAtlas::class.java).findRegion("menu_background"))
-        back.setSize(Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
-
-        val frames = Array<Sprite>()
-        for (i in 1..4) {
-            val frame = Sprite(game.assetManager.get("Packs/Main_Menu.txt", TextureAtlas::class.java).findRegion("rain_drops-0" + i))
-            frame.setSize(Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
-            frames.add(frame)
-        }
-        animation = Animation(.1f, frames)
-        animation.playMode = Animation.PlayMode.LOOP
-        frames.clear()
-
         val generator = FreeTypeFontGenerator(Gdx.files.internal("dc_s.ttf"))
         val parameter = FreeTypeFontGenerator.FreeTypeFontParameter()
         parameter.size = 125
 
         font = generator.generateFont(parameter)
 
-        val labelStyle = Label.LabelStyle(font, Color.CORAL)
+        val labelStyle = Label.LabelStyle(font, Color.WHITE)
         val table = Table()
 
         val newGame = Label("New Game", labelStyle)
@@ -85,14 +67,6 @@ class MainMenuScreen(private val game: Bagel) : ScreenAdapter() {
     }
 
     override fun render(delta: Float) {
-
-        stateTimer += delta
-        batch.begin()
-        back.draw(batch)
-        frame = animation.getKeyFrame(stateTimer) as Sprite
-        frame.draw(batch)
-        batch.end()
-
         stage.draw()
     }
 

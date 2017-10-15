@@ -27,7 +27,7 @@ class B2DWorldCreator(private val world: World) {
         fixtureDef.friction = .4f
         fixtureDef.density = 1.5f
         fixtureDef.filter.categoryBits = PLAYER_BIT
-        fixtureDef.filter.maskBits = GROUND_BIT or PLATFORM_BIT or WEAPON_BIT or SHARP_BIT or KEY_OPEN_BIT
+        fixtureDef.filter.maskBits = GROUND_BIT or PLATFORM_BIT or WEAPON_BIT or SHARP_BIT or KEY_OPEN_BIT or LOOT_BIT
 
         playerBody.createFixture(fixtureDef)
         shape.dispose()
@@ -52,6 +52,7 @@ class B2DWorldCreator(private val world: World) {
         val bodyDef = BodyDef()
         bodyDef.type = BodyDef.BodyType.DynamicBody
         bodyDef.position.set(4f, 5f)
+
         val weaponBody = world.createBody(bodyDef)
 
         val fixtureDef = FixtureDef()
@@ -62,9 +63,10 @@ class B2DWorldCreator(private val world: World) {
         shape.setAsBox(size.x / 2, size.y / 2)
         fixtureDef.shape = shape
         fixtureDef.density = .001f
-        fixtureDef.isSensor = true
+
         weaponBody.createFixture(fixtureDef)
         weaponBody.isActive = false
+
 
         shape.dispose()
         return weaponBody
@@ -105,6 +107,7 @@ class B2DWorldCreator(private val world: World) {
                             height: Float = 0f,
                             cBit: Short,
                             mBit: Short = -1,
+                            fixedRotation: Boolean = true,
                             gravity: Float = 1f): Body{
 
 
@@ -117,6 +120,7 @@ class B2DWorldCreator(private val world: World) {
         val fixtureDef = FixtureDef()
         fixtureDef.restitution = .1f
         fixtureDef.friction = 1f
+        fixtureDef.density = .3f
         fixtureDef.filter.categoryBits = cBit
         fixtureDef.filter.maskBits = mBit
 
@@ -127,6 +131,7 @@ class B2DWorldCreator(private val world: World) {
         body.createFixture(fixtureDef)
         body.gravityScale = gravity
         body.isActive = false
+        body.isFixedRotation = fixedRotation
 
         polygonShape.dispose()
         return body

@@ -7,15 +7,15 @@ import com.badlogic.gdx.math.MathUtils
 import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.components.other.AIComponent
 import ru.icarumbas.bagel.utils.Mappers
+import ru.icarumbas.bagel.utils.Mappers.Mappers.AI
+import ru.icarumbas.bagel.utils.Mappers.Mappers.animation
+import ru.icarumbas.bagel.utils.Mappers.Mappers.body
+import ru.icarumbas.bagel.utils.Mappers.Mappers.size
+import ru.icarumbas.bagel.utils.Mappers.Mappers.state
 import ru.icarumbas.bagel.utils.inView
 
 class AISystem: IteratingSystem {
 
-    private val ai = Mappers.AI
-    private val body = Mappers.body
-    private val anim = Mappers.animation
-    private val state = Mappers.state
-    private val size = Mappers.size
     private val playerEntity: Entity
 
     private val rm: RoomManager
@@ -26,17 +26,17 @@ class AISystem: IteratingSystem {
     }
 
     private fun isTargetRight(e: Entity): Boolean{
-        return body[ai[e].entityTarget].body.position.x > body[e].body.position.x
+        return body[AI[e].entityTarget].body.position.x > body[e].body.position.x
     }
 
     private fun isTargetEqual(e: Entity): Boolean{
-        return MathUtils.round(body[ai[e].entityTarget].body.position.x) == MathUtils.round(body[e].body.position.x)
+        return MathUtils.round(body[AI[e].entityTarget].body.position.x) == MathUtils.round(body[e].body.position.x)
     }
 
     private fun isTargetNear(e: Entity): Boolean {
-        with (body[ai[e].entityTarget].body.position) {
-            return  x >= body[e].body.position.x - ai[e].attackDistance &&
-                    x <= body[e].body.position.x + ai[e].attackDistance &&
+        with (body[AI[e].entityTarget].body.position) {
+            return  x >= body[e].body.position.x - AI[e].attackDistance &&
+                    x <= body[e].body.position.x + AI[e].attackDistance &&
                     y >= body[e].body.position.y - size[e].rectSize.y / 2 &&
                     y <= body[e].body.position.y + size[e].rectSize.y / 2
         }
@@ -45,17 +45,17 @@ class AISystem: IteratingSystem {
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (entity.inView(rm)) {
 
-            if (ai[entity].entityTarget == null) ai[entity].entityTarget = playerEntity
+            if (AI[entity].entityTarget == null) AI[entity].entityTarget = playerEntity
 
-            ai[entity].isTargetRight = isTargetRight(entity)
-            ai[entity].isTargetNear = isTargetNear(entity)
-            ai[entity].isTargetEqualX = isTargetEqual(entity)
+            AI[entity].isTargetRight = isTargetRight(entity)
+            AI[entity].isTargetNear = isTargetNear(entity)
+            AI[entity].isTargetEqualX = isTargetEqual(entity)
 
-            if (ai[entity].isTargetNear || ai[entity].coldown > 0f) ai[entity].coldown += deltaTime
+            if (AI[entity].isTargetNear || AI[entity].coldown > 0f) AI[entity].coldown += deltaTime
 
-            if (anim[entity].animations[StateSystem.APPEARING]?.isAnimationFinished(state[entity].stateTime)!!
+            if (animation[entity].animations[StateSystem.APPEARING]?.isAnimationFinished(state[entity].stateTime)!!
                     && state[entity].currentState == StateSystem.APPEARING)
-                ai[entity].appeared = true
+                AI[entity].appeared = true
         }
     }
 }

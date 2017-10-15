@@ -4,29 +4,31 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.World
 import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.components.other.HealthComponent
 import ru.icarumbas.bagel.utils.Mappers
+import ru.icarumbas.bagel.utils.Mappers.Mappers.animation
+import ru.icarumbas.bagel.utils.Mappers.Mappers.body
+import ru.icarumbas.bagel.utils.Mappers.Mappers.damage
+import ru.icarumbas.bagel.utils.Mappers.Mappers.state
+import ru.icarumbas.bagel.utils.Mappers.Mappers.texture
 import ru.icarumbas.bagel.utils.inView
 
 
 class HealthSystem : IteratingSystem {
-
-    private val damage = Mappers.damage
-    private val body = Mappers.body
-    private val anim = Mappers.animation
-    private val state = Mappers.state
-    private val texture = Mappers.texture
 
     private val rm: RoomManager
     private val world: World
     private val deleteList: ArrayList<Entity>
     private val coins: ArrayList<Body>
 
-    constructor(rm: RoomManager, world: World, coins: ArrayList<Body>, deleteList: ArrayList<Entity>) : super(Family.all(
+    constructor(rm: RoomManager, world: World,
+                coins: ArrayList<Body>,
+                deleteList: ArrayList<Entity>) : super(Family.all(
             HealthComponent::class.java).get()) {
 
         this.rm = rm
@@ -45,8 +47,8 @@ class HealthSystem : IteratingSystem {
             }
 
             if (damage[e].HP <= 0 &&
-                    !(anim.has(e) && anim[e].animations.contains(StateSystem.DEAD) &&
-                            !anim[e].animations[StateSystem.DEAD]?.isAnimationFinished(state[e].stateTime)!!)){
+                    !(animation.has(e) && animation[e].animations.contains(StateSystem.DEAD) &&
+                            !animation[e].animations[StateSystem.DEAD]?.isAnimationFinished(state[e].stateTime)!!)){
                 deleteList.add(e)
             }
 
@@ -60,4 +62,5 @@ class HealthSystem : IteratingSystem {
             }
         }
     }
+
 }

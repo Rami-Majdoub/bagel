@@ -1,0 +1,83 @@
+
+weapons.png
+size: 1024,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Ice arrow
+  rotate: false
+  xy: 2, 2
+  size: 101, 642
+  orig: 101, 642
+  offset: 0, 0
+  index: -1
+Ice bow
+  rotate: false
+  xy: 484, 1055
+  size: 308, 989
+  orig: 308, 989
+  offset: 0, 0
+  index: -1
+eyes_sword
+  rotate: false
+  xy: 2, 646
+  size: 480, 1398
+  orig: 480, 1398
+  offset: 0, 0
+  index: -1
+sword1
+  rotate: false
+  xy: 794, 1904
+  size: 16, 61
+  orig: 16, 61
+  offset: 0, 0
+  index: -1
+sword2
+  rotate: false
+  xy: 816, 1983
+  size: 16, 61
+  orig: 16, 61
+  offset: 0, 0
+  index: -1
+sword3
+  rotate: false
+  xy: 105, 522
+  size: 20, 56
+  orig: 20, 56
+  offset: 0, 0
+  index: -1
+sword4
+  rotate: false
+  xy: 794, 1967
+  size: 20, 77
+  orig: 20, 77
+  offset: 0, 0
+  index: -1
+sword5
+  rotate: false
+  xy: 484, 968
+  size: 23, 85
+  orig: 23, 85
+  offset: 0, 0
+  index: -1
+sword6
+  rotate: false
+  xy: 105, 580
+  size: 23, 64
+  orig: 23, 64
+  offset: 0, 0
+  index: -1
+sword7
+  rotate: false
+  xy: 484, 908
+  size: 23, 58
+  orig: 23, 58
+  offset: 0, 0
+  index: -1
+sword8
+  rotate: false
+  xy: 509, 995
+  size: 23, 58
+  orig: 23, 58
+  offset: 0, 0
+  index: -1

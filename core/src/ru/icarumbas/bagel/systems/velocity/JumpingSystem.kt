@@ -8,12 +8,12 @@ import ru.icarumbas.bagel.components.velocity.JumpComponent
 import ru.icarumbas.bagel.screens.scenes.Hud
 import ru.icarumbas.bagel.systems.other.StateSystem
 import ru.icarumbas.bagel.utils.Mappers
+import ru.icarumbas.bagel.utils.Mappers.Mappers.body
+import ru.icarumbas.bagel.utils.Mappers.Mappers.jump
 
 
 class JumpingSystem : IteratingSystem {
 
-    private val body = Mappers.body
-    private val jump = Mappers.jump
     private val hud: Hud
 
     constructor(hud: Hud) : super(Family.all(JumpComponent::class.java).get()) {

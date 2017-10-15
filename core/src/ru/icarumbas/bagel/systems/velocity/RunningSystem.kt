@@ -8,16 +8,16 @@ import com.badlogic.gdx.physics.box2d.Body
 import ru.icarumbas.bagel.components.velocity.RunComponent
 import ru.icarumbas.bagel.screens.scenes.Hud
 import ru.icarumbas.bagel.systems.other.StateSystem
-import ru.icarumbas.bagel.utils.Mappers
+import ru.icarumbas.bagel.utils.Mappers.Mappers.AI
+import ru.icarumbas.bagel.utils.Mappers.Mappers.body
+import ru.icarumbas.bagel.utils.Mappers.Mappers.player
+import ru.icarumbas.bagel.utils.Mappers.Mappers.run
+import ru.icarumbas.bagel.utils.Mappers.Mappers.state
 
 
 class RunningSystem : IteratingSystem {
 
-    private val body = Mappers.body
-    private val run = Mappers.run
-    private val pl = Mappers.player
-    private val ai = Mappers.AI
-    private val state = Mappers.state
+
     private val hud: Hud
 
     constructor(hud: Hud) : super(Family.all(RunComponent::class.java).get()) {
@@ -26,23 +26,23 @@ class RunningSystem : IteratingSystem {
 
     override fun processEntity(e: Entity, deltaTime: Float) {
         if (Math.abs(body[e].body.linearVelocity.x) <= run[e].maxSpeed) {
-            if (pl.has(e) && (!pl[e].collidingWithGround || pl[e].standindOnGround)) {
+            if (player.has(e) && (!player[e].collidingWithGround || player[e].standindOnGround)) {
                 if (hud.isRightPressed()) {
                     applyImpulse(body[e].body, run[e].acceleration, 0f)
-                    pl[e].lastRight = true
+                    player[e].lastRight = true
                 }
                 if (hud.isLeftPressed()) {
                     applyImpulse(body[e].body, -run[e].acceleration, 0f)
-                    pl[e].lastRight = false
+                    player[e].lastRight = false
                 }
             }
-            if (ai.has(e) &&
-                ai[e].appeared &&
-                !ai[e].isTargetNear &&
+            if (AI.has(e) &&
+                AI[e].appeared &&
+                !AI[e].isTargetNear &&
                 state[e].currentState != StateSystem.ATTACKING &&
-                !ai[e].isTargetEqualX){
+                !AI[e].isTargetEqualX){
 
-                if (ai[e].isTargetRight)
+                if (AI[e].isTargetRight)
                     applyImpulse(body[e].body, run[e].acceleration, 0f)
                 else
                     applyImpulse(body[e].body, -run[e].acceleration, 0f)

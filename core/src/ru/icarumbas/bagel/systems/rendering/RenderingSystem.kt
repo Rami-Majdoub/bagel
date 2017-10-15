@@ -15,16 +15,15 @@ import ru.icarumbas.bagel.components.rendering.AlwaysRenderingMarkerComponent
 import ru.icarumbas.bagel.components.rendering.SizeComponent
 import ru.icarumbas.bagel.components.rendering.TextureComponent
 import ru.icarumbas.bagel.utils.Mappers
+import ru.icarumbas.bagel.utils.Mappers.Mappers.body
+import ru.icarumbas.bagel.utils.Mappers.Mappers.size
+import ru.icarumbas.bagel.utils.Mappers.Mappers.texture
 import ru.icarumbas.bagel.utils.RenderingComparator
 import ru.icarumbas.bagel.utils.inView
 import ru.icarumbas.bagel.utils.rotatedRight
 
 
 class RenderingSystem : SortedIteratingSystem {
-
-    private val size = Mappers.size
-    private val body = Mappers.body
-    private val texture = Mappers.texture
 
     private val rm: RoomManager
     private val batch: Batch

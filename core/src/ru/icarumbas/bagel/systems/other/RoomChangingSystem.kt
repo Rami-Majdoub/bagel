@@ -11,13 +11,14 @@ import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.components.other.PlayerComponent
 import ru.icarumbas.bagel.components.rendering.SizeComponent
 import ru.icarumbas.bagel.utils.Mappers
+import ru.icarumbas.bagel.utils.Mappers.Mappers.body
+import ru.icarumbas.bagel.utils.Mappers.Mappers.player
 
 
 class RoomChangingSystem : IteratingSystem {
 
     private val rm: RoomManager
-    private val body = Mappers.body
-    private val pl = Mappers.player
+
 
     constructor(rm: RoomManager) : super(Family.all(PlayerComponent::class.java).get()) {
         this.rm = rm
@@ -27,7 +28,7 @@ class RoomChangingSystem : IteratingSystem {
         checkRoomChange(Mappers.size[entity], Mappers.body[entity].body)
 
         // Fake contact = collide with platforms
-        if (pl.has(entity)) {
+        if (player.has(entity)) {
             body[entity].body.applyLinearImpulse(Vector2(0f, -.00001f), body[entity].body.localPoint2, true)
             body[entity].body.applyLinearImpulse(Vector2(0f, .00001f), body[entity].body.localPoint2, true)
         }
@@ -66,16 +67,16 @@ class RoomChangingSystem : IteratingSystem {
 
         if (side == "Up" || side == "Down") {
             // Compare top-right parts of previous and current maps
-            val X10 = rm.mesh(2, newId)
+            val x10 = rm.mesh(2, newId)
             val prevX = rm.mesh(plX)
 
             if (side == "Up") {
-                if (prevX == X10) {
+                if (prevX == x10) {
                     body.setTransform(rm.width(newId) - REG_ROOM_WIDTH / 2, 0f, 0f)
                 } else body.setTransform(REG_ROOM_WIDTH / 2, 0f, 0f)
             }
             if (side == "Down") {
-                if (prevX == X10) body.setTransform(rm.width(newId) - REG_ROOM_WIDTH / 2,
+                if (prevX == x10) body.setTransform(rm.width(newId) - REG_ROOM_WIDTH / 2,
                         rm.height(newId), 0f)
                 else body.setTransform(REG_ROOM_WIDTH / 2, rm.height(newId), 0f)
             }
@@ -83,16 +84,16 @@ class RoomChangingSystem : IteratingSystem {
 
             if (side == "Left" || side == "Right") {
                 // Compare top parts of previous and current maps
-                val Y11 = rm.mesh(3, newId)
+                val y11 = rm.mesh(3, newId)
                 val prevY = rm.mesh(plY)
 
                 if (side == "Left") {
-                    if (prevY == Y11) body.setTransform(rm.width(newId),
+                    if (prevY == y11) body.setTransform(rm.width(newId),
                             rm.height(newId) - REG_ROOM_HEIGHT / 2 - size.spriteSize.y / 2, 0f)
                     else body.setTransform(rm.width(newId), REG_ROOM_HEIGHT / 2 - size.spriteSize.y / 2, 0f)
                 }
                 if (side == "Right") {
-                    if (prevY == Y11)
+                    if (prevY == y11)
                         body.setTransform(0f, rm.height(newId) - REG_ROOM_HEIGHT / 2 - size.spriteSize.y / 2, 0f)
                     else
                         body.setTransform(0f, REG_ROOM_HEIGHT / 2 - size.spriteSize.y / 2, 0f)
