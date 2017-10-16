@@ -1,5 +1,5 @@
 # bagel
-Libgdx game written in Kotlin using Ashley and Box2d. Game is mix of roguelike and platformer. 
+Libgdx Android ans IOS game written in Kotlin using Ashley and Box2d. Game is mix of roguelike and platformer. 
 World, entities and room objects are fully random.
 
 ## Some screenshots
