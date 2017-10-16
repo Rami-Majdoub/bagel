@@ -40,6 +40,7 @@ class RunningSystem : IteratingSystem {
                 AI[e].appeared &&
                 !AI[e].isTargetNear &&
                 state[e].currentState != StateSystem.ATTACKING &&
+                state[e].currentState != StateSystem.DEAD &&
                 !AI[e].isTargetEqualX){
 
                 if (AI[e].isTargetRight)
