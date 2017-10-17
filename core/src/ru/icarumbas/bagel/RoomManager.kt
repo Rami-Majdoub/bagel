@@ -86,6 +86,7 @@ class RoomManager(val rooms: ArrayList<Room>,
             createIdEntity(it.path, it.id, "candle")
             createIdEntity(it.path, it.id, "door", 2)
             createIdEntity(it.path, it.id, "groundEnemy", 5)
+            createIdEntity(it.path, it.id, "flyingEnemy")
 
         }
 

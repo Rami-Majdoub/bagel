@@ -49,6 +49,7 @@ class OpeningSystem : IteratingSystem{
             }
             if (animation[e].animations[StateSystem.OPENING]!!.isAnimationFinished(state[e].stateTime)){
                 if (state[e].currentState == StateSystem.OPENING) {
+                    open[e].opening = false
 
                     if (door.has(e)){
                         rm.currentMapId = roomId[engine.getEntitiesFor(Family.all(DoorComponent::class.java).get()).random()].id

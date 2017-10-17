@@ -26,7 +26,8 @@ class RunningSystem : IteratingSystem {
 
     override fun processEntity(e: Entity, deltaTime: Float) {
         if (Math.abs(body[e].body.linearVelocity.x) <= run[e].maxSpeed) {
-            if (player.has(e) && (!player[e].collidingWithGround || player[e].standindOnGround)) {
+            if (player.has(e) && (!player[e].collidingWithGround || player[e].standindOnGround) &&
+                    state[e].currentState != StateSystem.DEAD) {
                 if (hud.isRightPressed()) {
                     applyImpulse(body[e].body, run[e].acceleration, 0f)
                     player[e].lastRight = true

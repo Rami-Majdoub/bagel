@@ -29,6 +29,10 @@ class AISystem: IteratingSystem {
         return body[AI[e].entityTarget].body.position.x > body[e].body.position.x
     }
 
+    private fun isTargetHigher(e: Entity): Boolean{
+        return body[AI[e].entityTarget].body.position.y > body[e].body.position.y
+    }
+
     private fun isTargetEqual(e: Entity): Boolean{
         return MathUtils.round(body[AI[e].entityTarget].body.position.x) == MathUtils.round(body[e].body.position.x)
     }
@@ -42,20 +46,29 @@ class AISystem: IteratingSystem {
         }
     }
 
+
+
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (entity.inView(rm)) {
 
             if (AI[entity].entityTarget == null) AI[entity].entityTarget = playerEntity
 
             AI[entity].isTargetRight = isTargetRight(entity)
+            AI[entity].isTargetHigher = isTargetHigher(entity)
             AI[entity].isTargetNear = isTargetNear(entity)
             AI[entity].isTargetEqualX = isTargetEqual(entity)
 
             if (AI[entity].isTargetNear || AI[entity].coldown > 0f) AI[entity].coldown += deltaTime
 
-            if (animation[entity].animations[StateSystem.APPEARING]?.isAnimationFinished(state[entity].stateTime)!!
-                    && state[entity].currentState == StateSystem.APPEARING)
+            if (state[entity].states.contains(StateSystem.APPEARING)) {
+                if (animation[entity].animations[StateSystem.APPEARING]?.isAnimationFinished(state[entity].stateTime)!!
+                        && state[entity].currentState == StateSystem.APPEARING) {
+                    AI[entity].appeared = true
+
+                }
+            } else {
                 AI[entity].appeared = true
+            }
         }
     }
 }

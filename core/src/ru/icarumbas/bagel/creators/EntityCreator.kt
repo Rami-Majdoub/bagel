@@ -26,6 +26,7 @@ import ru.icarumbas.bagel.components.rendering.AlwaysRenderingMarkerComponent
 import ru.icarumbas.bagel.components.rendering.AnimationComponent
 import ru.icarumbas.bagel.components.rendering.SizeComponent
 import ru.icarumbas.bagel.components.rendering.TextureComponent
+import ru.icarumbas.bagel.components.velocity.FlyComponent
 import ru.icarumbas.bagel.components.velocity.JumpComponent
 import ru.icarumbas.bagel.components.velocity.RunComponent
 import ru.icarumbas.bagel.components.velocity.TeleportComponent
@@ -455,6 +456,41 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
 
             }
 
+            "flyingEnemy" -> {
+
+                when (r) {
+                    1 -> {
+                        Entity()
+                                .add(BodyComponent(b2DWorldCreator.defineRectangleMapObjectBody(
+                                        rect,
+                                        BodyDef.BodyType.DynamicBody,
+                                        64 / PIX_PER_M,
+                                        64 / PIX_PER_M,
+                                        AI_BIT,
+                                        PLAYER_BIT or WEAPON_BIT,
+                                        true,
+                                        0f)))
+                                .add(HealthComponent(roomId + 20))
+                                .add(AnimationComponent(hashMapOf(
+                                        StateSystem.STANDING to Animation(
+                                                .1f,
+                                                assets["Packs/Enemies/MiniDragon.pack", TextureAtlas::class.java]
+                                                        .findRegions("miniDragon"),
+                                                Animation.PlayMode.LOOP)
+                                )))
+                                .add(StateComponent(ImmutableArray(Array.with(StateSystem.STANDING))))
+                                .add(RoomIdComponent(roomId))
+                                .add(AIComponent(refreshSpeed = MathUtils.random(.2f, .3f), attackDistance = 1f))
+                                .add(SizeComponent(Vector2(64 / PIX_PER_M, 64 / PIX_PER_M), .15f))
+                                .add(AttackComponent(strength = roomId + 15, knockback = Vector2(2f, 2f)))
+                                .add(TextureComponent())
+                                .add(FlyComponent(.005f))
+                    }
+
+                    else -> return false
+                }
+            }
+
             "groundEnemy" -> {
 
                 when (r) {
@@ -465,7 +501,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 rect,
                                 BodyDef.BodyType.DynamicBody,
                                 85 / PIX_PER_M,
-                                228 / PIX_PER_M,
+                                192 / PIX_PER_M,
                                 AI_BIT,
                                 WEAPON_BIT or GROUND_BIT or PLATFORM_BIT)
 
@@ -505,7 +541,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 .add(RoomIdComponent(roomId))
                                 .add(RunComponent(.25f, 1f))
                                 .add(AIComponent(refreshSpeed = MathUtils.random(.2f, .3f), attackDistance = 1f))
-                                .add(SizeComponent(Vector2(180 / PIX_PER_M, 260 / PIX_PER_M), .65f))
+                                .add(SizeComponent(Vector2(180 / PIX_PER_M, 230 / PIX_PER_M), .65f))
                                 .add(WeaponComponent(
                                         type = WeaponSystem.SWING,
                                         entityLeft = createSwingWeaponEntity(
@@ -616,7 +652,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 rect,
                                 BodyDef.BodyType.DynamicBody,
                                 85 / PIX_PER_M,
-                                200 / PIX_PER_M,
+                                192 / PIX_PER_M,
                                 AI_BIT,
                                 WEAPON_BIT or GROUND_BIT or PLATFORM_BIT or SHARP_BIT)
 
@@ -656,7 +692,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 .add(RoomIdComponent(roomId))
                                 .add(RunComponent(.25f, 2f))
                                 .add(AIComponent(refreshSpeed = MathUtils.random(.1f, .2f), attackDistance = 1f))
-                                .add(SizeComponent(Vector2(125 / PIX_PER_M, 210 / PIX_PER_M), .65f))
+                                .add(SizeComponent(Vector2(125 / PIX_PER_M, 202 / PIX_PER_M), .65f))
                                 .add(WeaponComponent(
                                         type = WeaponSystem.SWING,
                                         entityLeft = createSwingWeaponEntity(
@@ -691,7 +727,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 rect,
                                 BodyDef.BodyType.DynamicBody,
                                 85 / PIX_PER_M,
-                                200 / PIX_PER_M,
+                                192 / PIX_PER_M,
                                 AI_BIT,
                                 WEAPON_BIT or GROUND_BIT or PLATFORM_BIT or SHARP_BIT)
 
@@ -736,7 +772,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 .add(RoomIdComponent(roomId))
                                 .add(RunComponent(.225f, .75f))
                                 .add(AIComponent(refreshSpeed = MathUtils.random(.7f, 1f), attackDistance = 2f))
-                                .add(SizeComponent(Vector2(85 / PIX_PER_M, 210 / PIX_PER_M), .65f))
+                                .add(SizeComponent(Vector2(85 / PIX_PER_M, 202 / PIX_PER_M), .65f))
                                 .add(WeaponComponent(
                                         type = WeaponSystem.SWING,
                                         entityLeft = createSwingWeaponEntity(
@@ -765,8 +801,6 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
 
 
                     }
-
-                    5 -> return false
 
                     else -> return false
                 }

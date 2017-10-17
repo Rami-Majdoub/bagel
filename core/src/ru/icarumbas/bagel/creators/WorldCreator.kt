@@ -49,7 +49,13 @@ class WorldCreator (private val assetManager: AssetManager){
         }
     }
 
-    private fun rand(values: Int) = MathUtils.random(0, values)
+    private fun rand(values: Int, rm: RoomManager, count: Int): Int {
+        val r = MathUtils.random(0, values)
+        return if (rm.rooms[count].path != "Maps/Map$r.tmx")
+            r
+        else
+            rand(values, rm, count)
+    }
 
 
     private fun checkFit(side: String, meshX: Int, meshY: Int, mapRoomWidth: Int, mapRoomHeight: Int): Boolean {
@@ -70,7 +76,7 @@ class WorldCreator (private val assetManager: AssetManager){
     }
 
     private fun chooseMap(side: String, count: Int, meshX: Int, meshY: Int, rm: RoomManager): Room {
-        newRoom = rm.createRoom(assetManager, "Maps/Map${rand(TILED_MAPS_TOTAL-1)}.tmx", roomsTotal)
+        newRoom = rm.createRoom(assetManager, "Maps/Map${rand(TILED_MAPS_TOTAL-1, rm, count)}.tmx", roomsTotal)
 
         val mapRoomWidth = (newRoom.width / REG_ROOM_WIDTH).toInt()
         val mapRoomHeight = (newRoom.height / REG_ROOM_HEIGHT).toInt()

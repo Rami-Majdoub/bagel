@@ -26,12 +26,11 @@ const val LOOT_BIT: Short = 4096
 const val PIX_PER_M = 100f
 const val REG_ROOM_HEIGHT = 768f.div(PIX_PER_M)
 const val REG_ROOM_WIDTH = 1152f.div(PIX_PER_M)
-const val TILED_MAPS_TOTAL = 17
+const val TILED_MAPS_TOTAL = 19
 
 
 //TODO("Blood, stones, effects")
 //TODO("Golems, skeletons not affected by spikes. Golem destroys them')
-//TODO("Fix teleport")
 
 
 class Bagel: Game() {
@@ -62,6 +61,8 @@ class Bagel: Game() {
         assetManager.load("Packs/Enemies/Vamp.pack", TextureAtlas::class.java)
         assetManager.load("Packs/Enemies/Zombie.pack", TextureAtlas::class.java)
         assetManager.load("Packs/weapons.pack", TextureAtlas::class.java)
+        assetManager.load("Packs/Enemies/MiniDragon.pack", TextureAtlas::class.java)
+
 
 
         // Sounds

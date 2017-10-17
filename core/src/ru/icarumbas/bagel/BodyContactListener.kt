@@ -73,15 +73,12 @@ class BodyContactListener : ContactListener {
     private fun attackEntity(){
         if (damage[defendingEntity].hitTimer > damage[defendingEntity].canBeDamagedTime) {
 
-            if (!(state.has(defendingEntity) && state[defendingEntity].currentState == StateSystem.DEAD)) {
+            damage[defendingEntity].damage = attack[attackingEntity].strength
+            damage[defendingEntity].knockback.set(attack[attackingEntity].knockback)
 
-                damage[defendingEntity].damage = attack[attackingEntity].strength
-                damage[defendingEntity].knockback.set(attack[attackingEntity].knockback)
-
-                if (!attackingEntity.rotatedRight())
-                    damage[defendingEntity].knockback.scl(-1f, 1f)
-                if (weapon.has(attackingEntity)) damage[defendingEntity].isWeaponContact = true
-            }
+            if (!attackingEntity.rotatedRight())
+                damage[defendingEntity].knockback.scl(-1f, 1f)
+            if (weapon.has(attackingEntity)) damage[defendingEntity].isWeaponContact = true
         }
     }
 
@@ -164,9 +161,28 @@ class BodyContactListener : ContactListener {
 
                 findAttackerAndDefender()
                 if (!damage[defendingEntity].isWeaponContact) {
-                    attackEntity()
-                    if (AI.has(defendingEntity)) AI[defendingEntity].entityTarget = attackingEntity
+                    if (!(state.has(defendingEntity) &&
+                        state[defendingEntity].currentState == StateSystem.NULL &&
+                        state[defendingEntity].currentState == StateSystem.APPEARING &&
+                        state[defendingEntity].currentState == StateSystem.DEAD)) {
+                        attackEntity()
+                        if (AI.has(defendingEntity)) AI[defendingEntity].entityTarget = attackingEntity
+                    }
                 }
+            }
+
+            PLAYER_BIT or AI_BIT -> {
+                contact.isEnabled = false
+
+                if (contactEntityA === playerEntity){
+                    defendingEntity = contactEntityA
+                    attackingEntity = contactEntityB
+                } else {
+                    defendingEntity = contactEntityB
+                    attackingEntity = contactEntityA
+                }
+
+                attackEntity()
             }
 
             PLAYER_FEET_BIT or LOOT_BIT, PLAYER_BIT or LOOT_BIT -> {

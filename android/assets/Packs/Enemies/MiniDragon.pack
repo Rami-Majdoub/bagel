@@ -1,0 +1,34 @@
+
+MiniDragon.png
+size: 2048,2048
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+miniDragon
+  rotate: false
+  xy: 2, 1364
+  size: 817, 679
+  orig: 817, 679
+  offset: 0, 0
+  index: 1
+miniDragon
+  rotate: false
+  xy: 2, 683
+  size: 817, 679
+  orig: 817, 679
+  offset: 0, 0
+  index: 2
+miniDragon
+  rotate: false
+  xy: 821, 1364
+  size: 817, 679
+  orig: 817, 679
+  offset: 0, 0
+  index: 3
+miniDragon
+  rotate: false
+  xy: 2, 2
+  size: 817, 679
+  orig: 817, 679
+  offset: 0, 0
+  index: 4

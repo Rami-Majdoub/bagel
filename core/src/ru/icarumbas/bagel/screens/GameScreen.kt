@@ -27,6 +27,7 @@ import ru.icarumbas.bagel.systems.physics.WeaponSystem
 import ru.icarumbas.bagel.systems.rendering.AnimationSystem
 import ru.icarumbas.bagel.systems.rendering.RenderingSystem
 import ru.icarumbas.bagel.systems.rendering.ViewportSystem
+import ru.icarumbas.bagel.systems.velocity.FlyingSystem
 import ru.icarumbas.bagel.systems.velocity.JumpingSystem
 import ru.icarumbas.bagel.systems.velocity.RunningSystem
 import ru.icarumbas.bagel.systems.velocity.TeleportSystem
@@ -93,6 +94,7 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
             addSystem(RunningSystem(hud))
             addSystem(JumpingSystem(hud))
             addSystem(TeleportSystem(playerEntity, rm))
+            addSystem(FlyingSystem(playerEntity))
 
             // Physic
             addSystem(AwakeSystem(rm))

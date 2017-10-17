@@ -27,7 +27,7 @@ class B2DWorldCreator(private val world: World) {
         fixtureDef.friction = .4f
         fixtureDef.density = 1.5f
         fixtureDef.filter.categoryBits = PLAYER_BIT
-        fixtureDef.filter.maskBits = GROUND_BIT or PLATFORM_BIT or WEAPON_BIT or SHARP_BIT or KEY_OPEN_BIT or LOOT_BIT
+        fixtureDef.filter.maskBits = GROUND_BIT or PLATFORM_BIT or WEAPON_BIT or SHARP_BIT or KEY_OPEN_BIT or LOOT_BIT or AI_BIT
 
         playerBody.createFixture(fixtureDef)
         shape.dispose()
