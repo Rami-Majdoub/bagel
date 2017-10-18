@@ -77,6 +77,8 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
 
         hud = Hud(playerEntity)
 
+        hud.createMinimap(worldCreator.mesh, rm, game.assetManager)
+
         val contactListener = BodyContactListener(hud, playerEntity, engine)
         world.setContactListener(contactListener)
 

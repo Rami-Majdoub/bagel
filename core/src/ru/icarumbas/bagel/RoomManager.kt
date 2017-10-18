@@ -6,11 +6,13 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.maps.objects.RectangleMapObject
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.MathUtils
+import ru.icarumbas.PIX_PER_M
 import ru.icarumbas.TILED_MAPS_TOTAL
 import ru.icarumbas.bagel.creators.EntityCreator
 import ru.icarumbas.bagel.creators.WorldCreator
 import ru.icarumbas.bagel.utils.Mappers
 import ru.icarumbas.bagel.utils.SerializedMapObject
+import java.util.*
 
 
 class RoomManager(val rooms: ArrayList<Room>,
@@ -33,6 +35,16 @@ class RoomManager(val rooms: ArrayList<Room>,
     fun pass(side: Int, id: Int = currentMapId) = rooms[id].passes[side]
 
     fun mesh(cell: Int, id: Int = currentMapId) = rooms[id].meshCoords[cell]
+
+    fun roomOnMeshLeftBottomCoordinate(x: Int, y: Int): Room?{
+        rooms.forEach {
+            if ( (it.meshCoords[0] == x && it.meshCoords[1] == y)) {
+                return it
+            }
+        }
+
+        return null
+    }
 
     private fun createStaticEntities(){
         (0 until TILED_MAPS_TOTAL).forEach {
@@ -72,6 +84,7 @@ class RoomManager(val rooms: ArrayList<Room>,
         rooms[currentMapId].meshCoords = intArrayOf(25, 25, 25, 25)
         worldCreator.createWorld(100, this)
         createStaticEntities()
+
 
         rooms.forEach {
             createIdEntity(it.path, it.id, "vase", 5)

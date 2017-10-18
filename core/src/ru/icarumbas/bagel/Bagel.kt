@@ -26,7 +26,7 @@ const val LOOT_BIT: Short = 4096
 const val PIX_PER_M = 100f
 const val REG_ROOM_HEIGHT = 768f.div(PIX_PER_M)
 const val REG_ROOM_WIDTH = 1152f.div(PIX_PER_M)
-const val TILED_MAPS_TOTAL = 19
+const val TILED_MAPS_TOTAL = 20
 
 
 //TODO("Blood, stones, effects")
@@ -62,6 +62,7 @@ class Bagel: Game() {
         assetManager.load("Packs/Enemies/Zombie.pack", TextureAtlas::class.java)
         assetManager.load("Packs/weapons.pack", TextureAtlas::class.java)
         assetManager.load("Packs/Enemies/MiniDragon.pack", TextureAtlas::class.java)
+        assetManager.load("Packs/minimap.pack", TextureAtlas::class.java)
 
 
 

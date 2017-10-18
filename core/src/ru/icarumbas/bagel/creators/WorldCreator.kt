@@ -12,7 +12,7 @@ import ru.icarumbas.bagel.RoomManager
 class WorldCreator (private val assetManager: AssetManager){
 
     private var zeroRoomChance = 0
-    private lateinit var mesh: Array<IntArray>
+    lateinit var mesh: Array<IntArray>
     private val stringSides = arrayOf("Left", "Up", "Down", "Right")
     private lateinit var newRoom: Room
     private var roomsTotal = 0
@@ -62,7 +62,7 @@ class WorldCreator (private val assetManager: AssetManager){
         meshCheckSides = when (side) {
 
             "Left" -> intArrayOf(-mapRoomWidth, 0, -mapRoomWidth, -mapRoomHeight + 1, -1, 0, -1, -mapRoomHeight + 1)
-            "Up" -> intArrayOf(0, -1, mapRoomWidth - 1, -1, 0, -mapRoomHeight, mapRoomWidth - 1, -mapRoomHeight)
+            "Up" -> intArrayOf(0, -1, mapRoomWidth -1, -1, 0, -mapRoomHeight, mapRoomWidth -1, -mapRoomHeight)
             "Right" -> intArrayOf(1, 0, mapRoomWidth, 0, 1, -mapRoomHeight + 1, mapRoomWidth, -mapRoomHeight + 1)
             "Down" -> intArrayOf(0, mapRoomHeight, 0, 1, mapRoomWidth - 1, mapRoomHeight, mapRoomWidth - 1, 1)
             else -> IntArray(0)
@@ -76,7 +76,8 @@ class WorldCreator (private val assetManager: AssetManager){
     }
 
     private fun chooseMap(side: String, count: Int, meshX: Int, meshY: Int, rm: RoomManager): Room {
-        newRoom = rm.createRoom(assetManager, "Maps/Map${rand(TILED_MAPS_TOTAL-1, rm, count)}.tmx", roomsTotal)
+
+        newRoom = rm.createRoom(assetManager, "Maps/Map${rand(TILED_MAPS_TOTAL - 1, rm, count)}.tmx", roomsTotal)
 
         val mapRoomWidth = (newRoom.width / REG_ROOM_WIDTH).toInt()
         val mapRoomHeight = (newRoom.height / REG_ROOM_HEIGHT).toInt()
@@ -128,18 +129,6 @@ class WorldCreator (private val assetManager: AssetManager){
         return newRoom
     }
 
-    private fun drawMesh(count: Int){
-        println("Count: $count, Size: $roomsTotal")
-
-        mesh.forEach {
-            x -> x.forEach { y ->
-                if (y == 1) print("* ") else print("  ")
-            }
-            println()
-        }
-
-    }
-
     private fun generateRoom(
                              sideName: String,
                              previousPassLink: Int,
@@ -172,8 +161,6 @@ class WorldCreator (private val assetManager: AssetManager){
 
                 // Fill mesh on new room's coordinates
                 for (i in 0..7 step 2) mesh[meshY + meshCheckSides[i + 1]][meshX + meshCheckSides[i]] = 1
-
-                drawMesh(count)
 
             }
 
