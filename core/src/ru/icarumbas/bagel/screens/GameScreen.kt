@@ -5,6 +5,8 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.math.Vector2
@@ -21,6 +23,7 @@ import ru.icarumbas.bagel.creators.B2DWorldCreator
 import ru.icarumbas.bagel.creators.EntityCreator
 import ru.icarumbas.bagel.creators.WorldCreator
 import ru.icarumbas.bagel.screens.scenes.Hud
+import ru.icarumbas.bagel.screens.scenes.Minimap
 import ru.icarumbas.bagel.systems.other.*
 import ru.icarumbas.bagel.systems.physics.AwakeSystem
 import ru.icarumbas.bagel.systems.physics.WeaponSystem
@@ -38,6 +41,7 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
 
     private val world = World(Vector2(0f, -9.8f), true)
     private val hud: Hud
+    private val minimap: Minimap
     private val debugRenderer: DebugRenderer
     private val engine = Engine()
     private val mapRenderer: MapRenderer
@@ -76,8 +80,8 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         worldCleaner = WorldCleaner(entityDeleteList, engine, world, serializedObjects, playerEntity, game)
 
         hud = Hud(playerEntity)
+        minimap = Minimap(hud.stage, worldCreator.mesh, rm, game.assetManager, playerEntity)
 
-        hud.createMinimap(worldCreator.mesh, rm, game.assetManager)
 
         val contactListener = BodyContactListener(hud, playerEntity, engine)
         world.setContactListener(contactListener)
@@ -126,7 +130,7 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         engine.update(delta)
         debugRenderer.render()
         hud.draw(rm)
-
+        minimap.update()
     }
 
     override fun pause() {

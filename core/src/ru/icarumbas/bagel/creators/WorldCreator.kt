@@ -24,7 +24,7 @@ class WorldCreator (private val assetManager: AssetManager){
         mesh.forEach { it.fill(0) }
 
         // Set center of the mesh
-        mesh[worldSize.div(4)][worldSize.div(4)] = 1
+        mesh[25][25] = 1
 
 
         // Try to create map for each map[i] side
@@ -47,6 +47,8 @@ class WorldCreator (private val assetManager: AssetManager){
             }
 
         }
+
+
     }
 
     private fun rand(values: Int, rm: RoomManager, count: Int): Int {
@@ -56,7 +58,6 @@ class WorldCreator (private val assetManager: AssetManager){
         else
             rand(values, rm, count)
     }
-
 
     private fun checkFit(side: String, meshX: Int, meshY: Int, mapRoomWidth: Int, mapRoomHeight: Int): Boolean {
         meshCheckSides = when (side) {
@@ -179,5 +180,6 @@ class WorldCreator (private val assetManager: AssetManager){
 
         }
     }
+
 
 }
