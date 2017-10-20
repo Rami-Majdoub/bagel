@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.MathUtils
+import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
@@ -25,17 +26,21 @@ import java.util.*
 
 class Minimap {
 
-    private val minimap: Dialog
+    private val regularMapWidth = 18
+    private val regularMapHeight = 12
+
+    private lateinit var currentRoomActor: Actor
+
     private val stage: Stage
+    private val playerEntity: Entity
     private val assets: AssetManager
     private val rm: RoomManager
     private val mesh: Array<IntArray>
-    private val playerEntity: Entity
-    private lateinit var currentRoomActor: Actor
-
     private val distance = Vector2()
 
-    private val playerPointOnMap: Image
+    val minimapFrame: Window
+    val playerPointOnMap: Image
+
 
     constructor(stage: Stage, mesh: Array<IntArray>, rm: RoomManager, assets: AssetManager, playerEntity: Entity) {
 
@@ -46,29 +51,34 @@ class Minimap {
         this.mesh = mesh
 
 
-        minimap = Dialog("", Window.WindowStyle(
+        minimapFrame = Window("", Window.WindowStyle(
                 BitmapFont(),
                 Color.BLACK,
                 TextureRegionDrawable(TextureRegion(Texture("Empty.png")))))
 
-        minimap.setSize(stage.width / 4, stage.height / 4)
-        minimap.setPosition(stage.width - minimap.width, stage.height - minimap.height)
+
+        with (minimapFrame) {
+            setSize(stage.width / 4, stage.height / 4)
+            setPosition(stage.width - minimapFrame.width, stage.height - minimapFrame.height)
+        }
+
 
         createMinimap()
 
-        stage.addActor(minimap)
+        stage.addActor(minimapFrame)
 
         playerPointOnMap = Image(Texture("Point.png"))
-        playerPointOnMap.setPosition(minimap.x + minimap.width / 2, minimap.y + minimap.height / 2)
+        playerPointOnMap.setPosition(minimapFrame.x + minimapFrame.width / 2, minimapFrame.y + minimapFrame.height / 2)
 
         stage.addActor(playerPointOnMap)
 
     }
 
     fun update() {
-        minimap.children.filter { it is AdvancedImage }.forEach {
+        minimapFrame.children.filter { it is AdvancedImage }.forEach {
             if (isCurrentRoomActor(it as AdvancedImage)) {
                 it.color = Color.BLUE
+                it.isVisible = true
                 currentRoomActor = it
             } else {
                 it.color = Color.WHITE
@@ -77,31 +87,32 @@ class Minimap {
 
         followPlayer()
 
+
+        // Move player point un top of rendering
         if (stage.actors.last() !== playerPointOnMap) {
             stage.actors.swap(stage.actors.indexOf(playerPointOnMap), stage.actors.size-1)
         }
-
     }
 
     private fun isCurrentRoomActor(actor: AdvancedImage): Boolean {
 
-        return ( rm.rooms[rm.currentMapId].meshCoords[0] == (MathUtils.round(actor.x - actor.distanceX) / 18) &&
-                 rm.rooms[rm.currentMapId].meshCoords[1] == (50 - MathUtils.round(actor.y - actor.distanceY) / 12) )
+        return ( rm.rooms[rm.currentMapId].meshCoords[0] == (MathUtils.round(actor.x - actor.distanceX) / regularMapWidth) &&
+                 rm.rooms[rm.currentMapId].meshCoords[1] == (50 - MathUtils.round(actor.y - actor.distanceY) / regularMapHeight) )
     }
 
     private fun followPlayer(){
-        distance.set(minimap.originX + minimap.width/2 - currentRoomActor.x, minimap.originY + minimap.height/2 - currentRoomActor.y)
+        distance.set(minimapFrame.originX + minimapFrame.width/2 - currentRoomActor.x, minimapFrame.originY + minimapFrame.height/2 - currentRoomActor.y)
         distance.add(-body[playerEntity].body.position.x, -body[playerEntity].body.position.y)
         distance.add(-playerPointOnMap.width/2, -playerPointOnMap.height/2)
 
-        minimap.children.filter { it is AdvancedImage }.forEach {
+        minimapFrame.children.filter { it is AdvancedImage }.forEach {
             it.moveBy(distance.x, distance.y)
             (it as AdvancedImage).distanceX += distance.x
             (it as AdvancedImage).distanceY += distance.y
         }
     }
 
-    private fun findSpriteForMiniMap(name: String): Sprite {
+    private fun findTextureForMiniMap(name: String): TextureRegion {
         assets["Packs/minimap.pack", TextureAtlas::class.java].regions.forEach {
 
             val arr1 = it.name.toCharArray()
@@ -115,6 +126,10 @@ class Minimap {
             }
         }
         throw Exception("Cant't find sprite for $name")
+    }
+
+    private fun AdvancedImage.setRegularPositionOnMinimap(x: Int, y: IntArray){
+        setPosition(regularMapWidth.toFloat() * x, 600 - regularMapHeight.toFloat() * mesh.indexOf(y))
     }
 
     private fun createMinimap(){
@@ -140,31 +155,35 @@ class Minimap {
 
                         when {
                             room.height != 768 / PIX_PER_M && room.width != 1152 / PIX_PER_M -> {
-                                minimap.addActor(AdvancedImage(findSpriteForMiniMap(name))
+                                minimapFrame.addActor(AdvancedImage(findTextureForMiniMap(name))
                                         .apply {
-                                            setSize(36f, 24f)
-                                            setPosition(18f * x, 600 - 12f * mesh.indexOf(y))
+                                            setSize(regularMapWidth * 2f, regularMapHeight * 2f)
+                                            setRegularPositionOnMinimap(x, y)
+                                            isVisible = false
                                         })
                             }
                             room.width != 1152 / PIX_PER_M -> {
-                                minimap.addActor(AdvancedImage(findSpriteForMiniMap(name))
+                                minimapFrame.addActor(AdvancedImage(findTextureForMiniMap(name))
                                         .apply {
-                                            setSize(36f, 12f)
-                                            setPosition(18f * x, 600 - 12f * mesh.indexOf(y))
+                                            setSize(regularMapWidth * 2f, regularMapHeight.toFloat())
+                                            setRegularPositionOnMinimap(x, y)
+                                            isVisible = false
                                         })
                             }
                             room.height != 768 / PIX_PER_M -> {
-                                minimap.addActor(AdvancedImage(findSpriteForMiniMap(name))
+                                minimapFrame.addActor(AdvancedImage(findTextureForMiniMap(name))
                                         .apply {
-                                            setSize(18f, 24f)
-                                            setPosition(18f * x, 600 - 12f * mesh.indexOf(y))
+                                            setSize(regularMapWidth.toFloat(), regularMapHeight * 2f)
+                                            setRegularPositionOnMinimap(x, y)
+                                            isVisible = false
                                         })
                             }
                             else -> {
-                                minimap.addActor(AdvancedImage(findSpriteForMiniMap(name))
+                                minimapFrame.addActor(AdvancedImage(findTextureForMiniMap(name))
                                         .apply {
-                                            setSize(18f, 12f)
-                                            setPosition(18f * x, 600 - 12f * mesh.indexOf(y))
+                                            setSize(regularMapWidth.toFloat(), regularMapHeight.toFloat())
+                                            setRegularPositionOnMinimap(x, y)
+                                            isVisible = false
                                         })
                             }
                         }

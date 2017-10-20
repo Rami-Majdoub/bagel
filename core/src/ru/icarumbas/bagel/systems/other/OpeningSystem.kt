@@ -9,6 +9,7 @@ import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.components.other.DoorComponent
 import ru.icarumbas.bagel.components.other.OpenComponent
 import ru.icarumbas.bagel.screens.scenes.Hud
+import ru.icarumbas.bagel.screens.scenes.UInputListener
 import ru.icarumbas.bagel.utils.Mappers.Mappers.animation
 import ru.icarumbas.bagel.utils.Mappers.Mappers.body
 import ru.icarumbas.bagel.utils.Mappers.Mappers.door
@@ -20,15 +21,15 @@ import ru.icarumbas.bagel.utils.inView
 
 class OpeningSystem : IteratingSystem{
 
-    private val hud: Hud
+    private val uiListener: UInputListener
     private val rm: RoomManager
 
     private lateinit var lootEntity: Entity
     private val deleteList: ArrayList<Entity>
 
 
-    constructor(hud: Hud, rm: RoomManager, deleteList: ArrayList<Entity>) : super(Family.all(OpenComponent::class.java).get()) {
-        this.hud = hud
+    constructor(uiListener: UInputListener, rm: RoomManager, deleteList: ArrayList<Entity>) : super(Family.all(OpenComponent::class.java).get()) {
+        this.uiListener = uiListener
         this.rm = rm
         this.deleteList = deleteList
     }
@@ -43,7 +44,7 @@ class OpeningSystem : IteratingSystem{
     override fun processEntity(e: Entity, deltaTime: Float) {
         if (e.inView(rm)) {
             if (open[e].isCollidingWithPlayer){
-                if (hud.openButtonPressed) {
+                if (uiListener.openButtonPressed) {
                     open[e].opening = true
                 }
             }

@@ -8,6 +8,7 @@ import ru.icarumbas.bagel.components.other.AIComponent
 import ru.icarumbas.bagel.components.other.PlayerComponent
 import ru.icarumbas.bagel.components.physics.WeaponComponent
 import ru.icarumbas.bagel.screens.scenes.Hud
+import ru.icarumbas.bagel.screens.scenes.UInputListener
 import ru.icarumbas.bagel.utils.Mappers
 import ru.icarumbas.bagel.utils.Mappers.Mappers.AI
 import ru.icarumbas.bagel.utils.Mappers.Mappers.body
@@ -21,7 +22,7 @@ import ru.icarumbas.bagel.utils.rotatedRight
 
 class WeaponSystem : IteratingSystem {
 
-    private val hud: Hud
+    private val uiListener: UInputListener
     private val rm: RoomManager
 
     companion object WeaponTypes{
@@ -30,11 +31,11 @@ class WeaponSystem : IteratingSystem {
         val SHOT = 2
     }
 
-    constructor(hud: Hud, rm: RoomManager) : super(Family.all(
+    constructor(uiListener: UInputListener, rm: RoomManager) : super(Family.all(
             WeaponComponent::class.java).one(
             PlayerComponent::class.java,
             AIComponent::class.java).get()) {
-        this.hud = hud
+        this.uiListener = uiListener
         this.rm = rm
     }
 
@@ -83,7 +84,7 @@ class WeaponSystem : IteratingSystem {
 
     private fun attack(e: Entity){
         if ((
-                (player.has(e) && hud.attackButtonPressed)
+                (player.has(e) && uiListener.attackButtonPressed)
                 || (AI.has(e) && AI[e].appeared && AI[e].coldown > AI[e].refreshSpeed))
                 && !weapon[e].attacking
                 && damage[e].HP > 0) {

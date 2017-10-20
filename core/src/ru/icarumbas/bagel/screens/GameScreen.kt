@@ -5,8 +5,6 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.math.Vector2
@@ -24,6 +22,7 @@ import ru.icarumbas.bagel.creators.EntityCreator
 import ru.icarumbas.bagel.creators.WorldCreator
 import ru.icarumbas.bagel.screens.scenes.Hud
 import ru.icarumbas.bagel.screens.scenes.Minimap
+import ru.icarumbas.bagel.screens.scenes.UInputListener
 import ru.icarumbas.bagel.systems.other.*
 import ru.icarumbas.bagel.systems.physics.AwakeSystem
 import ru.icarumbas.bagel.systems.physics.WeaponSystem
@@ -50,6 +49,7 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
     private val playerEntity: Entity
     private val rm: RoomManager
     private val orthoRenderer: OrthogonalTiledMapRenderer
+    private val uiInputListener: UInputListener
 
     private val serializedObjects = ArrayList<SerializedMapObject>()
     private val rooms = ArrayList<Room>()
@@ -81,6 +81,7 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
 
         hud = Hud(playerEntity)
         minimap = Minimap(hud.stage, worldCreator.mesh, rm, game.assetManager, playerEntity)
+        uiInputListener = UInputListener(hud.stage, hud, minimap)
 
 
         val contactListener = BodyContactListener(hud, playerEntity, engine)
@@ -93,7 +94,7 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
             addSystem(HealthSystem(rm, world, coins, entityDeleteList))
             addSystem(StateSystem(rm))
             addSystem(AISystem(playerEntity, rm))
-            addSystem(OpeningSystem(hud, rm, entityDeleteList))
+            addSystem(OpeningSystem(uiInputListener, rm, entityDeleteList))
             addSystem(LootSystem(hud, rm, playerEntity, entityDeleteList))
 
             // Velocity
@@ -104,7 +105,7 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
 
             // Physic
             addSystem(AwakeSystem(rm))
-            addSystem(WeaponSystem(hud, rm))
+            addSystem(WeaponSystem(uiInputListener, rm))
 
             // Rendering
             addSystem(ViewportSystem(viewport, rm))

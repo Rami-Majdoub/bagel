@@ -14,10 +14,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.ui.Touchpad
+import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.viewport.StretchViewport
 import ru.icarumbas.PIX_PER_M
 import ru.icarumbas.bagel.RoomManager
@@ -25,7 +22,7 @@ import ru.icarumbas.bagel.utils.Mappers.Mappers.damage
 import java.util.*
 
 
-class Hud(private val playerEntity: Entity): InputListener(){
+class Hud(private val playerEntity: Entity){
 
     val stage: Stage
     var touchedOnce = false
@@ -41,12 +38,8 @@ class Hud(private val playerEntity: Entity): InputListener(){
     private val fps: Label
     private val money: Label
 
-    private val openButton = Image(Texture("open.png"))
-    private val attackButton = Image(Texture("attackButton.png"))
-
-    var openButtonPressed = false
-    var attackButtonPressed = false
-
+    val openButton = Image(Texture("open.png"))
+    val attackButton = Image(Texture("attackButton.png"))
 
 
     init {
@@ -98,14 +91,14 @@ class Hud(private val playerEntity: Entity): InputListener(){
 
         attackButton.setSize(stage.width / 10, stage.width / 10)
         attackButton.setPosition(stage.width - attackButton.width - 20, stage.height/10f)
-        attackButton.addListener(this)
         stage.addActor(attackButton)
 
         openButton.setSize(stage.width / 15, stage.width / 15)
         openButton.setPosition(stage.width - openButton.width - attackButton.width * 1.5f, stage.height/10f)
-        openButton.addListener(this)
         openButton.isVisible = false
         stage.addActor(openButton)
+
+
 
         fakeTouchDownEvent.type = InputEvent.Type.touchDown
 
@@ -162,34 +155,5 @@ class Hud(private val playerEntity: Entity): InputListener(){
 
     fun isLeftPressed() = touchpad.knobX < touchpad.width / 2 - touchpad.width/20
 
-    override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-        when (event!!.target) {
-            attackButton -> {
-                attackButtonPressed = false
-                attackButton.color = Color.WHITE
-            }
 
-            openButton -> {
-                openButtonPressed = false
-                openButton.color = Color.WHITE
-            }
-        }
-    }
-
-    override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-        when (event!!.target) {
-            attackButton -> {
-                attackButtonPressed = true
-                attackButton.color = Color.GRAY
-            }
-
-
-            openButton -> {
-                openButtonPressed = true
-                openButton.color = Color.GRAY
-            }
-
-        }
-        return true
-    }
 }
