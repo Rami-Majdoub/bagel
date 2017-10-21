@@ -10,6 +10,7 @@ import ru.icarumbas.bagel.utils.Mappers
 import ru.icarumbas.bagel.utils.Mappers.Mappers.AI
 import ru.icarumbas.bagel.utils.Mappers.Mappers.animation
 import ru.icarumbas.bagel.utils.Mappers.Mappers.body
+import ru.icarumbas.bagel.utils.Mappers.Mappers.roomId
 import ru.icarumbas.bagel.utils.Mappers.Mappers.size
 import ru.icarumbas.bagel.utils.Mappers.Mappers.state
 import ru.icarumbas.bagel.utils.inView
@@ -64,10 +65,12 @@ class AISystem: IteratingSystem {
                 if (animation[entity].animations[StateSystem.APPEARING]?.isAnimationFinished(state[entity].stateTime)!!
                         && state[entity].currentState == StateSystem.APPEARING) {
                     AI[entity].appeared = true
+                    roomId[entity].serialized.appeared = true
 
                 }
             } else {
                 AI[entity].appeared = true
+                roomId[entity].serialized.appeared = true
             }
         }
     }

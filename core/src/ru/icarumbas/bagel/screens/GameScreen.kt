@@ -33,6 +33,7 @@ import ru.icarumbas.bagel.systems.velocity.FlyingSystem
 import ru.icarumbas.bagel.systems.velocity.JumpingSystem
 import ru.icarumbas.bagel.systems.velocity.RunningSystem
 import ru.icarumbas.bagel.systems.velocity.TeleportSystem
+import ru.icarumbas.bagel.utils.Mappers.Mappers.body
 import ru.icarumbas.bagel.utils.SerializedMapObject
 
 
@@ -62,7 +63,26 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         entityCreator = EntityCreator(b2DWorldCreator, game.assetManager, engine, animationCreator, b2DWorldCreator.createPlayerBody())
         rm = RoomManager(rooms, game.assetManager, entityCreator, engine, serializedObjects, game.worldIO)
 
-        if (newWorld) rm.createNewWorld(worldCreator, game.assetManager) else rm.continueWorld()
+        playerEntity = entityCreator.createPlayerEntity(
+                animationCreator,
+                game.assetManager["Packs/GuyKnight.pack", TextureAtlas::class.java])
+
+        hud = Hud(playerEntity)
+        minimap = Minimap(hud.stage, rm, game.assetManager, playerEntity)
+        uiInputListener = UInputListener(hud.stage, hud, minimap)
+
+        if (newWorld) {
+            rm.createNewWorld(worldCreator, game.assetManager)
+            minimap.createRooms(rm.mesh)
+
+        } else {
+            rm.continueWorld()
+            minimap.loadRooms(game.worldIO.loadVisibleRooms(), rm.mesh)
+            body[playerEntity].body.setTransform(
+                    game.worldIO.prefs.getFloat("playerX"),
+                    game.worldIO.prefs.getFloat("playerY"),
+                    0f)
+        }
 
         val viewport = FitViewport(REG_ROOM_WIDTH, REG_ROOM_HEIGHT, OrthographicCamera(REG_ROOM_WIDTH, REG_ROOM_HEIGHT))
         orthoRenderer = OrthogonalTiledMapRenderer(game.assetManager.get(rm.path()), 0.01f)
@@ -73,15 +93,7 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         val coins = ArrayList<Body>()
         val entityDeleteList = ArrayList<Entity>()
 
-        playerEntity = entityCreator.createPlayerEntity(
-                animationCreator,
-                game.assetManager["Packs/GuyKnight.pack", TextureAtlas::class.java])
-
         worldCleaner = WorldCleaner(entityDeleteList, engine, world, serializedObjects, playerEntity, game)
-
-        hud = Hud(playerEntity)
-        minimap = Minimap(hud.stage, worldCreator.mesh, rm, game.assetManager, playerEntity)
-        uiInputListener = UInputListener(hud.stage, hud, minimap)
 
 
         val contactListener = BodyContactListener(hud, playerEntity, engine)
@@ -135,7 +147,12 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
     }
 
     override fun pause() {
-        game.worldIO.saveWorld(serializedObjects, rooms)
+        val visibleRooms = ArrayList<Int>()
+        minimap.minimapFrame.children.filter { it.isVisible }.forEach {
+            visibleRooms.add(minimap.minimapFrame.children.indexOf(it))
+        }
+        game.worldIO.saveWorld(serializedObjects, rooms, rm.mesh, visibleRooms)
+        game.worldIO.saveCurrentState(playerEntity, rm.currentMapId)
     }
 
     override fun resize(width: Int, height: Int) {

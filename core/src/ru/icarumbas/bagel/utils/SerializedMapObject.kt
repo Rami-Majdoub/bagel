@@ -8,6 +8,7 @@ class SerializedMapObject {
     var rect = Rectangle()
     var objectPath = ""
     var rand = 1
+    var appeared = false
 
     constructor()
 

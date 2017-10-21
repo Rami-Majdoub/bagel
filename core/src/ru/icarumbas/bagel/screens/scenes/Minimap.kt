@@ -10,11 +10,9 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.MathUtils
-import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Window
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
@@ -35,20 +33,18 @@ class Minimap {
     private val playerEntity: Entity
     private val assets: AssetManager
     private val rm: RoomManager
-    private val mesh: Array<IntArray>
     private val distance = Vector2()
 
     val minimapFrame: Window
     val playerPointOnMap: Image
 
 
-    constructor(stage: Stage, mesh: Array<IntArray>, rm: RoomManager, assets: AssetManager, playerEntity: Entity) {
+    constructor(stage: Stage, rm: RoomManager, assets: AssetManager, playerEntity: Entity) {
 
         this.stage = stage
         this.rm = rm
         this.assets = assets
         this.playerEntity = playerEntity
-        this.mesh = mesh
 
 
         minimapFrame = Window("", Window.WindowStyle(
@@ -62,8 +58,6 @@ class Minimap {
             setPosition(stage.width - minimapFrame.width, stage.height - minimapFrame.height)
         }
 
-
-        createMinimap()
 
         stage.addActor(minimapFrame)
 
@@ -128,11 +122,11 @@ class Minimap {
         throw Exception("Cant't find sprite for $name")
     }
 
-    private fun AdvancedImage.setRegularPositionOnMinimap(x: Int, y: IntArray){
+    private fun AdvancedImage.setRegularPositionOnMinimap(x: Int, y: IntArray, mesh: Array<IntArray>){
         setPosition(regularMapWidth.toFloat() * x, 600 - regularMapHeight.toFloat() * mesh.indexOf(y))
     }
 
-    private fun createMinimap(){
+    fun createRooms(mesh: Array<IntArray>){
 
         mesh.forEach { y ->
             var x = 0
@@ -158,7 +152,7 @@ class Minimap {
                                 minimapFrame.addActor(AdvancedImage(findTextureForMiniMap(name))
                                         .apply {
                                             setSize(regularMapWidth * 2f, regularMapHeight * 2f)
-                                            setRegularPositionOnMinimap(x, y)
+                                            setRegularPositionOnMinimap(x, y, mesh)
                                             isVisible = false
                                         })
                             }
@@ -166,7 +160,7 @@ class Minimap {
                                 minimapFrame.addActor(AdvancedImage(findTextureForMiniMap(name))
                                         .apply {
                                             setSize(regularMapWidth * 2f, regularMapHeight.toFloat())
-                                            setRegularPositionOnMinimap(x, y)
+                                            setRegularPositionOnMinimap(x, y, mesh)
                                             isVisible = false
                                         })
                             }
@@ -174,7 +168,7 @@ class Minimap {
                                 minimapFrame.addActor(AdvancedImage(findTextureForMiniMap(name))
                                         .apply {
                                             setSize(regularMapWidth.toFloat(), regularMapHeight * 2f)
-                                            setRegularPositionOnMinimap(x, y)
+                                            setRegularPositionOnMinimap(x, y, mesh)
                                             isVisible = false
                                         })
                             }
@@ -182,7 +176,7 @@ class Minimap {
                                 minimapFrame.addActor(AdvancedImage(findTextureForMiniMap(name))
                                         .apply {
                                             setSize(regularMapWidth.toFloat(), regularMapHeight.toFloat())
-                                            setRegularPositionOnMinimap(x, y)
+                                            setRegularPositionOnMinimap(x, y, mesh)
                                             isVisible = false
                                         })
                             }
@@ -195,7 +189,14 @@ class Minimap {
 
     }
 
-    private class AdvancedImage(texture: TextureRegion) : Image(texture){
+    fun loadRooms(visibleRooms: ArrayList<Int>, mesh: Array<IntArray>){
+        createRooms(mesh)
+        visibleRooms.forEach {
+            minimapFrame.children[it].isVisible = true
+        }
+    }
+
+    class AdvancedImage(texture: TextureRegion) : Image(texture){
         var distanceX = 0f
         var distanceY = 0f
     }

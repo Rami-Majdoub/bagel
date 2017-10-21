@@ -6,11 +6,12 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.maps.objects.RectangleMapObject
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.MathUtils
-import ru.icarumbas.PIX_PER_M
 import ru.icarumbas.TILED_MAPS_TOTAL
 import ru.icarumbas.bagel.creators.EntityCreator
 import ru.icarumbas.bagel.creators.WorldCreator
 import ru.icarumbas.bagel.utils.Mappers
+import ru.icarumbas.bagel.utils.Mappers.Mappers.AI
+import ru.icarumbas.bagel.utils.Mappers.Mappers.roomId
 import ru.icarumbas.bagel.utils.SerializedMapObject
 import java.util.*
 
@@ -23,6 +24,7 @@ class RoomManager(val rooms: ArrayList<Room>,
                   private val worldIO: WorldIO){
 
     var currentMapId = 0
+    lateinit var mesh: Array<IntArray>
 
     fun path(id: Int = currentMapId) = rooms[id].path
 
@@ -83,6 +85,7 @@ class RoomManager(val rooms: ArrayList<Room>,
         rooms.add(createRoom(assetManager, "Maps/Map9.tmx", 0))
         rooms[currentMapId].meshCoords = intArrayOf(25, 25, 25, 25)
         worldCreator.createWorld(100, this)
+        mesh = worldCreator.mesh
         createStaticEntities()
 
 
@@ -108,12 +111,18 @@ class RoomManager(val rooms: ArrayList<Room>,
     }
 
     fun continueWorld() {
+
+        mesh = worldIO.loadMesh()
         worldIO.loadWorld(serializedObjects, rooms)
         createStaticEntities()
         serializedObjects.forEach{
             entityCreator.loadIdEntity(it.roomId, it.rect, it.objectPath, assets["Packs/items.pack", TextureAtlas::class.java], it.rand)
-            Mappers.roomId[engine.entities.last()].serialized = it
+            roomId[engine.entities.last()].serialized = it
+            if (AI.has(engine.entities.last()))
+            AI[engine.entities.last()].appeared = it.appeared
         }
+        currentMapId = worldIO.prefs.getInteger("currentMap")
+
     }
 
 }
