@@ -1,6 +1,7 @@
 package ru.icarumbas.bagel
 
 import com.badlogic.ashley.core.Engine
+import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.maps.objects.RectangleMapObject
@@ -21,8 +22,8 @@ class RoomManager(val rooms: ArrayList<Room>,
                   private val entityCreator: EntityCreator,
                   private val engine: Engine,
                   private val serializedObjects: ArrayList<SerializedMapObject>,
-                  private val worldIO: WorldIO){
-
+                  private val worldIO: WorldIO,
+                  private val playerEntity: Entity){
     var currentMapId = 0
     lateinit var mesh: Array<IntArray>
 
@@ -68,7 +69,7 @@ class RoomManager(val rooms: ArrayList<Room>,
         val layer = assets.get(roomPath, TiledMap::class.java).layers[objectPath]
         layer?.objects?.filterIsInstance<RectangleMapObject>()?.forEach {
             val rand = MathUtils.random(1, randomEnd)
-            if (entityCreator.loadIdEntity(roomId, it.rectangle, objectPath, atlas, rand)){
+            if (entityCreator.loadIdEntity(roomId, it.rectangle, objectPath, atlas, rand, playerEntity)){
                 serializedObjects.add(SerializedMapObject(roomId, it.rectangle, objectPath, rand))
                 Mappers.roomId[engine.entities.last()].serialized = serializedObjects.last()
             }
@@ -84,7 +85,7 @@ class RoomManager(val rooms: ArrayList<Room>,
     fun createNewWorld(worldCreator: WorldCreator, assetManager: AssetManager) {
         rooms.add(createRoom(assetManager, "Maps/Map9.tmx", 0))
         rooms[currentMapId].meshCoords = intArrayOf(25, 25, 25, 25)
-        worldCreator.createWorld(100, this)
+        worldCreator.createWorld(50, this)
         mesh = worldCreator.mesh
         createStaticEntities()
 
@@ -116,7 +117,14 @@ class RoomManager(val rooms: ArrayList<Room>,
         worldIO.loadWorld(serializedObjects, rooms)
         createStaticEntities()
         serializedObjects.forEach{
-            entityCreator.loadIdEntity(it.roomId, it.rect, it.objectPath, assets["Packs/items.pack", TextureAtlas::class.java], it.rand)
+            entityCreator.loadIdEntity(
+                    roomId = it.roomId,
+                    rect = it.rect,
+                    objectPath = it.objectPath,
+                    atlas = assets["Packs/items.pack", TextureAtlas::class.java],
+                    r = it.rand,
+                    playerEntity = playerEntity)
+
             roomId[engine.entities.last()].serialized = it
             if (AI.has(engine.entities.last()))
             AI[engine.entities.last()].appeared = it.appeared

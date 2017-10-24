@@ -4,253 +4,241 @@ size: 2048,2048
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-die
+appear
   rotate: false
-  xy: 2, 1520
-  size: 528, 504
-  orig: 528, 504
+  xy: 1501, 1543
+  size: 296, 226
+  orig: 296, 226
   offset: 0, 0
   index: 1
-die
+appear
   rotate: false
-  xy: 532, 1520
-  size: 528, 504
-  orig: 528, 504
+  xy: 899, 1312
+  size: 296, 226
+  orig: 296, 226
   offset: 0, 0
   index: 2
-die
-  rotate: false
-  xy: 1062, 1520
-  size: 528, 504
-  orig: 528, 504
-  offset: 0, 0
-  index: 3
-die
-  rotate: false
-  xy: 2, 1014
-  size: 528, 504
-  orig: 528, 504
-  offset: 0, 0
-  index: 4
-die
-  rotate: false
-  xy: 2, 508
-  size: 528, 504
-  orig: 528, 504
-  offset: 0, 0
-  index: 5
-die
-  rotate: false
-  xy: 2, 2
-  size: 528, 504
-  orig: 528, 504
-  offset: 0, 0
-  index: 6
-die
-  rotate: false
-  xy: 532, 1014
-  size: 528, 504
-  orig: 528, 504
-  offset: 0, 0
-  index: 7
-hit
-  rotate: false
-  xy: 1062, 1146
-  size: 528, 372
-  orig: 528, 372
-  offset: 0, 0
-  index: 2
-hit
-  rotate: false
-  xy: 1062, 772
-  size: 528, 372
-  orig: 528, 372
-  offset: 0, 0
-  index: 3
-hit
-  rotate: false
-  xy: 532, 640
-  size: 528, 372
-  orig: 528, 372
-  offset: 0, 0
-  index: 4
-hit
-  rotate: false
-  xy: 1062, 398
-  size: 528, 372
-  orig: 528, 372
-  offset: 0, 0
-  index: 5
-hit
-  rotate: false
-  xy: 532, 266
-  size: 528, 372
-  orig: 528, 372
-  offset: 0, 0
-  index: 6
-hit
-  rotate: false
-  xy: 532, 266
-  size: 528, 372
-  orig: 528, 372
-  offset: 0, 0
-  index: 1
-idle
-  rotate: false
-  xy: 1062, 44
-  size: 528, 352
-  orig: 528, 352
-  offset: 0, 0
-  index: 4
-
-Golem2.png
-size: 2048,2048
-format: RGBA8888
-filter: Linear,Linear
-repeat: none
 appear
   rotate: false
-  xy: 1062, 1414
-  size: 528, 348
-  orig: 528, 348
-  offset: 0, 0
-  index: 1
-appear
-  rotate: false
-  xy: 2, 352
-  size: 528, 348
-  orig: 528, 348
-  offset: 0, 0
-  index: 3
-appear
-  rotate: false
-  xy: 532, 706
-  size: 528, 348
-  orig: 528, 348
+  xy: 1197, 1312
+  size: 296, 226
+  orig: 296, 226
   offset: 0, 0
   index: 10
 appear
   rotate: false
-  xy: 1062, 1064
-  size: 528, 348
-  orig: 528, 348
+  xy: 303, 639
+  size: 296, 226
+  orig: 296, 226
   offset: 0, 0
   index: 11
 appear
   rotate: false
-  xy: 2, 2
-  size: 528, 348
-  orig: 528, 348
+  xy: 303, 411
+  size: 296, 226
+  orig: 296, 226
   offset: 0, 0
   index: 12
 appear
   rotate: false
-  xy: 532, 356
-  size: 528, 348
-  orig: 528, 348
+  xy: 303, 183
+  size: 296, 226
+  orig: 296, 226
   offset: 0, 0
   index: 13
 appear
   rotate: false
-  xy: 1062, 714
-  size: 528, 348
-  orig: 528, 348
+  xy: 1501, 1315
+  size: 296, 226
+  orig: 296, 226
   offset: 0, 0
   index: 15
 appear
   rotate: false
-  xy: 532, 6
-  size: 528, 348
-  orig: 528, 348
+  xy: 1495, 1087
+  size: 296, 226
+  orig: 296, 226
   offset: 0, 0
-  index: 2
+  index: 3
 appear
   rotate: false
-  xy: 1062, 364
-  size: 528, 348
-  orig: 528, 348
+  xy: 601, 639
+  size: 296, 226
+  orig: 296, 226
   offset: 0, 0
   index: 4
 appear
   rotate: false
-  xy: 1062, 14
-  size: 528, 348
-  orig: 528, 348
+  xy: 601, 411
+  size: 296, 226
+  orig: 296, 226
   offset: 0, 0
   index: 5
-idle
-  rotate: false
-  xy: 2, 1410
-  size: 528, 352
-  orig: 528, 352
-  offset: 0, 0
-  index: 5
-idle
-  rotate: false
-  xy: 2, 1056
-  size: 528, 352
-  orig: 528, 352
-  offset: 0, 0
-  index: 3
-idle
-  rotate: false
-  xy: 532, 1410
-  size: 528, 352
-  orig: 528, 352
-  offset: 0, 0
-  index: 1
-idle
-  rotate: false
-  xy: 2, 702
-  size: 528, 352
-  orig: 528, 352
-  offset: 0, 0
-  index: 6
-idle
-  rotate: false
-  xy: 532, 1056
-  size: 528, 352
-  orig: 528, 352
-  offset: 0, 0
-  index: 2
-
-Golem3.png
-size: 2048,1024
-format: RGBA8888
-filter: Linear,Linear
-repeat: none
 appear
   rotate: false
-  xy: 2, 352
-  size: 528, 348
-  orig: 528, 348
+  xy: 601, 183
+  size: 296, 226
+  orig: 296, 226
   offset: 0, 0
   index: 6
 appear
   rotate: false
-  xy: 2, 2
-  size: 528, 348
-  orig: 528, 348
+  xy: 899, 1084
+  size: 296, 226
+  orig: 296, 226
   offset: 0, 0
   index: 7
 appear
   rotate: false
-  xy: 532, 352
-  size: 528, 348
-  orig: 528, 348
+  xy: 1197, 1084
+  size: 296, 226
+  orig: 296, 226
   offset: 0, 0
   index: 8
 appear
   rotate: false
-  xy: 532, 2
-  size: 528, 348
-  orig: 528, 348
+  xy: 899, 856
+  size: 296, 226
+  orig: 296, 226
   offset: 0, 0
   index: 9
 appear
   rotate: false
-  xy: 1062, 352
-  size: 528, 348
-  orig: 528, 348
+  xy: 899, 628
+  size: 296, 226
+  orig: 296, 226
   offset: 0, 0
   index: 14
+die
+  rotate: false
+  xy: 2, 1685
+  size: 296, 328
+  orig: 296, 328
+  offset: 0, 0
+  index: 2
+die
+  rotate: false
+  xy: 2, 1355
+  size: 296, 328
+  orig: 296, 328
+  offset: 0, 0
+  index: 3
+die
+  rotate: false
+  xy: 300, 1685
+  size: 296, 328
+  orig: 296, 328
+  offset: 0, 0
+  index: 5
+die
+  rotate: false
+  xy: 2, 1025
+  size: 296, 328
+  orig: 296, 328
+  offset: 0, 0
+  index: 6
+die
+  rotate: false
+  xy: 300, 1355
+  size: 296, 328
+  orig: 296, 328
+  offset: 0, 0
+  index: 7
+die
+  rotate: false
+  xy: 598, 1685
+  size: 296, 328
+  orig: 296, 328
+  offset: 0, 0
+  index: 4
+die
+  rotate: false
+  xy: 2, 695
+  size: 296, 328
+  orig: 296, 328
+  offset: 0, 0
+  index: 1
+hit
+  rotate: false
+  xy: 896, 1771
+  size: 343, 242
+  orig: 343, 242
+  offset: 0, 0
+  index: 1
+hit
+  rotate: false
+  xy: 896, 1771
+  size: 343, 242
+  orig: 343, 242
+  offset: 0, 0
+  index: 6
+hit
+  rotate: false
+  xy: 1241, 1771
+  size: 343, 242
+  orig: 343, 242
+  offset: 0, 0
+  index: 2
+hit
+  rotate: false
+  xy: 1586, 1771
+  size: 343, 242
+  orig: 343, 242
+  offset: 0, 0
+  index: 3
+hit
+  rotate: false
+  xy: 300, 1111
+  size: 343, 242
+  orig: 343, 242
+  offset: 0, 0
+  index: 4
+hit
+  rotate: false
+  xy: 300, 867
+  size: 343, 242
+  orig: 343, 242
+  offset: 0, 0
+  index: 5
+idle
+  rotate: false
+  xy: 2, 464
+  size: 299, 229
+  orig: 299, 229
+  offset: 0, 0
+  index: 6
+idle
+  rotate: false
+  xy: 2, 233
+  size: 299, 229
+  orig: 299, 229
+  offset: 0, 0
+  index: 2
+idle
+  rotate: false
+  xy: 2, 2
+  size: 299, 229
+  orig: 299, 229
+  offset: 0, 0
+  index: 5
+idle
+  rotate: false
+  xy: 598, 1454
+  size: 299, 229
+  orig: 299, 229
+  offset: 0, 0
+  index: 1
+idle
+  rotate: false
+  xy: 899, 1540
+  size: 299, 229
+  orig: 299, 229
+  offset: 0, 0
+  index: 4
+idle
+  rotate: false
+  xy: 1200, 1540
+  size: 299, 229
+  orig: 299, 229
+  offset: 0, 0
+  index: 3

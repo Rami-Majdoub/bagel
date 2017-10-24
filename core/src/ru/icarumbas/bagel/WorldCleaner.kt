@@ -37,7 +37,7 @@ class WorldCleaner(private val entityDeleteList: ArrayList<Entity>,
             }
             engine.getEntitiesFor(Family.all(AIComponent::class.java).get()).forEach {
                 if (ai[it].entityTarget == deletingEntity) {
-                    ai[it].entityTarget = null
+                    ai[it].entityTarget = playerEntity
                 }
             }
 

@@ -36,6 +36,7 @@ class AwakeSystem : IteratingSystem {
     }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
+
         if (static.has(entity))
         body[entity].body.isActive = static[entity].mapPath == rm.path()
         if (roomId.has(entity) && !inActive.has(entity))

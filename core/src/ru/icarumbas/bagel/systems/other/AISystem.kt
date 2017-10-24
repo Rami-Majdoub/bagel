@@ -17,26 +17,21 @@ import ru.icarumbas.bagel.utils.inView
 
 class AISystem: IteratingSystem {
 
-    private val playerEntity: Entity
 
     private val rm: RoomManager
 
-    constructor(playerEntity: Entity, rm: RoomManager): super(Family.all(AIComponent::class.java).get()) {
-        this.playerEntity = playerEntity
+    constructor(rm: RoomManager): super(Family.all(AIComponent::class.java).get()) {
         this.rm = rm
     }
 
-    private fun isTargetRight(e: Entity): Boolean{
-        return body[AI[e].entityTarget].body.position.x > body[e].body.position.x
-    }
+    private fun isTargetRight(e: Entity) =
+            body[AI[e].entityTarget].body.position.x > body[e].body.position.x
 
-    private fun isTargetHigher(e: Entity): Boolean{
-        return body[AI[e].entityTarget].body.position.y > body[e].body.position.y
-    }
+    private fun isTargetHigher(e: Entity) =
+            body[AI[e].entityTarget].body.position.y > body[e].body.position.y
 
-    private fun isTargetEqual(e: Entity): Boolean{
-        return MathUtils.round(body[AI[e].entityTarget].body.position.x) == MathUtils.round(body[e].body.position.x)
-    }
+    private fun isTargetEqual(e: Entity) =
+            MathUtils.round(body[AI[e].entityTarget].body.position.x) == MathUtils.round(body[e].body.position.x)
 
     private fun isTargetNear(e: Entity): Boolean {
         with (body[AI[e].entityTarget].body.position) {
@@ -47,12 +42,9 @@ class AISystem: IteratingSystem {
         }
     }
 
-
-
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (entity.inView(rm)) {
 
-            if (AI[entity].entityTarget == null) AI[entity].entityTarget = playerEntity
 
             AI[entity].isTargetRight = isTargetRight(entity)
             AI[entity].isTargetHigher = isTargetHigher(entity)
@@ -61,7 +53,7 @@ class AISystem: IteratingSystem {
 
             if (AI[entity].isTargetNear || AI[entity].coldown > 0f) AI[entity].coldown += deltaTime
 
-            if (state[entity].states.contains(StateSystem.APPEARING)) {
+            if (state[entity].states.contains(StateSystem.APPEARING) && !AI[entity].appeared) {
                 if (animation[entity].animations[StateSystem.APPEARING]?.isAnimationFinished(state[entity].stateTime)!!
                         && state[entity].currentState == StateSystem.APPEARING) {
                     AI[entity].appeared = true

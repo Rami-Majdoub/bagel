@@ -11,10 +11,12 @@ private val ai = Mappers.AI
 private val plWeapon = Mappers.alwaysRender
 
 
-fun Entity.inView(rm: RoomManager): Boolean {
-         return (id.has(this) && id[this].id == rm.currentMapId) ||
-                 (static.has(this) && static[this].mapPath == rm.path()) ||
-                 pl.has(this) || plWeapon.has(this)
+fun Entity.inView(rm: RoomManager) = this.inView(rm, rm.currentMapId)
+
+fun Entity.inView(rm: RoomManager, mapId: Int): Boolean {
+    return (id.has(this) && id[this].id == mapId) ||
+            (static.has(this) && static[this].mapPath == rm.path()) ||
+            pl.has(this) || plWeapon.has(this)
 }
 
 fun Entity.rotatedRight(): Boolean{

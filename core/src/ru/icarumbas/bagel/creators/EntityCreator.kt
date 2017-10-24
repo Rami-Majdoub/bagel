@@ -159,7 +159,8 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                              rect: Rectangle,
                              objectPath: String,
                              atlas: TextureAtlas,
-                             r: Int): Boolean {
+                             r: Int,
+                             playerEntity: Entity): Boolean {
 
         engine.addEntity(when(objectPath){
 
@@ -480,7 +481,7 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 )))
                                 .add(StateComponent(ImmutableArray(Array.with(StateSystem.STANDING))))
                                 .add(RoomIdComponent(roomId))
-                                .add(AIComponent(refreshSpeed = MathUtils.random(.2f, .3f), attackDistance = 1f))
+                                .add(AIComponent(refreshSpeed = MathUtils.random(.2f, .3f), attackDistance = 1f, entityTarget = playerEntity))
                                 .add(SizeComponent(Vector2(64 / PIX_PER_M, 64 / PIX_PER_M), .15f))
                                 .add(AttackComponent(strength = roomId + 15, knockback = Vector2(2f, 2f)))
                                 .add(TextureComponent())
@@ -540,8 +541,8 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 ))
                                 .add(RoomIdComponent(roomId))
                                 .add(RunComponent(.25f, 1f))
-                                .add(AIComponent(refreshSpeed = MathUtils.random(.2f, .3f), attackDistance = 1f))
-                                .add(SizeComponent(Vector2(180 / PIX_PER_M, 230 / PIX_PER_M), .65f))
+                                .add(AIComponent(refreshSpeed = MathUtils.random(.2f, .3f), attackDistance = 1f, entityTarget = playerEntity))
+                                .add(SizeComponent(Vector2(180 / PIX_PER_M, 230 / PIX_PER_M), 1f))
                                 .add(WeaponComponent(
                                         type = WeaponSystem.SWING,
                                         entityLeft = createSwingWeaponEntity(
@@ -616,8 +617,8 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 ))
                                 .add(RoomIdComponent(roomId))
                                 .add(RunComponent(.5f, .5f))
-                                .add(AIComponent(refreshSpeed = MathUtils.random(.45f, .55f), attackDistance = 2f))
-                                .add(SizeComponent(Vector2(230 / PIX_PER_M, 230 / PIX_PER_M), .65f))
+                                .add(AIComponent(refreshSpeed = MathUtils.random(.45f, .55f), attackDistance = 2f, entityTarget = playerEntity))
+                                .add(SizeComponent(Vector2(230 / PIX_PER_M, 230 / PIX_PER_M), 1f))
                                 .add(WeaponComponent(
                                         type = WeaponSystem.SWING,
                                         entityLeft = createSwingWeaponEntity(
@@ -691,8 +692,8 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 ))
                                 .add(RoomIdComponent(roomId))
                                 .add(RunComponent(.25f, 2f))
-                                .add(AIComponent(refreshSpeed = MathUtils.random(.1f, .2f), attackDistance = 1f))
-                                .add(SizeComponent(Vector2(125 / PIX_PER_M, 202 / PIX_PER_M), .65f))
+                                .add(AIComponent(refreshSpeed = MathUtils.random(.1f, .2f), attackDistance = 1f, entityTarget = playerEntity))
+                                .add(SizeComponent(Vector2(125 / PIX_PER_M, 202 / PIX_PER_M), 1f))
                                 .add(WeaponComponent(
                                         type = WeaponSystem.SWING,
                                         entityLeft = createSwingWeaponEntity(
@@ -771,8 +772,8 @@ class EntityCreator(private val b2DWorldCreator: B2DWorldCreator,
                                 ))
                                 .add(RoomIdComponent(roomId))
                                 .add(RunComponent(.225f, .75f))
-                                .add(AIComponent(refreshSpeed = MathUtils.random(.7f, 1f), attackDistance = 2f))
-                                .add(SizeComponent(Vector2(85 / PIX_PER_M, 202 / PIX_PER_M), .65f))
+                                .add(AIComponent(refreshSpeed = MathUtils.random(.7f, 1f), attackDistance = 2f, entityTarget = playerEntity))
+                                .add(SizeComponent(Vector2(85 / PIX_PER_M, 202 / PIX_PER_M), 1f))
                                 .add(WeaponComponent(
                                         type = WeaponSystem.SWING,
                                         entityLeft = createSwingWeaponEntity(

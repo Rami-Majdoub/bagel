@@ -3,6 +3,7 @@ package ru.icarumbas.bagel.creators
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.MathUtils
+import ru.icarumbas.PIX_PER_M
 import ru.icarumbas.REG_ROOM_HEIGHT
 import ru.icarumbas.REG_ROOM_WIDTH
 import ru.icarumbas.TILED_MAPS_TOTAL
@@ -17,18 +18,24 @@ class WorldCreator (private val assetManager: AssetManager){
     private lateinit var newRoom: Room
     private var roomsTotal = 0
     private var meshCheckSides = IntArray(8)
+    private var angularRoomChance = -30
+    private var totalNotClosedGates = 0
 
     fun createWorld(worldSize: Int, rm: RoomManager){
-        mesh = Array(worldSize / 2 + 1) { IntArray(worldSize / 2 + 1) }
+        mesh = Array(worldSize) { IntArray(worldSize) }
 
         mesh.forEach { it.fill(0) }
 
         // Set center of the mesh
-        mesh[25][25] = 1
+        mesh[worldSize / 2][worldSize / 2] = 1
 
+        totalNotClosedGates = countRoomGates(rm.rooms.first().path, rm.rooms.first())
+        println(countRoomGates(rm.rooms.first().path, rm.rooms.first()))
+
+        var i = 0
 
         // Try to create map for each map[i] side
-        for (i in 0..worldSize) {
+        while (totalNotClosedGates != 0) {
             if (i == rm.size()) break
 
             generateRoom("Right", 2, i, 1, 0, 2, 1, 0, 1, 0, 3, rm)
@@ -46,18 +53,63 @@ class WorldCreator (private val assetManager: AssetManager){
                 generateRoom( "Down", 7, i, 0, 1, 2, 1, 2, 3, 0, 3, rm)
             }
 
+            i++
+
         }
 
 
     }
 
-    private fun rand(values: Int, rm: RoomManager, count: Int): Int {
-        val r = MathUtils.random(0, values)
+    private fun countRoomGates(roomPath: String, room: Room): Int{
+        var gates = 0
+
+        assetManager[roomPath, TiledMap::class.java].properties.keys.forEach {
+            if (it[0].isUpperCase() && it != "Height" && it != "Width") {
+                gates += when {
+                    room.width != REG_ROOM_WIDTH && (it == "Up" || it == "Down") -> 2
+                    room.height != REG_ROOM_HEIGHT && (it == "Right" || it == "Left") -> 2
+                    else -> 1
+                }
+            }
+        }
+
+        return gates
+    }
+
+    private fun rand(values: Int, rm: RoomManager, count: Int, side: String): Int {
+
+        val r = if (MathUtils.random(100) > angularRoomChance) {
+            MathUtils.random(0, values)
+        } else {
+            when (side) {
+                "Left" -> 13
+                "Right" -> 16
+                "Up" -> 15
+                else -> 14
+            }
+        }
+
         return if (rm.rooms[count].path != "Maps/Map$r.tmx")
             r
-        else
-            rand(values, rm, count)
+        else {
+            rand(values, rm, count, side)
+        }
     }
+
+   /* private fun drawMesh(count: Int){
+        println("Count: $count, Size: $roomsTotal")
+
+        mesh.forEach {
+            x -> x.forEach { y ->
+            if (y == 1) print("* ") else print("  ")
+        }
+            println()
+        }
+
+        println(totalNotClosedGates)
+
+
+    }*/
 
     private fun checkFit(side: String, meshX: Int, meshY: Int, mapRoomWidth: Int, mapRoomHeight: Int): Boolean {
         meshCheckSides = when (side) {
@@ -78,7 +130,7 @@ class WorldCreator (private val assetManager: AssetManager){
 
     private fun chooseMap(side: String, count: Int, meshX: Int, meshY: Int, rm: RoomManager): Room {
 
-        newRoom = rm.createRoom(assetManager, "Maps/Map${rand(TILED_MAPS_TOTAL - 1, rm, count)}.tmx", roomsTotal)
+        newRoom = rm.createRoom(assetManager, "Maps/Map${rand(TILED_MAPS_TOTAL - 1, rm, count, side)}.tmx", roomsTotal)
 
         val mapRoomWidth = (newRoom.width / REG_ROOM_WIDTH).toInt()
         val mapRoomHeight = (newRoom.height / REG_ROOM_HEIGHT).toInt()
@@ -157,12 +209,21 @@ class WorldCreator (private val assetManager: AssetManager){
                 if (zeroRoomChance < 750) zeroRoomChance += 15
                 roomsTotal++
                 rm.rooms.add(chooseMap(sideName, count, meshX, meshY, rm))
+                totalNotClosedGates += countRoomGates(rm.rooms.last().path, rm.rooms.last())
+
                 rm.rooms[roomsTotal].meshCoords = intArrayOf(meshX + meshCheckSides[0], meshY + meshCheckSides[1], meshX + meshCheckSides[6], meshY + meshCheckSides[7])
+
                 rm.rooms[count].passes[previousPassLink] = roomsTotal
+                totalNotClosedGates -= 1
+
 
                 // Fill mesh on new room's coordinates
                 for (i in 0..7 step 2) mesh[meshY + meshCheckSides[i + 1]][meshX + meshCheckSides[i]] = 1
 
+                if (angularRoomChance < 75)
+                angularRoomChance += 1
+
+//                drawMesh(count)
             }
 
             // Else add link
@@ -173,6 +234,7 @@ class WorldCreator (private val assetManager: AssetManager){
                         meshX + stepX == it.meshCoords[meshClosestX2] && meshY + stepY == it.meshCoords[meshClosestY2]) {
                         // Add link to main room
                         rm.rooms[count].passes[previousPassLink] = rm.rooms.indexOf(it)
+                        totalNotClosedGates -= 1
                         return
                     }
                 }

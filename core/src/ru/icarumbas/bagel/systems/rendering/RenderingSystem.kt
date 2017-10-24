@@ -14,7 +14,6 @@ import ru.icarumbas.bagel.components.physics.StaticComponent
 import ru.icarumbas.bagel.components.rendering.AlwaysRenderingMarkerComponent
 import ru.icarumbas.bagel.components.rendering.SizeComponent
 import ru.icarumbas.bagel.components.rendering.TextureComponent
-import ru.icarumbas.bagel.utils.Mappers
 import ru.icarumbas.bagel.utils.Mappers.Mappers.body
 import ru.icarumbas.bagel.utils.Mappers.Mappers.size
 import ru.icarumbas.bagel.utils.Mappers.Mappers.texture
@@ -52,6 +51,7 @@ class RenderingSystem : SortedIteratingSystem {
             size[it].spriteSize.y = texture[it].tex!!.regionHeight / PIX_PER_M * size[it].scale
             size[it].spriteSize.x = texture[it].tex!!.regionWidth / PIX_PER_M * size[it].scale
 
+            if (texture[it].color != Color.WHITE)
             batch.color = texture[it].color
 
             batch.begin()
@@ -70,6 +70,7 @@ class RenderingSystem : SortedIteratingSystem {
 
             batch.end()
 
+            if (batch.color != Color.WHITE)
             batch.color = Color.WHITE
         }
 

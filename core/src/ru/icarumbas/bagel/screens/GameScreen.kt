@@ -61,11 +61,11 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         val animationCreator = AnimationCreator()
         val worldCreator = WorldCreator(game.assetManager)
         entityCreator = EntityCreator(b2DWorldCreator, game.assetManager, engine, animationCreator, b2DWorldCreator.createPlayerBody())
-        rm = RoomManager(rooms, game.assetManager, entityCreator, engine, serializedObjects, game.worldIO)
 
         playerEntity = entityCreator.createPlayerEntity(
                 animationCreator,
                 game.assetManager["Packs/GuyKnight.pack", TextureAtlas::class.java])
+        rm = RoomManager(rooms, game.assetManager, entityCreator, engine, serializedObjects, game.worldIO, playerEntity)
 
         hud = Hud(playerEntity)
         minimap = Minimap(hud.stage, rm, game.assetManager, playerEntity)
@@ -105,15 +105,15 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
             addSystem(RoomChangingSystem(rm))
             addSystem(HealthSystem(rm, world, coins, entityDeleteList))
             addSystem(StateSystem(rm))
-            addSystem(AISystem(playerEntity, rm))
+            addSystem(AISystem(rm))
             addSystem(OpeningSystem(uiInputListener, rm, entityDeleteList))
             addSystem(LootSystem(hud, rm, playerEntity, entityDeleteList))
 
             // Velocity
-            addSystem(RunningSystem(hud))
-            addSystem(JumpingSystem(hud))
+            addSystem(RunningSystem(hud, rm))
+            addSystem(JumpingSystem(hud, rm))
             addSystem(TeleportSystem(playerEntity, rm))
-            addSystem(FlyingSystem(playerEntity))
+            addSystem(FlyingSystem(playerEntity, rm))
 
             // Physic
             addSystem(AwakeSystem(rm))

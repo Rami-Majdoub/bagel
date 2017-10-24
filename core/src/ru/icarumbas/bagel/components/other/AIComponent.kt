@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 
 
-class AIComponent(var refreshSpeed: Float, var attackDistance: Float, var entityTarget: Entity? = null) : Component {
+class AIComponent(var refreshSpeed: Float, var attackDistance: Float, var entityTarget: Entity) : Component {
 
     var isTargetRight: Boolean = true
     var isTargetHigher: Boolean = true
