@@ -10,42 +10,42 @@ appear
   size: 296, 226
   orig: 296, 226
   offset: 0, 0
-  index: 1
+  index: 6
 appear
   rotate: false
   xy: 899, 1312
   size: 296, 226
   orig: 296, 226
   offset: 0, 0
-  index: 2
+  index: 10
 appear
   rotate: false
   xy: 1197, 1312
   size: 296, 226
   orig: 296, 226
   offset: 0, 0
-  index: 10
+  index: 11
 appear
   rotate: false
   xy: 303, 639
   size: 296, 226
   orig: 296, 226
   offset: 0, 0
-  index: 11
+  index: 12
 appear
   rotate: false
   xy: 303, 411
   size: 296, 226
   orig: 296, 226
   offset: 0, 0
-  index: 12
+  index: 13
 appear
   rotate: false
   xy: 303, 183
   size: 296, 226
   orig: 296, 226
   offset: 0, 0
-  index: 13
+  index: 1
 appear
   rotate: false
   xy: 1501, 1315
@@ -80,28 +80,28 @@ appear
   size: 296, 226
   orig: 296, 226
   offset: 0, 0
-  index: 6
+  index: 8
 appear
   rotate: false
   xy: 899, 1084
   size: 296, 226
   orig: 296, 226
   offset: 0, 0
-  index: 7
+  index: 9
 appear
   rotate: false
   xy: 1197, 1084
   size: 296, 226
   orig: 296, 226
   offset: 0, 0
-  index: 8
+  index: 7
 appear
   rotate: false
   xy: 899, 856
   size: 296, 226
   orig: 296, 226
   offset: 0, 0
-  index: 9
+  index: 2
 appear
   rotate: false
   xy: 899, 628
@@ -115,49 +115,49 @@ die
   size: 296, 328
   orig: 296, 328
   offset: 0, 0
-  index: 2
+  index: 1
 die
   rotate: false
   xy: 2, 1355
   size: 296, 328
   orig: 296, 328
   offset: 0, 0
-  index: 3
+  index: 2
 die
   rotate: false
   xy: 300, 1685
   size: 296, 328
   orig: 296, 328
   offset: 0, 0
-  index: 5
+  index: 3
 die
   rotate: false
   xy: 2, 1025
   size: 296, 328
   orig: 296, 328
   offset: 0, 0
-  index: 6
+  index: 4
 die
   rotate: false
   xy: 300, 1355
   size: 296, 328
   orig: 296, 328
   offset: 0, 0
-  index: 7
+  index: 5
 die
   rotate: false
   xy: 598, 1685
   size: 296, 328
   orig: 296, 328
   offset: 0, 0
-  index: 4
+  index: 6
 die
   rotate: false
   xy: 2, 695
   size: 296, 328
   orig: 296, 328
   offset: 0, 0
-  index: 1
+  index: 7
 hit
   rotate: false
   xy: 896, 1771
@@ -213,32 +213,32 @@ idle
   size: 299, 229
   orig: 299, 229
   offset: 0, 0
-  index: 2
+  index: 3
 idle
   rotate: false
   xy: 2, 2
   size: 299, 229
   orig: 299, 229
   offset: 0, 0
-  index: 5
+  index: 2
 idle
   rotate: false
   xy: 598, 1454
   size: 299, 229
   orig: 299, 229
   offset: 0, 0
-  index: 1
+  index: 4
 idle
   rotate: false
   xy: 899, 1540
   size: 299, 229
   orig: 299, 229
   offset: 0, 0
-  index: 4
+  index: 1
 idle
   rotate: false
   xy: 1200, 1540
   size: 299, 229
   orig: 299, 229
   offset: 0, 0
-  index: 3
+  index: 5
