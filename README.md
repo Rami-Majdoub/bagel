@@ -2,7 +2,9 @@
 Libgdx Android and IOS game written in Kotlin using Ashley and Box2d. Game is mix of roguelike and platformer. 
 World, entities and room objects are fully random.
 
-## Some screenshots
+## Some screenshots:
+
+Finished minimap.
 ![Just random moment](https://github.com/icarumbas/bagel/blob/master/android/assets/Screenshot1.png)
 
 ## Future plans
