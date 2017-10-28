@@ -9,7 +9,6 @@ import ru.icarumbas.bagel.components.other.RoomIdComponent
 import ru.icarumbas.bagel.components.other.StateComponent
 import ru.icarumbas.bagel.components.physics.StaticComponent
 import ru.icarumbas.bagel.components.rendering.AlwaysRenderingMarkerComponent
-import ru.icarumbas.bagel.utils.Mappers
 import ru.icarumbas.bagel.utils.Mappers.Mappers.AI
 import ru.icarumbas.bagel.utils.Mappers.Mappers.body
 import ru.icarumbas.bagel.utils.Mappers.Mappers.damage

@@ -2,13 +2,8 @@ package ru.icarumbas
 
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.assets.loaders.TextureAtlasLoader
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
-import com.badlogic.gdx.maps.tiled.TiledMap
-import com.badlogic.gdx.maps.tiled.TmxMapLoader
 import ru.icarumbas.bagel.WorldIO
-import ru.icarumbas.bagel.screens.MainMenuScreen
+import ru.icarumbas.bagel.screens.LoadingScreen
 
 const val GROUND_BIT: Short = 2
 const val PLATFORM_BIT: Short = 4
@@ -43,29 +38,6 @@ class Bagel : Game() {
         // Asset manager loading
         assetManager = AssetManager()
 
-        // Rooms
-        assetManager.setLoader(TiledMap::class.java, TmxMapLoader(InternalFileHandleResolver()))
-        (0 until TILED_MAPS_TOTAL).forEach {
-            assetManager.load("Maps/Map$it.tmx", TiledMap::class.java, TmxMapLoader.Parameters().apply {
-                generateMipMaps = true
-            })
-        }
-
-        // Texture Atlases
-        assetManager.setLoader(TextureAtlas::class.java, TextureAtlasLoader(InternalFileHandleResolver()))
-        assetManager.load("Packs/GuyKnight.pack", TextureAtlas::class.java)
-        assetManager.load("Packs/Main_Menu.txt", TextureAtlas::class.java)
-        assetManager.load("Packs/items.pack", TextureAtlas::class.java)
-        assetManager.load("Packs/Enemies/Skeleton.pack", TextureAtlas::class.java)
-        assetManager.load("Packs/Enemies/Golem.pack", TextureAtlas::class.java)
-        assetManager.load("Packs/Enemies/Vamp.pack", TextureAtlas::class.java)
-        assetManager.load("Packs/Enemies/Zombie.pack", TextureAtlas::class.java)
-        assetManager.load("Packs/weapons.pack", TextureAtlas::class.java)
-        assetManager.load("Packs/Enemies/MiniDragon.pack", TextureAtlas::class.java)
-        assetManager.load("Packs/minimap.pack", TextureAtlas::class.java)
-
-
-
         // Sounds
         /*assetManager.setLoader(Sound::class.java, SoundLoader(InternalFileHandleResolver()))
         assetManager.load("Sounds/openchest.wav", Sound::class.java)
@@ -77,10 +49,8 @@ class Bagel : Game() {
         assetManager.load("Sounds/steps.wav", Sound::class.java)
         assetManager.load("Sounds/sword.wav", Sound::class.java)*/
 
-        assetManager.finishLoading()
-
         worldIO = WorldIO()
-        setScreen(MainMenuScreen(this))
+        setScreen(LoadingScreen(this))
     }
 
     override fun dispose() {

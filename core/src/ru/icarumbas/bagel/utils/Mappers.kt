@@ -8,8 +8,8 @@ import ru.icarumbas.bagel.components.physics.StaticComponent
 import ru.icarumbas.bagel.components.physics.WeaponComponent
 import ru.icarumbas.bagel.components.rendering.AlwaysRenderingMarkerComponent
 import ru.icarumbas.bagel.components.rendering.AnimationComponent
-import ru.icarumbas.bagel.components.rendering.TextureComponent
 import ru.icarumbas.bagel.components.rendering.SizeComponent
+import ru.icarumbas.bagel.components.rendering.TextureComponent
 import ru.icarumbas.bagel.components.velocity.FlyComponent
 import ru.icarumbas.bagel.components.velocity.JumpComponent
 import ru.icarumbas.bagel.components.velocity.RunComponent

@@ -2,24 +2,20 @@ package ru.icarumbas.bagel.screens.scenes
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.Sprite
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
-import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.ui.*
+import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad
 import com.badlogic.gdx.utils.viewport.StretchViewport
-import ru.icarumbas.PIX_PER_M
 import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.utils.Mappers.Mappers.damage
-import java.util.*
 
 
 class Hud(private val playerEntity: Entity){
@@ -32,9 +28,10 @@ class Hud(private val playerEntity: Entity){
     private var localPos = Vector2()
     private val fakeTouchDownEvent = InputEvent()
 
+    private val HP = Image(Texture("hpBar.png"))
+
     // Debug
     private val currentRoom: Label
-    private val hp: Label
     private val fps: Label
     private val money: Label
 
@@ -56,7 +53,6 @@ class Hud(private val playerEntity: Entity){
         }
 
         val lStyle = Label.LabelStyle(BitmapFont(), Color.RED)
-        hp = Label("HP:", lStyle)
         fps = Label("FPS: ", lStyle)
         money = Label("Money: ", lStyle)
         currentRoom = Label("Current room: ", lStyle)
@@ -79,11 +75,11 @@ class Hud(private val playerEntity: Entity){
         currentRoom.setSize(stage.width/10, stage.height/10)
         stage.addActor(currentRoom)
 
-        hp.setPosition(3f, stage.height - hp.height - 20)
-        hp.setSize(stage.width / 10, stage.height / 10)
-        stage.addActor(hp)
+        HP.setSize(0f, stage.height / 15)
+        HP.setPosition(0f, stage.height - HP.height)
+        stage.addActor(HP)
 
-        fps.setPosition(hp.x, hp.y - 15)
+        fps.setPosition(3f, HP.y - 15)
         stage.addActor(fps)
 
         money.setPosition(fps.x, fps.y - 15)
@@ -99,7 +95,6 @@ class Hud(private val playerEntity: Entity){
         stage.addActor(openButton)
 
 
-
         fakeTouchDownEvent.type = InputEvent.Type.touchDown
 
     }
@@ -113,7 +108,7 @@ class Hud(private val playerEntity: Entity){
         currentRoom.setText("${rm.currentMapId}")
         getDirection()
         fps.setText("FPS: ${Gdx.graphics.framesPerSecond}")
-        hp.setText("HP: ${damage[playerEntity].HP}")
+        HP.width = stage.width / 5 * damage[playerEntity].HP / 100
     }
 
     fun setOpenButtonVisible(visible: Boolean) {

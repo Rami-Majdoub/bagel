@@ -7,7 +7,6 @@ import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.components.other.RoomIdComponent
 import ru.icarumbas.bagel.components.physics.BodyComponent
 import ru.icarumbas.bagel.components.physics.StaticComponent
-import ru.icarumbas.bagel.utils.Mappers
 import ru.icarumbas.bagel.utils.Mappers.Mappers.body
 import ru.icarumbas.bagel.utils.Mappers.Mappers.inActive
 import ru.icarumbas.bagel.utils.Mappers.Mappers.roomId

@@ -1,0 +1,76 @@
+
+LoadingScreen.png
+size: 2048,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+IcaIcon
+  rotate: false
+  xy: 1550, 50
+  size: 400, 70
+  orig: 400, 70
+  offset: 0, 0
+  index: -1
+loading-bar-anim
+  rotate: false
+  xy: 2, 9
+  size: 501, 49
+  orig: 501, 49
+  offset: 0, 0
+  index: 3
+loading-bar-anim
+  rotate: false
+  xy: 544, 71
+  size: 501, 49
+  orig: 501, 49
+  offset: 0, 0
+  index: 1
+loading-bar-anim
+  rotate: false
+  xy: 1047, 71
+  size: 501, 49
+  orig: 501, 49
+  offset: 0, 0
+  index: 2
+loading-bar-anim
+  rotate: false
+  xy: 544, 20
+  size: 501, 49
+  orig: 501, 49
+  offset: 0, 0
+  index: 4
+loading-bar-anim
+  rotate: false
+  xy: 1047, 20
+  size: 501, 49
+  orig: 501, 49
+  offset: 0, 0
+  index: 5
+loading-bar-hidden
+  rotate: false
+  xy: 1952, 66
+  size: 33, 54
+  orig: 33, 54
+  offset: 0, 0
+  index: -1
+loading-frame
+  rotate: false
+  xy: 2, 60
+  size: 540, 60
+  orig: 540, 60
+  offset: 0, 0
+  index: -1
+loading-frame-bg
+  rotate: false
+  xy: 2, 2
+  size: 5, 5
+  orig: 5, 5
+  offset: 0, 0
+  index: -1
+screen-bg
+  rotate: false
+  xy: 505, 53
+  size: 5, 5
+  orig: 5, 5
+  offset: 0, 0
+  index: -1

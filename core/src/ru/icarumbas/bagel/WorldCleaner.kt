@@ -3,8 +3,6 @@ package ru.icarumbas.bagel
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
-import com.badlogic.gdx.Game
-import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.physics.box2d.World
 import ru.icarumbas.Bagel
 import ru.icarumbas.bagel.components.other.AIComponent

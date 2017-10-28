@@ -7,9 +7,7 @@ import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.components.other.AIComponent
 import ru.icarumbas.bagel.components.other.PlayerComponent
 import ru.icarumbas.bagel.components.physics.WeaponComponent
-import ru.icarumbas.bagel.screens.scenes.Hud
 import ru.icarumbas.bagel.screens.scenes.UInputListener
-import ru.icarumbas.bagel.utils.Mappers
 import ru.icarumbas.bagel.utils.Mappers.Mappers.AI
 import ru.icarumbas.bagel.utils.Mappers.Mappers.body
 import ru.icarumbas.bagel.utils.Mappers.Mappers.damage

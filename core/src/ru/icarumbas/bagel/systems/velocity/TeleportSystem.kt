@@ -7,14 +7,13 @@ import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.components.other.AIComponent
 import ru.icarumbas.bagel.components.velocity.TeleportComponent
 import ru.icarumbas.bagel.systems.other.StateSystem
-import ru.icarumbas.bagel.utils.Mappers.Mappers.teleport
 import ru.icarumbas.bagel.utils.Mappers.Mappers.AI
 import ru.icarumbas.bagel.utils.Mappers.Mappers.animation
 import ru.icarumbas.bagel.utils.Mappers.Mappers.body
-import ru.icarumbas.bagel.utils.Mappers.Mappers.state
 import ru.icarumbas.bagel.utils.Mappers.Mappers.size
+import ru.icarumbas.bagel.utils.Mappers.Mappers.state
+import ru.icarumbas.bagel.utils.Mappers.Mappers.teleport
 import ru.icarumbas.bagel.utils.inView
-import ru.icarumbas.bagel.utils.rotatedRight
 
 class TeleportSystem : IteratingSystem{
 

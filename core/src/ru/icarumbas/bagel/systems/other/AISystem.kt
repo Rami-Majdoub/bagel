@@ -6,7 +6,6 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.MathUtils
 import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.components.other.AIComponent
-import ru.icarumbas.bagel.utils.Mappers
 import ru.icarumbas.bagel.utils.Mappers.Mappers.AI
 import ru.icarumbas.bagel.utils.Mappers.Mappers.animation
 import ru.icarumbas.bagel.utils.Mappers.Mappers.body

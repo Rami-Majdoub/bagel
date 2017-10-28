@@ -6,9 +6,7 @@ import com.badlogic.ashley.systems.IteratingSystem
 import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.components.other.LootComponent
 import ru.icarumbas.bagel.screens.scenes.Hud
-import ru.icarumbas.bagel.utils.Mappers
 import ru.icarumbas.bagel.utils.Mappers.Mappers.loot
-import ru.icarumbas.bagel.utils.Mappers.Mappers.weapon
 import ru.icarumbas.bagel.utils.inView
 
 

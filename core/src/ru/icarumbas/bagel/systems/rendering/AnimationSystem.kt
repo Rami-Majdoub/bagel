@@ -3,7 +3,6 @@ package ru.icarumbas.bagel.systems.rendering
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
-import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.MathUtils
 import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.components.other.RoomIdComponent
@@ -12,7 +11,6 @@ import ru.icarumbas.bagel.components.physics.StaticComponent
 import ru.icarumbas.bagel.components.rendering.AlwaysRenderingMarkerComponent
 import ru.icarumbas.bagel.components.rendering.AnimationComponent
 import ru.icarumbas.bagel.systems.other.StateSystem
-import ru.icarumbas.bagel.utils.Mappers
 import ru.icarumbas.bagel.utils.Mappers.Mappers.animation
 import ru.icarumbas.bagel.utils.Mappers.Mappers.body
 import ru.icarumbas.bagel.utils.Mappers.Mappers.state

@@ -2,10 +2,11 @@ package ru.icarumbas.bagel;
 
 import com.badlogic.gdx.backends.iosmoe.IOSApplication;
 import com.badlogic.gdx.backends.iosmoe.IOSApplicationConfiguration;
+
 import org.moe.natj.general.Pointer;
-import ru.icarumbas.Bagel;
 
 import apple.uikit.c.UIKit;
+import ru.icarumbas.Bagel;
 
 public class IOSMoeLauncher extends IOSApplication.Delegate {
 

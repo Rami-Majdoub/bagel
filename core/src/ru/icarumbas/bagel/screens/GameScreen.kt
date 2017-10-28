@@ -146,7 +146,7 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         minimap.update()
     }
 
-    override fun pause() {
+    override fun hide() {
         val visibleRooms = ArrayList<Int>()
         minimap.minimapFrame.children.filter { it.isVisible }.forEach {
             visibleRooms.add(minimap.minimapFrame.children.indexOf(it))

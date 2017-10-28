@@ -3,7 +3,6 @@ package ru.icarumbas.bagel.creators
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.MathUtils
-import ru.icarumbas.PIX_PER_M
 import ru.icarumbas.REG_ROOM_HEIGHT
 import ru.icarumbas.REG_ROOM_WIDTH
 import ru.icarumbas.TILED_MAPS_TOTAL

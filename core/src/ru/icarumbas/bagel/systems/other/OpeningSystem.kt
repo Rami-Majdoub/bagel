@@ -8,7 +8,6 @@ import com.badlogic.gdx.math.Vector2
 import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.components.other.DoorComponent
 import ru.icarumbas.bagel.components.other.OpenComponent
-import ru.icarumbas.bagel.screens.scenes.Hud
 import ru.icarumbas.bagel.screens.scenes.UInputListener
 import ru.icarumbas.bagel.utils.Mappers.Mappers.animation
 import ru.icarumbas.bagel.utils.Mappers.Mappers.body
