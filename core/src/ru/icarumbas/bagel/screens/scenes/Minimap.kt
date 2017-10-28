@@ -153,7 +153,7 @@ class Minimap {
                                         .apply {
                                             setSize(regularMapWidth * 2f, regularMapHeight * 2f)
                                             setRegularPositionOnMinimap(x, y, mesh)
-//                                            isVisible = false
+                                            isVisible = false
                                         })
                             }
                             room.width != 1152 / PIX_PER_M -> {
@@ -161,7 +161,7 @@ class Minimap {
                                         .apply {
                                             setSize(regularMapWidth * 2f, regularMapHeight.toFloat())
                                             setRegularPositionOnMinimap(x, y, mesh)
-//                                            isVisible = false
+                                            isVisible = false
                                         })
                             }
                             room.height != 768 / PIX_PER_M -> {
@@ -169,7 +169,7 @@ class Minimap {
                                         .apply {
                                             setSize(regularMapWidth.toFloat(), regularMapHeight * 2f)
                                             setRegularPositionOnMinimap(x, y, mesh)
-//                                            isVisible = false
+                                            isVisible = false
                                         })
                             }
                             else -> {
@@ -177,7 +177,7 @@ class Minimap {
                                         .apply {
                                             setSize(regularMapWidth.toFloat(), regularMapHeight.toFloat())
                                             setRegularPositionOnMinimap(x, y, mesh)
-//                                            isVisible = false
+                                            isVisible = false
                                         })
                             }
                         }

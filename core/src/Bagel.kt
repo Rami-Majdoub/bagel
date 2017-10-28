@@ -33,7 +33,7 @@ const val TILED_MAPS_TOTAL = 20
 //TODO("Golems, skeletons not affected by spikes. Golem destroys them')
 
 
-class Bagel: Game() {
+class Bagel : Game() {
 
 
     lateinit var worldIO : WorldIO

@@ -73,9 +73,9 @@ class B2DWorldCreator(private val world: World) {
     }
 
     fun definePolylineMapObjectBody(obj: PolylineMapObject,
-                                type: BodyDef.BodyType,
-                                cBit: Short,
-                                mBit: Short = -1): Body{
+                                    type: BodyDef.BodyType,
+                                    cBit: Short,
+                                    mBit: Short = -1): Body{
         val def = BodyDef()
         def.type = type
 
@@ -98,6 +98,7 @@ class B2DWorldCreator(private val world: World) {
         body.isActive = false
 
         chainShape.dispose()
+
         return body
     }
 

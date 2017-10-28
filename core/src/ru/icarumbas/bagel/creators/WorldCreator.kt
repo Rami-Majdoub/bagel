@@ -18,7 +18,7 @@ class WorldCreator (private val assetManager: AssetManager){
     private lateinit var newRoom: Room
     private var roomsTotal = 0
     private var meshCheckSides = IntArray(8)
-    private var angularRoomChance = -30
+    private var angularRoomChance = 0
     private var totalNotClosedGates = 0
 
     fun createWorld(worldSize: Int, rm: RoomManager){
@@ -54,6 +54,8 @@ class WorldCreator (private val assetManager: AssetManager){
             }
 
             i++
+
+            if (totalNotClosedGates > 25) angularRoomChance = 75
 
         }
 
@@ -219,9 +221,6 @@ class WorldCreator (private val assetManager: AssetManager){
 
                 // Fill mesh on new room's coordinates
                 for (i in 0..7 step 2) mesh[meshY + meshCheckSides[i + 1]][meshX + meshCheckSides[i]] = 1
-
-                if (angularRoomChance < 75)
-                angularRoomChance += 1
 
 //                drawMesh(count)
             }
