@@ -1,0 +1,76 @@
+
+UI.png
+size: 1024,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Empty
+  rotate: false
+  xy: 720, 216
+  size: 18, 12
+  orig: 18, 12
+  offset: 0, 0
+  index: -1
+Point
+  rotate: false
+  xy: 2, 22
+  size: 4, 4
+  orig: 4, 4
+  offset: 0, 0
+  index: -1
+attackButton
+  rotate: false
+  xy: 462, 2
+  size: 160, 160
+  orig: 160, 160
+  offset: 0, 0
+  index: -1
+healthBar
+  rotate: false
+  xy: 204, 32
+  size: 196, 64
+  orig: 196, 64
+  offset: 0, 0
+  index: -1
+barBackground
+  rotate: false
+  xy: 204, 98
+  size: 256, 64
+  orig: 256, 64
+  offset: 0, 0
+  index: -1
+barForeground
+  rotate: false
+  xy: 462, 164
+  size: 256, 64
+  orig: 256, 64
+  offset: 0, 0
+  index: -1
+manaBar
+  rotate: false
+  xy: 204, 164
+  size: 256, 64
+  orig: 256, 64
+  offset: 0, 0
+  index: -1
+open
+  rotate: false
+  xy: 624, 82
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+touchBackground
+  rotate: false
+  xy: 2, 28
+  size: 200, 200
+  orig: 200, 200
+  offset: 0, 0
+  index: -1
+touchKnob
+  rotate: false
+  xy: 624, 8
+  size: 72, 72
+  orig: 72, 72
+  offset: 0, 0
+  index: -1

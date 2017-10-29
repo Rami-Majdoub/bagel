@@ -7,8 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 
 
 class UInputListener(private val stage: Stage,
-                     private val hud: Hud,
-                     private val minimap: Minimap): InputListener() {
+                     private val hud: Hud): InputListener() {
 
 
     var openButtonPressed = false
@@ -18,7 +17,7 @@ class UInputListener(private val stage: Stage,
     init {
         hud.attackButton.addListener(this)
         hud.openButton.addListener(this)
-        minimap.minimapFrame.addListener(this)
+        hud.minimap.minimapFrame.addListener(this)
     }
 
     override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
@@ -33,15 +32,15 @@ class UInputListener(private val stage: Stage,
                 hud.openButton.color = Color.WHITE
             }
 
-            minimap.minimapFrame -> {
+            hud.minimap.minimapFrame -> {
 
-                minimap.minimapFrame.setSize(stage.width / 4, stage.height / 4)
-                minimap.minimapFrame.setPosition(
-                        stage.width - minimap.minimapFrame.width,
-                        stage.height - minimap.minimapFrame.height)
-                minimap.playerPointOnMap.setPosition(
-                        minimap.minimapFrame.x + minimap.minimapFrame.width / 2,
-                        minimap.minimapFrame.y + minimap.minimapFrame.height / 2)
+                hud.minimap.minimapFrame.setSize(stage.width / 4, stage.height / 4)
+                hud.minimap.minimapFrame.setPosition(
+                        stage.width - hud.minimap.minimapFrame.width,
+                        stage.height - hud.minimap.minimapFrame.height)
+                hud.minimap.playerPointOnMap.setPosition(
+                        hud.minimap.minimapFrame.x + hud.minimap.minimapFrame.width / 2,
+                        hud.minimap.minimapFrame.y + hud.minimap.minimapFrame.height / 2)
             }
         }
     }
@@ -58,13 +57,13 @@ class UInputListener(private val stage: Stage,
                 hud.openButton.color = Color.GRAY
             }
 
-            minimap.minimapFrame -> {
+            hud.minimap.minimapFrame -> {
 
-                minimap.minimapFrame.setSize(stage.width, stage.height)
-                minimap.minimapFrame.setPosition(0f, 0f)
-                minimap.playerPointOnMap.setPosition(
-                        stage.width / 2 + minimap.playerPointOnMap.width / 2,
-                        stage.height / 2 + minimap.playerPointOnMap.height / 2)
+                hud.minimap.minimapFrame.setSize(stage.width, stage.height)
+                hud.minimap.minimapFrame.setPosition(0f, 0f)
+                hud.minimap.playerPointOnMap.setPosition(
+                        stage.width / 2 + hud.minimap.playerPointOnMap.width / 2,
+                        stage.height / 2 + hud.minimap.playerPointOnMap.height / 2)
             }
 
         }

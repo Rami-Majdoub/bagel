@@ -85,6 +85,7 @@ class LoadingScreen(private val game: Bagel) : ScreenAdapter() {
         game.assetManager.load("Packs/weapons.pack", TextureAtlas::class.java)
         game.assetManager.load("Packs/Enemies/MiniDragon.pack", TextureAtlas::class.java)
         game.assetManager.load("Packs/minimap.pack", TextureAtlas::class.java)
+        game.assetManager.load("Packs/UI.pack", TextureAtlas::class.java)
 
         // Make the background fill the screen
         screenBg.setSize(stage.width, stage.height)

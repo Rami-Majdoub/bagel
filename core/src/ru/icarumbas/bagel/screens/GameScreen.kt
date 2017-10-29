@@ -21,7 +21,6 @@ import ru.icarumbas.bagel.creators.B2DWorldCreator
 import ru.icarumbas.bagel.creators.EntityCreator
 import ru.icarumbas.bagel.creators.WorldCreator
 import ru.icarumbas.bagel.screens.scenes.Hud
-import ru.icarumbas.bagel.screens.scenes.Minimap
 import ru.icarumbas.bagel.screens.scenes.UInputListener
 import ru.icarumbas.bagel.systems.other.*
 import ru.icarumbas.bagel.systems.physics.AwakeSystem
@@ -41,7 +40,6 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
 
     private val world = World(Vector2(0f, -9.8f), true)
     private val hud: Hud
-    private val minimap: Minimap
     private val debugRenderer: DebugRenderer
     private val engine = Engine()
     private val mapRenderer: MapRenderer
@@ -67,17 +65,16 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
                 game.assetManager["Packs/GuyKnight.pack", TextureAtlas::class.java])
         rm = RoomManager(rooms, game.assetManager, entityCreator, engine, serializedObjects, game.worldIO, playerEntity)
 
-        hud = Hud(playerEntity)
-        minimap = Minimap(hud.stage, rm, game.assetManager, playerEntity)
-        uiInputListener = UInputListener(hud.stage, hud, minimap)
+        hud = Hud(playerEntity, rm, game.assetManager)
+        uiInputListener = UInputListener(hud.stage, hud)
 
         if (newWorld) {
             rm.createNewWorld(worldCreator, game.assetManager)
-            minimap.createRooms(rm.mesh)
+            hud.minimap.createRooms(rm.mesh)
 
         } else {
             rm.continueWorld()
-            minimap.loadRooms(game.worldIO.loadVisibleRooms(), rm.mesh)
+            hud.minimap.loadRooms(game.worldIO.loadVisibleRooms(), rm.mesh)
             body[playerEntity].body.setTransform(
                     game.worldIO.prefs.getFloat("playerX"),
                     game.worldIO.prefs.getFloat("playerY"),
@@ -143,13 +140,12 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         engine.update(delta)
         debugRenderer.render()
         hud.draw(rm)
-        minimap.update()
     }
 
     override fun hide() {
         val visibleRooms = ArrayList<Int>()
-        minimap.minimapFrame.children.filter { it.isVisible }.forEach {
-            visibleRooms.add(minimap.minimapFrame.children.indexOf(it))
+        hud.minimap.minimapFrame.children.filter { it.isVisible }.forEach {
+            visibleRooms.add(hud.minimap.minimapFrame.children.indexOf(it))
         }
         game.worldIO.saveWorld(serializedObjects, rooms, rm.mesh, visibleRooms)
         game.worldIO.saveCurrentState(playerEntity, rm.currentMapId)

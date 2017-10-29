@@ -3,7 +3,6 @@ package ru.icarumbas.bagel.screens.scenes
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
@@ -50,7 +49,7 @@ class Minimap {
         minimapFrame = Window("", Window.WindowStyle(
                 BitmapFont(),
                 Color.BLACK,
-                TextureRegionDrawable(TextureRegion(Texture("Empty.png")))))
+                TextureRegionDrawable(TextureRegion(assets.get("Packs/UI.pack", TextureAtlas::class.java).findRegion("Empty")))))
 
 
         with (minimapFrame) {
@@ -61,7 +60,7 @@ class Minimap {
 
         stage.addActor(minimapFrame)
 
-        playerPointOnMap = Image(Texture("Point.png"))
+        playerPointOnMap = Image(assets.get("Packs/UI.pack", TextureAtlas::class.java).findRegion("Point"))
         playerPointOnMap.setPosition(minimapFrame.x + minimapFrame.width / 2, minimapFrame.y + minimapFrame.height / 2)
 
         stage.addActor(playerPointOnMap)

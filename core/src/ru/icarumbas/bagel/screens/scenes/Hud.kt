@@ -2,41 +2,36 @@ package ru.icarumbas.bagel.screens.scenes
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.Sprite
-import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.ui.Touchpad
 import com.badlogic.gdx.utils.viewport.StretchViewport
 import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.utils.Mappers.Mappers.damage
 
 
-class Hud(private val playerEntity: Entity){
+class Hud(private val playerEntity: Entity,
+          rm: RoomManager,
+          assetManager: AssetManager){
 
     val stage: Stage
-    var touchedOnce = false
-    private var touchpad: Touchpad
+    val touchpad: Touchpad
+    val minimap: Minimap
+    val hp: RegularBar
+    val mana: RegularBar
 
-    private val screenPos = Vector2()
-    private var localPos = Vector2()
-    private val fakeTouchDownEvent = InputEvent()
-
-    private val HP = Image(Texture("hpBar.png"))
-
-    // Debug
+    // Temporary
     private val currentRoom: Label
     private val fps: Label
-    private val money: Label
 
-    val openButton = Image(Texture("open.png"))
-    val attackButton = Image(Texture("attackButton.png"))
+    private val uiAtlas = assetManager.get("Packs/UI.pack", TextureAtlas::class.java)
+
+    val openButton = Image(uiAtlas.findRegion("open"))
+    val attackButton = Image(uiAtlas.findRegion("attackButton"))
 
 
     init {
@@ -52,38 +47,37 @@ class Hud(private val playerEntity: Entity){
             else -> Stage(StretchViewport(800f, 480f))
         }
 
+        touchpad = Touchpad(stage, uiAtlas)
+        minimap = Minimap(stage, rm, assetManager, playerEntity)
+
         val lStyle = Label.LabelStyle(BitmapFont(), Color.RED)
         fps = Label("FPS: ", lStyle)
-        money = Label("Money: ", lStyle)
         currentRoom = Label("Current room: ", lStyle)
-
-        val skin = Skin()
-        skin.add("touchBackground", Texture("touchBackground.png"))
-        val knob = Sprite(Texture("touchKnob.png"))
-        knob.setSize(stage.width/20, stage.width/20)
-        skin.add("touchKnob", knob)
-
-        val touchpadStyle = Touchpad.TouchpadStyle()
-        touchpadStyle.background = skin.getDrawable("touchBackground")
-        touchpadStyle.knob = skin.getDrawable("touchKnob")
-
-        touchpad = Touchpad(6f, touchpadStyle)
-        touchpad.setBounds(0f, 0f, stage.width/9, stage.width/9)
-        stage.addActor(touchpad)
 
         currentRoom.setPosition(10f, 10f)
         currentRoom.setSize(stage.width/10, stage.height/10)
         stage.addActor(currentRoom)
 
-        HP.setSize(0f, stage.height / 15)
-        HP.setPosition(0f, stage.height - HP.height)
-        stage.addActor(HP)
+        hp = RegularBar(
+                Image(uiAtlas.findRegion("healthBar")),
+                Image(uiAtlas.findRegion("barForeground")),
+                Image(uiAtlas.findRegion("barBackground")),
+                stage)
 
-        fps.setPosition(3f, HP.y - 15)
+        hp.setSize(stage.width / 5, stage.height / 10)
+        hp.setPosition(0f, stage.height - hp.height)
+
+        mana = RegularBar(
+                Image(uiAtlas.findRegion("manaBar")),
+                Image(uiAtlas.findRegion("barForeground")),
+                Image(uiAtlas.findRegion("barBackground")),
+                stage)
+
+        mana.setSize(stage.width / 5, stage.height / 10)
+        mana.setPosition(0f, stage.height - hp.height - mana.height)
+
+        fps.setPosition(3f, mana.posY - 15)
         stage.addActor(fps)
-
-        money.setPosition(fps.x, fps.y - 15)
-        stage.addActor(money)
 
         attackButton.setSize(stage.width / 10, stage.width / 10)
         attackButton.setPosition(stage.width - attackButton.width - 20, stage.height/10f)
@@ -94,9 +88,6 @@ class Hud(private val playerEntity: Entity){
         openButton.isVisible = false
         stage.addActor(openButton)
 
-
-        fakeTouchDownEvent.type = InputEvent.Type.touchDown
-
     }
 
     fun draw(rm: RoomManager) {
@@ -106,49 +97,13 @@ class Hud(private val playerEntity: Entity){
 
     private fun update(rm: RoomManager) {
         currentRoom.setText("${rm.currentMapId}")
-        getDirection()
         fps.setText("FPS: ${Gdx.graphics.framesPerSecond}")
-        HP.width = stage.width / 5 * damage[playerEntity].HP / 100
+        hp.setValue(damage[playerEntity].HP / 100f)
+        touchpad.getDirection()
+        minimap.update()
     }
 
     fun setOpenButtonVisible(visible: Boolean) {
         openButton.isVisible = visible
     }
-
-    private fun getDirection() {
-        if (Gdx.input.justTouched()) {
-            touchedOnce = true
-
-            // Get the touch point in screen coordinates.
-            screenPos.set(Gdx.input.x.toFloat(), Gdx.input.y.toFloat())
-
-            if (screenPos.x < Gdx.graphics.width / 2) {
-
-                // Convert the touch point into local coordinates, place the touchpad and show it.
-                localPos.set(screenPos)
-                localPos = touchpad.parent.screenToLocalCoordinates(localPos)
-                touchpad.setPosition(localPos.x - touchpad.width / 2, localPos.y - touchpad.height / 2)
-                touchpad.isVisible = true
-
-                // Fire a touch down event to get the touchpad working.
-                val stagePos = touchpad.stage.screenToStageCoordinates(screenPos)
-                fakeTouchDownEvent.stageX = stagePos.x
-                fakeTouchDownEvent.stageY = stagePos.y
-                touchpad.fire(fakeTouchDownEvent)
-            }
-        } else if (!Gdx.input.isTouched) {
-            touchpad.isVisible = false
-        }
-
-    }
-
-    fun isUpPressed() = touchpad.knobY > touchpad.height / 2 + touchpad.width/10
-
-    fun isRightPressed() = touchpad.knobX > touchpad.width / 2 + touchpad.width/20
-
-    fun isDownPressed() = touchpad.knobY < touchpad.height / 2f - touchpad.width/6f
-
-    fun isLeftPressed() = touchpad.knobX < touchpad.width / 2 - touchpad.width/20
-
-
 }

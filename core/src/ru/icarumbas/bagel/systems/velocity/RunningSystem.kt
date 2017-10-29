@@ -34,11 +34,11 @@ class RunningSystem : IteratingSystem {
 
                 if (player.has(e) && (!player[e].collidingWithGround || player[e].standindOnGround) &&
                         state[e].currentState != StateSystem.DEAD) {
-                    if (hud.isRightPressed()) {
+                    if (hud.touchpad.isRightPressed()) {
                         applyImpulse(body[e].body, run[e].acceleration, 0f)
                         player[e].lastRight = true
                     }
-                    if (hud.isLeftPressed()) {
+                    if (hud.touchpad.isLeftPressed()) {
                         applyImpulse(body[e].body, -run[e].acceleration, 0f)
                         player[e].lastRight = false
                     }

@@ -29,7 +29,7 @@ class JumpingSystem : IteratingSystem {
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (entity.inView(rm)) {
             if (jump[entity].maxJumps > jump[entity].jumps && body[entity].body.linearVelocity.y < 3.5f) {
-                if (Mappers.player.has(entity) && hud.isUpPressed()) {
+                if (Mappers.player.has(entity) && hud.touchpad.isUpPressed()) {
                     jump(entity)
                 }
             }
@@ -45,7 +45,7 @@ class JumpingSystem : IteratingSystem {
 
         if (state[e].currentState != StateSystem.JUMPING && state[e].currentState != StateSystem.JUMP_ATTACKING) {
             if (Mappers.player.has(e)) {
-                if (!hud.isUpPressed() || !player[e].collidingWithGround){
+                if (!hud.touchpad.isUpPressed() || !player[e].collidingWithGround){
                     jump[e].jumps = 0
                 }
             } else {

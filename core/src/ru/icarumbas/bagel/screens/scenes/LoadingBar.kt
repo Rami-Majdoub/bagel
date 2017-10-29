@@ -6,9 +6,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Actor
 
 
-/**
- * @author Mats Svensson
- */
 
 class LoadingBar : Actor{
 

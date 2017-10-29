@@ -101,12 +101,12 @@ class BodyContactListener : ContactListener {
 
                 if (playerEntity == contactEntityA) {
                     if (body[contactEntityA].body.position.y <
-                            body[contactEntityB].body.position.y + size[contactEntityB].rectSize.y * 2|| hud.isDownPressed()) {
+                            body[contactEntityB].body.position.y + size[contactEntityB].rectSize.y * 2|| hud.touchpad.isDownPressed()) {
                         contact.isEnabled = false
                     }
                 } else {
                     if (body[contactEntityB].body.position.y <
-                            body[contactEntityA].body.position.y + size[contactEntityA].rectSize.y * 2 || hud.isDownPressed()) {
+                            body[contactEntityA].body.position.y + size[contactEntityA].rectSize.y * 2 || hud.touchpad.isDownPressed()) {
                         contact.isEnabled = false
                     }
                 }
