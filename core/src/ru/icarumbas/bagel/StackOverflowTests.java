@@ -1,7 +1,17 @@
 package ru.icarumbas.bagel;
 
-public class StackOverflowTests {
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.reflect.ArrayReflection;
 
-    public StackOverflowTests() {
+public class StackOverflowTests<T> {
+
+    T[] arr;
+
+    public StackOverflowTests(Array<? extends T> keyFrames) {
+        Class arrayType = keyFrames.items.getClass().getComponentType();
+        T[] frames = (T[]) ArrayReflection.newInstance(arrayType, keyFrames.size);
+        for (int i = 0, n = keyFrames.size; i < n; i++) {
+            frames[i] = keyFrames.get(i);
+        }
     }
 }

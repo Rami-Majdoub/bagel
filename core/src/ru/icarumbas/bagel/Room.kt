@@ -23,5 +23,4 @@ class Room {
         width = assetManager.get(path, TiledMap::class.java).properties["Width"].toString().toFloat().div(PIX_PER_M)
         height = assetManager.get(path, TiledMap::class.java).properties["Height"].toString().toFloat().div(PIX_PER_M)
     }
-
 }

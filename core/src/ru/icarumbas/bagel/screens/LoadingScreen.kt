@@ -1,6 +1,5 @@
 package ru.icarumbas.bagel.screens
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
 import com.badlogic.gdx.graphics.g2d.Animation
@@ -11,7 +10,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.utils.viewport.StretchViewport
+import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ru.icarumbas.Bagel
 import ru.icarumbas.TILED_MAPS_TOTAL
 import ru.icarumbas.bagel.screens.scenes.LoadingBar
@@ -19,7 +18,7 @@ import ru.icarumbas.bagel.screens.scenes.LoadingBar
 
 class LoadingScreen(private val game: Bagel) : ScreenAdapter() {
 
-    private var stage: Stage
+    private var stage = Stage(ExtendViewport(800f, 480f))
 
     private val loadingBar: LoadingBar
 
@@ -36,16 +35,6 @@ class LoadingScreen(private val game: Bagel) : ScreenAdapter() {
     private var percent = 0f
 
     init {
-        val width = Gdx.graphics.width.toFloat()
-        val height = Gdx.graphics.height.toFloat()
-
-        stage = when {
-            (width / height) == (16 / 10f) -> Stage(StretchViewport(800f, 480f))
-            width / height == 4 / 3f -> Stage(StretchViewport(800f, 600f))
-            width / height == 16 / 9f -> Stage(StretchViewport(854f, 480f))
-            width / height == 3 / 2f -> Stage(StretchViewport(960f, 640f))
-            else -> Stage(StretchViewport(800f, 480f))
-        }
 
         // Grab the regions from the atlas and create some images
         logo = Image(loadingPack.findRegion("IcaIcon"))

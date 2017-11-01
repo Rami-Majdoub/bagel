@@ -8,7 +8,6 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse
 import com.badlogic.gdx.physics.box2d.ContactListener
 import com.badlogic.gdx.physics.box2d.Manifold
 import ru.icarumbas.*
-import ru.icarumbas.bagel.components.physics.BodyComponent
 import ru.icarumbas.bagel.components.physics.WeaponComponent
 import ru.icarumbas.bagel.screens.scenes.Hud
 import ru.icarumbas.bagel.systems.other.StateSystem
@@ -16,7 +15,6 @@ import ru.icarumbas.bagel.utils.Mappers.Mappers.AI
 import ru.icarumbas.bagel.utils.Mappers.Mappers.attack
 import ru.icarumbas.bagel.utils.Mappers.Mappers.body
 import ru.icarumbas.bagel.utils.Mappers.Mappers.damage
-import ru.icarumbas.bagel.utils.Mappers.Mappers.loot
 import ru.icarumbas.bagel.utils.Mappers.Mappers.open
 import ru.icarumbas.bagel.utils.Mappers.Mappers.player
 import ru.icarumbas.bagel.utils.Mappers.Mappers.size
@@ -83,10 +81,8 @@ class BodyContactListener : ContactListener {
     }
 
     private fun findContactEntities(contact: Contact){
-        engine.getEntitiesFor(Family.all(BodyComponent::class.java).get()).forEach {
-            if (body[it].body == contact.fixtureA.body) contactEntityA = it
-            if (body[it].body == contact.fixtureB.body) contactEntityB = it
-        }
+        contactEntityA = contact.fixtureA.body.userData as Entity
+        contactEntityB = contact.fixtureB.body.userData as Entity
     }
 
     override fun postSolve(contact: Contact, impulse: ContactImpulse) {
@@ -184,18 +180,6 @@ class BodyContactListener : ContactListener {
 
                 attackEntity()
             }
-
-            PLAYER_FEET_BIT or LOOT_BIT, PLAYER_BIT or LOOT_BIT -> {
-                contact.isEnabled = false
-
-                if (contactEntityA === playerEntity) {
-                    loot[contactEntityB].isCollidingWithPlayer = true
-
-                } else {
-                    loot[contactEntityA].isCollidingWithPlayer = true
-                }
-
-            }
         }
      }
 
@@ -228,18 +212,6 @@ class BodyContactListener : ContactListener {
                 }
 
                 hud.setOpenButtonVisible(false)
-            }
-
-            PLAYER_FEET_BIT or LOOT_BIT, PLAYER_BIT or LOOT_BIT -> {
-                contact.isEnabled = false
-
-                if (contactEntityA === playerEntity) {
-                    loot[contactEntityB].isCollidingWithPlayer = false
-
-                } else {
-                    loot[contactEntityA].isCollidingWithPlayer = false
-                }
-
             }
 
         }

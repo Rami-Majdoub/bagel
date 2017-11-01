@@ -16,10 +16,7 @@ import ru.icarumbas.Bagel
 import ru.icarumbas.REG_ROOM_HEIGHT
 import ru.icarumbas.REG_ROOM_WIDTH
 import ru.icarumbas.bagel.*
-import ru.icarumbas.bagel.creators.AnimationCreator
-import ru.icarumbas.bagel.creators.B2DWorldCreator
-import ru.icarumbas.bagel.creators.EntityCreator
-import ru.icarumbas.bagel.creators.WorldCreator
+import ru.icarumbas.bagel.creators.*
 import ru.icarumbas.bagel.screens.scenes.Hud
 import ru.icarumbas.bagel.screens.scenes.UInputListener
 import ru.icarumbas.bagel.systems.other.*
@@ -27,6 +24,7 @@ import ru.icarumbas.bagel.systems.physics.AwakeSystem
 import ru.icarumbas.bagel.systems.physics.WeaponSystem
 import ru.icarumbas.bagel.systems.rendering.AnimationSystem
 import ru.icarumbas.bagel.systems.rendering.RenderingSystem
+import ru.icarumbas.bagel.systems.rendering.TranslateSystem
 import ru.icarumbas.bagel.systems.rendering.ViewportSystem
 import ru.icarumbas.bagel.systems.velocity.FlyingSystem
 import ru.icarumbas.bagel.systems.velocity.JumpingSystem
@@ -45,6 +43,7 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
     private val mapRenderer: MapRenderer
     private val worldCleaner: WorldCleaner
     private val entityCreator: EntityCreator
+    private val lootCreator: LootCreator
     private val playerEntity: Entity
     private val rm: RoomManager
     private val orthoRenderer: OrthogonalTiledMapRenderer
@@ -52,6 +51,7 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
 
     private val serializedObjects = ArrayList<SerializedMapObject>()
     private val rooms = ArrayList<Room>()
+
 
     init {
 
@@ -91,10 +91,15 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         val entityDeleteList = ArrayList<Entity>()
 
         worldCleaner = WorldCleaner(entityDeleteList, engine, world, serializedObjects, playerEntity, game)
-
+        lootCreator = LootCreator(
+                entityCreator,
+                b2DWorldCreator,
+                game.assetManager["Packs/weapons.pack", TextureAtlas::class.java],
+                playerEntity)
 
         val contactListener = BodyContactListener(hud, playerEntity, engine)
         world.setContactListener(contactListener)
+
 
         with (engine) {
 
@@ -103,8 +108,8 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
             addSystem(HealthSystem(rm, world, coins, entityDeleteList))
             addSystem(StateSystem(rm))
             addSystem(AISystem(rm))
-            addSystem(OpeningSystem(uiInputListener, rm, entityDeleteList))
-            addSystem(LootSystem(hud, rm, playerEntity, entityDeleteList))
+            addSystem(OpeningSystem(uiInputListener, rm, entityDeleteList, lootCreator))
+//            addSystem(LootSystem(hud, rm, playerEntity, entityDeleteList))
 
             // Velocity
             addSystem(RunningSystem(hud, rm))
@@ -119,6 +124,8 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
             // Rendering
             addSystem(ViewportSystem(viewport, rm))
             addSystem(AnimationSystem(rm))
+            addSystem(TranslateSystem(rm))
+//            addSystem(ShaderSystem(rm))
             addSystem(RenderingSystem(rm, orthoRenderer.batch))
 
             addEntity(playerEntity)
@@ -142,7 +149,8 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         hud.draw(rm)
     }
 
-    override fun hide() {
+    override fun pause() {
+
         val visibleRooms = ArrayList<Int>()
         hud.minimap.minimapFrame.children.filter { it.isVisible }.forEach {
             visibleRooms.add(hud.minimap.minimapFrame.children.indexOf(it))

@@ -3,11 +3,10 @@ package ru.icarumbas.bagel.systems.other
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
-import com.badlogic.gdx.math.MathUtils
-import com.badlogic.gdx.math.Vector2
 import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.components.other.DoorComponent
 import ru.icarumbas.bagel.components.other.OpenComponent
+import ru.icarumbas.bagel.creators.LootCreator
 import ru.icarumbas.bagel.screens.scenes.UInputListener
 import ru.icarumbas.bagel.utils.Mappers.Mappers.animation
 import ru.icarumbas.bagel.utils.Mappers.Mappers.body
@@ -23,21 +22,21 @@ class OpeningSystem : IteratingSystem{
     private val uiListener: UInputListener
     private val rm: RoomManager
 
-    private lateinit var lootEntity: Entity
     private val deleteList: ArrayList<Entity>
+    private val lootCreator: LootCreator
 
 
-    constructor(uiListener: UInputListener, rm: RoomManager, deleteList: ArrayList<Entity>) : super(Family.all(OpenComponent::class.java).get()) {
+    constructor(uiListener: UInputListener, rm: RoomManager, deleteList: ArrayList<Entity>, lootCreator: LootCreator) : super(Family.all(OpenComponent::class.java).get()) {
         this.uiListener = uiListener
         this.rm = rm
         this.deleteList = deleteList
+        this.lootCreator = lootCreator
     }
 
-    private fun createLoot(e: Entity){
-        lootEntity = open[e].loot!![MathUtils.random(0, open[e].loot!!.size-1)]
-        engine.addEntity(lootEntity)
-        body[lootEntity].body.isActive = true
-        body[lootEntity].body.applyLinearImpulse(Vector2(MathUtils.random(2f), MathUtils.random(2f)), body[lootEntity].body.localCenter, true)
+    private fun isChestOpened(e: Entity): Boolean{
+        with (animation[e].animations[StateSystem.OPENING]!!) {
+            return animation[e].animations[StateSystem.OPENING]!!.getKeyFrame(state[e].stateTime) == keyFrames.get(keyFrames.size - 2)
+        }
     }
 
     override fun processEntity(e: Entity, deltaTime: Float) {
@@ -47,16 +46,16 @@ class OpeningSystem : IteratingSystem{
                     open[e].opening = true
                 }
             }
-            if (animation[e].animations[StateSystem.OPENING]!!.isAnimationFinished(state[e].stateTime)){
-                if (state[e].currentState == StateSystem.OPENING) {
-                    open[e].opening = false
 
-                    if (door.has(e)){
+            if (state[e].currentState == StateSystem.OPENING) {
+                if (animation[e].animations[StateSystem.OPENING]!!.isAnimationFinished(state[e].stateTime)) {
+                    if (door.has(e)) {
                         rm.currentMapId = roomId[engine.getEntitiesFor(Family.all(DoorComponent::class.java).get()).random()].id
-                    } else {
-                        createLoot(e)
-                        deleteList.add(e)
                     }
+                }
+                if (isChestOpened(e)) {
+                    engine.addEntity(lootCreator.createLoot(body[e].body.position.x, body[e].body.position.y + .5f, roomId[e].id))
+                    state[e].stateTime -= deltaTime
                 }
             }
         }

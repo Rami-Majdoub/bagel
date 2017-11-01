@@ -5,21 +5,21 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.SortedIteratingSystem
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.math.MathUtils
 import ru.icarumbas.PIX_PER_M
 import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.components.other.RoomIdComponent
-import ru.icarumbas.bagel.components.physics.BodyComponent
 import ru.icarumbas.bagel.components.physics.StaticComponent
 import ru.icarumbas.bagel.components.rendering.AlwaysRenderingMarkerComponent
 import ru.icarumbas.bagel.components.rendering.SizeComponent
 import ru.icarumbas.bagel.components.rendering.TextureComponent
+import ru.icarumbas.bagel.components.rendering.TranslateComponent
 import ru.icarumbas.bagel.utils.Mappers.Mappers.body
+import ru.icarumbas.bagel.utils.Mappers.Mappers.shader
 import ru.icarumbas.bagel.utils.Mappers.Mappers.size
 import ru.icarumbas.bagel.utils.Mappers.Mappers.texture
+import ru.icarumbas.bagel.utils.Mappers.Mappers.translate
 import ru.icarumbas.bagel.utils.RenderingComparator
 import ru.icarumbas.bagel.utils.inView
-import ru.icarumbas.bagel.utils.rotatedRight
 
 
 class RenderingSystem : SortedIteratingSystem {
@@ -31,7 +31,7 @@ class RenderingSystem : SortedIteratingSystem {
 
     constructor(rm: RoomManager, batch: Batch) : super(Family.all(
                     SizeComponent::class.java,
-                    BodyComponent::class.java,
+                    TranslateComponent::class.java,
                     TextureComponent::class.java)
             .one(
                     AlwaysRenderingMarkerComponent::class.java,
@@ -43,10 +43,24 @@ class RenderingSystem : SortedIteratingSystem {
         this.batch = batch
     }
 
+    fun draw(e: Entity){
+        batch.draw(
+                texture[e].tex,
+                translate[e].x,
+                translate[e].y,
+                size[e].spriteSize.x / 2,
+                size[e].spriteSize.y / 2,
+                size[e].spriteSize.x,
+                size[e].spriteSize.y,
+                1f,
+                1f,
+                translate[e].angle)
+    }
+
     override fun update(deltaTime: Float) {
         super.update(deltaTime)
 
-        entities.filter { it.inView(rm) && body[it].body.isActive && texture[it].tex != null}.forEach {
+        entities.filter { it.inView(rm) && !(body.has(it) && !body[it].body.isActive) && texture[it].tex != null}.forEach {
 
             size[it].spriteSize.y = texture[it].tex!!.regionHeight / PIX_PER_M * size[it].scale
             size[it].spriteSize.x = texture[it].tex!!.regionWidth / PIX_PER_M * size[it].scale
@@ -56,17 +70,13 @@ class RenderingSystem : SortedIteratingSystem {
 
             batch.begin()
 
-            batch.draw(
-                    texture[it].tex,
-                    body[it].body.position.x - if (it.rotatedRight()) size[it].rectSize.x / 2 else size[it].spriteSize.x - size[it].rectSize.x / 2,
-                    body[it].body.position.y - size[it].rectSize.y / 2,
-                    size[it].spriteSize.x / 2,
-                    size[it].spriteSize.y / 2,
-                    size[it].spriteSize.x,
-                    size[it].spriteSize.y,
-                    1f,
-                    1f,
-                    body[it].body.angle * MathUtils.radiansToDegrees)
+            draw(it)
+
+            if (shader.has(it)) {
+                batch.shader = shader[it].shaderProgram
+                draw(it)
+                batch.shader = null
+            }
 
             batch.end()
 

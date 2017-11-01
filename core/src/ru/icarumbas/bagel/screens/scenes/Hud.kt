@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.utils.viewport.StretchViewport
+import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.utils.Mappers.Mappers.damage
 
@@ -18,7 +18,7 @@ class Hud(private val playerEntity: Entity,
           rm: RoomManager,
           assetManager: AssetManager){
 
-    val stage: Stage
+    val stage = Stage(ExtendViewport(800f, 480f))
     val touchpad: Touchpad
     val minimap: Minimap
     val hp: RegularBar
@@ -35,17 +35,6 @@ class Hud(private val playerEntity: Entity,
 
 
     init {
-
-        val width = Gdx.graphics.width.toFloat()
-        val height = Gdx.graphics.height.toFloat()
-
-        stage = when {
-            (width / height) == (16 / 10f) -> Stage(StretchViewport(800f, 480f))
-            width / height == 4 / 3f -> Stage(StretchViewport(800f, 600f))
-            width / height == 16 / 9f -> Stage(StretchViewport(854f, 480f))
-            width / height == 3 / 2f -> Stage(StretchViewport(960f, 640f))
-            else -> Stage(StretchViewport(800f, 480f))
-        }
 
         touchpad = Touchpad(stage, uiAtlas)
         minimap = Minimap(stage, rm, assetManager, playerEntity)
@@ -80,11 +69,11 @@ class Hud(private val playerEntity: Entity,
         stage.addActor(fps)
 
         attackButton.setSize(stage.width / 10, stage.width / 10)
-        attackButton.setPosition(stage.width - attackButton.width - 20, stage.height/10f)
+        attackButton.setPosition(stage.width - attackButton.width * 1.5f, attackButton.height * .5f)
         stage.addActor(attackButton)
 
         openButton.setSize(stage.width / 15, stage.width / 15)
-        openButton.setPosition(stage.width - openButton.width - attackButton.width * 1.5f, stage.height/10f)
+        openButton.setPosition(attackButton.x - openButton.width, attackButton.y)
         openButton.isVisible = false
         stage.addActor(openButton)
 

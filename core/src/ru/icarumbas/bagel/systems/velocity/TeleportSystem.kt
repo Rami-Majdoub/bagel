@@ -31,11 +31,11 @@ class TeleportSystem : IteratingSystem{
             if (AI[entity].appeared)
             teleport[entity].teleportTimer += deltaTime
 
-            if (teleport[entity].teleportTimer > 9f) {
+            if (teleport[entity].teleportTimer > 4f) {
                 teleport[entity].playerPosSecAgo.set(body[playerEntity].body.position.x, body[playerEntity].body.position.y)
             }
 
-            if (teleport[entity].teleportTimer > 10f &&
+            if (teleport[entity].teleportTimer > 5f &&
                     AI[entity].appeared &&
                     state[entity].currentState != StateSystem.ATTACKING &&
                     body[playerEntity].body.linearVelocity.y == 0f) {

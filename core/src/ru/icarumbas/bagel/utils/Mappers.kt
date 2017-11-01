@@ -6,10 +6,7 @@ import ru.icarumbas.bagel.components.physics.BodyComponent
 import ru.icarumbas.bagel.components.physics.InactiveMarkerComponent
 import ru.icarumbas.bagel.components.physics.StaticComponent
 import ru.icarumbas.bagel.components.physics.WeaponComponent
-import ru.icarumbas.bagel.components.rendering.AlwaysRenderingMarkerComponent
-import ru.icarumbas.bagel.components.rendering.AnimationComponent
-import ru.icarumbas.bagel.components.rendering.SizeComponent
-import ru.icarumbas.bagel.components.rendering.TextureComponent
+import ru.icarumbas.bagel.components.rendering.*
 import ru.icarumbas.bagel.components.velocity.FlyComponent
 import ru.icarumbas.bagel.components.velocity.JumpComponent
 import ru.icarumbas.bagel.components.velocity.RunComponent
@@ -41,6 +38,7 @@ class Mappers {
         val door            =       ComponentMapper.getFor(DoorComponent::class.java)!!
         val loot            =       ComponentMapper.getFor(LootComponent::class.java)!!
         val fly             =       ComponentMapper.getFor(FlyComponent::class.java)!!
-
+        val translate       =       ComponentMapper.getFor(TranslateComponent::class.java)!!
+        val shader          =       ComponentMapper.getFor(ShaderComponent::class.java)!!
     }
 }
