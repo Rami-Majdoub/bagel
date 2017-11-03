@@ -9,7 +9,7 @@ import com.badlogic.gdx.physics.box2d.ContactListener
 import com.badlogic.gdx.physics.box2d.Manifold
 import ru.icarumbas.*
 import ru.icarumbas.bagel.components.physics.WeaponComponent
-import ru.icarumbas.bagel.screens.scenes.Hud
+import ru.icarumbas.bagel.screens.scenes.PlayerController
 import ru.icarumbas.bagel.systems.other.StateSystem
 import ru.icarumbas.bagel.utils.Mappers.Mappers.AI
 import ru.icarumbas.bagel.utils.Mappers.Mappers.attack
@@ -25,7 +25,7 @@ import kotlin.experimental.or
 
 class BodyContactListener : ContactListener {
 
-    private val hud: Hud
+    private val playerController: PlayerController
     private val engine: Engine
 
     private val playerEntity: Entity
@@ -35,8 +35,8 @@ class BodyContactListener : ContactListener {
     private lateinit var contactEntityB: Entity
 
 
-    constructor(hud: Hud, playerEntity: Entity, engine: Engine) {
-        this.hud = hud
+    constructor(playerController: PlayerController, playerEntity: Entity, engine: Engine) {
+        this.playerController = playerController
         this.playerEntity = playerEntity
         this.engine = engine
     }
@@ -97,12 +97,12 @@ class BodyContactListener : ContactListener {
 
                 if (playerEntity == contactEntityA) {
                     if (body[contactEntityA].body.position.y <
-                            body[contactEntityB].body.position.y + size[contactEntityB].rectSize.y * 2|| hud.touchpad.isDownPressed()) {
+                            body[contactEntityB].body.position.y + size[contactEntityB].rectSize.y * 2|| playerController.isDownPressed()) {
                         contact.isEnabled = false
                     }
                 } else {
                     if (body[contactEntityB].body.position.y <
-                            body[contactEntityA].body.position.y + size[contactEntityA].rectSize.y * 2 || hud.touchpad.isDownPressed()) {
+                            body[contactEntityA].body.position.y + size[contactEntityA].rectSize.y * 2 || playerController.isDownPressed()) {
                         contact.isEnabled = false
                     }
                 }
@@ -149,7 +149,7 @@ class BodyContactListener : ContactListener {
                     open[contactEntityA].isCollidingWithPlayer = true
                 }
 
-                hud.setOpenButtonVisible(true)
+//                hud.setOpenButtonVisible(true)
             }
 
             WEAPON_BIT or BREAKABLE_BIT, WEAPON_BIT or AI_BIT, WEAPON_BIT or PLAYER_BIT -> {
@@ -211,7 +211,7 @@ class BodyContactListener : ContactListener {
                     open[contactEntityA].isCollidingWithPlayer = false
                 }
 
-                hud.setOpenButtonVisible(false)
+//                hud.setOpenButtonVisible(false)
             }
 
         }

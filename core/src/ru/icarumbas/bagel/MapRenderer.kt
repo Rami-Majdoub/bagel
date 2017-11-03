@@ -1,10 +1,10 @@
 package ru.icarumbas.bagel
 
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
-import com.badlogic.gdx.utils.viewport.Viewport
 
 class MapRenderer {
 
@@ -12,18 +12,18 @@ class MapRenderer {
     private var lastMapId = -1
     private val rm: RoomManager
     private val assetManager: AssetManager
-    private val viewport : Viewport
+    private val camera: Camera
 
 
     constructor(renderer: OrthogonalTiledMapRenderer,
                 rm: RoomManager,
                 assetManager: AssetManager,
-                viewport: Viewport){
+                camera: Camera){
 
         this.rm = rm
         this.renderer = renderer
         this.assetManager = assetManager
-        this.viewport = viewport
+        this.camera = camera
 
 
     }
@@ -40,7 +40,7 @@ class MapRenderer {
     fun render(){
         update()
 
-        renderer.setView(viewport.camera as OrthographicCamera)
+        renderer.setView(camera as OrthographicCamera)
         renderer.render()
     }
 

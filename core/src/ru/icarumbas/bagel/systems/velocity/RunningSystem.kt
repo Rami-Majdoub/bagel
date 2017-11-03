@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.components.velocity.RunComponent
-import ru.icarumbas.bagel.screens.scenes.Hud
+import ru.icarumbas.bagel.screens.scenes.PlayerController
 import ru.icarumbas.bagel.systems.other.StateSystem
 import ru.icarumbas.bagel.utils.Mappers.Mappers.AI
 import ru.icarumbas.bagel.utils.Mappers.Mappers.body
@@ -20,11 +20,11 @@ import ru.icarumbas.bagel.utils.inView
 class RunningSystem : IteratingSystem {
 
 
-    private val hud: Hud
+    private val playerController: PlayerController
     private val rm: RoomManager
 
-    constructor(hud: Hud, rm: RoomManager) : super(Family.all(RunComponent::class.java).get()) {
-        this.hud = hud
+    constructor(playerController: PlayerController, rm: RoomManager) : super(Family.all(RunComponent::class.java).get()) {
+        this.playerController = playerController
         this.rm = rm
     }
 
@@ -34,11 +34,11 @@ class RunningSystem : IteratingSystem {
 
                 if (player.has(e) && (!player[e].collidingWithGround || player[e].standindOnGround) &&
                         state[e].currentState != StateSystem.DEAD) {
-                    if (hud.touchpad.isRightPressed()) {
+                    if (playerController.isRightPressed()) {
                         applyImpulse(body[e].body, run[e].acceleration, 0f)
                         player[e].lastRight = true
                     }
-                    if (hud.touchpad.isLeftPressed()) {
+                    if (playerController.isLeftPressed()) {
                         applyImpulse(body[e].body, -run[e].acceleration, 0f)
                         player[e].lastRight = false
                     }

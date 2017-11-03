@@ -36,21 +36,28 @@ import ru.icarumbas.bagel.utils.SerializedMapObject
 
 class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
 
+    // Box2d world
     private val world = World(Vector2(0f, -9.8f), true)
-    private val hud: Hud
     private val debugRenderer: DebugRenderer
-    private val engine = Engine()
-    private val mapRenderer: MapRenderer
     private val worldCleaner: WorldCleaner
+
+    // ECS
+    private val engine = Engine()
     private val entityCreator: EntityCreator
-    private val lootCreator: LootCreator
-    private val playerEntity: Entity
-    private val rm: RoomManager
+    private val serializedObjects = ArrayList<SerializedMapObject>()
+
+    // Rendering
+    private val mapRenderer: MapRenderer
     private val orthoRenderer: OrthogonalTiledMapRenderer
+
+    // UI
+    private val hud: Hud
     private val uiInputListener: UInputListener
 
-    private val serializedObjects = ArrayList<SerializedMapObject>()
+    // World
+    private val rm: RoomManager
     private val rooms = ArrayList<Room>()
+    private val playerEntity: Entity
 
 
     init {
@@ -63,11 +70,13 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         playerEntity = entityCreator.createPlayerEntity(
                 animationCreator,
                 game.assetManager["Packs/GuyKnight.pack", TextureAtlas::class.java])
+
         rm = RoomManager(rooms, game.assetManager, entityCreator, engine, serializedObjects, game.worldIO, playerEntity)
 
         hud = Hud(playerEntity, rm, game.assetManager)
         uiInputListener = UInputListener(hud.stage, hud)
 
+        // if newWorld
         if (newWorld) {
             rm.createNewWorld(worldCreator, game.assetManager)
             hud.minimap.createRooms(rm.mesh)
@@ -84,20 +93,20 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
         val viewport = FitViewport(REG_ROOM_WIDTH, REG_ROOM_HEIGHT, OrthographicCamera(REG_ROOM_WIDTH, REG_ROOM_HEIGHT))
         orthoRenderer = OrthogonalTiledMapRenderer(game.assetManager.get(rm.path()), 0.01f)
 
-        mapRenderer = MapRenderer(orthoRenderer, rm, game.assetManager, viewport)
-        debugRenderer = DebugRenderer(Box2DDebugRenderer(), world, viewport)
+        mapRenderer = MapRenderer(orthoRenderer, rm, game.assetManager, viewport.camera)
+        debugRenderer = DebugRenderer(Box2DDebugRenderer(), world, viewport.camera)
 
         val coins = ArrayList<Body>()
         val entityDeleteList = ArrayList<Entity>()
 
         worldCleaner = WorldCleaner(entityDeleteList, engine, world, serializedObjects, playerEntity, game)
-        lootCreator = LootCreator(
+        val lootCreator = LootCreator(
                 entityCreator,
                 b2DWorldCreator,
                 game.assetManager["Packs/weapons.pack", TextureAtlas::class.java],
                 playerEntity)
 
-        val contactListener = BodyContactListener(hud, playerEntity, engine)
+        val contactListener = BodyContactListener(hud.touchpad, playerEntity, engine)
         world.setContactListener(contactListener)
 
 
@@ -112,8 +121,8 @@ class GameScreen(newWorld: Boolean, val game: Bagel): ScreenAdapter() {
 //            addSystem(LootSystem(hud, rm, playerEntity, entityDeleteList))
 
             // Velocity
-            addSystem(RunningSystem(hud, rm))
-            addSystem(JumpingSystem(hud, rm))
+            addSystem(RunningSystem(hud.touchpad, rm))
+            addSystem(JumpingSystem(hud.touchpad, rm))
             addSystem(TeleportSystem(playerEntity, rm))
             addSystem(FlyingSystem(playerEntity, rm))
 

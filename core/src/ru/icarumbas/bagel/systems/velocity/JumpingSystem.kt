@@ -6,7 +6,7 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.Vector2
 import ru.icarumbas.bagel.RoomManager
 import ru.icarumbas.bagel.components.velocity.JumpComponent
-import ru.icarumbas.bagel.screens.scenes.Hud
+import ru.icarumbas.bagel.screens.scenes.PlayerController
 import ru.icarumbas.bagel.systems.other.StateSystem
 import ru.icarumbas.bagel.utils.Mappers
 import ru.icarumbas.bagel.utils.Mappers.Mappers.body
@@ -18,18 +18,18 @@ import ru.icarumbas.bagel.utils.inView
 
 class JumpingSystem : IteratingSystem {
 
-    private val hud: Hud
+    private val playerController: PlayerController
     private val rm: RoomManager
 
-    constructor(hud: Hud, rm: RoomManager) : super(Family.all(JumpComponent::class.java).get()) {
-        this.hud = hud
+    constructor(playerController: PlayerController, rm: RoomManager) : super(Family.all(JumpComponent::class.java).get()) {
+        this.playerController = playerController
         this.rm = rm
     }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (entity.inView(rm)) {
             if (jump[entity].maxJumps > jump[entity].jumps && body[entity].body.linearVelocity.y < 3.5f) {
-                if (Mappers.player.has(entity) && hud.touchpad.isUpPressed()) {
+                if (Mappers.player.has(entity) && playerController.isUpPressed()) {
                     jump(entity)
                 }
             }
@@ -44,8 +44,8 @@ class JumpingSystem : IteratingSystem {
         // Here i took only player's situation
 
         if (state[e].currentState != StateSystem.JUMPING && state[e].currentState != StateSystem.JUMP_ATTACKING) {
-            if (Mappers.player.has(e)) {
-                if (!hud.touchpad.isUpPressed() || !player[e].collidingWithGround){
+            if (player.has(e)) {
+                if (!playerController.isUpPressed() || !player[e].collidingWithGround){
                     jump[e].jumps = 0
                 }
             } else {

@@ -35,7 +35,7 @@ class OpeningSystem : IteratingSystem{
 
     private fun isChestOpened(e: Entity): Boolean{
         with (animation[e].animations[StateSystem.OPENING]!!) {
-            return animation[e].animations[StateSystem.OPENING]!!.getKeyFrame(state[e].stateTime) == keyFrames.get(keyFrames.size - 2)
+            return animation[e].animations[StateSystem.OPENING]!!.getKeyFrame(state[e].stateTime) == keyFrames.get(keyFrames.size - 2) && !door.has(e)
         }
     }
 
@@ -57,6 +57,7 @@ class OpeningSystem : IteratingSystem{
                     engine.addEntity(lootCreator.createLoot(body[e].body.position.x, body[e].body.position.y + .5f, roomId[e].id))
                     state[e].stateTime -= deltaTime
                 }
+
             }
         }
     }

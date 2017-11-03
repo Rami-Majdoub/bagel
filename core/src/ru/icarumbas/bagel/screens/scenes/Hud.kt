@@ -21,8 +21,8 @@ class Hud(private val playerEntity: Entity,
     val stage = Stage(ExtendViewport(800f, 480f))
     val touchpad: Touchpad
     val minimap: Minimap
-    val hp: RegularBar
-    val mana: RegularBar
+    private val hp: RegularBar
+    private val mana: RegularBar
 
     // Temporary
     private val currentRoom: Label

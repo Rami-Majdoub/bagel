@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 
 
-class Touchpad {
+class Touchpad : PlayerController{
 
     private var touchedOnce = false
     private var touchpad: Touchpad
@@ -64,11 +64,11 @@ class Touchpad {
 
     }
 
-    fun isUpPressed() = touchpad.knobY > touchpad.height / 2 + touchpad.width/10
+    override fun isUpPressed() = touchpad.knobY > touchpad.height / 2 + touchpad.width/10
 
-    fun isRightPressed() = touchpad.knobX > touchpad.width / 2 + touchpad.width/20
+    override fun isRightPressed() = touchpad.knobX > touchpad.width / 2 + touchpad.width/20
 
-    fun isDownPressed() = touchpad.knobY < touchpad.height / 2f - touchpad.width/6f
+    override fun isDownPressed() = touchpad.knobY < touchpad.height / 2f - touchpad.width/6f
 
-    fun isLeftPressed() = touchpad.knobX < touchpad.width / 2 - touchpad.width/20
+    override fun isLeftPressed() = touchpad.knobX < touchpad.width / 2 - touchpad.width/20
 }

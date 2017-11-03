@@ -24,6 +24,7 @@ class RoomManager(val rooms: ArrayList<Room>,
                   private val serializedObjects: ArrayList<SerializedMapObject>,
                   private val worldIO: WorldIO,
                   private val playerEntity: Entity){
+
     var currentMapId = 0
     lateinit var mesh: Array<IntArray>
 
