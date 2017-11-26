@@ -8,39 +8,37 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.MathUtils
 import ru.icarumbas.TILED_MAPS_TOTAL
-import ru.icarumbas.bagel.creators.EntityCreator
 import ru.icarumbas.bagel.creators.WorldCreator
 import ru.icarumbas.bagel.utils.Mappers
 import ru.icarumbas.bagel.utils.Mappers.Mappers.AI
 import ru.icarumbas.bagel.utils.Mappers.Mappers.roomId
-import ru.icarumbas.bagel.utils.SerializedMapObject
-import java.util.*
 
 
 class RoomManager(val rooms: ArrayList<Room>,
                   private val assets: AssetManager,
-                  private val entityCreator: EntityCreator,
                   private val engine: Engine,
                   private val serializedObjects: ArrayList<SerializedMapObject>,
                   private val worldIO: WorldIO,
-                  private val playerEntity: Entity){
+                  private val playerEntity: Entity): RoomWorldState{
 
-    var currentMapId = 0
+    private var currentMapId = 0
     lateinit var mesh: Array<IntArray>
 
-    fun path(id: Int = currentMapId) = rooms[id].path
+    override fun currentMapId() = currentMapId
 
-    fun size() = rooms.size
+    override fun mapPath(id: Int) = rooms[id].path
 
-    fun width(id: Int = currentMapId) = rooms[id].width
+    override fun rooms() = rooms
 
-    fun height(id: Int = currentMapId) = rooms[id].height
+    override fun roomWidth(id: Int) = rooms[id].width
 
-    fun pass(side: Int, id: Int = currentMapId) = rooms[id].passes[side]
+    override fun roomHeight(id: Int) = rooms[id].height
 
-    fun mesh(cell: Int, id: Int = currentMapId) = rooms[id].meshCoords[cell]
+    override fun roomPass(pass: Int, id: Int) = rooms[id].passes[pass]
 
-    fun roomOnMeshLeftBottomCoordinate(x: Int, y: Int): Room?{
+    override fun roomMeshCoordinate(cell: Int, id: Int) = rooms[id].meshCoords[cell]
+
+    override fun roomFor(x: Int, y: Int): Room? {
         rooms.forEach {
             if ( (it.meshCoords[0] == x && it.meshCoords[1] == y)) {
                 return it
@@ -49,6 +47,7 @@ class RoomManager(val rooms: ArrayList<Room>,
 
         return null
     }
+
 
     private fun createStaticEntities(){
         (0 until TILED_MAPS_TOTAL).forEach {

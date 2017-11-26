@@ -33,8 +33,6 @@ class MapRenderer {
             renderer.map = assetManager[rm.rooms[rm.currentMapId].path, TiledMap::class.java]
             lastMapId = rm.currentMapId
         }
-
-
     }
 
     fun render(){

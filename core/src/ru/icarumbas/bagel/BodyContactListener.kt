@@ -8,9 +8,9 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse
 import com.badlogic.gdx.physics.box2d.ContactListener
 import com.badlogic.gdx.physics.box2d.Manifold
 import ru.icarumbas.*
-import ru.icarumbas.bagel.components.physics.WeaponComponent
+import ru.icarumbas.bagel.model.components.physics.WeaponComponent
+import ru.icarumbas.bagel.model.systems.other.StateSystem
 import ru.icarumbas.bagel.screens.scenes.PlayerController
-import ru.icarumbas.bagel.systems.other.StateSystem
 import ru.icarumbas.bagel.utils.Mappers.Mappers.AI
 import ru.icarumbas.bagel.utils.Mappers.Mappers.attack
 import ru.icarumbas.bagel.utils.Mappers.Mappers.body

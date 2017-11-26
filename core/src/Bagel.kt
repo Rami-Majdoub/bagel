@@ -3,7 +3,7 @@ package ru.icarumbas
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.assets.AssetManager
 import ru.icarumbas.bagel.WorldIO
-import ru.icarumbas.bagel.screens.LoadingScreen
+import ru.icarumbas.bagel.view.screens.LoadingScreen
 
 const val GROUND_BIT: Short = 2
 const val PLATFORM_BIT: Short = 4

@@ -1,16 +1,16 @@
 package ru.icarumbas.bagel.utils
 
 import com.badlogic.ashley.core.ComponentMapper
-import ru.icarumbas.bagel.components.other.*
-import ru.icarumbas.bagel.components.physics.BodyComponent
-import ru.icarumbas.bagel.components.physics.InactiveMarkerComponent
-import ru.icarumbas.bagel.components.physics.StaticComponent
-import ru.icarumbas.bagel.components.physics.WeaponComponent
-import ru.icarumbas.bagel.components.rendering.*
-import ru.icarumbas.bagel.components.velocity.FlyComponent
-import ru.icarumbas.bagel.components.velocity.JumpComponent
-import ru.icarumbas.bagel.components.velocity.RunComponent
-import ru.icarumbas.bagel.components.velocity.TeleportComponent
+import ru.icarumbas.bagel.model.components.other.*
+import ru.icarumbas.bagel.model.components.physics.BodyComponent
+import ru.icarumbas.bagel.model.components.physics.InactiveMarkerComponent
+import ru.icarumbas.bagel.model.components.physics.StaticComponent
+import ru.icarumbas.bagel.model.components.physics.WeaponComponent
+import ru.icarumbas.bagel.model.components.rendering.*
+import ru.icarumbas.bagel.model.components.velocity.FlyComponent
+import ru.icarumbas.bagel.model.components.velocity.JumpComponent
+import ru.icarumbas.bagel.model.components.velocity.RunComponent
+import ru.icarumbas.bagel.model.components.velocity.TeleportComponent
 
 
 class Mappers {

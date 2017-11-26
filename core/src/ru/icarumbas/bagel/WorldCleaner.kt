@@ -5,10 +5,9 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.physics.box2d.World
 import ru.icarumbas.Bagel
-import ru.icarumbas.bagel.components.other.AIComponent
-import ru.icarumbas.bagel.screens.MainMenuScreen
+import ru.icarumbas.bagel.model.components.other.AIComponent
 import ru.icarumbas.bagel.utils.Mappers
-import ru.icarumbas.bagel.utils.SerializedMapObject
+import ru.icarumbas.bagel.view.screens.MainMenuScreen
 
 
 class WorldCleaner(private val entityDeleteList: ArrayList<Entity>,

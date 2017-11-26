@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.utils.Json
 import ru.icarumbas.bagel.utils.Mappers.Mappers.body
-import ru.icarumbas.bagel.utils.SerializedMapObject
 
 
 class WorldIO {
