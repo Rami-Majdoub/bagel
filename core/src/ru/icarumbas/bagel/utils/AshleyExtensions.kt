@@ -1,7 +1,9 @@
 package ru.icarumbas.bagel.utils
 
+import com.badlogic.ashley.core.Component
+import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
-import ru.icarumbas.bagel.RoomManager
+import ru.icarumbas.bagel.engine.world.RoomWorldState
 
 
 private val id = Mappers.roomId
@@ -11,11 +13,13 @@ private val ai = Mappers.AI
 private val plWeapon = Mappers.alwaysRender
 
 
-fun Entity.inView(rm: RoomManager) = this.inView(rm, rm.currentMapId)
+inline fun <reified T : Component> mapperFor(): ComponentMapper<T> = ComponentMapper.getFor(T::class.java)
 
-fun Entity.inView(rm: RoomManager, mapId: Int): Boolean {
+fun Entity.inView(rooms: RoomWorldState) = this.inView(rooms, rooms.getCurrentMapId())
+
+fun Entity.inView(rooms: RoomWorldState, mapId: Int): Boolean {
     return (id.has(this) && id[this].id == mapId) ||
-            (static.has(this) && static[this].mapPath == rm.path()) ||
+            (static.has(this) && static[this].mapPath == rooms.getMapPath(mapId)) ||
             pl.has(this) || plWeapon.has(this)
 }
 

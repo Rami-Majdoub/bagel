@@ -1,44 +1,42 @@
 package ru.icarumbas.bagel.utils
 
-import com.badlogic.ashley.core.ComponentMapper
-import ru.icarumbas.bagel.model.components.other.*
-import ru.icarumbas.bagel.model.components.physics.BodyComponent
-import ru.icarumbas.bagel.model.components.physics.InactiveMarkerComponent
-import ru.icarumbas.bagel.model.components.physics.StaticComponent
-import ru.icarumbas.bagel.model.components.physics.WeaponComponent
-import ru.icarumbas.bagel.model.components.rendering.*
-import ru.icarumbas.bagel.model.components.velocity.FlyComponent
-import ru.icarumbas.bagel.model.components.velocity.JumpComponent
-import ru.icarumbas.bagel.model.components.velocity.RunComponent
-import ru.icarumbas.bagel.model.components.velocity.TeleportComponent
+import ru.icarumbas.bagel.engine.components.other.*
+import ru.icarumbas.bagel.engine.components.physics.BodyComponent
+import ru.icarumbas.bagel.engine.components.physics.InactiveMarkerComponent
+import ru.icarumbas.bagel.engine.components.physics.StaticComponent
+import ru.icarumbas.bagel.engine.components.physics.WeaponComponent
+import ru.icarumbas.bagel.engine.components.velocity.FlyComponent
+import ru.icarumbas.bagel.engine.components.velocity.JumpComponent
+import ru.icarumbas.bagel.engine.components.velocity.RunComponent
+import ru.icarumbas.bagel.engine.components.velocity.TeleportComponent
+import ru.icarumbas.bagel.view.renderer.components.*
 
 
-class Mappers {
+object Mappers {
 
-    companion object Mappers {
+    val damage          =       mapperFor<HealthComponent>()
+    val player          =       mapperFor<PlayerComponent>()
+    val roomId          =       mapperFor<RoomIdComponent>()
+    val state           =       mapperFor<StateComponent>()
+    val body            =       mapperFor<BodyComponent>()
+    val static          =       mapperFor<StaticComponent>()
+    val animation       =       mapperFor<AnimationComponent>()
+    val size            =       mapperFor<SizeComponent>()
+    val jump            =       mapperFor<JumpComponent>()
+    val run             =       mapperFor<RunComponent>()
+    val weapon          =       mapperFor<WeaponComponent>()
+    val alwaysRender    =       mapperFor<AlwaysRenderingMarkerComponent>()
+    val AI              =       mapperFor<AIComponent>()
+    val inActive        =       mapperFor<InactiveMarkerComponent>()
+    val teleport        =       mapperFor<TeleportComponent>()
+    val attack          =       mapperFor<AttackComponent>()
+    val texture         =       mapperFor<TextureComponent>()
+    val open            =       mapperFor<OpenComponent>()
+    val door            =       mapperFor<DoorComponent>()
+    val loot            =       mapperFor<LootComponent>()
+    val fly             =       mapperFor<FlyComponent>()
+    val translate       =       mapperFor<TranslateComponent>()
+    val shader          =       mapperFor<ShaderComponent>()
 
-        val damage          =       ComponentMapper.getFor(HealthComponent::class.java)!!
-        val player          =       ComponentMapper.getFor(PlayerComponent::class.java)!!
-        val roomId          =       ComponentMapper.getFor(RoomIdComponent::class.java)!!
-        val state           =       ComponentMapper.getFor(StateComponent::class.java)!!
-        val body            =       ComponentMapper.getFor(BodyComponent::class.java)!!
-        val static          =       ComponentMapper.getFor(StaticComponent::class.java)!!
-        val animation       =       ComponentMapper.getFor(AnimationComponent::class.java)!!
-        val size            =       ComponentMapper.getFor(SizeComponent::class.java)!!
-        val jump            =       ComponentMapper.getFor(JumpComponent::class.java)!!
-        val run             =       ComponentMapper.getFor(RunComponent::class.java)!!
-        val weapon          =       ComponentMapper.getFor(WeaponComponent::class.java)!!
-        val alwaysRender    =       ComponentMapper.getFor(AlwaysRenderingMarkerComponent::class.java)!!
-        val AI              =       ComponentMapper.getFor(AIComponent::class.java)!!
-        val inActive        =       ComponentMapper.getFor(InactiveMarkerComponent::class.java)!!
-        val teleport        =       ComponentMapper.getFor(TeleportComponent::class.java)!!
-        val attack          =       ComponentMapper.getFor(AttackComponent::class.java)!!
-        val texture         =       ComponentMapper.getFor(TextureComponent::class.java)!!
-        val open            =       ComponentMapper.getFor(OpenComponent::class.java)!!
-        val door            =       ComponentMapper.getFor(DoorComponent::class.java)!!
-        val loot            =       ComponentMapper.getFor(LootComponent::class.java)!!
-        val fly             =       ComponentMapper.getFor(FlyComponent::class.java)!!
-        val translate       =       ComponentMapper.getFor(TranslateComponent::class.java)!!
-        val shader          =       ComponentMapper.getFor(ShaderComponent::class.java)!!
-    }
 }
+

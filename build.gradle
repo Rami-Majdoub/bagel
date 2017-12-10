@@ -18,7 +18,7 @@ allprojects {
     version = '1.0'
     ext {
         appName = "Bagel"
-        gdxVersion = '1.9.8-SNAPSHOT'
+        gdxVersion = '1.9.8'
     }
 
     repositories {
@@ -31,6 +31,8 @@ allprojects {
 
 project(":desktop") {
     apply plugin: "kotlin"
+
+
 
 
     dependencies {
@@ -75,12 +77,30 @@ project(":android") {
 project(":core") {
     apply plugin: "kotlin"
 
+    kotlin {
+        experimental {
+            coroutines 'enable'
+        }
+    }
+
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "org.jetbrains.kotlin:kotlin-stdlib:1.1.51"
         compile "com.badlogicgames.ashley:ashley:1.7.3"
+
+        compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.19.3"
+
+        /* KTX */
+        compile group: 'io.github.libktx', name: 'ktx-actors', version: '1.9.7-b1'
+        compile group: 'io.github.libktx', name: 'ktx-app', version: '1.9.7-b1'
+        compile group: 'io.github.libktx', name: 'ktx-box2d', version: '1.9.7-b1'
+        compile group: 'io.github.libktx', name: 'ktx-collections', version: '1.9.7-b1'
+        compile group: 'io.github.libktx', name: 'ktx-scene2d', version: '1.9.7-b1'
+        compile group: 'io.github.libktx', name: 'ktx-assets', version: '1.9.7-b1'
+        compile group: 'io.github.libktx', name: 'ktx-async', version: '1.9.7-b1'
+
 //        compile 'com.esotericsoftware:kryonet:2.22.0-RC1'
 //        compile 'io.netty:netty-all:4.1.13.Final-SNAPSHOT'
     }

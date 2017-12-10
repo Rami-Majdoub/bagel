@@ -2,11 +2,12 @@ package ru.icarumbas.bagel.desktop
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
+import org.jetbrains.annotations.Nullable
 import ru.icarumbas.Bagel
 
 
 object DesktopLauncher {
-    @JvmStatic
+    @Nullable @JvmStatic @Override
     fun main(arg: Array<String>) {
         val config = LwjglApplicationConfiguration()
         LwjglApplication(Bagel(), config)
