@@ -1,8 +1,7 @@
-package ru.icarumbas.bagel.utils.factories
+package ru.icarumbas.bagel.engine.entities.factories
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.utils.ImmutableArray
-import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.maps.MapObject
@@ -13,7 +12,6 @@ import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
-import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.Array
 import ru.icarumbas.bagel.engine.components.other.*
 import ru.icarumbas.bagel.engine.components.physics.BodyComponent
@@ -27,21 +25,18 @@ import ru.icarumbas.bagel.engine.components.velocity.TeleportComponent
 import ru.icarumbas.bagel.engine.resources.ResourceManager
 import ru.icarumbas.bagel.engine.systems.other.StateSystem
 import ru.icarumbas.bagel.engine.systems.physics.WeaponSystem
-import ru.icarumbas.bagel.engine.world.WorldConstants.PIX_PER_M
-import ru.icarumbas.bagel.utils.B2dCategoryBits.AI_BIT
-import ru.icarumbas.bagel.utils.B2dCategoryBits.BREAKABLE_BIT
-import ru.icarumbas.bagel.utils.B2dCategoryBits.PLAYER_BIT
-import ru.icarumbas.bagel.utils.B2dCategoryBits.WEAPON_BIT
-import ru.icarumbas.bagel.utils.Mappers.body
-import ru.icarumbas.bagel.utils.createRevoluteJoint
+import ru.icarumbas.bagel.engine.world.PIX_PER_M
+import ru.icarumbas.bagel.utils.*
 import ru.icarumbas.bagel.view.renderer.components.*
 import kotlin.experimental.or
 
 
-object EntityCreator {
+class EntityFactory(
+        private val bodyFactory: BodyFactory,
+        private val animationFactory: AnimationFactory
+) {
 
-    fun swingWeaponEntity(world: World,
-                          width: Int,
+    fun swingWeaponEntity(width: Int,
                           height: Int,
                           mainBody: Body,
                           anchorA: Vector2,
@@ -51,8 +46,7 @@ object EntityCreator {
 
         val weaponEntity = Entity().apply {
 
-            add(BodyComponent(BodyCreator.swordWeapon(
-                    world = world,
+            add(BodyComponent(bodyFactory.swordWeapon(
                     categoryBit = WEAPON_BIT,
                     maskBit = AI_BIT or BREAKABLE_BIT or PLAYER_BIT,
                     size = Vector2(width / PIX_PER_M, height / PIX_PER_M))
@@ -64,9 +58,9 @@ object EntityCreator {
         return weaponEntity
     }
 
-    fun playerEntity(world: World): Entity {
+    fun playerEntity(): Entity {
 
-        val playerBody = BodyCreator.playerBody(world)
+        val playerBody = bodyFactory.playerBody()
 
         val weaponAtlas = ResourceManager.getTextureAtlas("Packs/weapons.pack")
         val playerAtlas = ResourceManager.getTextureAtlas("Packs/GuyKnight.pack")
@@ -85,7 +79,6 @@ object EntityCreator {
                 .add(WeaponComponent(
                         type = WeaponSystem.SWING,
                         entityLeft = swingWeaponEntity(
-                                world = world,
                                 width = 30,
                                 height = 100,
                                 mainBody = playerBody,
@@ -98,7 +91,6 @@ object EntityCreator {
                                 .add((TranslateComponent()))
                                 .add(SizeComponent(Vector2(30 / PIX_PER_M, 150 / PIX_PER_M), .1f)),
                         entityRight = swingWeaponEntity(
-                                world = world,
                                 width = 30,
                                 height = 100,
                                 mainBody = playerBody,
@@ -121,13 +113,13 @@ object EntityCreator {
                         StateSystem.JUMP_ATTACKING
                 ))))
                 .add(AnimationComponent(hashMapOf(
-                        StateSystem.RUNNING to AnimationCreator.create("Run", 10, .075f, playerAtlas),
-                        StateSystem.JUMPING to AnimationCreator.create("Jump", 10, .15f, playerAtlas),
-                        StateSystem.STANDING to AnimationCreator.create("Idle", 10, .1f, playerAtlas),
-                        StateSystem.DEAD to AnimationCreator.create("Dead", 10, .1f, playerAtlas, Animation.PlayMode.NORMAL),
-                        StateSystem.ATTACKING to AnimationCreator.create("Attack", 7, .075f, playerAtlas),
-                        StateSystem.WALKING to AnimationCreator.create("Walk", 10, .075f, playerAtlas),
-                        StateSystem.JUMP_ATTACKING to AnimationCreator.create("JumpAttack", 10, .075f, playerAtlas)
+                        StateSystem.RUNNING to animationFactory.create("Run", 10, .075f, playerAtlas),
+                        StateSystem.JUMPING to animationFactory.create("Jump", 10, .15f, playerAtlas),
+                        StateSystem.STANDING to animationFactory.create("Idle", 10, .1f, playerAtlas),
+                        StateSystem.DEAD to animationFactory.create("Dead", 10, .1f, playerAtlas, Animation.PlayMode.NORMAL),
+                        StateSystem.ATTACKING to animationFactory.create("Attack", 7, .075f, playerAtlas),
+                        StateSystem.WALKING to animationFactory.create("Walk", 10, .075f, playerAtlas),
+                        StateSystem.JUMP_ATTACKING to animationFactory.create("JumpAttack", 10, .075f, playerAtlas)
                 )))
                 .add(AlwaysRenderingMarkerComponent())
                 .add(AttackComponent(strength = 15, knockback = Vector2(1.5f, 1f)))
@@ -138,12 +130,11 @@ object EntityCreator {
 
     }
 
-    fun groundEntity(world: World, obj: MapObject, bit: Short): Entity{
+    fun groundEntity(obj: MapObject, bit: Short): Entity{
         return Entity()
                 .add(when (obj) {
                     is RectangleMapObject -> {
-                        BodyComponent(BodyCreator.rectangleMapObjectBody(
-                                world,
+                        BodyComponent(bodyFactory.rectangleMapObjectBody(
                                 obj.rectangle,
                                 BodyDef.BodyType.StaticBody,
                                 obj.rectangle.width / PIX_PER_M,
@@ -151,8 +142,7 @@ object EntityCreator {
                                 bit))
                     }
                     is PolylineMapObject -> {
-                        BodyComponent(BodyCreator.polylineMapObjectBody(
-                                world,
+                        BodyComponent(bodyFactory.polylineMapObjectBody(
                                 obj,
                                 BodyDef.BodyType.StaticBody,
                                 bit))
@@ -162,13 +152,12 @@ object EntityCreator {
 
     }
 
-    fun lootentity(world: World,
-                         atlas: TextureAtlas,
-                         playerEntity: Entity,
-                         r: Int,
-                         x: Float,
-                         y: Float,
-                         roomId: Int): Entity{
+    fun lootEntity(atlas: TextureAtlas,
+                   playerEntity: Entity,
+                   r: Int,
+                   x: Float,
+                   y: Float,
+                   roomId: Int): Entity{
         val loot = Entity()
 
                 .add(SizeComponent(Vector2(30 / PIX_PER_M, 100 / PIX_PER_M), 1.5f))
@@ -179,7 +168,6 @@ object EntityCreator {
                                 type = WeaponSystem.SWING,
 
                                 entityLeft = swingWeaponEntity(
-                                        world = world,
                                         width = 30,
                                         height = 100,
                                         mainBody = body[playerEntity].body,
@@ -193,7 +181,6 @@ object EntityCreator {
                                         .add(TextureComponent(atlas.findRegion("sword1"))),
 
                                 entityRight = swingWeaponEntity(
-                                        world = world,
                                         width = 30,
                                         height = 100,
                                         mainBody = body[playerEntity].body,
@@ -215,14 +202,13 @@ object EntityCreator {
         return loot
     }
 
-    fun idMapObjectEntity(world: World,
-                     assets: AssetManager,
-                     roomId: Int,
-                     rect: Rectangle,
-                     objectPath: String,
-                     atlas: TextureAtlas,
-                     r: Int,
-                     playerEntity: Entity): Entity? {
+    fun idMapObjectEntity(roomId: Int,
+                          rect: Rectangle,
+                          objectPath: String,
+                          r: Int,
+                          playerEntity: Entity): Entity? {
+
+        val atlas = ResourceManager.getTextureAtlas("items.pack")
 
         val e = when(objectPath){
 
@@ -236,8 +222,7 @@ object EntityCreator {
                 }
 
                 Entity()
-                        .add(BodyComponent(BodyCreator.rectangleMapObjectBody(
-                                world,
+                        .add(BodyComponent(bodyFactory.rectangleMapObjectBody(
                                 rect,
                                 BodyDef.BodyType.StaticBody,
                                 size.first / PIX_PER_M,
@@ -251,8 +236,7 @@ object EntityCreator {
 
             "window" -> {
                 Entity()
-                        .add(BodyComponent(BodyCreator.rectangleMapObjectBody(
-                                world,
+                        .add(BodyComponent(bodyFactory.rectangleMapObjectBody(
                                 rect,
                                 BodyDef.BodyType.StaticBody,
                                 86 / PIX_PER_M,
@@ -266,8 +250,7 @@ object EntityCreator {
             "chair1" -> {
                 if (r == 2) return null
                 Entity()
-                        .add(BodyComponent(BodyCreator.rectangleMapObjectBody(
-                                world,
+                        .add(BodyComponent(bodyFactory.rectangleMapObjectBody(
                                 rect,
                                 BodyDef.BodyType.StaticBody,
                                 70 / PIX_PER_M,
@@ -282,8 +265,7 @@ object EntityCreator {
             "chair2" -> {
                 if (r == 2) return null
                 Entity()
-                        .add(BodyComponent(BodyCreator.rectangleMapObjectBody(
-                                world,
+                        .add(BodyComponent(bodyFactory.rectangleMapObjectBody(
                                 rect,
                                 BodyDef.BodyType.StaticBody,
                                 70 / PIX_PER_M,
@@ -298,8 +280,7 @@ object EntityCreator {
             "table" -> {
                 if (r == 2) return null
                 Entity()
-                        .add(BodyComponent(BodyCreator.rectangleMapObjectBody(
-                                world,
+                        .add(BodyComponent(bodyFactory.rectangleMapObjectBody(
                                 rect,
                                 BodyDef.BodyType.StaticBody,
                                 137 / PIX_PER_M,
@@ -313,8 +294,7 @@ object EntityCreator {
 
             "chandelier" -> {
                 Entity()
-                        .add(BodyComponent(BodyCreator.rectangleMapObjectBody(
-                                world,
+                        .add(BodyComponent(bodyFactory.rectangleMapObjectBody(
                                 rect,
                                 BodyDef.BodyType.StaticBody,
                                 243 / PIX_PER_M,
@@ -323,7 +303,7 @@ object EntityCreator {
                                 WEAPON_BIT)))
                         .add(HealthComponent(5))
                         .add(AnimationComponent(hashMapOf(StateSystem.STANDING to
-                                AnimationCreator.create("Chandelier", 4, .125f, atlas))))
+                                animationFactory.create("Chandelier", 4, .125f, atlas))))
                         .add(StateComponent(
                                 ImmutableArray(Array.with(StateSystem.STANDING)),
                                 MathUtils.random()
@@ -334,8 +314,7 @@ object EntityCreator {
 
             "candle" -> {
                 Entity()
-                        .add(BodyComponent(BodyCreator.rectangleMapObjectBody(
-                                world,
+                        .add(BodyComponent(bodyFactory.rectangleMapObjectBody(
                                 rect,
                                 BodyDef.BodyType.StaticBody,
                                 178 / PIX_PER_M,
@@ -344,7 +323,7 @@ object EntityCreator {
                                 WEAPON_BIT)))
                         .add(HealthComponent(5))
                         .add(AnimationComponent(hashMapOf(StateSystem.STANDING to
-                                AnimationCreator.create("Candle", 4, .125f, atlas))))
+                                animationFactory.create("Candle", 4, .125f, atlas))))
                         .add(StateComponent(
                                 ImmutableArray(Array.with(StateSystem.STANDING)),
                                 MathUtils.random()
@@ -356,8 +335,7 @@ object EntityCreator {
             "smallBanner" -> {
 
                 Entity()
-                        .add(BodyComponent(BodyCreator.rectangleMapObjectBody(
-                                world,
+                        .add(BodyComponent(bodyFactory.rectangleMapObjectBody(
                                 rect,
                                 BodyDef.BodyType.StaticBody,
                                 126 / PIX_PER_M,
@@ -373,8 +351,7 @@ object EntityCreator {
                 if (r == 2) return null
 
                 Entity()
-                        .add(BodyComponent(BodyCreator.rectangleMapObjectBody(
-                                world,
+                        .add(BodyComponent(bodyFactory.rectangleMapObjectBody(
                                 rect,
                                 BodyDef.BodyType.StaticBody,
                                 96 / PIX_PER_M,
@@ -384,9 +361,9 @@ object EntityCreator {
                         .add(SizeComponent(Vector2(96 / PIX_PER_M, 96 / PIX_PER_M)))
                         .add(AnimationComponent(hashMapOf(
                                 StateSystem.STANDING to
-                                        AnimationCreator.create("Chest", 1, .125f, atlas),
+                                        animationFactory.create("Chest", 1, .125f, atlas),
                                 StateSystem.OPENING to
-                                        AnimationCreator.create("Chest", 4, .125f, atlas))))
+                                        animationFactory.create("Chest", 4, .125f, atlas))))
                         .add(StateComponent(
                                 ImmutableArray(Array.with(StateSystem.STANDING, StateSystem.OPENING)),
                                 0f
@@ -398,8 +375,7 @@ object EntityCreator {
             "door" -> {
 
                 Entity()
-                        .add(BodyComponent(BodyCreator.rectangleMapObjectBody(
-                                world,
+                        .add(BodyComponent(bodyFactory.rectangleMapObjectBody(
                                 rect,
                                 BodyDef.BodyType.StaticBody,
                                 170 / PIX_PER_M,
@@ -411,16 +387,16 @@ object EntityCreator {
                                 if (r == 1) {
                                     hashMapOf(
                                             StateSystem.STANDING to
-                                                    AnimationCreator.create("IronDoor", 1, .125f, atlas),
+                                                    animationFactory.create("IronDoor", 1, .125f, atlas),
                                             StateSystem.OPENING to
-                                                    AnimationCreator.create("IronDoor", 4, .125f, atlas)
+                                                    animationFactory.create("IronDoor", 4, .125f, atlas)
                                     )
                                 } else {
                                     hashMapOf(
                                             StateSystem.STANDING to
-                                                    AnimationCreator.create("Wood Door", 1, .125f, atlas),
+                                                    animationFactory.create("Wood Door", 1, .125f, atlas),
                                             StateSystem.OPENING to
-                                                    AnimationCreator.create("Wood Door", 4, .125f, atlas)
+                                                    animationFactory.create("Wood Door", 4, .125f, atlas)
                                     )
                                 }
                         ))
@@ -438,8 +414,7 @@ object EntityCreator {
                 if (r == 3) return null
 
                 Entity()
-                        .add(BodyComponent(BodyCreator.rectangleMapObjectBody(
-                                world,
+                        .add(BodyComponent(bodyFactory.rectangleMapObjectBody(
                                 rect,
                                 BodyDef.BodyType.StaticBody,
                                 if (r == 1) 106 / PIX_PER_M else 119 / PIX_PER_M,
@@ -461,8 +436,7 @@ object EntityCreator {
                     1 -> {
 
                         Entity()
-                                .add(BodyComponent(BodyCreator.rectangleMapObjectBody(
-                                        world,
+                                .add(BodyComponent(bodyFactory.rectangleMapObjectBody(
                                         rect,
                                         BodyDef.BodyType.DynamicBody,
                                         64 / PIX_PER_M,
@@ -475,7 +449,7 @@ object EntityCreator {
                                 .add(AnimationComponent(hashMapOf(
                                         StateSystem.STANDING to Animation(
                                                 .1f,
-                                                assets["Packs/Enemies/MiniDragon.pack", TextureAtlas::class.java]
+                                                ResourceManager.getTextureAtlas("Packs/Enemies/MiniDragon.pack")
                                                         .findRegions("miniDragon"),
                                                 Animation.PlayMode.LOOP)
                                 )))
@@ -496,9 +470,8 @@ object EntityCreator {
                 when (r) {
                     1 -> {
 
-                        val skeletonAtlas = assets["Packs/Enemies/Skeleton.pack", TextureAtlas::class.java]
-                        val body = BodyCreator.rectangleMapObjectBody(
-                                world,
+                        val skeletonAtlas = ResourceManager.getTextureAtlas("Packs/Enemies/Skeleton.pack")
+                        val body = bodyFactory.rectangleMapObjectBody(
                                 rect,
                                 BodyDef.BodyType.DynamicBody,
                                 85 / PIX_PER_M,
@@ -545,7 +518,6 @@ object EntityCreator {
                                 .add(WeaponComponent(
                                         type = WeaponSystem.SWING,
                                         entityLeft = swingWeaponEntity(
-                                                world,
                                                 35,
                                                 135,
                                                 body,
@@ -555,7 +527,6 @@ object EntityCreator {
                                                 maxSpeed = 2f)
                                                 .add(RoomIdComponent(roomId)),
                                         entityRight = swingWeaponEntity(
-                                                world,
                                                 35,
                                                 135,
                                                 body,
@@ -572,9 +543,8 @@ object EntityCreator {
 
                     2 -> {
 
-                        val golemAtlas = assets["Packs/Enemies/Golem.pack", TextureAtlas::class.java]
-                        val body = BodyCreator.rectangleMapObjectBody(
-                                world,
+                        val golemAtlas = ResourceManager.getTextureAtlas("Packs/Enemies/Golem.pack")
+                        val body = bodyFactory.rectangleMapObjectBody(
                                 rect,
                                 BodyDef.BodyType.DynamicBody,
                                 230 / PIX_PER_M,
@@ -621,7 +591,6 @@ object EntityCreator {
                                 .add(WeaponComponent(
                                         type = WeaponSystem.SWING,
                                         entityLeft = swingWeaponEntity(
-                                                world,
                                                 50,
                                                 215,
                                                 body,
@@ -631,7 +600,6 @@ object EntityCreator {
                                                 maxSpeed = 2f)
                                                 .add(RoomIdComponent(roomId)),
                                         entityRight = swingWeaponEntity(
-                                                world,
                                                 50,
                                                 215,
                                                 body,
@@ -647,9 +615,8 @@ object EntityCreator {
                     }
 
                     3 -> {
-                        val zombieAtlas = assets["Packs/Enemies/Zombie.pack", TextureAtlas::class.java]
-                        val body = BodyCreator.rectangleMapObjectBody(
-                                world,
+                        val zombieAtlas = ResourceManager.getTextureAtlas("Packs/Enemies/Zombie.pack")
+                        val body = bodyFactory.rectangleMapObjectBody(
                                 rect,
                                 BodyDef.BodyType.DynamicBody,
                                 85 / PIX_PER_M,
@@ -696,7 +663,6 @@ object EntityCreator {
                                 .add(WeaponComponent(
                                         type = WeaponSystem.SWING,
                                         entityLeft = swingWeaponEntity(
-                                                world,
                                                 35,
                                                 110,
                                                 body,
@@ -706,7 +672,6 @@ object EntityCreator {
                                                 maxSpeed = 2f)
                                                 .add(RoomIdComponent(roomId)),
                                         entityRight = swingWeaponEntity(
-                                                world,
                                                 35,
                                                 110,
                                                 body,
@@ -722,9 +687,8 @@ object EntityCreator {
                     }
 
                     4 -> {
-                        val vampAtlas = assets["Packs/Enemies/Vamp.pack", TextureAtlas::class.java]
-                        val body = BodyCreator.rectangleMapObjectBody(
-                                world,
+                        val vampAtlas = ResourceManager.getTextureAtlas("Packs/Enemies/Vamp.pack")
+                        val body = bodyFactory.rectangleMapObjectBody(
                                 rect,
                                 BodyDef.BodyType.DynamicBody,
                                 85 / PIX_PER_M,
@@ -776,7 +740,6 @@ object EntityCreator {
                                 .add(WeaponComponent(
                                         type = WeaponSystem.SWING,
                                         entityLeft = swingWeaponEntity(
-                                                world,
                                                 35,
                                                 220,
                                                 body,
@@ -786,7 +749,6 @@ object EntityCreator {
                                                 maxSpeed = 2f)
                                                 .add(RoomIdComponent(roomId)),
                                         entityRight = swingWeaponEntity(
-                                                world,
                                                 35,
                                                 220,
                                                 body,
@@ -816,8 +778,7 @@ object EntityCreator {
         return e
     }
 
-    fun staticMapObjectEntity(world: World,
-                              roomPath: String,
+    fun staticMapObjectEntity(roomPath: String,
                               objectPath: String,
                               atlas: TextureAtlas,
                               obj: MapObject): Entity{
@@ -827,8 +788,7 @@ object EntityCreator {
 
             "spikes" -> {
                 Entity()
-                        .add(BodyComponent(BodyCreator.rectangleMapObjectBody(
-                                world,
+                        .add(BodyComponent(bodyFactory.rectangleMapObjectBody(
                                 (obj as RectangleMapObject).rectangle,
                                 BodyDef.BodyType.StaticBody,
                                 64 / PIX_PER_M,
@@ -843,8 +803,7 @@ object EntityCreator {
 
             "lighting" -> {
                 Entity()
-                        .add(BodyComponent(BodyCreator.rectangleMapObjectBody(
-                                world,
+                        .add(BodyComponent(bodyFactory.rectangleMapObjectBody(
                                 (obj as RectangleMapObject).rectangle,
                                 BodyDef.BodyType.StaticBody,
                                 98 / PIX_PER_M,
@@ -852,7 +811,7 @@ object EntityCreator {
                                 STATIC_BIT,
                                 -1)))
                         .add(AnimationComponent(hashMapOf(StateSystem.STANDING to
-                                AnimationCreator.create("Lighting", 4, .125f, atlas))))
+                                animationFactory.create("Lighting", 4, .125f, atlas))))
                         .add(StateComponent(ImmutableArray(Array.with(StateSystem.STANDING)),
                                 MathUtils.random()))
                         .add(SizeComponent(Vector2(98 / PIX_PER_M, 154 / PIX_PER_M)))
@@ -862,8 +821,7 @@ object EntityCreator {
 
             "torch" -> {
                 Entity()
-                        .add(BodyComponent(BodyCreator.rectangleMapObjectBody(
-                                world,
+                        .add(BodyComponent(bodyFactory.rectangleMapObjectBody(
                                 (obj as RectangleMapObject).rectangle,
                                 BodyDef.BodyType.StaticBody,
                                 178 / PIX_PER_M,
@@ -871,7 +829,7 @@ object EntityCreator {
                                 STATIC_BIT,
                                 -1)))
                         .add(AnimationComponent(hashMapOf(StateSystem.STANDING to
-                                AnimationCreator.create("Torch", 4, .125f, atlas))))
+                                animationFactory.create("Torch", 4, .125f, atlas))))
                         .add(StateComponent(ImmutableArray(Array.with(StateSystem.STANDING)),
                                 MathUtils.random()))
                         .add(SizeComponent(Vector2(178 / PIX_PER_M, 116 / PIX_PER_M)))
@@ -879,10 +837,10 @@ object EntityCreator {
                         .add((TranslateComponent()))
             }
 
-            "ground" -> groundEntity(world, obj, GROUND_BIT)
+            "ground" -> groundEntity(obj, GROUND_BIT)
 
             "platform" -> {
-                groundEntity(world, obj, PLATFORM_BIT)
+                groundEntity(obj, PLATFORM_BIT)
                         .add(SizeComponent(Vector2(
                                 (obj as RectangleMapObject).rectangle.width / PIX_PER_M,
                                 obj.rectangle.height / PIX_PER_M)))

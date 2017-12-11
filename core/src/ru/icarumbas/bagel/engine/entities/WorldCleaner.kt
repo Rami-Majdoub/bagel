@@ -1,16 +1,9 @@
 package ru.icarumbas.bagel.engine.entities
 
-import com.badlogic.ashley.core.Engine
-import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.core.Family
-import com.badlogic.gdx.physics.box2d.World
-import ru.icarumbas.Bagel
-import ru.icarumbas.bagel.engine.components.other.AIComponent
-import ru.icarumbas.bagel.engine.io.SerializedMapObject
-import ru.icarumbas.bagel.utils.Mappers
-import ru.icarumbas.bagel.view.screens.MainMenuScreen
 
+// Refactor. Delete.
 
+/*
 class WorldCleaner(private val entityDeleteList: ArrayList<Entity>,
                    private val engine: Engine,
                    private val world: World,
@@ -55,4 +48,4 @@ class WorldCleaner(private val entityDeleteList: ArrayList<Entity>,
     fun update(){
         deleteEntities()
     }
-}
+}*/

@@ -11,9 +11,6 @@ import ru.icarumbas.bagel.engine.components.velocity.RunComponent
 import ru.icarumbas.bagel.engine.components.velocity.TeleportComponent
 import ru.icarumbas.bagel.view.renderer.components.*
 
-
-object Mappers {
-
     val damage          =       mapperFor<HealthComponent>()
     val player          =       mapperFor<PlayerComponent>()
     val roomId          =       mapperFor<RoomIdComponent>()
@@ -38,5 +35,5 @@ object Mappers {
     val translate       =       mapperFor<TranslateComponent>()
     val shader          =       mapperFor<ShaderComponent>()
 
-}
+
 

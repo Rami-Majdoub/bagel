@@ -2,11 +2,9 @@ package ru.icarumbas.bagel.engine.world
 
 import com.badlogic.gdx.math.MathUtils
 import ru.icarumbas.bagel.engine.resources.ResourceManager
-import ru.icarumbas.bagel.engine.world.WorldConstants.REG_ROOM_HEIGHT
-import ru.icarumbas.bagel.engine.world.WorldConstants.REG_ROOM_WIDTH
 
 
-class WorldCreator(private val worldSize: Int) {
+class RoomWorldCreator(private val worldSize: Int) {
 
     private lateinit var newRoom: Room
 

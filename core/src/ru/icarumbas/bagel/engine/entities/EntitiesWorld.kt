@@ -1,0 +1,152 @@
+package ru.icarumbas.bagel.engine.entities
+
+import com.badlogic.ashley.core.Engine
+import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.physics.box2d.World
+import com.badlogic.gdx.utils.viewport.Viewport
+import ru.icarumbas.bagel.engine.controller.PlayerController
+import ru.icarumbas.bagel.engine.controller.UIController
+import ru.icarumbas.bagel.engine.entities.factories.AnimationFactory
+import ru.icarumbas.bagel.engine.entities.factories.BodyFactory
+import ru.icarumbas.bagel.engine.entities.factories.EntityFactory
+import ru.icarumbas.bagel.engine.io.EntitiesInfo
+import ru.icarumbas.bagel.engine.io.SerializedMapObject
+import ru.icarumbas.bagel.engine.io.WorldIO
+import ru.icarumbas.bagel.engine.resources.ResourceManager
+import ru.icarumbas.bagel.engine.systems.other.*
+import ru.icarumbas.bagel.engine.systems.physics.AwakeSystem
+import ru.icarumbas.bagel.engine.systems.physics.WeaponSystem
+import ru.icarumbas.bagel.engine.systems.velocity.FlyingSystem
+import ru.icarumbas.bagel.engine.systems.velocity.JumpingSystem
+import ru.icarumbas.bagel.engine.systems.velocity.RunningSystem
+import ru.icarumbas.bagel.engine.systems.velocity.TeleportSystem
+import ru.icarumbas.bagel.engine.world.MAPS_TOTAL
+import ru.icarumbas.bagel.engine.world.RoomWorld
+import ru.icarumbas.bagel.utils.roomId
+import ru.icarumbas.bagel.view.renderer.systems.AnimationSystem
+import ru.icarumbas.bagel.view.renderer.systems.RenderingSystem
+import ru.icarumbas.bagel.view.renderer.systems.TranslateSystem
+import ru.icarumbas.bagel.view.renderer.systems.ViewportSystem
+
+
+class EntitiesWorld (
+
+        private val roomWorld: RoomWorld,
+        private val worldIO: WorldIO,
+        private val world: World,
+        assets: ResourceManager
+) {
+
+    private val entityFactory = EntityFactory(BodyFactory(world), AnimationFactory())
+    private val entityFromLayerLoader = EntityFromLayerLoader(entityFactory, assets, this)
+
+    private val serializedObjects = ArrayList<SerializedMapObject>()
+
+    val playerEntity = entityFactory.playerEntity()
+    val engine = Engine()
+
+
+    fun update(dt: Float){
+        engine.update(dt)
+    }
+
+    fun defineEngine(
+            uiController: UIController,
+            playerController: PlayerController,
+            viewport: Viewport,
+            batch: Batch
+    ){
+
+        with (engine) {
+
+            addSystem(RoomChangingSystem())
+            addSystem(HealthSystem(roomWorld, world))
+            addSystem(StateSystem(roomWorld))
+            addSystem(AISystem(roomWorld))
+            addSystem(OpeningSystem(uiController, roomWorld))
+//            addSystem(LootSystem(hud, rm, playerEntity, entityDeleteList))
+
+            /* Velocity */
+            addSystem(RunningSystem(playerController, roomWorld))
+            addSystem(JumpingSystem(playerController, roomWorld))
+            addSystem(TeleportSystem(playerEntity, roomWorld))
+            addSystem(FlyingSystem(playerEntity, roomWorld))
+
+            /* Physic */
+            addSystem(AwakeSystem(roomWorld))
+            addSystem(WeaponSystem(uiController, roomWorld))
+
+            /* Rendering */
+            addSystem(ViewportSystem(viewport, roomWorld))
+            addSystem(AnimationSystem(roomWorld))
+            addSystem(TranslateSystem(roomWorld))
+//            addSystem(ShaderSystem(rm))
+            addSystem(RenderingSystem(roomWorld, batch))
+
+            addEntity(playerEntity)
+        }
+    }
+
+    fun createIdMapEntities(){
+        roomWorld.rooms.forEach { room ->
+
+            fun create(path: String, rand: Int = 1){
+                entityFromLayerLoader.createIdEntitiesFromLayer(path, "vase", room.id, rand)
+            }
+
+            create("vase", 5)
+            create("chair1", 3)
+            create( "chair2", 3)
+            create( "table", 3)
+            create( "chandelier")
+            create( "window", 2)
+            create( "crateBarrel", 3)
+            create( "smallBanner", 2)
+            create( "chest", 2)
+            create( "candle")
+            create( "door", 2)
+            create( "groundEnemy", 5)
+            create( "flyingEnemy")
+
+        }
+    }
+
+    fun createStaticMapEntities(){
+
+        (0 until MAPS_TOTAL).forEach {
+
+            fun create(objPath: String){
+                entityFromLayerLoader.loadStaticEntitiesFromLayer("Maps/Map$it.tmx", objPath)
+            }
+
+            create("torch")
+            create("ground")
+            create("platform")
+            create("spikes")
+            create("lighting")
+        }
+    }
+
+    fun loadEntities(){
+        worldIO.loadEntitiesInfo().mapObjects.forEach {
+            engine.addEntity(entityFactory.idMapObjectEntity(
+                    it.roomId,
+                    it.rect,
+                    it.objectPath,
+                    it.rand,
+                    playerEntity
+            ))
+        }
+    }
+
+    fun saveEntites(){
+        worldIO.saveInfo(EntitiesInfo(serializedObjects))
+    }
+
+    fun saveEntityForSerialization(obj: SerializedMapObject){
+
+        serializedObjects.add(obj)
+        roomId[engine.entities.last()].serialized = serializedObjects.last()
+
+    }
+}

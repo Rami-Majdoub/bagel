@@ -4,10 +4,8 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import ru.icarumbas.bagel.engine.components.other.LootComponent
-import ru.icarumbas.bagel.engine.world.RoomWorldState
-import ru.icarumbas.bagel.utils.Mappers.loot
 import ru.icarumbas.bagel.utils.inView
-import ru.icarumbas.bagel.view.scenes.Hud
+import ru.icarumbas.bagel.view.ui.Hud
 
 
 class LootSystem : IteratingSystem {

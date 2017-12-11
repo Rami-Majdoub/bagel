@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ktx.app.KtxScreen
 import ru.icarumbas.Bagel
 import ru.icarumbas.bagel.engine.resources.ResourceManager
-import ru.icarumbas.bagel.view.actors.LoadingBar
+import ru.icarumbas.bagel.view.ui.actors.LoadingBar
 
 
 class LoadingScreen(private val game: Bagel) : KtxScreen {

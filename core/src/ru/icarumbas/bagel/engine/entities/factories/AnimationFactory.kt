@@ -1,11 +1,11 @@
-package ru.icarumbas.bagel.utils.factories
+package ru.icarumbas.bagel.engine.entities.factories
 
 import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import ktx.collections.toGdxArray
 
-object AnimationCreator {
+class AnimationFactory {
 
     // Single sprites
     fun create(path: String,

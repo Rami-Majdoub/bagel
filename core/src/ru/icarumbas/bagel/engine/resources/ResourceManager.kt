@@ -5,10 +5,10 @@ import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
-import ru.icarumbas.bagel.engine.world.WorldConstants
+import ru.icarumbas.bagel.engine.world.MAPS_TOTAL
 
 
-object ResourceManager {
+class ResourceManager {
 
     val assets: AssetManager = AssetManager()
 
@@ -35,11 +35,9 @@ object ResourceManager {
 
         with (assets) {
 
-            TmxMapLoader().load("", params);
-
             // Rooms
             setLoader(TiledMap::class.java, TmxMapLoader(InternalFileHandleResolver()))
-            (0 until WorldConstants.MAPS_TOTAL).forEach {
+            (0 until MAPS_TOTAL).forEach {
                 load("Maps/Map$it.tmx", TiledMap::class.java, TmxMapLoader.Parameters().apply {
                     generateMipMaps = true
                 })

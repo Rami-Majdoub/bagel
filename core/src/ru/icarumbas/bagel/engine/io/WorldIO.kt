@@ -4,20 +4,20 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.utils.Json
 import ru.icarumbas.bagel.engine.world.Room
 
-private val json = Json()
-private val prefs = Gdx.app.getPreferences("Bagel prefs")
+
+class WorldIO {
+
+    private val json = Json()
+    private val prefs = Gdx.app.getPreferences("Bagel prefs")
 
 
-private fun saveToFile(path: String, obj: Any){
-    Gdx.files.local(path).writeString(json.toJson(obj), false)
-}
+    private fun saveToFile(path: String, obj: Any){
+        Gdx.files.local(path).writeString(json.toJson(obj), false)
+    }
 
-private fun <T> loadFromFile(path: String, clazz: Class<T>): T {
-    return json.fromJson(clazz, Gdx.files.local(path))
-}
-
-
-object WorldIO {
+    private fun <T> loadFromFile(path: String, clazz: Class<T>): T {
+        return json.fromJson(clazz, Gdx.files.local(path))
+    }
 
     fun saveInfo(info: IOInfo) {
         when (info) {

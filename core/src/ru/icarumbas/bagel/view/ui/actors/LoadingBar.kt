@@ -1,4 +1,4 @@
-package ru.icarumbas.bagel.view.actors
+package ru.icarumbas.bagel.view.ui.actors
 
 import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.Batch

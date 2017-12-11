@@ -6,19 +6,14 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import ru.icarumbas.bagel.engine.components.other.PlayerComponent
-import ru.icarumbas.bagel.engine.world.RoomWorldState
-import ru.icarumbas.bagel.utils.Mappers
 import ru.icarumbas.bagel.view.renderer.components.SizeComponent
 
 
 class RoomChangingSystem : IteratingSystem {
 
-    private val worldState: RoomWorldState
 
 
-    constructor(worldState: RoomWorldState) : super(Family.all(PlayerComponent::class.java).get()) {
-        this.worldState = worldState
-    }
+    constructor() : super(Family.all(PlayerComponent::class.java).get())
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
         checkRoomChange(Mappers.size[entity], Mappers.body[entity].body)

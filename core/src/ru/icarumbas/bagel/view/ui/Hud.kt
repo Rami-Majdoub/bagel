@@ -1,4 +1,4 @@
-package ru.icarumbas.bagel.view.scenes
+package ru.icarumbas.bagel.view.ui
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
@@ -18,10 +18,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.viewport.ExtendViewport
-import ru.icarumbas.bagel.engine.world.RoomWorldState
-import ru.icarumbas.bagel.view.actors.AdvancedTouchpad
-import ru.icarumbas.bagel.view.actors.Minimap
-import ru.icarumbas.bagel.view.actors.RegularBar
+import ru.icarumbas.bagel.view.ui.actors.AdvancedTouchpad
+import ru.icarumbas.bagel.view.ui.actors.Minimap
+import ru.icarumbas.bagel.view.ui.actors.RegularBar
 
 
 class Hud(assetManager: AssetManager,

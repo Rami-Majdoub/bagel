@@ -6,12 +6,6 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.physics.box2d.World
 import ru.icarumbas.bagel.engine.components.other.HealthComponent
-import ru.icarumbas.bagel.engine.world.RoomWorldState
-import ru.icarumbas.bagel.utils.Mappers.animation
-import ru.icarumbas.bagel.utils.Mappers.body
-import ru.icarumbas.bagel.utils.Mappers.damage
-import ru.icarumbas.bagel.utils.Mappers.state
-import ru.icarumbas.bagel.utils.Mappers.texture
 import ru.icarumbas.bagel.utils.inView
 
 
@@ -19,15 +13,12 @@ class HealthSystem : IteratingSystem {
 
     private val roomWorldState: RoomWorldState
     private val world: World
-    private val deleteList: ArrayList<Entity>
 
     constructor(roomWorldState: RoomWorldState,
-                world: World,
-                deleteList: ArrayList<Entity>) : super(Family.all(HealthComponent::class.java).get()) {
+                world: World) : super(Family.all(HealthComponent::class.java).get()) {
 
         this.roomWorldState = roomWorldState
         this.world = world
-        this.deleteList = deleteList
     }
 
     override fun processEntity(e: Entity, deltaTime: Float) {
