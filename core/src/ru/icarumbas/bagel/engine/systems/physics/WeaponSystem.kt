@@ -8,32 +8,28 @@ import ru.icarumbas.bagel.engine.components.other.PlayerComponent
 import ru.icarumbas.bagel.engine.components.physics.WeaponComponent
 import ru.icarumbas.bagel.engine.controller.UIController
 import ru.icarumbas.bagel.engine.world.RoomWorld
-import ru.icarumbas.bagel.utils.inView
-import ru.icarumbas.bagel.utils.rotatedRight
+import ru.icarumbas.bagel.utils.*
 
 
-class WeaponSystem : IteratingSystem {
+class WeaponSystem(
 
-    private val uiController: UIController
-    private val rm: RoomWorld
+        private val uiController: UIController,
+        private val rm: RoomWorld
 
-    companion object WeaponTypes{
-        val SWING = 0
-        val STUB = 1
-        val SHOT = 2
+) : IteratingSystem(Family.all(WeaponComponent::class.java).one(PlayerComponent::class.java, AIComponent::class.java).get()) {
+
+
+
+    enum class WeaponType{
+        SWING,
+        STUB,
+        SHOT
     }
 
-    constructor(uiListener: UIController, rm: RoomWorld) : super(Family.all(
-            WeaponComponent::class.java).one(
-            PlayerComponent::class.java,
-            AIComponent::class.java).get()) {
-        this.uiController = uiListener
-        this.rm = rm
-    }
 
     private fun reload(e: Entity){
         when (weapon[e].type) {
-            SWING -> {
+            WeaponType.SWING -> {
                 if (body[weapon[e].entityRight].body.angleInDegrees() > 0){
 
                     body[weapon[e].entityRight].body.setTransform(
@@ -64,11 +60,11 @@ class WeaponSystem : IteratingSystem {
 
             }
 
-            STUB -> {
+            WeaponType.STUB -> {
 
             }
 
-            SHOT -> {
+            WeaponType.SHOT -> {
 
             }
         }
@@ -85,7 +81,7 @@ class WeaponSystem : IteratingSystem {
             weapon[e].attacking = true
 
             when (weapon[e].type) {
-                SWING -> {
+                WeaponType.SWING -> {
 
                     if (e.rotatedRight()) {
                         body[weapon[e].entityRight].body.setTransform(
@@ -102,11 +98,11 @@ class WeaponSystem : IteratingSystem {
                     }
                 }
 
-                STUB -> {
+                WeaponType.STUB -> {
 
                 }
 
-                SHOT -> {
+                WeaponType.SHOT -> {
 
                 }
             }

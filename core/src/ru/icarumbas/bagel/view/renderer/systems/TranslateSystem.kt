@@ -6,18 +6,16 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.MathUtils
 import ru.icarumbas.bagel.engine.components.physics.BodyComponent
 import ru.icarumbas.bagel.engine.world.RoomWorld
-import ru.icarumbas.bagel.utils.inView
-import ru.icarumbas.bagel.utils.rotatedRight
+import ru.icarumbas.bagel.utils.*
 import ru.icarumbas.bagel.view.renderer.components.TranslateComponent
 
 
-class TranslateSystem : IteratingSystem{
+class TranslateSystem(
 
-    private val rm: RoomWorld
+        private val rm: RoomWorld
 
-    constructor(rm: RoomWorld) : super(Family.all(BodyComponent::class.java, TranslateComponent::class.java).get()) {
-        this.rm = rm
-    }
+) : IteratingSystem(Family.all(BodyComponent::class.java, TranslateComponent::class.java).get()){
+
 
     override fun processEntity(e: Entity, deltaTime: Float) {
         if (e.inView(rm)){

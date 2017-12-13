@@ -9,27 +9,23 @@ import com.badlogic.gdx.physics.box2d.ContactListener
 import com.badlogic.gdx.physics.box2d.Manifold
 import ru.icarumbas.bagel.engine.components.physics.WeaponComponent
 import ru.icarumbas.bagel.engine.controller.PlayerController
-import ru.icarumbas.bagel.engine.systems.other.StateSystem
-import ru.icarumbas.bagel.utils.rotatedRight
+import ru.icarumbas.bagel.utils.*
 import kotlin.experimental.or
 
-class BodyContactListener : ContactListener {
+class BodyContactListener(
 
-    private val playerController: PlayerController
-    private val engine: Engine
+        private val playerController: PlayerController,
+        private val engine: Engine,
+        private val playerEntity: Entity
 
-    private val playerEntity: Entity
+) : ContactListener {
+
+
     private lateinit var defendingEntity: Entity
     private lateinit var attackingEntity: Entity
     private lateinit var contactEntityA: Entity
     private lateinit var contactEntityB: Entity
 
-
-    constructor(playerController: PlayerController, playerEntity: Entity, engine: Engine) {
-        this.playerController = playerController
-        this.playerEntity = playerEntity
-        this.engine = engine
-    }
 
     private fun findAttackerAndDefender() {
         engine.getEntitiesFor(Family.all(WeaponComponent::class.java).get()).forEach{
@@ -147,9 +143,9 @@ class BodyContactListener : ContactListener {
                 findAttackerAndDefender()
                 if (!damage[defendingEntity].isWeaponContact) {
                     if (!(state.has(defendingEntity) &&
-                        state[defendingEntity].currentState == StateSystem.NULL &&
-                        state[defendingEntity].currentState == StateSystem.APPEARING &&
-                        state[defendingEntity].currentState == StateSystem.DEAD)) {
+                        state[defendingEntity].currentState == EntityState.NOTHING &&
+                        state[defendingEntity].currentState == EntityState.APPEARING &&
+                        state[defendingEntity].currentState == EntityState.DEAD)) {
                         attackEntity()
                         if (AI.has(defendingEntity)) AI[defendingEntity].entityTarget = attackingEntity
                     }

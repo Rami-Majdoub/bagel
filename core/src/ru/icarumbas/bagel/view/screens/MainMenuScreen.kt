@@ -1,19 +1,22 @@
 package ru.icarumbas.bagel.view.screens
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.utils.viewport.StretchViewport
 import ktx.actors.onClick
-import ktx.app.KtxScreen
-import ktx.app.clearScreen
 import ktx.scene2d.label
 import ktx.scene2d.table
 import ru.icarumbas.Bagel
 
-class MainMenuScreen(private val game: Bagel) : KtxScreen {
+class MainMenuScreen(
+
+        private val game: Bagel
+
+) : ScreenAdapter() {
 
     private val stage = Stage(StretchViewport(1920f, 1080f))
 
@@ -31,7 +34,7 @@ class MainMenuScreen(private val game: Bagel) : KtxScreen {
         label(text = "New Game", style = "decorative") {
             style = labelStyle
             onClick {
-                game.setScreen<GameScreen>()
+                game.screen = GameScreen(game.assets, game, isNewGame = true)
             }
         }
 
@@ -40,7 +43,7 @@ class MainMenuScreen(private val game: Bagel) : KtxScreen {
         label(text = "Continue", style = "decorative") {
             style = labelStyle
             onClick {
-                game.setScreen<GameScreen>()
+                game.screen = GameScreen(game.assets, game, isNewGame = false)
             }
         }
 
@@ -56,7 +59,6 @@ class MainMenuScreen(private val game: Bagel) : KtxScreen {
     }
 
     override fun render(delta: Float) {
-        clearScreen(1f, 1f, 1f, 1f)
         stage.draw()
     }
 

@@ -4,7 +4,12 @@ import com.badlogic.gdx.math.MathUtils
 import ru.icarumbas.bagel.engine.resources.ResourceManager
 
 
-class RoomWorldCreator(private val worldSize: Int) {
+class RoomWorldCreator(
+
+        private val worldSize: Int,
+        private val assets: ResourceManager
+
+) {
 
     private lateinit var newRoom: Room
 
@@ -119,7 +124,7 @@ class RoomWorldCreator(private val worldSize: Int) {
 
     private fun createRoom(sideArgs: SideArguments, mainRoomId: Int) {
 
-        fun isRoomHasGateForSide(): Boolean = ResourceManager.getTiledMap(rooms[mainRoomId].path).properties.get(sideArgs.sideName) == "Yes"
+        fun isRoomHasGateForSide(): Boolean = assets.getTiledMap(rooms[mainRoomId].path).properties.get(sideArgs.sideName) == "Yes"
 
         if (isRoomHasGateForSide()) {
 
@@ -208,7 +213,7 @@ class RoomWorldCreator(private val worldSize: Int) {
 
 
         fun isRoomJointCoincide(index: Int, room: Room) =
-                with (ResourceManager.getTiledMap(room.path).properties) {
+                with (assets.getTiledMap(room.path).properties) {
                     (get(stringSides[3 - index]) == "Yes" && get(stringSides[index]) == "Yes") ||
                     (get(stringSides[3 - index]) != "Yes" && get(stringSides[index]) != "Yes")
                 }
@@ -266,7 +271,7 @@ class RoomWorldCreator(private val worldSize: Int) {
     private fun getRoomGatesCount(room: Room): Int{
         var gatesCount = 0
 
-        ResourceManager.getTiledMap(room.path).properties.keys.forEach {
+        assets.getTiledMap(room.path).properties.keys.forEach {
             if (it[0].isUpperCase() && it != "Height" && it != "Width") {
                 gatesCount += when {
                     room.width != REG_ROOM_WIDTH && (it == "Up" || it == "Down") ||
@@ -302,7 +307,7 @@ class RoomWorldCreator(private val worldSize: Int) {
                         else -> 14
                     }
                 else
-                    MathUtils.random(0, WorldConstants.MAPS_TOTAL - 1)
+                    MathUtils.random(0, MAPS_TOTAL - 1)
 
 
 

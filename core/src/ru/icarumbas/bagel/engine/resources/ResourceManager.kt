@@ -10,13 +10,13 @@ import ru.icarumbas.bagel.engine.world.MAPS_TOTAL
 
 class ResourceManager {
 
-    val assets: AssetManager = AssetManager()
+    val assetManager: AssetManager = AssetManager()
 
-    fun getTextureAtlas(path: String) = assets.get<TextureAtlas>(path)!!
+    fun getTextureAtlas(path: String) = assetManager.get<TextureAtlas>(path)!!
 
-    fun getTiledMap(path: String) = assets.get<TiledMap>(path)
+    fun getTiledMap(path: String) = assetManager.get<TiledMap>(path)
 
-    fun loadTextureAtlas(path: String) = assets.load(path, TextureAtlas::class.java)
+    fun loadTextureAtlas(path: String) = assetManager.load(path, TextureAtlas::class.java)
 
     fun loadAssets(){
 
@@ -33,7 +33,7 @@ class ResourceManager {
         loadTextureAtlas("Packs/minimap.pack")
         loadTextureAtlas("Packs/UI.pack")
 
-        with (assets) {
+        with (assetManager) {
 
             // Rooms
             setLoader(TiledMap::class.java, TmxMapLoader(InternalFileHandleResolver()))

@@ -1,5 +1,6 @@
 package ru.icarumbas.bagel.view.screens
 
+import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
@@ -7,13 +8,17 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.utils.viewport.ExtendViewport
-import ktx.app.KtxScreen
 import ru.icarumbas.Bagel
 import ru.icarumbas.bagel.engine.resources.ResourceManager
 import ru.icarumbas.bagel.view.ui.actors.LoadingBar
 
 
-class LoadingScreen(private val game: Bagel) : KtxScreen {
+class LoadingScreen(
+
+        private val assets: ResourceManager,
+        private val game: Bagel
+
+) : ScreenAdapter() {
 
     private val loadingPack = TextureAtlas("Packs/LoadingScreen.pack")
 
@@ -59,7 +64,7 @@ class LoadingScreen(private val game: Bagel) : KtxScreen {
     private var percent = 0f
 
     init {
-        ResourceManager.loadAssets()
+        assets.loadAssets()
 
         with (stage) {
             addActor(screenBg)
@@ -73,12 +78,12 @@ class LoadingScreen(private val game: Bagel) : KtxScreen {
 
     override fun render(delta: Float) {
 
-        if (ResourceManager.assets.update()) {
-            game.setScreen<MainMenuScreen>()
+        if (assets.assetManager.update()) {
+            game.screen = MainMenuScreen(game)
         }
 
         // Interpolate the percentage to make it more smooth
-        percent = Interpolation.linear.apply(percent, ResourceManager.assets.progress, 0.1f)
+        percent = Interpolation.linear.apply(percent, assets.assetManager.progress, 0.1f)
 
         loadingBarHidden.x = startX + endX * percent
         loadingBg.x = loadingBarHidden.x + 30

@@ -1,20 +1,28 @@
 package ru.icarumbas.bagel.view.ui.actors
 
-import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Sprite
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Window
+import ru.icarumbas.PIX_PER_M
+import ru.icarumbas.bagel.engine.io.MinimapInfo
+import ru.icarumbas.bagel.engine.io.WorldIO
+import ru.icarumbas.bagel.engine.resources.ResourceManager
+import ru.icarumbas.bagel.engine.world.RoomWorld
 import java.util.*
 
 
-class Minimap : Window {
+class Minimap (
+
+        style: WindowStyle,
+        private var playerPoint: Image,
+        private val worldState: RoomWorld
+
+) : Window("", style) {
 
     // Room image on minimap size
     private var regRoomWidth = 1f
@@ -23,28 +31,13 @@ class Minimap : Window {
     // Distance that all getRooms have to pass depends on currentRoom
     private val distance = Vector2()
 
-    var playerPosition: Vector2
-
     val currentRoomColor: Color = Color.BLUE
 
     // Room where player is
     private lateinit var currentRoom: Actor
 
-    // Player texture on map
-    private var playerPoint: Image
+    private var playerPosition = Vector2.Zero
 
-    // Room world
-    private val worldState: RoomWorldState
-
-
-    constructor(style: WindowStyle, playerPoint: Image, playerPosition: Vector2, worldState: RoomWorldState) : super("", style) {
-
-        this.playerPoint = playerPoint
-        this.playerPosition = playerPosition
-        this.worldState = worldState
-
-        addActor(playerPoint)
-    }
 
     override fun setPosition(x: Float, y: Float) {
         playerPoint.setPosition(x + width / 2 - playerPoint.width / 2, y + height / 2 - playerPoint.height / 2)
@@ -80,21 +73,25 @@ class Minimap : Window {
 
     }
 
-    fun createRooms(mesh: Array<IntArray>, assets: AssetManager){
+    fun setPlayerPositionRelativeTo(position: Vector2) {
+        playerPosition = position
+    }
+
+    private fun createRooms(mesh: Array<IntArray>, assets: ResourceManager){
 
         mesh.forEach { y ->
             var x = 0
             while (x < y.size) {
                 if (y[x] == 1) {
-                    val room = worldState.getRoomFor(x, mesh.indexOf(y))
+                    val room = worldState.getRoomForMeshCoordinate(x, mesh.indexOf(y))
 
                     if (room != null) {
 
                         var name = ""
-                        assets[room.path, TiledMap::class.java].properties.keys.forEach {
+                        assets.getTiledMap(room.path).properties.keys.forEach {
                             if (it[0].isUpperCase()) {
                                 name += if (it == "Width" || it == "Height"){
-                                    assets[room.path, TiledMap::class.java].properties[it]
+                                    assets.getTiledMap(room.path).properties[it]
                                 } else {
                                     it
                                 }
@@ -143,13 +140,6 @@ class Minimap : Window {
 
     }
 
-    fun loadRooms(visibleRooms: ArrayList<Int>, mesh: Array<IntArray>, assets: AssetManager){
-        createRooms(mesh, assets)
-        visibleRooms.forEach {
-            children[it].isVisible = true
-        }
-    }
-
     fun onUp(){
         setSize(stage.width / 4, stage.height / 4)
 
@@ -162,6 +152,19 @@ class Minimap : Window {
     fun onDown(){
         setSize(stage.width, stage.height)
         setPosition(0f, 0f)
+    }
+
+    fun save(worldIO: WorldIO){
+        worldIO.saveInfo(MinimapInfo(
+                children.filter(Actor::isVisible)
+        ))
+    }
+
+    fun load(worldIO: WorldIO, assets: ResourceManager){
+        createRooms(worldIO.loadWorldInfo().mesh, assets)
+        worldIO.loadMinimapInfo().openedRooms.forEach {
+            children[it].isVisible = true
+        }
     }
 
     private fun isCurrentRoomActor(actor: MinimapRoomImage): Boolean {
@@ -181,8 +184,8 @@ class Minimap : Window {
         }
     }
 
-    private fun findTextureForMiniMap(name: String, assets: AssetManager): TextureRegion {
-        assets["Packs/minimap.pack", TextureAtlas::class.java].regions.forEach {
+    private fun findTextureForMiniMap(name: String, assets: ResourceManager): TextureRegion {
+        assets.getTextureAtlas("Packs/minimap.pack").regions.forEach {
 
             val arr1 = it.name.toCharArray()
             Arrays.sort(arr1)

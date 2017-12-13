@@ -32,12 +32,11 @@ import ru.icarumbas.bagel.view.renderer.systems.ViewportSystem
 class EntitiesWorld (
 
         private val roomWorld: RoomWorld,
-        private val worldIO: WorldIO,
-        private val world: World,
+        world: World,
         assets: ResourceManager
 ) {
 
-    private val entityFactory = EntityFactory(BodyFactory(world), AnimationFactory())
+    private val entityFactory = EntityFactory(BodyFactory(world), AnimationFactory(), assets)
     private val entityFromLayerLoader = EntityFromLayerLoader(entityFactory, assets, this)
 
     private val serializedObjects = ArrayList<SerializedMapObject>()
@@ -59,11 +58,11 @@ class EntitiesWorld (
 
         with (engine) {
 
-            addSystem(RoomChangingSystem())
-            addSystem(HealthSystem(roomWorld, world))
+            addSystem(RoomChangingSystem(roomWorld))
+            addSystem(HealthSystem(roomWorld))
             addSystem(StateSystem(roomWorld))
             addSystem(AISystem(roomWorld))
-            addSystem(OpeningSystem(uiController, roomWorld))
+            addSystem(OpeningSystem(uiController, roomWorld, entityFactory, playerEntity))
 //            addSystem(LootSystem(hud, rm, playerEntity, entityDeleteList))
 
             /* Velocity */
@@ -127,7 +126,7 @@ class EntitiesWorld (
         }
     }
 
-    fun loadEntities(){
+    fun loadEntities(worldIO: WorldIO){
         worldIO.loadEntitiesInfo().mapObjects.forEach {
             engine.addEntity(entityFactory.idMapObjectEntity(
                     it.roomId,
@@ -139,7 +138,7 @@ class EntitiesWorld (
         }
     }
 
-    fun saveEntites(){
+    fun saveEntites(worldIO: WorldIO){
         worldIO.saveInfo(EntitiesInfo(serializedObjects))
     }
 

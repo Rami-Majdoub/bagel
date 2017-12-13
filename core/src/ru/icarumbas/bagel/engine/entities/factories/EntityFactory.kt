@@ -32,8 +32,10 @@ import kotlin.experimental.or
 
 
 class EntityFactory(
+
         private val bodyFactory: BodyFactory,
-        private val animationFactory: AnimationFactory
+        private val animationFactory: AnimationFactory,
+        private val assets: ResourceManager
 ) {
 
     fun swingWeaponEntity(width: Int,
@@ -62,8 +64,8 @@ class EntityFactory(
 
         val playerBody = bodyFactory.playerBody()
 
-        val weaponAtlas = ResourceManager.getTextureAtlas("Packs/weapons.pack")
-        val playerAtlas = ResourceManager.getTextureAtlas("Packs/GuyKnight.pack")
+        val weaponAtlas = assets.getTextureAtlas("Packs/weapons.pack")
+        val playerAtlas = assets.getTextureAtlas("Packs/GuyKnight.pack")
 
         val player = Entity()
                 .add(TextureComponent())
@@ -152,17 +154,18 @@ class EntityFactory(
 
     }
 
-    fun lootEntity(atlas: TextureAtlas,
-                   playerEntity: Entity,
-                   r: Int,
-                   x: Float,
-                   y: Float,
-                   roomId: Int): Entity{
+    fun lootEntity(r: Int,
+                   point: Pair<Float,Float>,
+                   roomId: Int,
+                   playerEntity: Entity): Entity{
+
+        val atlas = assets.getTextureAtlas("weapons.pack")
+
         val loot = Entity()
 
                 .add(SizeComponent(Vector2(30 / PIX_PER_M, 100 / PIX_PER_M), 1.5f))
                 .add(TextureComponent(atlas.findRegion("sword1")))
-                .add((TranslateComponent(x - 15 / PIX_PER_M, y)))
+                .add((TranslateComponent(point.first - 15 / PIX_PER_M, point.second)))
                 .add(LootComponent(arrayListOf(
                         WeaponComponent(
                                 type = WeaponSystem.SWING,
@@ -208,7 +211,7 @@ class EntityFactory(
                           r: Int,
                           playerEntity: Entity): Entity? {
 
-        val atlas = ResourceManager.getTextureAtlas("items.pack")
+        val atlas = assets.getTextureAtlas("items.pack")
 
         val e = when(objectPath){
 
@@ -449,7 +452,7 @@ class EntityFactory(
                                 .add(AnimationComponent(hashMapOf(
                                         StateSystem.STANDING to Animation(
                                                 .1f,
-                                                ResourceManager.getTextureAtlas("Packs/Enemies/MiniDragon.pack")
+                                                assets.getTextureAtlas("Packs/Enemies/MiniDragon.pack")
                                                         .findRegions("miniDragon"),
                                                 Animation.PlayMode.LOOP)
                                 )))
@@ -470,7 +473,7 @@ class EntityFactory(
                 when (r) {
                     1 -> {
 
-                        val skeletonAtlas = ResourceManager.getTextureAtlas("Packs/Enemies/Skeleton.pack")
+                        val skeletonAtlas = assets.getTextureAtlas("Packs/Enemies/Skeleton.pack")
                         val body = bodyFactory.rectangleMapObjectBody(
                                 rect,
                                 BodyDef.BodyType.DynamicBody,
@@ -543,7 +546,7 @@ class EntityFactory(
 
                     2 -> {
 
-                        val golemAtlas = ResourceManager.getTextureAtlas("Packs/Enemies/Golem.pack")
+                        val golemAtlas = assets.getTextureAtlas("Packs/Enemies/Golem.pack")
                         val body = bodyFactory.rectangleMapObjectBody(
                                 rect,
                                 BodyDef.BodyType.DynamicBody,
@@ -615,7 +618,7 @@ class EntityFactory(
                     }
 
                     3 -> {
-                        val zombieAtlas = ResourceManager.getTextureAtlas("Packs/Enemies/Zombie.pack")
+                        val zombieAtlas = assets.getTextureAtlas("Packs/Enemies/Zombie.pack")
                         val body = bodyFactory.rectangleMapObjectBody(
                                 rect,
                                 BodyDef.BodyType.DynamicBody,
@@ -687,7 +690,7 @@ class EntityFactory(
                     }
 
                     4 -> {
-                        val vampAtlas = ResourceManager.getTextureAtlas("Packs/Enemies/Vamp.pack")
+                        val vampAtlas = assets.getTextureAtlas("Packs/Enemies/Vamp.pack")
                         val body = bodyFactory.rectangleMapObjectBody(
                                 rect,
                                 BodyDef.BodyType.DynamicBody,

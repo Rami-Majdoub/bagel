@@ -6,26 +6,23 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.Vector2
 import ru.icarumbas.bagel.engine.components.velocity.JumpComponent
 import ru.icarumbas.bagel.engine.controller.PlayerController
-import ru.icarumbas.bagel.engine.systems.other.StateSystem
+import ru.icarumbas.bagel.engine.entities.EntityState
 import ru.icarumbas.bagel.engine.world.RoomWorld
-import ru.icarumbas.bagel.utils.Mappers
-import ru.icarumbas.bagel.utils.inView
+import ru.icarumbas.bagel.utils.*
 
 
-class JumpingSystem : IteratingSystem {
+class JumpingSystem(
 
-    private val playerController: PlayerController
-    private val rm: RoomWorld
+        private val playerController: PlayerController,
+        private val rm: RoomWorld
 
-    constructor(playerController: PlayerController, rm: RoomWorld) : super(Family.all(JumpComponent::class.java).get()) {
-        this.playerController = playerController
-        this.rm = rm
-    }
+) : IteratingSystem(Family.all(JumpComponent::class.java).get()) {
+
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (entity.inView(rm)) {
             if (jump[entity].maxJumps > jump[entity].jumps && body[entity].body.linearVelocity.y < 3.5f) {
-                if (Mappers.player.has(entity) && playerController.isUpPressed()) {
+                if (player.has(entity) && playerController.isUpPressed()) {
                     jump(entity)
                 }
             }
@@ -34,12 +31,10 @@ class JumpingSystem : IteratingSystem {
         }
     }
 
-    //TODO("Entities except player climb on walls")
-
     private fun relax(e: Entity){
         // Here i took only player's situation
 
-        if (state[e].currentState != StateSystem.JUMPING && state[e].currentState != StateSystem.JUMP_ATTACKING) {
+        if (state[e].currentState != EntityState.JUMPING && state[e].currentState != EntityState.JUMP_ATTACKING) {
             if (player.has(e)) {
                 if (!playerController.isUpPressed() || !player[e].collidingWithGround){
                     jump[e].jumps = 0

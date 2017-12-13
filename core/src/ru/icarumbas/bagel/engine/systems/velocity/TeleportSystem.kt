@@ -5,20 +5,17 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import ru.icarumbas.bagel.engine.components.other.AIComponent
 import ru.icarumbas.bagel.engine.components.velocity.TeleportComponent
-import ru.icarumbas.bagel.engine.systems.other.StateSystem
+import ru.icarumbas.bagel.engine.entities.EntityState
 import ru.icarumbas.bagel.engine.world.RoomWorld
-import ru.icarumbas.bagel.utils.inView
+import ru.icarumbas.bagel.utils.*
 
-class TeleportSystem : IteratingSystem{
+class TeleportSystem(
 
-    private val playerEntity: Entity
-    private val rm: RoomWorld
+        private val playerEntity: Entity,
+        private val rm: RoomWorld
 
+) : IteratingSystem(Family.all(TeleportComponent::class.java, AIComponent::class.java).get()){
 
-    constructor(playerEntity: Entity, rm: RoomWorld) : super(Family.all(TeleportComponent::class.java, AIComponent::class.java).get()){
-        this.playerEntity = playerEntity
-        this.rm = rm
-    }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (entity.inView(rm)) {
@@ -31,12 +28,12 @@ class TeleportSystem : IteratingSystem{
 
             if (teleport[entity].teleportTimer > 5f &&
                     AI[entity].appeared &&
-                    state[entity].currentState != StateSystem.ATTACKING &&
+                    state[entity].currentState != EntityState.ATTACKING &&
                     body[playerEntity].body.linearVelocity.y == 0f) {
                 teleport[entity].disappearing = true
             }
 
-            if (animation[entity].animations[StateSystem.DISAPPEARING]!!.isAnimationFinished(state[entity].stateTime)
+            if (animation[entity].animations[EntityState.DISAPPEARING]!!.isAnimationFinished(state[entity].stateTime)
                     && teleport[entity].disappearing ) {
                 body[entity].body.setTransform(
                         teleport[entity].playerPosSecAgo.x,

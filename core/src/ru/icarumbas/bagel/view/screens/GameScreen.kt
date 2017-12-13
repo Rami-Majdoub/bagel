@@ -1,8 +1,19 @@
 package ru.icarumbas.bagel.view.screens
 
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.utils.viewport.FitViewport
-import ktx.app.KtxScreen
+import ktx.box2d.createWorld
+import ru.icarumbas.Bagel
+import ru.icarumbas.REG_ROOM_HEIGHT
+import ru.icarumbas.bagel.engine.controller.PlayerController
+import ru.icarumbas.bagel.engine.entities.BodyContactListener
+import ru.icarumbas.bagel.engine.entities.EntitiesWorld
+import ru.icarumbas.bagel.engine.io.WorldIO
+import ru.icarumbas.bagel.engine.resources.ResourceManager
 import ru.icarumbas.bagel.engine.world.REG_ROOM_WIDTH
 import ru.icarumbas.bagel.engine.world.RoomWorld
 import ru.icarumbas.bagel.view.renderer.DebugRenderer
@@ -10,83 +21,51 @@ import ru.icarumbas.bagel.view.renderer.MapRenderer
 import ru.icarumbas.bagel.view.ui.Hud
 
 
-class GameScreen : KtxScreen {
+class GameScreen(
 
+        val assets: ResourceManager,
+        val game: Bagel,
+        isNewGame: Boolean
+
+) : ScreenAdapter() {
+
+    // Box2d world
+    private val world = createWorld(Vector2(0f, -9.8f))
+
+    private val worldIO = WorldIO()
 
     private val debugRenderer: DebugRenderer
     private val mapRenderer: MapRenderer
 
-
     private val hud: Hud
 
-    private val rm: RoomWorld
+    // Room world
+    private val roomWorld: RoomWorld
 
-
-
-
-
-
-
-
-
-    // Box2d world
-    private val world = World(Vector2(0f, -9.8f), true)
-    private val worldCleaner: WorldCleaner
-
-    // ECS
-    private val engine = Engine()
-    private val entityCreator: EntityCreator
-    private val serializedObjects = ArrayList<SerializedMapObject>()
-
-
+    // Entity world
+    private val entityWorld: EntitiesWorld
     // UI
-    private val uiInputListener: UInputListener
-
-    // World
-    private val rooms = ArrayList<Room>()
-    private val playerEntity: Entity
+    private val playerController : PlayerController
 
 
     init {
 
-        val b2DWorldCreator = B2DWorldCreator(world)
-        val animationCreator = AnimationCreator()
-        val worldCreator = WorldCreator(game.assetManager)
-        entityCreator = EntityCreator(b2DWorldCreator, game.assetManager, engine, animationCreator, b2DWorldCreator.createPlayerBody())
-
-        playerEntity = entityCreator.createPlayerEntity(
-                animationCreator,
-                game.assetManager["Packs/GuyKnight.pack", TextureAtlas::class.java])
-
-        rm = RoomManager(rooms, game.assetManager, entityCreator, engine, serializedObjects, game.worldIO, playerEntity)
-
-        hud = Hud(playerEntity, rm, game.assetManager)
-        uiInputListener = UInputListener(hud.stage, hud)
-
-        // if newWorld
-        if (newWorld) {
-            rm.createNewWorld(worldCreator, game.assetManager)
-            hud.minimap.createRooms(rm.mesh)
-
-        } else {
-            rm.continueWorld()
-            hud.minimap.loadRooms(game.worldIO.loadVisibleRooms(), rm.mesh)
-            body[playerEntity].body.setTransform(
-                    game.worldIO.prefs.getFloat("playerX"),
-                    game.worldIO.prefs.getFloat("playerY"),
-                    0f)
-        }
 
         val viewport = FitViewport(REG_ROOM_WIDTH, REG_ROOM_HEIGHT, OrthographicCamera(REG_ROOM_WIDTH, REG_ROOM_HEIGHT))
-        orthoRenderer = OrthogonalTiledMapRenderer(game.assetManager.get(rm.path()), 0.01f)
 
-        mapRenderer = MapRenderer(orthoRenderer, rm, game.assetManager, viewport.camera)
+        mapRenderer = MapRenderer(viewport.camera)
         debugRenderer = DebugRenderer(Box2DDebugRenderer(), world, viewport.camera)
 
-        val coins = ArrayList<Body>()
-        val entityDeleteList = ArrayList<Entity>()
+        roomWorld = RoomWorld(assets, mapRenderer)
 
-        worldCleaner = WorldCleaner(entityDeleteList, engine, world, serializedObjects, playerEntity, game)
+        entityWorld = EntitiesWorld(
+                roomWorld,
+                world,
+                assets
+        )
+
+        hud = Hud(assets, roomWorld, entityWorld.playerEntity)
+
 
         val contactListener = BodyContactListener(hud.touchpad, playerEntity, engine)
         world.setContactListener(contactListener)
@@ -96,23 +75,25 @@ class GameScreen : KtxScreen {
 
     }
 
+    fun continueWorld(){
+        entityWorld.loadEntities(worldIO)
+        roomWorld.loadWorld(worldIO)
+        hud.minimap.load(worldIO)
+    }
+
+    fun createNewWorld(){
+
+    }
+
     override fun render(delta: Float) {
         world.step(1/45f, 6, 2)
-        worldCleaner.update()
         mapRenderer.render()
-        engine.update(delta)
         debugRenderer.render()
-        hud.draw(rm)
+        hud.draw()
+
     }
 
     override fun pause() {
-
-        val visibleRooms = ArrayList<Int>()
-        hud.minimap.minimapFrame.children.filter { it.isVisible }.forEach {
-            visibleRooms.add(hud.minimap.minimapFrame.children.indexOf(it))
-        }
-        game.worldIO.saveWorld(serializedObjects, rooms, rm.mesh, visibleRooms)
-        game.worldIO.saveCurrentState(playerEntity, rm.currentMapId)
     }
 
     override fun resize(width: Int, height: Int) {

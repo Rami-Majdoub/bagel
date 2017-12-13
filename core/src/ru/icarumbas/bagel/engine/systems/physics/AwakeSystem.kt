@@ -7,21 +7,20 @@ import ru.icarumbas.bagel.engine.components.other.RoomIdComponent
 import ru.icarumbas.bagel.engine.components.physics.BodyComponent
 import ru.icarumbas.bagel.engine.components.physics.StaticComponent
 import ru.icarumbas.bagel.engine.world.RoomWorld
+import ru.icarumbas.bagel.utils.body
+import ru.icarumbas.bagel.utils.inActive
+import ru.icarumbas.bagel.utils.roomId
+import ru.icarumbas.bagel.utils.static
 
-class AwakeSystem : IteratingSystem {
+class AwakeSystem(
 
-    private val rm: RoomWorld
+        private val rm: RoomWorld
+
+) : IteratingSystem(Family.all(BodyComponent::class.java).one(RoomIdComponent::class.java, StaticComponent::class.java).get()) {
+
 
     private var lastMapId = -1
 
-
-    constructor(rm: RoomWorld) : super(Family.all(
-            BodyComponent::class.java).one(
-            RoomIdComponent::class.java,
-            StaticComponent::class.java).get()) {
-
-        this.rm = rm
-    }
 
     override fun update(deltaTime: Float) {
         if (lastMapId != rm.currentMapId) {
@@ -33,7 +32,7 @@ class AwakeSystem : IteratingSystem {
     override fun processEntity(entity: Entity, deltaTime: Float) {
 
         if (static.has(entity))
-        body[entity].body.isActive = static[entity].mapPath == rm.path()
+        body[entity].body.isActive = static[entity].mapPath == rm.getMapPath()
         if (roomId.has(entity) && !inActive.has(entity))
         body[entity].body.isActive = roomId[entity].id == rm.currentMapId
     }

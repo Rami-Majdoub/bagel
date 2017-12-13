@@ -6,18 +6,21 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.Vector2
 import ru.icarumbas.bagel.engine.components.velocity.FlyComponent
 import ru.icarumbas.bagel.engine.world.RoomWorld
+import ru.icarumbas.bagel.utils.AI
+import ru.icarumbas.bagel.utils.body
+import ru.icarumbas.bagel.utils.fly
 import ru.icarumbas.bagel.utils.inView
 
-class FlyingSystem : IteratingSystem {
+class FlyingSystem(
 
-    private val playerEntity: Entity
-    private val rm: RoomWorld
+        private val playerEntity: Entity,
+        private val rm: RoomWorld
+
+) : IteratingSystem(Family.all(FlyComponent::class.java).get()) {
+
+
     private val velocity = Vector2()
 
-    constructor(playerEntity: Entity, rm: RoomWorld) : super(Family.all(FlyComponent::class.java).get()) {
-        this.playerEntity = playerEntity
-        this.rm = rm
-    }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (entity.inView(rm)) {

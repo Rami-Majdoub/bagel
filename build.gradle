@@ -94,7 +94,6 @@ project(":core") {
 
         /* KTX */
         compile group: 'io.github.libktx', name: 'ktx-actors', version: '1.9.7-b1'
-        compile group: 'io.github.libktx', name: 'ktx-app', version: '1.9.7-b1'
         compile group: 'io.github.libktx', name: 'ktx-box2d', version: '1.9.7-b1'
         compile group: 'io.github.libktx', name: 'ktx-collections', version: '1.9.7-b1'
         compile group: 'io.github.libktx', name: 'ktx-scene2d', version: '1.9.7-b1'

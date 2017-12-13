@@ -4,25 +4,21 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.physics.box2d.World
 import ru.icarumbas.bagel.engine.components.other.HealthComponent
-import ru.icarumbas.bagel.utils.inView
+import ru.icarumbas.bagel.engine.entities.EntityState
+import ru.icarumbas.bagel.engine.world.RoomWorld
+import ru.icarumbas.bagel.utils.*
 
 
-class HealthSystem : IteratingSystem {
+class HealthSystem(
 
-    private val roomWorldState: RoomWorldState
-    private val world: World
+        private val roomWorld: RoomWorld
 
-    constructor(roomWorldState: RoomWorldState,
-                world: World) : super(Family.all(HealthComponent::class.java).get()) {
+) : IteratingSystem(Family.all(HealthComponent::class.java).get()) {
 
-        this.roomWorldState = roomWorldState
-        this.world = world
-    }
 
     override fun processEntity(e: Entity, deltaTime: Float) {
-        if (e.inView(roomWorldState)) {
+        if (e.inView(roomWorld)) {
 
             damage[e].hitTimer += deltaTime
 
@@ -31,9 +27,9 @@ class HealthSystem : IteratingSystem {
             }
 
             if (damage[e].HP <= 0 &&
-                    !(animation.has(e) && animation[e].animations.contains(StateSystem.DEAD) &&
-                            !animation[e].animations[StateSystem.DEAD]?.isAnimationFinished(state[e].stateTime)!!)){
-                deleteList.add(e)
+                    !(animation.has(e) && animation[e].animations.contains(EntityState.DEAD) &&
+                            !animation[e].animations[EntityState.DEAD]?.isAnimationFinished(state[e].stateTime)!!)){
+                engine.removeEntity(e)
             }
 
             if ((damage[e].damage != 0 || !damage[e].knockback.isZero)) {
