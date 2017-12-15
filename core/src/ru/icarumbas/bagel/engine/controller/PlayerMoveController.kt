@@ -1,7 +1,7 @@
 package ru.icarumbas.bagel.engine.controller
 
 
-interface PlayerController {
+interface PlayerMoveController {
 
     fun isUpPressed(): Boolean
 
@@ -10,4 +10,5 @@ interface PlayerController {
     fun isLeftPressed(): Boolean
 
     fun isRightPressed(): Boolean
+
 }

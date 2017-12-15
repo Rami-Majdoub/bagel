@@ -12,7 +12,8 @@ class WorldInfo(
 
 class PlayerInfo(
         val position: Pair<Float, Float>,
-        val currentMap: Int
+        val currentMap: Int,
+        val canContinue: Boolean
 ) : IOInfo()
 
 class MinimapInfo(

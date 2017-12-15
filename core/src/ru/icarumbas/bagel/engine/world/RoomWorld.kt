@@ -4,23 +4,22 @@ import ru.icarumbas.bagel.engine.io.WorldIO
 import ru.icarumbas.bagel.engine.io.WorldInfo
 import ru.icarumbas.bagel.engine.resources.ResourceManager
 import ru.icarumbas.bagel.view.renderer.MapRenderer
-import kotlin.properties.Delegates
 
 
 class RoomWorld(
 
-        val assets: ResourceManager,
-        mapRenderer: MapRenderer
+        private val assets: ResourceManager,
+        private val mapRenderer: MapRenderer
 
 ) {
 
     lateinit var rooms: ArrayList<Room>
     lateinit var mesh: Array<IntArray>
 
-    var currentMapId: Int by Delegates.observable(0) {
-        _, _, new ->
-        mapRenderer.renderer.map = assets.getTiledMap(rooms[new].path)
-    }
+    var currentMapId = 0
+        set(value) {
+            mapRenderer.renderer.map = assets.getTiledMap(rooms[value].path)
+        }
 
     fun createNewWorld(){
         RoomWorldCreator(50, assets).also {

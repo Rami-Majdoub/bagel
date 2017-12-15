@@ -5,7 +5,7 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.Vector2
 import ru.icarumbas.bagel.engine.components.velocity.JumpComponent
-import ru.icarumbas.bagel.engine.controller.PlayerController
+import ru.icarumbas.bagel.engine.controller.PlayerMoveController
 import ru.icarumbas.bagel.engine.entities.EntityState
 import ru.icarumbas.bagel.engine.world.RoomWorld
 import ru.icarumbas.bagel.utils.*
@@ -13,7 +13,7 @@ import ru.icarumbas.bagel.utils.*
 
 class JumpingSystem(
 
-        private val playerController: PlayerController,
+        private val playerController: PlayerMoveController,
         private val rm: RoomWorld
 
 ) : IteratingSystem(Family.all(JumpComponent::class.java).get()) {

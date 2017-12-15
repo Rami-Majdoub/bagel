@@ -9,8 +9,7 @@ class Bagel : Game() {
 
     lateinit var assets: ResourceManager
 
-    override fun create() {
-
+    override fun create(){
         assets = ResourceManager()
 
         setScreen(LoadingScreen(assets, this))
@@ -18,5 +17,6 @@ class Bagel : Game() {
 
     override fun dispose() {
         this.dispose()
+        assets.assetManager.dispose()
     }
 }

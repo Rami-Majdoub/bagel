@@ -13,7 +13,7 @@ import ru.icarumbas.bagel.utils.*
 
 class WeaponSystem(
 
-        private val uiController: UIController,
+        private val UIController: UIController,
         private val rm: RoomWorld
 
 ) : IteratingSystem(Family.all(WeaponComponent::class.java).one(PlayerComponent::class.java, AIComponent::class.java).get()) {
@@ -72,7 +72,7 @@ class WeaponSystem(
 
     private fun attack(e: Entity){
         if ((
-                (player.has(e) && uiController.isAttackPressed())
+                (player.has(e) && UIController.isAttackPressed())
                 || (AI.has(e) && AI[e].appeared && AI[e].coldown > AI[e].refreshSpeed))
                 && !weapon[e].attacking
                 && damage[e].HP > 0) {

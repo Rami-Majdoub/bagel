@@ -10,7 +10,7 @@ import ru.icarumbas.bagel.engine.world.RoomWorld
 import ru.icarumbas.bagel.utils.body
 import ru.icarumbas.bagel.utils.inActive
 import ru.icarumbas.bagel.utils.roomId
-import ru.icarumbas.bagel.utils.static
+import ru.icarumbas.bagel.utils.statik
 
 class AwakeSystem(
 
@@ -31,8 +31,8 @@ class AwakeSystem(
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
 
-        if (static.has(entity))
-        body[entity].body.isActive = static[entity].mapPath == rm.getMapPath()
+        if (statik.has(entity))
+        body[entity].body.isActive = statik[entity].mapPath == rm.getMapPath()
         if (roomId.has(entity) && !inActive.has(entity))
         body[entity].body.isActive = roomId[entity].id == rm.currentMapId
     }

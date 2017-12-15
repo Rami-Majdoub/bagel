@@ -8,12 +8,13 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Window
-import ru.icarumbas.PIX_PER_M
 import ru.icarumbas.bagel.engine.io.MinimapInfo
 import ru.icarumbas.bagel.engine.io.WorldIO
 import ru.icarumbas.bagel.engine.resources.ResourceManager
+import ru.icarumbas.bagel.engine.world.PIX_PER_M
 import ru.icarumbas.bagel.engine.world.RoomWorld
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class Minimap (
@@ -77,7 +78,7 @@ class Minimap (
         playerPosition = position
     }
 
-    private fun createRooms(mesh: Array<IntArray>, assets: ResourceManager){
+    fun createRooms(mesh: Array<IntArray>, assets: ResourceManager){
 
         mesh.forEach { y ->
             var x = 0
@@ -155,9 +156,16 @@ class Minimap (
     }
 
     fun save(worldIO: WorldIO){
-        worldIO.saveInfo(MinimapInfo(
-                children.filter(Actor::isVisible)
-        ))
+
+        val indexes = ArrayList<Int>()
+
+        children.forEach {
+            if (it.isVisible) {
+                indexes.add(children.indexOf(it))
+            }
+        }
+
+        worldIO.saveInfo(MinimapInfo(indexes))
     }
 
     fun load(worldIO: WorldIO, assets: ResourceManager){

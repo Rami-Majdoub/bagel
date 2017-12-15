@@ -27,10 +27,14 @@ class WorldIO {
             }
 
             is PlayerInfo -> {
-                prefs.putFloat("playerX", info.position.first)
-                prefs.putFloat("playerY", info.position.second)
-                prefs.putInteger("currentMapId", info.currentMap)
-                prefs.flush()
+                with (prefs) {
+                    putFloat("playerX", info.position.first)
+                    putFloat("playerY", info.position.second)
+                    putInteger("currentMapId", info.currentMap)
+                    putBoolean("canContinue", info.canContinue)
+                    flush()
+                }
+
             }
 
             is MinimapInfo -> {
@@ -52,7 +56,8 @@ class WorldIO {
     fun loadPlayerInfo() =
             PlayerInfo(
                     Pair(prefs.getFloat("playerX"), prefs.getFloat("playerY")),
-                    prefs.getInteger("currentMapId")
+                    prefs.getInteger("currentMapId"),
+                    prefs.getBoolean("canContinue")
             )
 
     fun loadMinimapInfo() =

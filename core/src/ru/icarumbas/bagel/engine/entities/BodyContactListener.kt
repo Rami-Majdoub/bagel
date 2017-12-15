@@ -8,13 +8,13 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse
 import com.badlogic.gdx.physics.box2d.ContactListener
 import com.badlogic.gdx.physics.box2d.Manifold
 import ru.icarumbas.bagel.engine.components.physics.WeaponComponent
-import ru.icarumbas.bagel.engine.controller.PlayerController
+import ru.icarumbas.bagel.engine.controller.PlayerMoveController
 import ru.icarumbas.bagel.utils.*
 import kotlin.experimental.or
 
 class BodyContactListener(
 
-        private val playerController: PlayerController,
+        private val playerController: PlayerMoveController,
         private val engine: Engine,
         private val playerEntity: Entity
 
@@ -69,6 +69,7 @@ class BodyContactListener(
         contactEntityA = contact.fixtureA.body.userData as Entity
         contactEntityB = contact.fixtureB.body.userData as Entity
     }
+
 
     override fun postSolve(contact: Contact, impulse: ContactImpulse) {
      }

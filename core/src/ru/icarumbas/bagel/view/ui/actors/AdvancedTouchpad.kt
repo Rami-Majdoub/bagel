@@ -6,10 +6,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad
-import ru.icarumbas.bagel.engine.controller.PlayerController
+import ru.icarumbas.bagel.engine.controller.PlayerMoveController
 
 
-class AdvancedTouchpad : Touchpad, PlayerController {
+class AdvancedTouchpad : Touchpad, PlayerMoveController {
 
     // Touch event to work properly
     private val screenPos = Vector2()

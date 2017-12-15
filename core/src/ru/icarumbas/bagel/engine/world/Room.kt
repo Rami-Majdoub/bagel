@@ -1,7 +1,6 @@
 package ru.icarumbas.bagel.engine.world
 
 import ru.icarumbas.bagel.engine.resources.ResourceManager
-import ru.icarumbas.bagel.engine.world.WorldConstants.PIX_PER_M
 
 
 class Room {
@@ -17,10 +16,10 @@ class Room {
     // Serialization
     constructor()
 
-    constructor(path: String, id: Int){
+    constructor(path: String, id: Int, assets: ResourceManager){
         this.path = path
         this.id = id
-        width = ResourceManager.getTiledMap(path).properties["Width"].toString().toFloat().div(PIX_PER_M)
-        height = ResourceManager.getTiledMap(path).properties["Height"].toString().toFloat().div(PIX_PER_M)
+        width = assets.getTiledMap(path).properties["Width"].toString().toFloat().div(PIX_PER_M)
+        height = assets.getTiledMap(path).properties["Height"].toString().toFloat().div(PIX_PER_M)
     }
 }

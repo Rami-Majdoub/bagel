@@ -18,7 +18,7 @@ class RoomWorldCreator(
     private val stringSides = arrayOf("Left", "Up", "Down", "Right")
 
     private var roomsTotal = 0
-    private var totalNotClosedGates: Int
+    private var totalNotClosedGates = 0
     private var roomWithoutExitChance = 0
     private val increaseRoomWithoutExitChanceThreshold = 25
 
@@ -47,9 +47,6 @@ class RoomWorldCreator(
             val meshClosestY2: Int
     )
 
-    init {
-        totalNotClosedGates = getRoomGatesCount(rooms.first())
-    }
 
     fun createWorld(): ArrayList<Room>{
 
@@ -59,6 +56,7 @@ class RoomWorldCreator(
 
         rooms.add(getRootRoom())
 
+        totalNotClosedGates = getRoomGatesCount(rooms.first())
         var mainRoomId = 0
 
         while (totalNotClosedGates != 0) {
@@ -113,7 +111,7 @@ class RoomWorldCreator(
     }
 
     private fun getRootRoom(): Room {
-        return Room("Maps/Map9.tmx", 0).apply {
+        return Room("Maps/Map9.tmx", 0, assets).apply {
             meshCoords = intArrayOf(worldSize / 2, worldSize / 2, worldSize / 2, worldSize / 2)
         }
     }
@@ -188,7 +186,7 @@ class RoomWorldCreator(
 
     private fun chooseMap(side: String, count: Int, meshX: Int, meshY: Int): Room {
 
-        newRoom = Room("Maps/Map${getNextRoomId(count, side)}.tmx", roomsTotal)
+        newRoom = Room("Maps/Map${getNextRoomId(count, side)}.tmx", roomsTotal, assets)
 
         val meshRoomWidth = (newRoom.width / REG_ROOM_WIDTH).toInt()
         val meshRoomHeight = (newRoom.height / REG_ROOM_HEIGHT).toInt()

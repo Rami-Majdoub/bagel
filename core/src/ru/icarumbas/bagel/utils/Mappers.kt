@@ -1,5 +1,7 @@
 package ru.icarumbas.bagel.utils
 
+import com.badlogic.ashley.core.Component
+import com.badlogic.ashley.core.ComponentMapper
 import ru.icarumbas.bagel.engine.components.other.*
 import ru.icarumbas.bagel.engine.components.physics.BodyComponent
 import ru.icarumbas.bagel.engine.components.physics.InactiveMarkerComponent
@@ -11,12 +13,15 @@ import ru.icarumbas.bagel.engine.components.velocity.RunComponent
 import ru.icarumbas.bagel.engine.components.velocity.TeleportComponent
 import ru.icarumbas.bagel.view.renderer.components.*
 
+    inline fun <reified T : Component> mapperFor(): ComponentMapper<T> = ComponentMapper.getFor(T::class.java)
+
+
     val damage          =       mapperFor<HealthComponent>()
     val player          =       mapperFor<PlayerComponent>()
     val roomId          =       mapperFor<RoomIdComponent>()
     val state           =       mapperFor<StateComponent>()
     val body            =       mapperFor<BodyComponent>()
-    val static          =       mapperFor<StaticComponent>()
+    val statik          =       mapperFor<StaticComponent>()
     val animation       =       mapperFor<AnimationComponent>()
     val size            =       mapperFor<SizeComponent>()
     val jump            =       mapperFor<JumpComponent>()
@@ -34,6 +39,9 @@ import ru.icarumbas.bagel.view.renderer.components.*
     val fly             =       mapperFor<FlyComponent>()
     val translate       =       mapperFor<TranslateComponent>()
     val shader          =       mapperFor<ShaderComponent>()
+
+
+
 
 
 

@@ -4,7 +4,8 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.utils.viewport.Viewport
-import ru.icarumbas.bagel.engine.controller.PlayerController
+import ru.icarumbas.Bagel
+import ru.icarumbas.bagel.engine.controller.PlayerMoveController
 import ru.icarumbas.bagel.engine.controller.UIController
 import ru.icarumbas.bagel.engine.entities.factories.AnimationFactory
 import ru.icarumbas.bagel.engine.entities.factories.BodyFactory
@@ -32,6 +33,8 @@ import ru.icarumbas.bagel.view.renderer.systems.ViewportSystem
 class EntitiesWorld (
 
         private val roomWorld: RoomWorld,
+        private val worldIO: WorldIO,
+        game: Bagel,
         world: World,
         assets: ResourceManager
 ) {
@@ -39,19 +42,31 @@ class EntitiesWorld (
     private val entityFactory = EntityFactory(BodyFactory(world), AnimationFactory(), assets)
     private val entityFromLayerLoader = EntityFromLayerLoader(entityFactory, assets, this)
 
-    private val serializedObjects = ArrayList<SerializedMapObject>()
+    private val ioEntities = ArrayList<SerializedMapObject>()
 
     val playerEntity = entityFactory.playerEntity()
-    val engine = Engine()
 
+    val engine = Engine().also {
+        it.addEntityListener(
+                BodyRemoval(
+                        game,
+                        world,
+                        it,
+                        worldIO,
+                        roomWorld,
+                        ioEntities,
+                        playerEntity
+                )
+        )
+    }
 
     fun update(dt: Float){
         engine.update(dt)
     }
 
     fun defineEngine(
-            uiController: UIController,
-            playerController: PlayerController,
+            playerController: PlayerMoveController,
+            UIController: UIController,
             viewport: Viewport,
             batch: Batch
     ){
@@ -62,7 +77,7 @@ class EntitiesWorld (
             addSystem(HealthSystem(roomWorld))
             addSystem(StateSystem(roomWorld))
             addSystem(AISystem(roomWorld))
-            addSystem(OpeningSystem(uiController, roomWorld, entityFactory, playerEntity))
+            addSystem(OpeningSystem(UIController, roomWorld, entityFactory, playerEntity))
 //            addSystem(LootSystem(hud, rm, playerEntity, entityDeleteList))
 
             /* Velocity */
@@ -73,7 +88,7 @@ class EntitiesWorld (
 
             /* Physic */
             addSystem(AwakeSystem(roomWorld))
-            addSystem(WeaponSystem(uiController, roomWorld))
+            addSystem(WeaponSystem(UIController, roomWorld))
 
             /* Rendering */
             addSystem(ViewportSystem(viewport, roomWorld))
@@ -126,7 +141,7 @@ class EntitiesWorld (
         }
     }
 
-    fun loadEntities(worldIO: WorldIO){
+    fun loadIdEntities(){
         worldIO.loadEntitiesInfo().mapObjects.forEach {
             engine.addEntity(entityFactory.idMapObjectEntity(
                     it.roomId,
@@ -138,14 +153,14 @@ class EntitiesWorld (
         }
     }
 
-    fun saveEntites(worldIO: WorldIO){
-        worldIO.saveInfo(EntitiesInfo(serializedObjects))
+    fun saveEntites(){
+        worldIO.saveInfo(EntitiesInfo(ioEntities))
     }
 
     fun saveEntityForSerialization(obj: SerializedMapObject){
 
-        serializedObjects.add(obj)
-        roomId[engine.entities.last()].serialized = serializedObjects.last()
+        ioEntities.add(obj)
+        roomId[engine.entities.last()].serialized = ioEntities.last()
 
     }
 }

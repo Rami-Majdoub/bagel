@@ -1,7 +1,7 @@
 package ru.icarumbas.bagel.view.renderer
 
 import com.badlogic.ashley.core.Entity
-import ru.icarumbas.bagel.utils.Mappers.player
+import ru.icarumbas.bagel.utils.player
 
 class RenderingComparator : Comparator<Entity> {
 

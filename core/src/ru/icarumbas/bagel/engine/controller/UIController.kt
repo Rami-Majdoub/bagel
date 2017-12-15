@@ -1,6 +1,7 @@
 package ru.icarumbas.bagel.engine.controller
 
 
+
 interface UIController {
 
     fun isAttackPressed(): Boolean
@@ -8,4 +9,5 @@ interface UIController {
     fun isOpenPressed(): Boolean
 
     fun isMinimapPressed(): Boolean
+
 }

@@ -16,6 +16,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.viewport.ExtendViewport
+import ru.icarumbas.bagel.engine.controller.OnScreenController
+import ru.icarumbas.bagel.engine.controller.PlayerMoveController
+import ru.icarumbas.bagel.engine.controller.UIController
 import ru.icarumbas.bagel.engine.resources.ResourceManager
 import ru.icarumbas.bagel.engine.world.RoomWorld
 import ru.icarumbas.bagel.utils.body
@@ -31,82 +34,67 @@ class Hud(
         private val worldState: RoomWorld,
         private val player: Entity
 
-) : InputListener(){
+){
 
     val stage = Stage(ExtendViewport(800f, 480f))
 
     private val uiAtlas = assets.getTextureAtlas("Packs/UI.pack")
 
-    private val hp: HpBar
-    private val mana: RegularBar
-
     private lateinit var fps: Label
     private lateinit var currentRoom: Label
 
-    private val openButton: Image
-    private val attackButton: Image
-
     val minimap: Minimap
-    val touchpad: AdvancedTouchpad
+    private val hp: HpBar
+    private val mana: RegularBar
 
 
     init {
-
-        hp = createHpBar()
-        mana = createManaBar()
 
         minimap = createMinimap().also {
             stage.addActor(it)
         }
 
-        touchpad = createTouchpad().also {
-            stage.addActor(it)
-        }
-
-        attackButton = createAttackButton().also {
-            stage.addActor(it)
-        }
-
-        openButton = createOpenButton().also {
-            stage.addActor(it)
-        }
+        hp = createHpBar()
+        mana = createManaBar()
 
         createDebuggingStaff(stage)
     }
 
-    override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
-        when (event.target) {
-            attackButton -> {
-                attackButton.color = Color.WHITE
-            }
+    fun draw(dt: Float) {
+        update(dt)
+        stage.draw()
+    }
 
-            openButton -> {
-                openButton.color = Color.WHITE
-            }
+    fun update(dt: Float) {
 
-            minimap -> {
-                minimap.onUp()
-            }
+        hp.act(dt)
+
+        // Debugging temporary staff
+        currentRoom.setText("Current room: ${worldState.currentMapId}")
+        fps.setText("FPS: ${Gdx.graphics.framesPerSecond}")
+    }
+
+    fun dispose(){
+        stage.dispose()
+    }
+
+    fun createOnScreenPlayerMoveController(): PlayerMoveController{
+        return createTouchpad().also {
+            stage.addActor(it)
         }
     }
 
-    override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-        when (event.target) {
+    fun createOnScreenUIControllers(): UIController {
+        return OnScreenController(
+                openBtn = createOpenButton().also {
+                    stage.addActor(it)
+                },
+                attackBtn = createAttackButton().also {
+                    stage.addActor(it)
+                },
+                minimap = minimap
+        )
 
-            attackButton -> {
-                attackButton.color = Color.GRAY
-            }
-
-            openButton -> {
-                openButton.color = Color.GRAY
-            }
-
-            minimap -> {
-                minimap.onDown()
-            }
-
-        }
-        return true
     }
 
     private fun createDebuggingStaff(stage: Stage){
@@ -129,7 +117,7 @@ class Hud(
     private fun createOpenButton(): Image {
         return Image(uiAtlas.findRegion("attackButton")).apply {
             setSize(stage.width / 15, stage.width / 15)
-            setPosition(attackButton.x - stage.width / 15, attackButton.y)
+            setPosition(10 - stage.width / 15, 30f)
             isVisible = false
         }
     }
@@ -165,7 +153,19 @@ class Hud(
                 worldState)
                 .apply {
                     setPlayerPositionRelativeTo(body[player].body.position)
+
+                    addListener(object : InputListener(){
+                        override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
+                            minimap.onUp()
+                        }
+
+                        override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                            minimap.onDown()
+                            return true
+                        }
+                    })
                 }
+
     }
 
     private fun createHpBar(): HpBar{
@@ -190,20 +190,5 @@ class Hud(
             setSize(stage.width / 5, stage.height / 10)
             setPosition(0f, stage.height - hp.height - stage.height / 10)
         }
-    }
-
-    fun draw() {
-        stage.draw()
-    }
-
-    fun update() {
-
-        // Debugging temporary staff
-        currentRoom.setText("Current room: ${worldState.currentMapId}")
-        fps.setText("FPS: ${Gdx.graphics.framesPerSecond}")
-    }
-
-    fun dispose(){
-        stage.dispose()
     }
 }
