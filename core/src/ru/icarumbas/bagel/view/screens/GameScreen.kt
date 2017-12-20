@@ -1,5 +1,7 @@
+
 package ru.icarumbas.bagel.view.screens
 
+import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ScreenAdapter
@@ -11,7 +13,7 @@ import ktx.box2d.createWorld
 import ru.icarumbas.Bagel
 import ru.icarumbas.bagel.engine.controller.PlayerMoveController
 import ru.icarumbas.bagel.engine.controller.UIController
-import ru.icarumbas.bagel.engine.controller.WASDController
+import ru.icarumbas.bagel.engine.controller.WASDPlayerController
 import ru.icarumbas.bagel.engine.entities.BodyContactListener
 import ru.icarumbas.bagel.engine.entities.EntitiesWorld
 import ru.icarumbas.bagel.engine.io.WorldIO
@@ -21,6 +23,7 @@ import ru.icarumbas.bagel.engine.world.REG_ROOM_WIDTH
 import ru.icarumbas.bagel.engine.world.RoomWorld
 import ru.icarumbas.bagel.view.renderer.DebugRenderer
 import ru.icarumbas.bagel.view.renderer.MapRenderer
+import ru.icarumbas.bagel.view.renderer.components.TextureComponent
 import ru.icarumbas.bagel.view.ui.Hud
 
 
@@ -49,7 +52,7 @@ class GameScreen(
     private val entityWorld: EntitiesWorld
 
     private val playerController: PlayerMoveController
-    private val UIController: UIController
+    private val uiController: UIController
 
     init {
 
@@ -61,12 +64,6 @@ class GameScreen(
 
         roomWorld = RoomWorld(assets, mapRenderer)
 
-        if (isNewGame) {
-            createNewWorld()
-        } else {
-            continueWorld()
-        }
-
         entityWorld = EntitiesWorld(
                 roomWorld,
                 worldIO,
@@ -76,54 +73,65 @@ class GameScreen(
         )
 
         hud = Hud(assets, roomWorld, entityWorld.playerEntity)
-        Gdx.input.inputProcessor = hud.stage
 
-        if (Gdx.app.type == Application.ApplicationType.Desktop) {
-            val wasdController = WASDController(hud.minimap)
-
-            playerController = wasdController
-            UIController = wasdController
+        if (isNewGame) {
+            createNewWorld()
         } else {
-            playerController = hud.createOnScreenPlayerMoveController()
-            UIController = hud.createOnScreenUIControllers()
+            continueWorld()
         }
 
+        Gdx.input.inputProcessor = hud.stage
+
+        playerController = if (Gdx.app.type == Application.ApplicationType.Desktop) {
+            WASDPlayerController()
+        } else {
+            hud.createOnScreenPlayerMoveController()
+        }
+
+        uiController = hud.createUIController()
 
         entityWorld.defineEngine(
                 playerController,
-                UIController,
+                uiController,
                 viewport,
                 mapRenderer.renderer.batch
         )
 
-        val contactListener = BodyContactListener(
+        BodyContactListener(
                 playerController,
                 entityWorld.engine,
                 entityWorld.playerEntity
-        )
-        world.setContactListener(contactListener)
+        ).let {
+            world.setContactListener(it)
+        }
 
+
+        println("Rooms size is ${roomWorld.rooms.size}")
+        println("Entities size is ${entityWorld.engine.entities.size()}")
+        println("Texture entities size is ${entityWorld.engine.getEntitiesFor(Family.all(TextureComponent::class.java).get())}")
     }
 
 
 
     private fun continueWorld(){
+        roomWorld.loadWorld(worldIO)
+
         with (entityWorld) {
             loadIdEntities()
             createStaticMapEntities()
         }
 
-        roomWorld.loadWorld(worldIO)
         hud.minimap.load(worldIO, assets)
     }
 
     private fun createNewWorld(){
+        roomWorld.createNewWorld()
+
         with (entityWorld) {
             createIdMapEntities()
             createStaticMapEntities()
         }
 
-        roomWorld.createNewWorld()
         hud.minimap.createRooms(roomWorld.mesh, assets)
     }
 

@@ -20,22 +20,25 @@ class LoadingScreen(
 
 ) : ScreenAdapter() {
 
+    private val WIDTH = 800f
+    private val HEIGHT = 480f
+
     private val loadingPack = TextureAtlas("Packs/LoadingScreen.pack")
 
-    private var stage = Stage(ExtendViewport(800f, 480f))
+    private val stage = Stage(ExtendViewport(WIDTH, HEIGHT))
 
     private val screenBg = Image(loadingPack.findRegion("screen-bg")).apply {
-        setSize(stage.width, stage.height)
+        setSize(WIDTH, HEIGHT)
     }
 
     private val logo = Image(loadingPack.findRegion("IcaIcon")).apply {
-        x = (stage.width - width) / 2
-        y = (stage.height - height) / 2 + 100
+        x = (WIDTH - width) / 2
+        y = (HEIGHT - height) / 2 + 100
     }
 
     private val loadingFrame = Image(loadingPack.findRegion("loading-frame")).apply {
-        x = (stage.width - width) / 2
-        y = (stage.height - height) / 2
+        x = (WIDTH - width) / 2
+        y = (HEIGHT - height) / 2
     }
 
     private val loadingBar = LoadingBar(

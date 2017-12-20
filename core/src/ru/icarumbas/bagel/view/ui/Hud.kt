@@ -54,8 +54,13 @@ class Hud(
             stage.addActor(it)
         }
 
-        hp = createHpBar()
-        mana = createManaBar()
+        hp = createHpBar().also {
+            stage.addActor(it)
+        }
+
+        mana = createManaBar().also {
+            stage.addActor(it)
+        }
 
         createDebuggingStaff(stage)
     }
@@ -84,7 +89,7 @@ class Hud(
         }
     }
 
-    fun createOnScreenUIControllers(): UIController {
+    fun createUIController(): UIController {
         return OnScreenController(
                 openBtn = createOpenButton().also {
                     stage.addActor(it)
@@ -176,8 +181,8 @@ class Hud(
                 player
         ).apply {
 
-            setSize(stage.width / 5, stage.height / 10)
-            setPosition(0f, stage.height - stage.height / 10)
+            setSize(this@Hud.stage.width / 5, this@Hud.stage.height / 10)
+            setPosition(0f, this@Hud.stage.height - this@Hud.stage.height / 10)
         }
     }
 
@@ -187,8 +192,8 @@ class Hud(
                 Image(uiAtlas.findRegion("barForeground")).also { stage.addActor(it) },
                 Image(uiAtlas.findRegion("barBackground")).also { stage.addActor(it) }
         ).apply {
-            setSize(stage.width / 5, stage.height / 10)
-            setPosition(0f, stage.height - hp.height - stage.height / 10)
+            setSize(this@Hud.stage.width / 5, this@Hud.stage.height / 10)
+            setPosition(0f, this@Hud.stage.height - hp.height - this@Hud.stage.height / 10)
         }
     }
 }

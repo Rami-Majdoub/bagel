@@ -16,7 +16,6 @@ class Bagel : Game() {
     }
 
     override fun dispose() {
-        this.dispose()
         assets.assetManager.dispose()
     }
 }

@@ -211,7 +211,7 @@ class EntityFactory(
                           r: Int,
                           playerEntity: Entity): Entity? {
 
-        val atlas = assets.getTextureAtlas("items.pack")
+        val atlas = assets.getTextureAtlas("Packs/items.pack")
 
         val e = when(objectPath){
 

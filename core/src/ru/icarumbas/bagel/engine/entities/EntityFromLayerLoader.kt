@@ -15,7 +15,9 @@ class EntityFromLayerLoader (
 ) {
 
     fun loadStaticEntitiesFromLayer(roomPath: String, objectPath: String) {
-        assets.getTiledMap(roomPath).layers[objectPath].objects.forEach {
+        assets.getTiledMap(roomPath).layers[objectPath]
+                ?.objects
+                ?.forEach {
             entitiesWorld.engine.addEntity(
                     entityFactory.staticMapObjectEntity(
                             roomPath,
@@ -28,12 +30,14 @@ class EntityFromLayerLoader (
 
     fun createIdEntitiesFromLayer(roomPath: String, objectPath: String, id: Int, randomRange: Int){
 
-        assets.getTiledMap(roomPath).layers[objectPath].objects
-                .filterIsInstance<RectangleMapObject>()
-                .forEach { obj ->
+        assets.getTiledMap(roomPath)
+                .layers[objectPath]
+                ?.objects
+                ?.filterIsInstance<RectangleMapObject>()
+                ?.forEach { obj ->
 
                     val rand = MathUtils.random(1, randomRange)
-                    entityFactory.idMapObjectEntity(id, obj.rectangle, objectPath, rand, entitiesWorld.playerEntity).let {
+                    entityFactory.idMapObjectEntity(id, obj.rectangle, objectPath, rand, entitiesWorld.playerEntity)?.let {
                         entitiesWorld.engine.addEntity(it)
                         entitiesWorld.saveEntityForSerialization(SerializedMapObject(id, obj.rectangle, objectPath, rand))
                     }

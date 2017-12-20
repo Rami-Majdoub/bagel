@@ -57,6 +57,8 @@ class RenderingSystem(
 
             batch.begin()
 
+            texture[it].tex.regionX
+
             draw(it)
 
             if (shader.has(it)) {

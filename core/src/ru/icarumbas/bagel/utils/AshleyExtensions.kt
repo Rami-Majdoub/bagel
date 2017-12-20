@@ -4,9 +4,8 @@ import com.badlogic.ashley.core.Entity
 import ru.icarumbas.bagel.engine.world.RoomWorld
 
 
-fun Entity.inView(rooms: RoomWorld) = this.inView(rooms, rooms.currentMapId)
 
-fun Entity.inView(rooms: RoomWorld, mapId: Int): Boolean {
+fun Entity.inView(rooms: RoomWorld, mapId: Int = rooms.currentMapId): Boolean {
     return (roomId.has(this) && roomId[this].id == mapId) ||
             (statik.has(this) && statik[this].mapPath == rooms.getMapPath(mapId)) ||
             (alwaysRender.has(this))

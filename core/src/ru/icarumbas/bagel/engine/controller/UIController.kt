@@ -1,7 +1,5 @@
 package ru.icarumbas.bagel.engine.controller
 
-
-
 interface UIController {
 
     fun isAttackPressed(): Boolean

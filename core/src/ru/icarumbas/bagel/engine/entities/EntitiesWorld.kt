@@ -104,8 +104,8 @@ class EntitiesWorld (
     fun createIdMapEntities(){
         roomWorld.rooms.forEach { room ->
 
-            fun create(path: String, rand: Int = 1){
-                entityFromLayerLoader.createIdEntitiesFromLayer(path, "vase", room.id, rand)
+            fun create(objPath: String, rand: Int = 1){
+                entityFromLayerLoader.createIdEntitiesFromLayer(room.path, objPath, room.id, rand)
             }
 
             create("vase", 5)

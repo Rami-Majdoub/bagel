@@ -47,12 +47,28 @@ class RoomWorldCreator(
             val meshClosestY2: Int
     )
 
+     private fun drawMesh(count: Int){
+       println("Count: $count, Size: $roomsTotal")
+       mesh.forEach {
+           x -> x.forEach { y ->
+           if (y == 1) print("* ") else print("  ")
+       }
+           println()
+       }
+       println(totalNotClosedGates)
+   }
+
 
     fun createWorld(): ArrayList<Room>{
 
         fun isRoomBigOnHeight(mainRoomId: Int) = rooms[mainRoomId].height != REG_ROOM_HEIGHT
 
         fun isRoomBigOnWidth(mainRoomId: Int) = rooms[mainRoomId].width != REG_ROOM_WIDTH
+
+        fun getRootRoom() =
+            Room("Maps/Map9.tmx", 0, assets).apply {
+                meshCoords = intArrayOf(worldSize / 2, worldSize / 2, worldSize / 2, worldSize / 2)
+            }
 
         rooms.add(getRootRoom())
 
@@ -110,12 +126,6 @@ class RoomWorldCreator(
         }
     }
 
-    private fun getRootRoom(): Room {
-        return Room("Maps/Map9.tmx", 0, assets).apply {
-            meshCoords = intArrayOf(worldSize / 2, worldSize / 2, worldSize / 2, worldSize / 2)
-        }
-    }
-
     private fun isTimeToIncreaseRoomWithoutExitChance(): Boolean {
         return totalNotClosedGates > increaseRoomWithoutExitChanceThreshold
     }
@@ -153,7 +163,11 @@ class RoomWorldCreator(
 
             fun addNewRoom(){
                 rooms.add(chooseMap(sideArgs.sideName, mainRoomId, meshX, meshY).apply {
-                    meshCoords = intArrayOf(meshX + meshCheckSides[0], meshY + meshCheckSides[1], meshX + meshCheckSides[6], meshY + meshCheckSides[7])
+                    meshCoords = intArrayOf(
+                            meshX + meshCheckSides[0],
+                            meshY + meshCheckSides[1],
+                            meshX + meshCheckSides[6],
+                            meshY + meshCheckSides[7])
                 })
             }
 
@@ -191,7 +205,9 @@ class RoomWorldCreator(
         val meshRoomWidth = (newRoom.width / REG_ROOM_WIDTH).toInt()
         val meshRoomHeight = (newRoom.height / REG_ROOM_HEIGHT).toInt()
 
-        if (isMeshHasSpace(getFitCheckValues(side, meshRoomWidth, meshRoomHeight), meshX, meshY)) {
+        meshCheckSides = getFitCheckValues(side, meshRoomWidth, meshRoomHeight)
+
+        if (isMeshHasSpace(meshCheckSides, meshX, meshY)) {
             if (!isRoomJointsCollide(getSideCheckValues(side, meshRoomWidth, meshRoomHeight), meshX, meshY)) {
                 chooseMap(side, count, meshX, meshY)
             }
@@ -199,7 +215,7 @@ class RoomWorldCreator(
             chooseMap(side, count, meshX, meshY)
         }
 
-        meshCheckSides = getSideCheckValues(side, meshRoomWidth, meshRoomHeight)
+
         return newRoom
     }
 
@@ -207,7 +223,7 @@ class RoomWorldCreator(
 
         fun isRoomOnCoordinateExists(i: Int, room: Room) =
                 ((meshX.plus(checkSides[i]) == room.meshCoords[0] || meshX.plus(checkSides[i]) == room.meshCoords[2]) &&
-                (meshY.plus(checkSides[i + 8]) == room.meshCoords[1] || meshY.plus(checkSides[i + 8]) == room.meshCoords[3]))
+                        (meshY.plus(checkSides[i + 8]) == room.meshCoords[1] || meshY.plus(checkSides[i + 8]) == room.meshCoords[3]))
 
 
         fun isRoomJointCoincide(index: Int, room: Room) =
@@ -221,14 +237,14 @@ class RoomWorldCreator(
         rooms.forEach {
             for (i in 0..7) {
                 if (isRoomOnCoordinateExists(i, it)) {
-                    if (!isRoomJointCoincide(index, it)) return false
+                    if (!isRoomJointCoincide(index, it)) return true
                 }
                 if (i % 2 > 0) index++
             }
             index = 0
         }
 
-        return true
+        return false
     }
 
     private fun getSideCheckValues(side: String, meshRoomWidth: Int, meshRoomHeight: Int): IntArray {
@@ -292,9 +308,9 @@ class RoomWorldCreator(
 
     private fun getNextRoomId(count: Int, side: String): Int {
 
-        fun isTimeToRoomWithoutExit() = MathUtils.random(100) < roomWithoutExitChance
+        fun isTimeToRoomWithoutExit() = MathUtils.random(100) > roomWithoutExitChance
 
-        fun isRoomPathEqualsNearest(count: Int, randomRoomId: Int) = rooms[count].path != "Maps/Map$randomRoomId.tmx"
+        fun isRoomPathEqualsNearest(count: Int, randomRoomId: Int) = rooms[count].path == "Maps/Map$randomRoomId.tmx"
 
         fun getRandomRoomIdForSide() =
                 if (isTimeToRoomWithoutExit())
@@ -306,8 +322,6 @@ class RoomWorldCreator(
                     }
                 else
                     MathUtils.random(0, MAPS_TOTAL - 1)
-
-
 
         val randomRoomId = getRandomRoomIdForSide()
 

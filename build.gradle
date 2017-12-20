@@ -8,6 +8,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:3.0.0'
         classpath 'org.multi-os-engine:moe-gradle:1.4.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.51"
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.1'
     }
 }
 
@@ -19,6 +20,7 @@ allprojects {
     ext {
         appName = "Bagel"
         gdxVersion = '1.9.8'
+        junitJupiterVersion  = '5.0.0'
     }
 
     repositories {
@@ -31,8 +33,6 @@ allprojects {
 
 project(":desktop") {
     apply plugin: "kotlin"
-
-
 
 
     dependencies {
@@ -76,12 +76,14 @@ project(":android") {
 
 project(":core") {
     apply plugin: "kotlin"
+    apply plugin: 'org.junit.platform.gradle.plugin'
 
-    kotlin {
+
+    /*kotlin {
         experimental {
             coroutines 'enable'
         }
-    }
+    }*/
 
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
@@ -90,7 +92,7 @@ project(":core") {
         compile "org.jetbrains.kotlin:kotlin-stdlib:1.1.51"
         compile "com.badlogicgames.ashley:ashley:1.7.3"
 
-        compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.19.3"
+//        compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.19.3"
 
         /* KTX */
         compile group: 'io.github.libktx', name: 'ktx-actors', version: '1.9.7-b1'

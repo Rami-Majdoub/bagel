@@ -1,5 +1,6 @@
 package ru.icarumbas.bagel.engine.controller
 
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
@@ -65,6 +66,41 @@ class OnScreenController(
             }
 
         }
+        return true
+    }
+
+    override fun keyUp(event: InputEvent, keycode: Int): Boolean {
+        when (event.keyCode) {
+            Input.Keys.ENTER -> {
+                attackBtnPressed = true
+            }
+            Input.Keys.Q -> {
+                openBtnPressed = true
+            }
+            Input.Keys.E -> {
+                minimapPressed = true
+                minimap.onUp()
+            }
+
+        }
+        return true
+    }
+
+    override fun keyDown(event: InputEvent, keycode: Int): Boolean {
+        when (event.keyCode) {
+            Input.Keys.ENTER -> {
+                attackBtnPressed = false
+            }
+            Input.Keys.Q -> {
+                openBtnPressed = false
+            }
+            Input.Keys.E -> {
+                minimapPressed = false
+                minimap.onDown()
+            }
+
+        }
+
         return true
     }
 }

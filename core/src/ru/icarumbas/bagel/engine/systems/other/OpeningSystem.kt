@@ -14,7 +14,7 @@ import ru.icarumbas.bagel.utils.*
 
 class OpeningSystem (
 
-        private val UIController: UIController,
+        private val uiController: UIController,
         private val rm: RoomWorld,
         private val entityFactory: EntityFactory,
         private val playerEntity: Entity
@@ -31,7 +31,7 @@ class OpeningSystem (
     override fun processEntity(e: Entity, deltaTime: Float) {
         if (e.inView(rm)) {
             if (open[e].isCollidingWithPlayer){
-                if (UIController.isOpenPressed()) {
+                if (uiController.isOpenPressed()) {
                     open[e].opening = true
                 }
             }

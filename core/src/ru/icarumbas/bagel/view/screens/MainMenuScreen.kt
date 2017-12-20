@@ -3,62 +3,68 @@ package ru.icarumbas.bagel.view.screens
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ScreenAdapter
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
+import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.viewport.StretchViewport
-import ktx.actors.onClick
-import ktx.scene2d.label
-import ktx.scene2d.table
 import ru.icarumbas.Bagel
 
-class MainMenuScreen(
-
-        private val game: Bagel
-
-) : ScreenAdapter() {
+class MainMenuScreen(private val game: Bagel) : ScreenAdapter() {
 
     private val stage = Stage(StretchViewport(1920f, 1080f))
-
-    private var font = FreeTypeFontGenerator(Gdx.files.internal("CastlePressNo2.ttf")).generateFont(
-            FreeTypeFontGenerator.FreeTypeFontParameter().apply {
-                size = 150
-                spaceX = 10
-            }
-    )
-
-    private val labelStyle = Label.LabelStyle(font, Color.WHITE)
-
-    val view = table {
-
-        label(text = "New Game", style = "decorative") {
-            style = labelStyle
-            onClick {
-                game.screen = GameScreen(game.assets, game, isNewGame = true)
-            }
-        }
-
-        row()
-
-        label(text = "Continue", style = "decorative") {
-            style = labelStyle
-            onClick {
-                game.screen = GameScreen(game.assets, game, isNewGame = false)
-            }
-        }
-
-        center()
-    }
+    private var font = BitmapFont()
 
     override fun resize(width: Int, height: Int) {
         stage.viewport.update(width, height)
     }
 
     override fun show() {
-        stage.addActor(view)
+
+        Gdx.input.inputProcessor = stage
+
+        val generator = FreeTypeFontGenerator(Gdx.files.internal("CastlePressNo2.ttf"))
+        val parameter = FreeTypeFontGenerator.FreeTypeFontParameter()
+        parameter.size = 150
+        parameter.spaceX = 10
+
+        font = generator.generateFont(parameter)
+
+        val labelStyle = Label.LabelStyle(font, Color.WHITE)
+        val table = Table()
+
+        val newGame = Label("New Game", labelStyle)
+        table.add(newGame).row()
+
+        val options = Label("Options", labelStyle)
+        table.add(options)
+
+        table.addListener(object : InputListener() {
+            override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
+                when (event.target) {
+                    newGame -> game.screen = GameScreen(game.assets, game, isNewGame = true)
+                    options -> TODO()
+                    else -> game.screen = GameScreen(game.assets, game, isNewGame = true)
+                }
+            }
+
+            override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                event.target.color = Color.CORAL
+                return true
+            }
+        })
+
+        table.setPosition(stage.width / 2 - table.width / 2, stage.height / 2)
+        stage.addActor(table)
     }
 
     override fun render(delta: Float) {
+        Gdx.gl.glClearColor(0f,  0f,  0f,  1f)
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
         stage.draw()
     }
 
