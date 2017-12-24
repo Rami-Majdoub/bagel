@@ -16,7 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.viewport.ExtendViewport
-import ru.icarumbas.bagel.engine.controller.OnScreenController
+import ru.icarumbas.bagel.engine.controller.HudInputListener
 import ru.icarumbas.bagel.engine.controller.PlayerMoveController
 import ru.icarumbas.bagel.engine.controller.UIController
 import ru.icarumbas.bagel.engine.resources.ResourceManager
@@ -49,19 +49,9 @@ class Hud(
 
 
     init {
-
-        minimap = createMinimap().also {
-            stage.addActor(it)
-        }
-
-        hp = createHpBar().also {
-            stage.addActor(it)
-        }
-
-        mana = createManaBar().also {
-            stage.addActor(it)
-        }
-
+        minimap = createMinimap()
+        hp = createHpBar()
+        mana = createManaBar()
         createDebuggingStaff(stage)
     }
 
@@ -90,13 +80,9 @@ class Hud(
     }
 
     fun createUIController(): UIController {
-        return OnScreenController(
-                openBtn = createOpenButton().also {
-                    stage.addActor(it)
-                },
-                attackBtn = createAttackButton().also {
-                    stage.addActor(it)
-                },
+        return HudInputListener(
+                openBtn = createOpenButton(),
+                attackBtn = createAttackButton(),
                 minimap = minimap
         )
 
@@ -105,30 +91,39 @@ class Hud(
     private fun createDebuggingStaff(stage: Stage){
         val lStyle = Label.LabelStyle(BitmapFont(), Color.RED)
 
-
         fps = Label("FPS: ", lStyle).apply {
             setPosition(3f, mana.y - 15)
+        }.also {
+            stage.addActor(it)
         }
-        stage.addActor(fps)
-
 
         currentRoom = Label("Current room: ", lStyle).apply {
             setPosition(10f, 10f)
             setSize(stage.width/10, stage.height/10)
+        }.also {
+            stage.addActor(it)
         }
-        stage.addActor(currentRoom)
+
     }
 
     private fun createOpenButton(): Image {
-        return Image(uiAtlas.findRegion("attackButton")).apply {
-            setSize(stage.width / 15, stage.width / 15)
-            setPosition(10 - stage.width / 15, 30f)
+        return Image(uiAtlas.findRegion("attackButton"))
+                .also {
+                    stage.addActor(it)
+                }
+                .apply {
+            setSize(this@Hud.stage.width / 15, this@Hud.stage.width / 15)
+            setPosition(10 - this@Hud.stage.width / 15, 30f)
             isVisible = false
         }
     }
 
     private fun createAttackButton(): Image {
-        return Image(uiAtlas.findRegion("open")).apply {
+        return Image(uiAtlas.findRegion("open"))
+                .also {
+                    stage.addActor(it)
+                }
+                .apply {
             setSize(stage.width / 10, stage.width / 10)
             setPosition(stage.width - stage.width / 10 * 1.5f, stage.width / 10 * .5f)
         }
@@ -156,6 +151,9 @@ class Hud(
                 ),
                 Image(uiAtlas.findRegion("Point")).also { stage.addActor(it) },
                 worldState)
+                .also {
+                    stage.addActor(it)
+                }
                 .apply {
                     setPlayerPositionRelativeTo(body[player].body.position)
 
@@ -179,7 +177,11 @@ class Hud(
                 Image(uiAtlas.findRegion("barForeground")).also { stage.addActor(it) },
                 Image(uiAtlas.findRegion("barBackground")).also { stage.addActor(it) },
                 player
-        ).apply {
+        )
+                .also {
+                    stage.addActor(it)
+                }
+                .apply {
 
             setSize(this@Hud.stage.width / 5, this@Hud.stage.height / 10)
             setPosition(0f, this@Hud.stage.height - this@Hud.stage.height / 10)
@@ -191,7 +193,11 @@ class Hud(
                 Image(uiAtlas.findRegion("manaBar")).also { stage.addActor(it) },
                 Image(uiAtlas.findRegion("barForeground")).also { stage.addActor(it) },
                 Image(uiAtlas.findRegion("barBackground")).also { stage.addActor(it) }
-        ).apply {
+        )
+                .also {
+                    stage.addActor(it)
+                }
+                .apply {
             setSize(this@Hud.stage.width / 5, this@Hud.stage.height / 10)
             setPosition(0f, this@Hud.stage.height - hp.height - this@Hud.stage.height / 10)
         }

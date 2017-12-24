@@ -16,7 +16,7 @@ class DebugRenderer(private val debugRenderer: Box2DDebugRenderer,
 
 
     private fun checkShouldRender(){
-        if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
             shouldRender = shouldRender.not()
         }
 

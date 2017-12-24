@@ -16,8 +16,9 @@ class RoomWorld(
     lateinit var rooms: ArrayList<Room>
     lateinit var mesh: Array<IntArray>
 
-    var currentMapId = 0
+    var currentMapId = -10
         set(value) {
+            field = value
             mapRenderer.renderer.map = assets.getTiledMap(rooms[value].path)
         }
 

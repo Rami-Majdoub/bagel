@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.utils.viewport.FitViewport
 import ktx.box2d.createWorld
 import ru.icarumbas.Bagel
+import ru.icarumbas.bagel.engine.controller.HudInputListener
 import ru.icarumbas.bagel.engine.controller.PlayerMoveController
 import ru.icarumbas.bagel.engine.controller.UIController
 import ru.icarumbas.bagel.engine.controller.WASDPlayerController
@@ -82,13 +83,13 @@ class GameScreen(
 
         Gdx.input.inputProcessor = hud.stage
 
-        playerController = if (Gdx.app.type == Application.ApplicationType.Desktop) {
-            WASDPlayerController()
+        if (Gdx.app.type == Application.ApplicationType.Desktop) {
+            playerController = WASDPlayerController()
+            uiController = HudInputListener(null, null, hud.minimap)
         } else {
-            hud.createOnScreenPlayerMoveController()
+            playerController = hud.createOnScreenPlayerMoveController()
+            uiController = hud.createUIController()
         }
-
-        uiController = hud.createUIController()
 
         entityWorld.defineEngine(
                 playerController,
@@ -108,13 +109,16 @@ class GameScreen(
 
         println("Rooms size is ${roomWorld.rooms.size}")
         println("Entities size is ${entityWorld.engine.entities.size()}")
-        println("Texture entities size is ${entityWorld.engine.getEntitiesFor(Family.all(TextureComponent::class.java).get())}")
+        println("Texture entities size is ${entityWorld.engine.getEntitiesFor(Family.all(TextureComponent::class.java).get()).size()}")
     }
 
 
 
     private fun continueWorld(){
-        roomWorld.loadWorld(worldIO)
+        with (roomWorld) {
+            loadWorld(worldIO)
+            currentMapId = worldIO.loadPlayerInfo().currentMap
+        }
 
         with (entityWorld) {
             loadIdEntities()
@@ -125,7 +129,10 @@ class GameScreen(
     }
 
     private fun createNewWorld(){
-        roomWorld.createNewWorld()
+        with (roomWorld) {
+            createNewWorld()
+            currentMapId = 0
+        }
 
         with (entityWorld) {
             createIdMapEntities()

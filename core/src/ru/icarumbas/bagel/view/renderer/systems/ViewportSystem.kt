@@ -13,32 +13,36 @@ import ru.icarumbas.bagel.view.renderer.components.SizeComponent
 
 class ViewportSystem(
 
-        private val viewport: Viewport,
+        private val view: Viewport,
         private val rm: RoomWorld
 
 ) : IteratingSystem(Family.all(PlayerComponent::class.java, BodyComponent::class.java, SizeComponent::class.java).get()) {
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        moveCamera(viewport, body[entity].body.position.x, body[entity].body.position.y)
+        moveCamera(body[entity].body.position.x, body[entity].body.position.y)
+
+
     }
 
-    private fun moveCamera(view: Viewport, posX: Float, posY: Float) {
+    private fun moveCamera(posX: Float, posY: Float) {
 
-        view.camera.position.x = posX
-        view.camera.position.y = posY
+        with (view) {
+            camera.position.x = posX
+            camera.position.y = posY
 
-        if (view.camera.position.y - view.worldHeight / 2f < 0)
-            view.camera.position.y = view.worldHeight / 2f
+            if (camera.position.y - worldHeight / 2f < 0)
+                camera.position.y = worldHeight / 2f
 
-        if (view.camera.position.x - view.worldWidth / 2f < 0)
-            view.camera.position.x = view.worldWidth / 2f
+            if (camera.position.x - worldWidth / 2f < 0)
+                camera.position.x = worldWidth / 2f
 
-        if (view.camera.position.x + view.worldWidth / 2f > rm.getRoomWidth())
-            view.camera.position.x = rm.getRoomWidth() - view.worldWidth / 2f
+            if (camera.position.x + worldWidth / 2f > rm.getRoomWidth())
+                camera.position.x = rm.getRoomWidth() - worldWidth / 2f
 
-        if (view.camera.position.y + view.worldHeight / 2f > rm.getRoomWidth())
-            view.camera.position.y = rm.getRoomWidth() - view.worldHeight / 2f
+            if (camera.position.y + worldHeight / 2f > rm.getRoomHeight())
+                camera.position.y = rm.getRoomHeight() - worldHeight / 2f
 
-        view.camera.update()
+            camera.update()
+        }
     }
 }

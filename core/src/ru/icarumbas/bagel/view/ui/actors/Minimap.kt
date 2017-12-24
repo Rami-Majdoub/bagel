@@ -162,6 +162,8 @@ class Minimap (
         children.forEach {
             if (it.isVisible) {
                 indexes.add(children.indexOf(it))
+
+                // TODO("FIX")
             }
         }
 

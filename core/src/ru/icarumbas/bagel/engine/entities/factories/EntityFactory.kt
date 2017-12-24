@@ -46,7 +46,7 @@ class EntityFactory(
                           speed: Float,
                           maxSpeed: Float): Entity {
 
-        val weaponEntity = Entity().apply {
+        return Entity().apply {
 
             add(BodyComponent(bodyFactory.swordWeapon(
                     categoryBit = WEAPON_BIT,
@@ -54,10 +54,9 @@ class EntityFactory(
                     size = Vector2(width / PIX_PER_M, height / PIX_PER_M))
                     .createRevoluteJoint(mainBody, anchorA, anchorB, maxSpeed, speed)))
             add(InactiveMarkerComponent())
+        }.also {
+            body[it].body.userData = it
         }
-
-        body[weaponEntity].body.userData = weaponEntity
-        return weaponEntity
     }
 
     fun playerEntity(): Entity {
@@ -67,7 +66,7 @@ class EntityFactory(
         val weaponAtlas = assets.getTextureAtlas("Packs/weapons.pack")
         val playerAtlas = assets.getTextureAtlas("Packs/GuyKnight.pack")
 
-        val player = Entity()
+        return Entity()
                 .add(TextureComponent())
                 .add(PlayerComponent(0))
                 .add(RunComponent(acceleration = .4f, maxSpeed = 6f))
@@ -126,10 +125,9 @@ class EntityFactory(
                 .add(AlwaysRenderingMarkerComponent())
                 .add(AttackComponent(strength = 15, knockback = Vector2(1.5f, 1f)))
                 .add((TranslateComponent()))
-
-        body[player].body.userData = player
-        return player
-
+                .also {
+                    body[it].body.userData = it
+                }
     }
 
     fun groundEntity(obj: MapObject, bit: Short): Entity{
@@ -213,7 +211,7 @@ class EntityFactory(
 
         val atlas = assets.getTextureAtlas("Packs/items.pack")
 
-        val e = when(objectPath){
+        return when(objectPath){
 
             "vase" -> {
                 val size = when (r) {
@@ -772,13 +770,12 @@ class EntityFactory(
             }
 
             else -> throw IllegalArgumentException("Cant create object with objectPath = $objectPath")
+        }.apply {
+            add(TranslateComponent())
+            add(RoomIdComponent(roomId))
+        }.also {
+            body[it].body.userData = it
         }
-
-        e.add(TranslateComponent())
-        e.add(RoomIdComponent(roomId))
-
-        body[e].body.userData = e
-        return e
     }
 
     fun staticMapObjectEntity(roomPath: String,
@@ -852,10 +849,11 @@ class EntityFactory(
 
             else -> throw IllegalArgumentException("Cant create object with objectPath = $objectPath")
         }
-                .add(StaticComponent(roomPath))
-                .also {
-                    body[it].body.userData = it
-                }
+
+        .add(StaticComponent(roomPath))
+        .also {
+            body[it].body.userData = it
+        }
 
     }
 }

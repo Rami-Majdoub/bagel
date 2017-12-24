@@ -12,7 +12,7 @@ class WorldIO {
 
 
     private fun saveToFile(path: String, obj: Any){
-        Gdx.files.local(path).writeString(json.toJson(obj), false)
+        Gdx.files.local(path).writeString(json.prettyPrint(obj), false)
     }
 
     private fun <T> loadFromFile(path: String, clazz: Class<T>): T {

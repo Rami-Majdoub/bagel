@@ -8,10 +8,10 @@ import com.badlogic.gdx.scenes.scene2d.InputListener
 import ru.icarumbas.bagel.view.ui.actors.Minimap
 
 
-class OnScreenController(
+class HudInputListener(
 
-        private val attackBtn: Actor,
-        private val openBtn: Actor,
+        private val attackBtn: Actor?,
+        private val openBtn: Actor?,
         private val minimap: Minimap
 
 ) : UIController, InputListener() {
@@ -31,12 +31,12 @@ class OnScreenController(
     override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
         when (event.target) {
             attackBtn -> {
-                attackBtn.color = Color.WHITE
+                attackBtn!!.color = Color.WHITE
                 attackBtnPressed = false
             }
 
             openBtn -> {
-                openBtn.color = Color.WHITE
+                openBtn!!.color = Color.WHITE
                 openBtnPressed = false
             }
 
@@ -51,12 +51,12 @@ class OnScreenController(
         when (event.target) {
 
             attackBtn -> {
-                attackBtn.color = Color.GRAY
+                attackBtn!!.color = Color.GRAY
                 attackBtnPressed = true
             }
 
             openBtn -> {
-                openBtn.color = Color.GRAY
+                openBtn!!.color = Color.GRAY
                 openBtnPressed = true
             }
 
