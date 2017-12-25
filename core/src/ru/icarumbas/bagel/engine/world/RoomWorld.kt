@@ -1,5 +1,6 @@
 package ru.icarumbas.bagel.engine.world
 
+import ru.icarumbas.bagel.engine.io.RoomInfo
 import ru.icarumbas.bagel.engine.io.WorldIO
 import ru.icarumbas.bagel.engine.io.WorldInfo
 import ru.icarumbas.bagel.engine.resources.ResourceManager
@@ -37,7 +38,10 @@ class RoomWorld(
     }
 
     fun saveWorld(worldIO: WorldIO){
-        worldIO.saveInfo(WorldInfo(rooms, mesh))
+        with(worldIO) {
+            saveInfo(WorldInfo(rooms, mesh))
+            saveInfo(RoomInfo(canContinue = true))
+        }
     }
 
     fun getMapPath(id: Int = currentMapId) = rooms[id].path

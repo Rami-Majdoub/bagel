@@ -62,6 +62,7 @@ class Hud(
 
     fun update(dt: Float) {
 
+        stage.act()
         hp.act(dt)
 
         // Debugging temporary staff
@@ -112,8 +113,8 @@ class Hud(
                     stage.addActor(it)
                 }
                 .apply {
-            setSize(this@Hud.stage.width / 15, this@Hud.stage.width / 15)
-            setPosition(10 - this@Hud.stage.width / 15, 30f)
+            setSize(stage.width / 15, stage.width / 15)
+            setPosition(10 - stage.width / 15, 30f)
             isVisible = false
         }
     }
@@ -149,10 +150,11 @@ class Hud(
                         Color.BLACK,
                         TextureRegionDrawable(TextureRegion(uiAtlas.findRegion("Empty")))
                 ),
-                Image(uiAtlas.findRegion("Point")).also { stage.addActor(it) },
+                Image(uiAtlas.findRegion("Point")),
                 worldState)
                 .also {
                     stage.addActor(it)
+                    stage.addActor(it.playerPoint)
                 }
                 .apply {
                     setPlayerPositionRelativeTo(body[player].body.position)
@@ -167,15 +169,23 @@ class Hud(
                             return true
                         }
                     })
+
+                    setSize(stage.width / 4, stage.height / 4)
+
+                    setPosition(
+                            stage.width - width,
+                            stage.height - height)
+
+                    add(playerPoint)
                 }
 
     }
 
     private fun createHpBar(): HpBar{
         return HpBar(
+                Image(uiAtlas.findRegion("barBackground")).also { stage.addActor(it) },
                 Image(uiAtlas.findRegion("healthBar")).also { stage.addActor(it) },
                 Image(uiAtlas.findRegion("barForeground")).also { stage.addActor(it) },
-                Image(uiAtlas.findRegion("barBackground")).also { stage.addActor(it) },
                 player
         )
                 .also {
@@ -183,23 +193,24 @@ class Hud(
                 }
                 .apply {
 
-            setSize(this@Hud.stage.width / 5, this@Hud.stage.height / 10)
-            setPosition(0f, this@Hud.stage.height - this@Hud.stage.height / 10)
+            setSize(stage.width / 5, stage.height / 10)
+            setPosition(0f, stage.height - stage.height / 10)
         }
     }
 
     private fun createManaBar(): RegularBar{
         return RegularBar(
+                Image(uiAtlas.findRegion("barBackground")).also { stage.addActor(it) },
                 Image(uiAtlas.findRegion("manaBar")).also { stage.addActor(it) },
-                Image(uiAtlas.findRegion("barForeground")).also { stage.addActor(it) },
-                Image(uiAtlas.findRegion("barBackground")).also { stage.addActor(it) }
+                Image(uiAtlas.findRegion("barForeground")).also { stage.addActor(it) }
         )
                 .also {
                     stage.addActor(it)
                 }
                 .apply {
-            setSize(this@Hud.stage.width / 5, this@Hud.stage.height / 10)
-            setPosition(0f, this@Hud.stage.height - hp.height - this@Hud.stage.height / 10)
+
+            setSize(stage.width / 5, stage.height / 10)
+            setPosition(0f, stage.height - hp.height - stage.height / 10)
         }
     }
 }

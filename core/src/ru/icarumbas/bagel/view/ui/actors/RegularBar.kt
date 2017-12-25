@@ -5,9 +5,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 
 open class RegularBar(
 
+        private val barBackGround: Actor,
         private val bar: Actor,
-        private val barForeground: Actor,
-        private val barBackGround: Actor
+        private val barForeground: Actor
 
 ) : Actor(){
 

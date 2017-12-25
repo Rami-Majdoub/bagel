@@ -5,6 +5,6 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 
 
-class TextureComponent(val tex: TextureRegion = TextureRegion()): Component {
+class TextureComponent(var tex: TextureRegion? = null): Component {
     var color = Color.WHITE!!
 }

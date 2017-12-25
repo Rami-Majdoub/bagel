@@ -31,10 +31,15 @@ class WorldIO {
                     putFloat("playerX", info.position.first)
                     putFloat("playerY", info.position.second)
                     putInteger("currentMapId", info.currentMap)
+                    flush()
+                }
+            }
+
+            is RoomInfo -> {
+                with (prefs) {
                     putBoolean("canContinue", info.canContinue)
                     flush()
                 }
-
             }
 
             is MinimapInfo -> {
@@ -56,7 +61,11 @@ class WorldIO {
     fun loadPlayerInfo() =
             PlayerInfo(
                     Pair(prefs.getFloat("playerX"), prefs.getFloat("playerY")),
-                    prefs.getInteger("currentMapId"),
+                    prefs.getInteger("currentMapId")
+            )
+
+    fun loadRoomInfo() =
+            RoomInfo(
                     prefs.getBoolean("canContinue")
             )
 

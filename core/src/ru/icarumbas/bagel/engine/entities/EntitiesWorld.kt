@@ -11,6 +11,7 @@ import ru.icarumbas.bagel.engine.entities.factories.AnimationFactory
 import ru.icarumbas.bagel.engine.entities.factories.BodyFactory
 import ru.icarumbas.bagel.engine.entities.factories.EntityFactory
 import ru.icarumbas.bagel.engine.io.EntitiesInfo
+import ru.icarumbas.bagel.engine.io.PlayerInfo
 import ru.icarumbas.bagel.engine.io.SerializedMapObject
 import ru.icarumbas.bagel.engine.io.WorldIO
 import ru.icarumbas.bagel.engine.resources.ResourceManager
@@ -23,6 +24,7 @@ import ru.icarumbas.bagel.engine.systems.velocity.RunningSystem
 import ru.icarumbas.bagel.engine.systems.velocity.TeleportSystem
 import ru.icarumbas.bagel.engine.world.MAPS_TOTAL
 import ru.icarumbas.bagel.engine.world.RoomWorld
+import ru.icarumbas.bagel.utils.body
 import ru.icarumbas.bagel.utils.roomId
 import ru.icarumbas.bagel.view.renderer.systems.AnimationSystem
 import ru.icarumbas.bagel.view.renderer.systems.RenderingSystem
@@ -53,7 +55,6 @@ class EntitiesWorld (
                         world,
                         it,
                         worldIO,
-                        roomWorld,
                         ioEntities,
                         playerEntity
                 )
@@ -141,20 +142,34 @@ class EntitiesWorld (
         }
     }
 
-    fun loadIdEntities(){
-        worldIO.loadEntitiesInfo().mapObjects.forEach {
-            engine.addEntity(entityFactory.idMapObjectEntity(
-                    it.roomId,
-                    it.rect,
-                    it.objectPath,
-                    it.rand,
-                    playerEntity
-            ))
+    fun loadEntities(){
+
+        with (worldIO) {
+            loadEntitiesInfo().mapObjects.forEach {
+                engine.addEntity(entityFactory.idMapObjectEntity(
+                        it.roomId,
+                        it.rect,
+                        it.objectPath,
+                        it.rand,
+                        playerEntity
+                ))
+            }
+            loadPlayerInfo().also {
+                body[playerEntity].body.setTransform(it.position.first, it.position.second, 0f)
+            }
         }
     }
 
-    fun saveEntites(){
-        worldIO.saveInfo(EntitiesInfo(ioEntities))
+
+    fun saveEntities(){
+        with(worldIO) {
+            saveInfo(EntitiesInfo(ioEntities))
+            saveInfo(PlayerInfo(
+                    body[playerEntity].body.position.x to body[playerEntity].body.position.y,
+                    roomWorld.currentMapId
+            ))
+        }
+
     }
 
     fun saveEntityForSerialization(obj: SerializedMapObject){

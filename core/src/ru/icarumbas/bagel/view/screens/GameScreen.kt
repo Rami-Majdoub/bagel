@@ -1,7 +1,6 @@
 
 package ru.icarumbas.bagel.view.screens
 
-import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ScreenAdapter
@@ -24,13 +23,13 @@ import ru.icarumbas.bagel.engine.world.REG_ROOM_WIDTH
 import ru.icarumbas.bagel.engine.world.RoomWorld
 import ru.icarumbas.bagel.view.renderer.DebugRenderer
 import ru.icarumbas.bagel.view.renderer.MapRenderer
-import ru.icarumbas.bagel.view.renderer.components.TextureComponent
 import ru.icarumbas.bagel.view.ui.Hud
 
 
 class GameScreen(
 
         val assets: ResourceManager,
+        val worldIO: WorldIO,
         game: Bagel,
         isNewGame: Boolean
 
@@ -38,8 +37,6 @@ class GameScreen(
 
     // Box2d world
     private val world = createWorld(Vector2(0f, -9.8f))
-
-    private val worldIO = WorldIO()
 
     private val debugRenderer: DebugRenderer
     private val mapRenderer: MapRenderer
@@ -109,19 +106,21 @@ class GameScreen(
 
         println("Rooms size is ${roomWorld.rooms.size}")
         println("Entities size is ${entityWorld.engine.entities.size()}")
-        println("Texture entities size is ${entityWorld.engine.getEntitiesFor(Family.all(TextureComponent::class.java).get()).size()}")
     }
 
 
 
     private fun continueWorld(){
+
+        val playerInfo = worldIO.loadPlayerInfo()
+
         with (roomWorld) {
             loadWorld(worldIO)
-            currentMapId = worldIO.loadPlayerInfo().currentMap
+            currentMapId = playerInfo.currentMap
         }
 
         with (entityWorld) {
-            loadIdEntities()
+            loadEntities()
             createStaticMapEntities()
         }
 
@@ -149,15 +148,14 @@ class GameScreen(
     }
 
     override fun render(delta: Float) {
-        update(delta)
-
         mapRenderer.render()
+        update(delta)
         debugRenderer.render()
         hud.draw(delta)
     }
 
     override fun pause() {
-        entityWorld.saveEntites()
+        entityWorld.saveEntities()
         roomWorld.saveWorld(worldIO)
         hud.minimap.save(worldIO)
     }

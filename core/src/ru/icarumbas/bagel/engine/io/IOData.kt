@@ -12,7 +12,11 @@ class WorldInfo(
 
 class PlayerInfo(
         val position: Pair<Float, Float>,
-        val currentMap: Int,
+        val currentMap: Int
+
+) : IOInfo()
+
+class RoomInfo(
         val canContinue: Boolean
 ) : IOInfo()
 

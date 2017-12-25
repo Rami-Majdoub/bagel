@@ -20,14 +20,14 @@ import kotlin.collections.ArrayList
 class Minimap (
 
         style: WindowStyle,
-        private var playerPoint: Image,
+        var playerPoint: Image,
         private val worldState: RoomWorld
 
 ) : Window("", style) {
 
     // Room image on minimap size
-    private var regRoomWidth = 1f
-    private var regRoomHeight = 1f
+    private var regRoomWidth = 18f
+    private var regRoomHeight = 12f
 
     // Distance that all getRooms have to pass depends on currentRoom
     private val distance = Vector2()
@@ -54,10 +54,12 @@ class Minimap (
         super.act(delta)
 
         children.filterIsInstance(MinimapRoomImage::class.java).forEach {
+
             if (isCurrentRoomActor(it)) {
                 it.color = currentRoomColor
                 it.isVisible = true
                 currentRoom = it
+
             } else {
                 it.color = Color.WHITE
             }
@@ -65,12 +67,13 @@ class Minimap (
 
         followCurrentRoom()
 
-        // Move player point un top of rendering
-        playerPoint.let {
-            if (children.last() !== it) {
-                stage.actors.swap(children.indexOf(playerPoint), stage.actors.size-1)
+
+        with (children) {
+            if (last() !== playerPoint) {
+                swap(indexOf(playerPoint), size-1)
             }
         }
+
 
     }
 
@@ -79,6 +82,8 @@ class Minimap (
     }
 
     fun createRooms(mesh: Array<IntArray>, assets: ResourceManager){
+
+
 
         mesh.forEach { y ->
             var x = 0
@@ -99,38 +104,27 @@ class Minimap (
                             }
                         }
 
+                        fun addRoom(size: Pair<Float, Float>){
+                            addActor(MinimapRoomImage(findTextureForMiniMap(name, assets))
+                                    .apply {
+                                        setSize(size.first, size.second)
+                                        setRegularPositionOnMinimap(x, y, mesh)
+                                        isVisible = false
+                                    })
+                        }
+
                         when {
                             room.height != 768 / PIX_PER_M && room.width != 1152 / PIX_PER_M -> {
-                                addActor(MinimapRoomImage(findTextureForMiniMap(name, assets))
-                                        .apply {
-                                            setSize(regRoomWidth * 2f, regRoomHeight * 2f)
-                                            setRegularPositionOnMinimap(x, y, mesh)
-                                            isVisible = false
-                                        })
+                                addRoom(regRoomWidth * 2f to regRoomHeight * 2f)
                             }
                             room.width != 1152 / PIX_PER_M -> {
-                                addActor(MinimapRoomImage(findTextureForMiniMap(name, assets))
-                                        .apply {
-                                            setSize(regRoomWidth * 2f, regRoomHeight)
-                                            setRegularPositionOnMinimap(x, y, mesh)
-                                            isVisible = false
-                                        })
+                                addRoom(regRoomWidth * 2f to regRoomHeight)
                             }
                             room.height != 768 / PIX_PER_M -> {
-                                addActor(MinimapRoomImage(findTextureForMiniMap(name, assets))
-                                        .apply {
-                                            setSize(regRoomWidth, regRoomHeight * 2f)
-                                            setRegularPositionOnMinimap(x, y, mesh)
-                                            isVisible = false
-                                        })
+                                addRoom(regRoomWidth to regRoomHeight * 2f)
                             }
                             else -> {
-                                addActor(MinimapRoomImage(findTextureForMiniMap(name, assets))
-                                        .apply {
-                                            setSize(regRoomWidth, regRoomHeight)
-                                            setRegularPositionOnMinimap(x, y, mesh)
-                                            isVisible = false
-                                        })
+                                addRoom(regRoomWidth to regRoomHeight)
                             }
                         }
                     }
@@ -159,11 +153,9 @@ class Minimap (
 
         val indexes = ArrayList<Int>()
 
-        children.forEach {
-            if (it.isVisible) {
-                indexes.add(children.indexOf(it))
-
-                // TODO("FIX")
+        children.forEachIndexed { index, room ->
+            if (room.isVisible) {
+                indexes.add(index)
             }
         }
 
@@ -179,13 +171,16 @@ class Minimap (
 
     private fun isCurrentRoomActor(actor: MinimapRoomImage): Boolean {
 
-        return ( worldState.getRoomPass(0) == (MathUtils.round(actor.x - actor.distanceX) / regRoomWidth.toInt()) &&
-                 worldState.getRoomPass(1) == (50 - MathUtils.round(actor.y - actor.distanceY) / regRoomHeight.toInt()) )
+        return ( worldState.getRoomMeshCoordinate(0) == (MathUtils.round(actor.x - actor.distanceX) / regRoomWidth.toInt()) &&
+                 worldState.getRoomMeshCoordinate(1) == (50 - MathUtils.round(actor.y - actor.distanceY) / regRoomHeight.toInt()) )
     }
 
     private fun followCurrentRoom(){
-        distance.set(originX + width/2 - currentRoom.x, originY + height/2 - currentRoom.y)
-        distance.add(-playerPosition.x, -playerPosition.y)
+        with (distance) {
+            set(originX + width / 2 - currentRoom.x, originY + height / 2 - currentRoom.y)
+            add(-playerPosition.x, -playerPosition.y)
+            add(-playerPoint.width, -playerPoint.height / 2)
+        }
 
         children.filterIsInstance(MinimapRoomImage::class.java).forEach {
             it.moveBy(distance.x, distance.y)

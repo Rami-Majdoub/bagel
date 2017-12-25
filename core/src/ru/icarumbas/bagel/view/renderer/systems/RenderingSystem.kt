@@ -3,6 +3,7 @@ package ru.icarumbas.bagel.view.renderer.systems
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.SortedIteratingSystem
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import ru.icarumbas.bagel.engine.components.other.RoomIdComponent
 import ru.icarumbas.bagel.engine.components.physics.StaticComponent
@@ -46,17 +47,14 @@ class RenderingSystem(
     override fun update(deltaTime: Float) {
         super.update(deltaTime)
 
-        entities.filter { it.inView(rm) && !(body.has(it) && !body[it].body.isActive) }.forEach {
+        entities.filter { it.inView(rm) && !(body.has(it) && !body[it].body.isActive) && texture[it].tex != null }.forEach {
 
-            size[it].spriteSize.y = texture[it].tex.regionHeight / PIX_PER_M * size[it].scale
-            size[it].spriteSize.x = texture[it].tex.regionWidth / PIX_PER_M * size[it].scale
+            size[it].spriteSize.y = texture[it].tex!!.regionHeight / PIX_PER_M * size[it].scale
+            size[it].spriteSize.x = texture[it].tex!!.regionWidth / PIX_PER_M * size[it].scale
 
-            /*batch.color = texture[it].color
+            batch.color = texture[it].color
 
             batch.begin()
-
-            println("has anim ${animation.has(it)}")
-            println("tex: ${texture[it].tex}")
 
             draw(it)
 
@@ -68,7 +66,7 @@ class RenderingSystem(
 
             batch.end()
 
-            batch.color = Color.WHITE*/
+            batch.color = Color.WHITE
         }
 
         entities.clear()

@@ -22,7 +22,7 @@ class BodyFactory(
             position.set(4f, 5f)
             type = BodyDef.BodyType.DynamicBody
 
-            box(width = 25 / PIX_PER_M, height = 40 / PIX_PER_M) {
+            box(width = 50 / PIX_PER_M, height = 80 / PIX_PER_M) {
                 restitution = .1f
                 friction = .4f
                 density = 1.5f
@@ -30,9 +30,10 @@ class BodyFactory(
                 filter.maskBits = GROUND_BIT or PLATFORM_BIT or WEAPON_BIT or SHARP_BIT or KEY_OPEN_BIT or AI_BIT
             }
 
-            circle(radius = .25f, position = Vector2(0f, -.25f)) {
+            circle(radius = 25f / PIX_PER_M, position = Vector2(0f, -.25f)) {
                 friction = 1.5f
                 filter.categoryBits = PLAYER_FEET_BIT
+                filter.maskBits = GROUND_BIT or PLATFORM_BIT or WEAPON_BIT or SHARP_BIT or KEY_OPEN_BIT or AI_BIT
             }
 
             fixedRotation = true
@@ -45,7 +46,7 @@ class BodyFactory(
             type = BodyDef.BodyType.DynamicBody
             position.set(4f, 5f)
 
-            box(width = size.x / 2, height = size.y / 2) {
+            box(width = size.x, height = size.y) {
                 density = .001f
                 filter.categoryBits = categoryBit
                 filter.maskBits = maskBit
@@ -85,7 +86,7 @@ class BodyFactory(
             position.x = rect.x / PIX_PER_M + width / 2
             position.y = rect.y / PIX_PER_M + height / 2
 
-            box(width = width / 2f, height = height / 2f) {
+            box(width = width, height = height) {
                 restitution = .1f
                 friction = 1f
                 density = .3f

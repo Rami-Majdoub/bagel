@@ -25,12 +25,12 @@ class AnimationSystem(
 
     private fun flip(e: Entity) {
 
-        texture[e].tex.apply {
-            if (e.rotatedRight() && isFlipX) {
-                flip(true, false)
+        texture[e].tex?.let{
+            if (e.rotatedRight() && it.isFlipX) {
+                it.flip(true, false)
             } else
-                if (!e.rotatedRight() && !isFlipX) {
-                    flip(true, false)
+                if (!e.rotatedRight() && !it.isFlipX) {
+                    it.flip(true, false)
                 }
         }
     }
@@ -50,16 +50,15 @@ class AnimationSystem(
                             MathUtils.PI / animation[e].animations[EntityState.ATTACKING]!!.keyFrames.size).toInt()
                 }
 
-                texture[e].tex.setRegion(animation[e].animations[state[e].currentState]!!.keyFrames.get(frame))
+                texture[e].tex = animation[e].animations[state[e].currentState]!!.keyFrames.get(frame)
 
             } else
                 if (animation[e].animations.containsKey(state[e].currentState)) {
 
-                    texture[e].tex.setRegion(
-                                    animation[e].
+                    texture[e].tex = animation[e].
                                     animations[state[e].
                                     currentState]!!.
-                                    getKeyFrame(state[e].stateTime))
+                                    getKeyFrame(state[e].stateTime)
 
                 }
 

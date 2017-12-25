@@ -7,11 +7,13 @@ import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.physics.box2d.World
 import ru.icarumbas.Bagel
 import ru.icarumbas.bagel.engine.components.other.AIComponent
-import ru.icarumbas.bagel.engine.io.PlayerInfo
+import ru.icarumbas.bagel.engine.io.RoomInfo
 import ru.icarumbas.bagel.engine.io.SerializedMapObject
 import ru.icarumbas.bagel.engine.io.WorldIO
-import ru.icarumbas.bagel.engine.world.RoomWorld
-import ru.icarumbas.bagel.utils.*
+import ru.icarumbas.bagel.utils.AI
+import ru.icarumbas.bagel.utils.body
+import ru.icarumbas.bagel.utils.roomId
+import ru.icarumbas.bagel.utils.weapon
 import ru.icarumbas.bagel.view.screens.MainMenuScreen
 
 
@@ -21,7 +23,6 @@ class BodyRemoval(
         private val world: World,
         private val engine: Engine,
         private val worldIO: WorldIO,
-        private val roomWorld: RoomWorld,
         private val ioEntities: ArrayList<SerializedMapObject>,
         private val player: Entity
 
@@ -45,9 +46,7 @@ class BodyRemoval(
         }
 
         if (entity === player){
-            worldIO.saveInfo(PlayerInfo(
-                    position = translate[entity].x to translate[entity].y,
-                    currentMap = roomWorld.currentMapId,
+            worldIO.saveInfo(RoomInfo(
                     canContinue = false)
             )
 
