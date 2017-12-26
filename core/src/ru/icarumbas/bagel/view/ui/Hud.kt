@@ -18,7 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import ru.icarumbas.bagel.engine.controller.HudInputListener
 import ru.icarumbas.bagel.engine.controller.PlayerMoveController
-import ru.icarumbas.bagel.engine.controller.UIController
 import ru.icarumbas.bagel.engine.resources.ResourceManager
 import ru.icarumbas.bagel.engine.world.RoomWorld
 import ru.icarumbas.bagel.utils.body
@@ -80,7 +79,7 @@ class Hud(
         }
     }
 
-    fun createUIController(): UIController {
+    fun createUIController(): HudInputListener {
         return HudInputListener(
                 openBtn = createOpenButton(),
                 attackBtn = createAttackButton(),
@@ -100,7 +99,7 @@ class Hud(
 
         currentRoom = Label("Current room: ", lStyle).apply {
             setPosition(10f, 10f)
-            setSize(stage.width/10, stage.height/10)
+            setSize(80f, 48f)
         }.also {
             stage.addActor(it)
         }
@@ -108,36 +107,36 @@ class Hud(
     }
 
     private fun createOpenButton(): Image {
-        return Image(uiAtlas.findRegion("attackButton"))
-                .also {
-                    stage.addActor(it)
-                }
-                .apply {
-            setSize(stage.width / 15, stage.width / 15)
-            setPosition(10 - stage.width / 15, 30f)
-            isVisible = false
-        }
-    }
-
-    private fun createAttackButton(): Image {
         return Image(uiAtlas.findRegion("open"))
                 .also {
                     stage.addActor(it)
                 }
                 .apply {
-            setSize(stage.width / 10, stage.width / 10)
-            setPosition(stage.width - stage.width / 10 * 1.5f, stage.width / 10 * .5f)
+            setSize(60f, 60f)
+            setPosition(stage.width - 180, 30f)
+            isVisible = false
+        }
+    }
+
+    private fun createAttackButton(): Image {
+        return Image(uiAtlas.findRegion("attackButton"))
+                .also {
+                    stage.addActor(it)
+                }
+                .apply {
+            setSize(80f, 80f)
+            setPosition(stage.width - 100, 30f)
         }
     }
 
     private fun createTouchpad(): AdvancedTouchpad {
         return AdvancedTouchpad(.6f, Touchpad.TouchpadStyle().apply {
             background = SpriteDrawable(Sprite(uiAtlas.findRegion("touchBackground")).apply {
-                setSize(20f, 20f)
+                setSize(100f, 100f)
             })
 
             knob = SpriteDrawable(Sprite(uiAtlas.findRegion("touchKnob")).apply {
-                setSize(40f, 40f)
+                setSize(60f, 60f)
             })
         })
     }

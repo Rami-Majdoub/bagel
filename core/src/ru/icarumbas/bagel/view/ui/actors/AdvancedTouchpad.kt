@@ -2,9 +2,7 @@ package ru.icarumbas.bagel.view.ui.actors
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad
 import ru.icarumbas.bagel.engine.controller.PlayerMoveController
 
@@ -28,10 +26,6 @@ class AdvancedTouchpad : Touchpad, PlayerMoveController {
         super.act(delta)
 
         getDirection()
-    }
-
-    override fun hit(x: Float, y: Float, touchable: Boolean): Actor? {
-        return if (touchable && this.touchable != Touchable.enabled) null else super.hit(x, y, touchable)
     }
 
     private fun getDirection() {

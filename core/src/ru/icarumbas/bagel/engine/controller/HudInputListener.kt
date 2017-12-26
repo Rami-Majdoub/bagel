@@ -72,13 +72,13 @@ class HudInputListener(
     override fun keyUp(event: InputEvent, keycode: Int): Boolean {
         when (event.keyCode) {
             Input.Keys.ENTER -> {
-                attackBtnPressed = true
+                attackBtnPressed = false
             }
             Input.Keys.Q -> {
-                openBtnPressed = true
+                openBtnPressed = false
             }
             Input.Keys.E -> {
-                minimapPressed = true
+                minimapPressed = false
                 minimap.onUp()
             }
 
@@ -89,13 +89,13 @@ class HudInputListener(
     override fun keyDown(event: InputEvent, keycode: Int): Boolean {
         when (event.keyCode) {
             Input.Keys.ENTER -> {
-                attackBtnPressed = false
+                attackBtnPressed = true
             }
             Input.Keys.Q -> {
-                openBtnPressed = false
+                openBtnPressed = true
             }
             Input.Keys.E -> {
-                minimapPressed = false
+                minimapPressed = true
                 minimap.onDown()
             }
 

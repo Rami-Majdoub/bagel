@@ -24,7 +24,7 @@ class OpeningSystem (
 
     private fun isChestOpened(e: Entity): Boolean{
         with (animation[e].animations[EntityState.OPENING]!!) {
-            return animation[e].animations[EntityState.OPENING]!!.getKeyFrame(state[e].stateTime) == keyFrames.get(keyFrames.size - 2) && !door.has(e)
+            return getKeyFrame(state[e].stateTime) == keyFrames.get(keyFrames.size - 2) && !door.has(e)
         }
     }
 

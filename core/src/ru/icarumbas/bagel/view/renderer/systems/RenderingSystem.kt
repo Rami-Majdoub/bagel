@@ -41,7 +41,8 @@ class RenderingSystem(
                 size[e].spriteSize.y,
                 1f,
                 1f,
-                translate[e].angle)
+                translate[e].angle
+        )
     }
 
     override fun update(deltaTime: Float) {

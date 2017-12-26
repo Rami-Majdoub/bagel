@@ -21,8 +21,8 @@ class RoomWorldCreator(
     private var mainRoomId = 0
 
     private var totalNotClosedGates = 0
-    private var roomWithoutExitChance = 0
-    private val increaseRoomWithoutExitChanceThreshold = 25
+    private var endingRoomChance = 0
+    private val increaseEndingRoomChanceThreshold = 25
 
     private val rooms = ArrayList<Room>()
 
@@ -47,18 +47,6 @@ class RoomWorldCreator(
             val meshClosestX2: Int,
             val meshClosestY2: Int
     )
-
-     private fun drawMesh(count: Int){
-       println("Count: $count, Size: $roomsTotal")
-       mesh.forEach {
-           x -> x.forEach { y ->
-           if (y == 1) print("* ") else print("  ")
-       }
-           println()
-       }
-       println(totalNotClosedGates)
-   }
-
 
     fun createWorld(): ArrayList<Room>{
 
@@ -92,7 +80,7 @@ class RoomWorldCreator(
 
             mainRoomId++
 
-            if (isTimeToIncreaseRoomWithoutExitChance()) roomWithoutExitChance = 75
+            if (isTimeToIncreaseRoomWithoutExitChance()) endingRoomChance = 75
         }
 
         return rooms.apply {
@@ -127,7 +115,7 @@ class RoomWorldCreator(
     }
 
     private fun isTimeToIncreaseRoomWithoutExitChance(): Boolean {
-        return totalNotClosedGates > increaseRoomWithoutExitChanceThreshold
+        return totalNotClosedGates > increaseEndingRoomChanceThreshold
     }
 
     private fun createRoom(sideArgs: SideArguments) {
@@ -306,12 +294,12 @@ class RoomWorldCreator(
 
     private fun getNextRoomId(side: String): Int {
 
-        fun isAngularRoomChanced() = MathUtils.random(100) < roomWithoutExitChance
+        fun isEndingRoomChanced() = MathUtils.random(100) < endingRoomChance
 
         fun isRoomPathEqualsNearest(mainRoomId: Int, randomRoomId: Int) = rooms[mainRoomId].path == "Maps/Map$randomRoomId.tmx"
 
         fun getRandomRoomIdForSide() =
-                if (isAngularRoomChanced())
+                if (isEndingRoomChanced())
                     when (side) {
                         "Left" -> 13
                         "Right" -> 16

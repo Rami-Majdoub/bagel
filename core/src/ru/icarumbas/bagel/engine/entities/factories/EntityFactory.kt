@@ -71,7 +71,7 @@ class EntityFactory(
                 .add(PlayerComponent(0))
                 .add(RunComponent(acceleration = .4f, maxSpeed = 6f))
                 .add(SizeComponent(Vector2(50 / PIX_PER_M, 105 / PIX_PER_M), .425f))
-                .add(JumpComponent(jumpVelocity = 2f, maxJumps = 5))
+                .add(JumpComponent(jumpVelocity = 1.5f, maxJumps = 5))
                 .add(HealthComponent(
                         HP = 100,
                         canBeDamagedTime = 1f))

@@ -12,7 +12,6 @@ import ktx.box2d.createWorld
 import ru.icarumbas.Bagel
 import ru.icarumbas.bagel.engine.controller.HudInputListener
 import ru.icarumbas.bagel.engine.controller.PlayerMoveController
-import ru.icarumbas.bagel.engine.controller.UIController
 import ru.icarumbas.bagel.engine.controller.WASDPlayerController
 import ru.icarumbas.bagel.engine.entities.BodyContactListener
 import ru.icarumbas.bagel.engine.entities.EntitiesWorld
@@ -36,7 +35,7 @@ class GameScreen(
 ) : ScreenAdapter() {
 
     // Box2d world
-    private val world = createWorld(Vector2(0f, -9.8f))
+    private val world = createWorld(Vector2(0f, -10f))
 
     private val debugRenderer: DebugRenderer
     private val mapRenderer: MapRenderer
@@ -50,7 +49,7 @@ class GameScreen(
     private val entityWorld: EntitiesWorld
 
     private val playerController: PlayerMoveController
-    private val uiController: UIController
+    private val uiController: HudInputListener
 
     init {
 
@@ -78,8 +77,6 @@ class GameScreen(
             continueWorld()
         }
 
-        Gdx.input.inputProcessor = hud.stage
-
         if (Gdx.app.type == Application.ApplicationType.Desktop) {
             playerController = WASDPlayerController()
             uiController = HudInputListener(null, null, hud.minimap)
@@ -87,6 +84,9 @@ class GameScreen(
             playerController = hud.createOnScreenPlayerMoveController()
             uiController = hud.createUIController()
         }
+
+        hud.stage.addListener(uiController)
+        Gdx.input.inputProcessor = hud.stage
 
         entityWorld.defineEngine(
                 playerController,
@@ -107,8 +107,6 @@ class GameScreen(
         println("Rooms size is ${roomWorld.rooms.size}")
         println("Entities size is ${entityWorld.engine.entities.size()}")
     }
-
-
 
     private fun continueWorld(){
 

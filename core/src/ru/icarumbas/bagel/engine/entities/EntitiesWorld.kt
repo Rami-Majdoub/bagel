@@ -26,6 +26,7 @@ import ru.icarumbas.bagel.engine.world.MAPS_TOTAL
 import ru.icarumbas.bagel.engine.world.RoomWorld
 import ru.icarumbas.bagel.utils.body
 import ru.icarumbas.bagel.utils.roomId
+import ru.icarumbas.bagel.utils.weapon
 import ru.icarumbas.bagel.view.renderer.systems.AnimationSystem
 import ru.icarumbas.bagel.view.renderer.systems.RenderingSystem
 import ru.icarumbas.bagel.view.renderer.systems.TranslateSystem
@@ -99,6 +100,8 @@ class EntitiesWorld (
             addSystem(RenderingSystem(roomWorld, batch))
 
             addEntity(playerEntity)
+            addEntity(weapon[playerEntity].entityLeft)
+            addEntity(weapon[playerEntity].entityRight)
         }
     }
 
